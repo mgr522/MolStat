@@ -1,0 +1,245 @@
+/**
+\mainpage Conductance Histogram Fitting Software
+
+\section intro_sec Introduction
+This software package simulates and quantatively analyses conductance
+histograms. Several programs are included:
+   -# A simulator for simulating conductance data using simple models. Details
+      on simulating conductance histograms can be found in M.\ G.\ Reuter, M.\ 
+      C.\ Hersam, T.\ Seideman, M.\ A.\ Ratner. Nano Lett.\ \b 12, 2243-2248
+      (2012).
+   -# A binner for binning conductance data into a histogram.
+   -# A fitter for fitting a conductance histogram to various functional forms.
+
+The forms for fitting are (\f$ \widehat{P}_G \f$ is the line shape of the
+histogram and \f$ g \equiv G/\mathrm{G}_0 \f$ is the conductance in units of
+\f$ \mathrm{G}_0 \f$)
+   - Symmetric-coupling, non-resonant tunneling
+     \f[ \widehat{P}_G(g) \propto \frac{1}{\sqrt{g(1-g)^3}} \exp \left[
+         - \frac{\left( c\sqrt{g} - d\sqrt{1-g} \right)^2}{2(1-g)} \right], \f]
+     where \f$ c \f$ is the average level alignment (relative to the standard
+     deviation in channel coupling) and \f$ d \f$ is the average channel
+     coupling (also relative to its standard deviation).
+
+     This form is detailed in P.\ D.\ Williams, M.\ G.\ Reuter. J.\ Phys.\ 
+     Chem.\ C \b 117, 5937-5942 (2013).
+   - Symmetric-coupling, resonant tunneling
+     \f[ \widehat{P}_G(g) \propto \frac{1}{\sqrt{g^3(1-g)}} \exp \left[
+         - \gamma^2 \frac{1-g}{2g} \right], \f]
+     where \f$ \gamma \f$ is the average channel coupling (relative to the
+     standard deviation in level alignment).
+
+     This form is detailed in P.\ D.\ Williams, M.\ G.\ Reuter. J.\ Phys.\ 
+     Chem.\ C \b 117, 5937-5942 (2013).
+   - Asymmetric-coupling, resonant tunneling
+     \f[ \widehat{P}_G(g) \propto g^{-3/2} \int\limits_{(2-g-2\sqrt{1-g})/g}
+         ^{(2-g+2\sqrt{1-g})/g} \mathrm{d}x \frac{x(1+x^2)^{-3/2}}{\sqrt{
+         4x-g(1+x)^2}} \left( 1 + \frac{(\gamma_\mathrm{L} + x \gamma_
+         \mathrm{R})^2}{1+x^2} \right) \exp \left[ - \frac{(x \gamma_\mathrm{L}
+         - \gamma_\mathrm{R})^2}{2(1+x^2)} - \frac{r^2 (\gamma_\mathrm{L}^2 +
+         \gamma_\mathrm{R}^2)[4x - g(1+x)^2]}{8g(1+x^2)} \right], \f]
+     where \f$ \gamma_\mathrm{L(R)} \f$ is the average coupling to the left
+     (right) electrode (relative to the standard deviation in the coupling)
+     and \f$ r \f$ is the standard deviaton of the coupling relative to the
+     standard deviation of the level alignment. Note that the fits are
+     somewhat insensitive to \f$ r \f$.
+
+     This form is detailed in P.\ D.\ Williams, M.\ G.\ Reuter. J.\ Phys.\ 
+     Chem.\ C \b 117, 5937-5942 (2013).
+
+More details will be given throughout this guide; however, much more
+information can be found in the following references:
+   - M.\ G.\ Reuter, M.\ C.\ Hersam, T.\ Seideman, M.\ A.\ Ratner. Nano Lett.\ 
+     \b 12, 2243-2248 (2012).
+   - P.\ D.\ Williams, M.\ G.\ Reuter. J.\ Phys.\ Chem.\ C \b 117, 5839-5942
+     (2013).
+   .
+These references should be cited, as appropriate, in any published work that
+uses this code.
+
+\section install_sec Installation
+This package requires one external library:
+   -# GNU Scientific Library (http://www.gnu.org/software/gsl/)
+       - The code has been tested with version 1.15.
+
+\subsection install_gsl Installing GSL 1.15
+-# Download and unpack the source from the website.
+-# Configure the package:
+   \verbatim ./configure \endverbatim
+   \note
+      - Other configure options may be wanted, see the GSL documentation for
+        more information.
+-# Build the library
+   \verbatim make \endverbatim
+-# Install the library so that the include files and the library are easily
+   located.
+   \verbatim make install \endverbatim
+
+\subsection build Building the Programs
+That you're reading this manual suggests you've already obtained and unpacked
+the tarball.  Unlike the previous packages, there is no configure script,
+so the installation will be more manual. I will call the top-level directory
+of the tarball's contents (initially named fitter)
+
+\verbatim $(FITTER) \endverbatim
+
+First,
+
+\verbatim
+cd $(FITTER)/src
+\endverbatim
+
+The Makefile may need tweaking:
+   - CPP: C++ compiler (default gcc)
+   - CFLAGS: C/C++ compiler flags (default -O2 -Wall and GSL include)
+   - LIBS: Extra libraries that are needed (default -lm and GSL)
+   - GSL_DIR: The directory where GSL has been installed.
+     \$(GSL_DIR)include and \$(GSL_DIR)lib should have the include files
+     and libraries for the GSL package, respectively.
+
+Finally,
+
+\verbatim
+make
+\endverbatim
+
+Congratulations! The three executables should now be built and installed in
+\$(FITTER)/bin.
+
+\subsubsection checkfitter Verifying the Installation
+Several tests are also provided to verify a successful compilation. They can
+be run as follows:
+   -# Testing the symmetric-coupled, resonant tunneling model.
+      \verbatim
+cd $(FITTER)/examples
+../bin/fitter 39 r < symmetric-resonant.dat
+      \endverbatim
+      The output should be
+      \verbatim
+Resid = 4.310146e-01
+Constant of proportionality = 3.956725e+00
+gamma = 9.946165e+00
+      \endverbatim
+   -# Testing the symmetric-coupled, nonresonant tunneling model.
+      \verbatim
+cd $(FITTER)/examples
+../bin/fitter 87 n < symmetric-nonresonant.dat
+      \endverbatim
+      The output should be
+      \verbatim
+Resid = 2.752039e+01
+Constant of proportionality = 1.179997e+01
+c = 5.824024e+01
+d = 9.698352e+00
+      \endverbatim
+   -# Testing the asymmetric-coupled, resonant tunneling model.
+      \verbatim
+cd $(FITTER)/examples
+../bin/fitter 73 a < asymmetric-resonant.dat
+      \endverbatim
+      The output should be
+      \verbatim
+resid = 5.151838e+00
+Constant of proportionality = 3.481548e+00
+gammaL = 1.732841e+01
+gammaR = 1.193090e+01
+r = 1.097273e+01
+      \endverbatim
+      \note The fit is somewhat insensitive to \f$ r \f$.
+      \note The order of gammaL and gammaR is arbitrary and may be reversed.
+
+Owing to the simplicity of the codes, tests are not provided for the simulator
+and binner programs.
+
+\section running Running the Codes
+\subsection run_simulator Simulator
+The simulator requires seven or eight command-line arguments, depending on the
+model.
+   -# The model to use (`s' for symmetric, `a' for asymmetric).
+   -# The number of conductance data points to simulate.
+   -# The Fermi level of the system (in eV).
+   -# The standard deviation in site level energy (in eV).
+   -# The average site level energy (in eV).
+   -# The standard deviation in electrode-channel coupling (in eV).
+   -# The average coupling to one electrode (asymmetric model) or to both
+      electrodes (symmetric model), in eV.
+   -# The average coupling to the other electrode (in eV). Only required if
+      the asymmetric model is used.
+
+For example,
+\verbatim
+$(FITTER)/bin/simulator s 5000 0 0.05 -3 0.08 0.6
+\endverbatim
+
+The program will output (to standard output) a list of conductances (in atomic
+units), one item per line.
+
+\subsection run_binner Binner
+The binner requires two command-line arguments.
+   -# The number of conductance measurements to be read (from standard input)
+      and binned.
+   -# The number of bins to use.
+
+For example,
+\verbatim
+$(FITTER)/bin/binner 5000 300 < data_from_simulator
+\endverbatim
+
+The program reads the conductance data points from standard in and outputs, to
+standard out, the middle of the conductance bin and the number of counts in the
+bin. One pair is printed per line. Note that, if a bin has a small number of
+counts, it will be suppressed and not output. The program prints, to standard
+error, the number of bins actually output (no larger than the requested
+number).
+
+\subsection run_fitter Fitter
+The fitter requires two command-line arguments.
+   -# The number of bins in the histogram.
+   -# The model to use
+      - `n' for symmetric-coupling, nonresonant tunneling
+      - `r' for symmetric-coupling, resonant tunneling
+      - `a' for asymmetric-coupling, resonant tunneling
+   -# [Optional] Request additional output. This can produce a lot of output.
+
+See the previous section on verifying installation of the code for examples of
+the simulator and its output. The binner program created the example files.
+
+\section changelog Version Changes
+\subsection v1_0 v1.0 (May 2013)
+   - Initial release.
+
+\section license_sec License
+This work is licensed under the Creative Commons Attribution 3.0 United States
+License. To view a copy of this license, visit
+http://creativecommons.org/licenses/by/3.0/us/ or send a letter to Creative
+Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+
+Please see \$(FITTER)/LICENSE for the complete license.
+
+Copyright (C) 2013 Oak Ridge National Laboratory
+
+\section reference_sec Citing this software
+You can cite this software by referencing, as appropriate, the following papers:
+   - M.\ G.\ Reuter, M.\ C.\ Hersam, T.\ Seideman, M.\ A.\ Ratner. Nano Lett.\ 
+     \b 12, 2243-2248 (2012).
+   - P.\ D.\ Williams, M.\ G.\ Reuter. J.\ Phys.\ Chem.\ C \b 117, 5839-5942
+     (2013).
+   .
+Thanks!
+
+\section acknowledgments Acknowledgments
+I am indebted to
+   - Mr.\ Patrick Williams (Oak Ridge High School)
+   - Prof.\ Mark Ratner (Northwestern)
+   - Prof.\ Latha Venkataraman (Columbia)
+   .
+for their help in making this package possible.  I also gratefully
+acknowledge financial and computational support from
+   -# The Wigner Fellowship program at the Oak Ridge National Laboratory,
+      which is managed by UT-Batelle, LLC, for the US Department of Energy
+      under contract DE-AC05-00OR22725.
+
+Matthew G.\ Reuter \n
+reutermg@ornl.gov \n
+May 2013
+*/
