@@ -1,13 +1,5 @@
-/*
-This work is licensed under the Creative Commons Attribution 3.0 United States
-License. To view a copy of this license, visit
-http://creativecommons.org/licenses/by/3.0/us/ or send a letter to Creative
-Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
-
-Copyright (C) 2013 Oak Ridge National Laboratory
-*/
 /**
- * \file main-simulator.cc
+ * \file main-simulator-v-2d.cc
  * \brief Main function for simulating conductance data using Landauer theory.
  *
  * Statistical parameters (for example, the average level energy) are provided
@@ -39,10 +31,11 @@ Copyright (C) 2013 Oak Ridge National Laboratory
  *    -# The maximum voltage (V)
  *    -# The relative voltage drop between the electrodes
  *
- * \author Gaibo Zhang and Matthew G.\ Reuter
- * \date August 2013; April 2014
+ * \author Matthew G.\ Reuter
+ * \date April 2014
  */
 
+#include <memory>
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -50,96 +43,7 @@ Copyright (C) 2013 Oak Ridge National Laboratory
 #include <gsl/gsl_randist.h>
 #include <complex>
 
-/**
- * \brief Samples from a normal distribution with the given mean and standard
- *        deviation.
- *
- * \param[in] mean The distribution's average.
- * \param[in] stdev The distribution's standard deviation.
- * \param[in] r The internal workspace for GSL's random number generation.
- * \return The random number.
- */
-double normal_random_variable(double mean, double stdev, gsl_rng *r);
-
-/**
- * \brief Differential conductance for the voltage-independent model; symmetric
- *        coupling.
- * 
- * \param[in] V The applied voltage.
- * \param[in] gamma The channel-lead coupling.
- * \param[in] epsilon The channel's level energy.
- * \param[in] eta The relative voltage drop between the two electrodes.
- * \param[in] EF The Fermi energy.
- * \return The differential conductance, in units of G0.
- */
-double diff_conductance_i(double V, double gamma, double epsilon, double eta,
-	double EF);
-
-/**
- * \brief Static conductance for the voltage-independent model; symmetric
- *        coupling.
- * 
- * \param[in] V The applied voltage.
- * \param[in] gamma The channel-lead coupling.
- * \param[in] epsilon The channel's level energy.
- * \param[in] eta The relative voltage drop between the two electrodes.
- * \param[in] EF The Fermi energy.
- * \return The static conductance, in units of G0.
- */
-double static_conductance_i(double V, double gamma, double epsilon, double eta,
-	double EF);
-
-/**
- * \brief Differential conductance for the single-site voltage-dependent model;
- *        symmetric coupling.
- * 
- * \param[in] V The applied voltage.
- * \param[in] gamma The channel-lead coupling.
- * \param[in] epsilon The channel's level energy.
- * \param[in] EF The Fermi energy.
- * \return The differential conductance, in units of G0.
- */
-double diff_conductance_s(double V, double gamma, double epsilon, double eta,
-	double EF);
-
-/**
- * \brief Static conductance for the single-site voltage-dependent model;
- *        symmetric coupling.
- * 
- * \param[in] V The applied voltage.
- * \param[in] gamma The channel-lead coupling.
- * \param[in] epsilon The channel's level energy.
- * \param[in] EF The Fermi energy.
- * \return The static conductance, in units of G0.
- */
-double static_conductance_s(double V, double gamma, double epsilon, double eta,
-	double EF);
-
-/**
- * \brief Differential conductance for the double-site voltage-dependent model;
- *        symmetric coupling.
- * 
- * \param[in] V The applied voltage.
- * \param[in] gamma The channel-lead coupling.
- * \param[in] epsilon The channel's level energy.
- * \param[in] EF The Fermi energy.
- * \return The differential conductance, in units of G0.
- */
-double diff_conductance_d(double V, double gamma, double epsilon, double eta,
-	double EF);
-
-/**
- * \brief Static conductance for the double-site voltage-dependent model;
- *        symmetric coupling.
- * 
- * \param[in] V The applied voltage.
- * \param[in] gamma The channel-lead coupling.
- * \param[in] epsilon The channel's level energy.
- * \param[in] EF The Fermi energy.
- * \return The static conductance, in units of G0.
- */
-double static_conductance_d(double V, double gamma, double epsilon, double eta,
-	double EF);
+using std::shared_ptr;
 
 /**
  * \brief Main function for simulating a histogram.
@@ -152,8 +56,13 @@ double static_conductance_d(double V, double gamma, double epsilon, double eta,
  * \return Exit status; 0 for normal.
  */
 int main(int argc, char **argv) {
-	gsl_rng *r;
 
+	// initialize the GSL random number generator
+	gsl_rng_env_setup();
+	shared_ptr<gsl_rng> r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
+	gsl_rng_set(r.get(), 0xFEEDFACE);
+
+#if 0
 	char type;
 	int i, n;
 	double EF;
@@ -258,13 +167,6 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-	// Setup the GSL random number generator
-	gsl_rng_env_setup();
-	r = gsl_rng_alloc(gsl_rng_default);
-
-	// Seed the generator
-	gsl_rng_set(r, 0xFEEDFACE);
-
 	// Get the requested number of voltage-transmission sets
 	for (i = 0; i < n; ++i) {
 		V = Vmin + (Vmax - Vmin) * gsl_rng_uniform(r);
@@ -276,7 +178,7 @@ int main(int argc, char **argv) {
 		printf("%.6f %.6f\n", V, GV);
 	}
 
-	gsl_rng_free(r);
+#endif
 	return 0;
 }
 
