@@ -12,6 +12,9 @@
  * \date April 2014
  */
 
+#ifndef __rng_h__
+#define __rng_h__
+
 #include <memory>
 #include <gsl/gsl_rng.h>
 
@@ -61,12 +64,17 @@ public:
 	ConstantDistribution(const double val);
 
 	/**
+	 * \brief Destructor.
+	 */
+	~ConstantDistribution() = default;
+
+	/**
 	 * \brief Samples from the constant distribution (returns value).
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	double sample(shared_ptr<gsl_rng> r) const;
+	virtual double sample(shared_ptr<gsl_rng> r) const;
 };
 
 /**
@@ -96,12 +104,17 @@ public:
 	UniformDistribution(const double low, const double up);
 
 	/**
+	 * \brief Destructor.
+	 */
+	~UniformDistribution() = default;
+
+	/**
 	 * \brief Samples from the uniform distribution.
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	double sample(shared_ptr<gsl_rng> r) const;
+	virtual double sample(shared_ptr<gsl_rng> r) const;
 };
 
 /**
@@ -131,10 +144,17 @@ public:
 	NormalDistribution(const double mean_, const double stdev_);
 
 	/**
+	 * \brief Destructor.
+	 */
+	~NormalDistribution() = default;
+
+	/**
 	 * \brief Samples from the uniform distribution.
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	double sample(shared_ptr<gsl_rng> r) const;
+	virtual double sample(shared_ptr<gsl_rng> r) const;
 };
+
+#endif
