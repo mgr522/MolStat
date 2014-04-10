@@ -39,11 +39,12 @@
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
-#include <gsl/gsl_rng.h>
-#include <gsl/gsl_randist.h>
+#include "aux_simulator/rng.h"
+#include "aux_simulator/voltage_independent.h"
 #include <complex>
 
 using std::shared_ptr;
+using std::make_shared;
 
 /**
  * \brief Main function for simulating a histogram.
@@ -62,7 +63,6 @@ int main(int argc, char **argv) {
 	shared_ptr<gsl_rng> r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
 	gsl_rng_set(r.get(), 0xFEEDFACE);
 
-#if 0
 	char type;
 	int i, n;
 	double EF;
@@ -72,9 +72,10 @@ int main(int argc, char **argv) {
 	double gamma0;
 	double Vmin, Vmax;
 	double eta;
-	double gamma, epsilon, V, GV;
-	double (*cond)(double, double, double, double, double);
+	double V, GV;
+	shared_ptr<ConductanceModel> model;
 
+	// process the input
 	if (argc != 12) {
 		fprintf(stderr, "Usage error: ./simulator-v-2d cond model n EF " \
 			"depsilon epsilon0 dgamma gamma0 Vmin Vmax eta\n" \
@@ -101,30 +102,7 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-	// model
-	switch(*argv[2]) {
-	case 'i':
-		if(type == 'd')
-			cond = diff_conductance_i;
-		else
-			cond = static_conductance_i;
-		break;
-	case 's':
-		if(type == 'd')
-			cond = diff_conductance_s;
-		else
-			cond = static_conductance_s;
-		break;
-	case 'd':
-		if(type == 'd')
-			cond = diff_conductance_d;
-		else
-			cond = static_conductance_d;
-		break;
-	default:
-		fprintf(stderr, "Error: Unknown model: '%c'.\n", *argv[1]);
-		return 0;
-	}
+	// set up the random distributions
 	n = atoi(argv[3]);
 	EF = atof(argv[4]);
 	depsilon = atof(argv[5]);
@@ -167,45 +145,49 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
+	shared_ptr<RandomDistribution> dist_eta, dist_gamma, dist_eps, dist_V;
+	dist_eta = make_shared<ConstantDistribution>(eta);
+	dist_eps = make_shared<NormalDistribution>(epsilon0, depsilon);
+	dist_gamma = make_shared<NormalDistribution>(gamma0, dgamma);
+	dist_V = make_shared<UniformDistribution>(Vmin, Vmax);
+
+	// model
+	switch(*argv[2]) {
+	case 'i':
+		model = make_shared<VoltageIndependentModel>(dist_eta, dist_eps,
+			dist_gamma);
+		break;
+#if 0
+	case 's':
+		if(type == 'd')
+			cond = diff_conductance_s;
+		else
+			cond = static_conductance_s;
+		break;
+	case 'd':
+		if(type == 'd')
+			cond = diff_conductance_d;
+		else
+			cond = static_conductance_d;
+		break;
+#endif
+	default:
+		fprintf(stderr, "Error: Unknown model: '%c'.\n", *argv[1]);
+		return 0;
+	}
+
 	// Get the requested number of voltage-transmission sets
 	for (i = 0; i < n; ++i) {
-		V = Vmin + (Vmax - Vmin) * gsl_rng_uniform(r);
-		gamma = normal_random_variable(gamma0, dgamma, r);
-		epsilon = normal_random_variable(epsilon0, depsilon, r);
-
-		GV = cond(V, gamma, epsilon, eta, EF);
+		V = dist_V->sample(r);
+		GV = model->static_conductance(r, EF, V);
 
 		printf("%.6f %.6f\n", V, GV);
 	}
 
-#endif
 	return 0;
 }
 
-double normal_random_variable(double mean, double stdev, gsl_rng *r) {
-	return gsl_ran_gaussian(r, stdev) + mean;
-}
-
-// Voltage-independent model
-static double transmission_i(double gamma, double epsilon, double E) {
-	return gamma*gamma / 
-		((E-epsilon)*(E-epsilon) + gamma*gamma);
-}
-
-double diff_conductance_i(double V, double gamma, double epsilon, double eta,
-	double EF) {
-
-	return eta*transmission_i(gamma, epsilon, EF + eta*V) +
-		(1.-eta)*transmission_i(gamma, epsilon, EF + (eta-1.)*V);
-}
-
-double static_conductance_i(double V, double gamma, double epsilon, double eta,
-	double EF) {
-
-	return gamma/V * (atan((EF-epsilon+eta*V)/gamma)
-		- atan((EF-epsilon+(eta-1.)*V)/gamma));
-}
-
+#if 0
 // Single-site, voltage-dependent model
 static double transmission_s(double V, double gamma, double epsilon, double E)
 {
@@ -278,3 +260,4 @@ double static_conductance_d(double V, double gamma, double epsilon, double eta,
 	return tint_d(V, gamma, beta, EF - epsilon + eta*V)
 		- tint_d(V, gamma, beta, EF - epsilon + (eta - 1.)*V);
 }
+#endif

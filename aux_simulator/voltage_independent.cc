@@ -48,7 +48,7 @@ double VoltageIndependentModel::static_conductance(const double EF,
 	const double V, const double eta, const double eps, const double gamma) {
 
 	return gamma / V
-		* (atan((EF-eps+eta*V) / gamma) - atan((EF-eps+(eta-1.)*V)));
+		* (atan((EF-eps+eta*V) / gamma) - atan((EF-eps+(eta-1.)*V) / gamma));
 }
 
 double VoltageIndependentModel::diff_conductance(const double EF,
