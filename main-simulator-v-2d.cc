@@ -13,24 +13,6 @@
  * Symmetric coupling (same coupling to the left and right leads) is assumed,
  * unless otherwise specified.
  *
- * There are eleven required command-line arguments:
- *    -# The type of conductance histogram to simulate:
- *       - `s' for static conductance
- *       - `d' for differential conductance
- *    -# The model to use for generating the transmission function:
- *       - `i' for the voltage-independent model
- *       - `s' for the single-site voltage-dependent model
- *       - `d' for the double-site voltage-dependent model
- *    -# The number of conductance data points to simulate.
- *    -# The Fermi level of the system (eV)
- *    -# The standard deviation in site level energy (eV)
- *    -# The average site level energy (eV)
- *    -# The standard deviation in electrode-channel coupling (eV)
- *    -# The average coupling to both electrodes, (eV)
- *    -# The minimum voltage (V)
- *    -# The maximum voltage (V)
- *    -# The relative voltage drop between the electrodes
- *
  * \author Matthew G.\ Reuter
  * \date April 2014
  */
@@ -43,7 +25,7 @@
 #include <functional>
 #include "string_tools.h"
 #include "aux_simulator/rng.h"
-#include "aux_simulator/voltage_independent.h"
+#include "aux_simulator/symmetric_voltage_independent.h"
 
 using namespace std;
 
@@ -94,8 +76,8 @@ int main(int argc, char **argv) {
 	// make a link to the correct model creator (need to continue reading data,
 	// store for later)
 	make_lower(tokens[0]);
-	if(tokens[0] == "voltageindependentmodel")
-		creator = VoltageIndependentModel::create_model;
+	if(tokens[0] == "symmetricvoltageindependentmodel")
+		creator = SymmetricVoltageIndependentModel::create_model;
 	else {
 		fprintf(stderr, "Error: Unrecognized model in line 1. Options are:\n" \
 			"   VoltageIndependentModel - Voltage-Independent Transmission\n");
@@ -179,12 +161,17 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	tokenize(line, tokens);
+	if(tokens.size() == 0) {
+		fprintf(stderr, "Error: expecting voltage distribution on line 5.\n");
+		return 0;
+	}
+	tokens.erase(tokens.begin());
 	try {
 		dist_V = distribution_from_tokens(tokens);
 	}
 	catch(const invalid_argument &e) {
 		fprintf(stderr, "Error: unable to form a random number distribution " \
-			"from:\n   %s\n\n%s\n", line.c_str(), e.what());
+			"from:\n   %s\n%s\n", line.c_str(), e.what());
 		return 0;
 	}
 
@@ -193,7 +180,9 @@ int main(int argc, char **argv) {
 	try {
 		model = creator(stdin);
 	}
-	catch(const invalid_argument &e) {
+	catch(const runtime_error &e) {
+		fprintf(stderr, "Error: invalid model parameters.\n   %s\n", e.what());
+		return 0;
 	}
 
 #if 0

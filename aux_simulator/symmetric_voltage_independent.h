@@ -1,14 +1,14 @@
 /**
- * \file voltage_independent.h
- * \brief The voltage-independent tight-binding model for calculating
- *        conductances.
+ * \file symmetric_voltage_independent.h
+ * \brief The symmetric-coupling, voltage-independent tight-binding model for
+ *        calculating conductances.
  *
  * \author Matthew G.\ Reuter
  * \date April 2014
  */
 
-#ifndef __voltage_independent_h__
-#define __voltage_independent_h__
+#ifndef __symmetric_voltage_independent_h__
+#define __symmetric_voltage_independent_h__
 
 #include <memory>
 #include "rng.h"
@@ -23,7 +23,7 @@ using std::shared_ptr;
  * Note: the tight-binding model, that is, the transmission function, is
  * indepedent of the voltage; the conductances, however, are not.
  */
-class VoltageIndependentModel : public ConductanceModel {
+class SymmetricVoltageIndependentModel : public ConductanceModel {
 protected:
 	/**
 	 * \brief Random distribution for epsilon, the channel energy.
@@ -36,7 +36,19 @@ protected:
 	shared_ptr<const RandomDistribution> dist_gamma;
 
 public:
-	VoltageIndependentModel() = delete;
+	/**
+	 * \brief Function that reads in probability distributions from the input
+	 *    stream and constructs a VoltageIndependentModel using the desired
+	 *    parameters.
+	 *
+	 * \exception std::runtime_error if the input is invalid or incomplete.
+	 *
+	 * \param[in,out] f Input stream.
+	 * \return Shared pointer to the new ConductanceModel.
+	 */
+	static shared_ptr<ConductanceModel> create_model(FILE *f);
+
+	SymmetricVoltageIndependentModel() = delete;
 
 	/**
 	 * \brief Constructor specifying the necessary random distributions.
@@ -45,14 +57,14 @@ public:
 	 * \param[in] eps The distribution for epsilon.
 	 * \param[in] gamma The distribution for gamma.
 	 */
-	VoltageIndependentModel(shared_ptr<const RandomDistribution> eta,
+	SymmetricVoltageIndependentModel(shared_ptr<const RandomDistribution> eta,
 		shared_ptr<const RandomDistribution> eps,
 		shared_ptr<const RandomDistribution> gamma);
 
 	/**
 	 * \brief Destructor.
 	 */
-	virtual ~VoltageIndependentModel() = default;
+	virtual ~SymmetricVoltageIndependentModel() = default;
 
 	/**
 	 * \brief Gets the static conductance for a random set of model parameters.
