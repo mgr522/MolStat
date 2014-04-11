@@ -53,6 +53,7 @@ int main(int argc, char **argv) {
 	shared_ptr<ConductanceModel> model;
 	shared_ptr<RandomDistribution> dist_V;
 	function<shared_ptr<ConductanceModel>(FILE *)> creator;
+	function<double(const double, const double)> conductance_function;
 
 	string line;
 	vector<string> tokens;
@@ -185,118 +186,23 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-#if 0
-	// process the input
-	if (argc != 12) {
-		fprintf(stderr, "Usage error: ./simulator-v-2d cond model n EF " \
-			"depsilon epsilon0 dgamma gamma0 Vmin Vmax eta\n" \
-			"   cond is the conductance type: 's' for static or 'd' for " \
-			"differential\n" \
-			"   model is the model to use: 'i', 's', or 'd'\n" \
-			"   n is the number of trials\n" \
-			"   EF is the Fermi level (eV)\n" \
-			"   depsilon is the standard deviation in site level energy (eV)\n" \
-			"   epsilon0 is the average site level energy (eV)\n" \
-			"   dgamma is the standard deviation in the coupling (eV)\n" \
-			"   gamma0 is the average coupling for one electrode (eV)\n" \
-			"   Vmin is the lower bound of the applied bias range (V)\n" \
-			"   Vmax is the upper bound of the applied bias range (V)\n" \
-			"   eta is the relative voltage drop for one electrode\n" \
-			"\n   NOTE: symmetric coupling is assumed.\n");
-		return 0;
-	}
+	// set the conductance function
+	if(type == 's')
+		conductance_function = [=] (const double a, const double b) {
+			return model->static_conductance(r, a, b);
+		};
+	else if(type == 'd')
+		conductance_function = [=] (const double a, const double b) {
+			return model->diff_conductance(r, a, b);
+		};
 
-	// type
-	type = *argv[1];
-	if(type != 'd' && type != 's') {
-		fprintf(stderr, "Error: %c is not a valid conductance type.\n", type);
-		return 0;
-	}
-
-	// set up the random distributions
-	n = atoi(argv[3]);
-	EF = atof(argv[4]);
-	depsilon = atof(argv[5]);
-	epsilon0 = atof(argv[6]);
-	dgamma = atof(argv[7]);
-	gamma0 = atof(argv[8]);
-	Vmin = atof(argv[9]);
-	Vmax = atof(argv[10]);
-	eta = atof(argv[11]);
-
-	if (depsilon <= 0.0 || dgamma <= 0.0) {
-		fprintf(stderr, "Error: standard deviations must be positive.\n");
-		return 0;
-	}
-
-	if (gamma0 <= 0.0) {
-		fprintf(stderr, "Error: gamma0 must be positive.\n");
-		return 0;
-	}
-
-	if (n <= 0) {
-		fprintf(stderr, "Error: There must be at least one trial.\n");
-		return 0;
-	}
-
-	if (gamma0 / dgamma < 4.0) {
-		fprintf(stderr, "Warning: The model assumes gamma0 / dgamma >> 0; " \
-			"bigger than 4, in practice.\n");
-	}
-	
-	if (Vmin > Vmax) {
-		fprintf(stderr, "Error: Vmin is lower bound, Vmax is upper bound; " \
-			"Vmax > Vmin.\n");
-		return 0;
-	}
-
-	if (eta > 1.0 || eta < 0.0) {
-		fprintf(stderr, "Error: eta is a relative voltage drop on one side; " \
-			"0 <= eta <= 1.\n");
-		return 0;
-	}
-#endif
-
-#if 0
-	shared_ptr<RandomDistribution> dist_eta, dist_gamma, dist_eps, dist_V;
-	dist_eta = make_shared<ConstantDistribution>(eta);
-	dist_eps = make_shared<NormalDistribution>(epsilon0, depsilon);
-	dist_gamma = make_shared<NormalDistribution>(gamma0, dgamma);
-	dist_V = make_shared<UniformDistribution>(Vmin, Vmax);
-
-	// model
-	switch(*argv[2]) {
-	case 'i':
-		model = make_shared<VoltageIndependentModel>(dist_eta, dist_eps,
-			dist_gamma);
-		break;
-#if 0
-	case 's':
-		if(type == 'd')
-			cond = diff_conductance_s;
-		else
-			cond = static_conductance_s;
-		break;
-	case 'd':
-		if(type == 'd')
-			cond = diff_conductance_d;
-		else
-			cond = static_conductance_d;
-		break;
-#endif
-	default:
-		fprintf(stderr, "Error: Unknown model: '%c'.\n", *argv[1]);
-		return 0;
-	}
-
-	// Get the requested number of voltage-transmission sets
+	// Get the requested number of voltage-conductance data points
 	for (i = 0; i < n; ++i) {
 		V = dist_V->sample(r);
-		GV = model->static_conductance(r, EF, V);
+		GV = conductance_function(EF, V);
 
 		printf("%.6f %.6f\n", V, GV);
 	}
-#endif
 
 	return 0;
 }
