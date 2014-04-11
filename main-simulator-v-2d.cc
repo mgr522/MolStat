@@ -36,15 +36,16 @@
  */
 
 #include <memory>
-#include <iostream>
 #include <cstdio>
-#include <cstdlib>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#include <functional>
+#include "string_tools.h"
 #include "aux_simulator/rng.h"
 #include "aux_simulator/voltage_independent.h"
-#include <complex>
 
-using std::shared_ptr;
-using std::make_shared;
+using namespace std;
 
 /**
  * \brief Main function for simulating a histogram.
@@ -66,15 +67,136 @@ int main(int argc, char **argv) {
 	char type;
 	int i, n;
 	double EF;
-	double depsilon;
-	double epsilon0;
-	double dgamma;
-	double gamma0;
-	double Vmin, Vmax;
-	double eta;
 	double V, GV;
 	shared_ptr<ConductanceModel> model;
+	shared_ptr<RandomDistribution> dist_V;
+	function<shared_ptr<ConductanceModel>(FILE *)> creator;
 
+	string line;
+	vector<string> tokens;
+
+	// setup the simulation -- read in parameters from stdin
+	// Line 1: One token specifying the model to use
+	try {
+		line = getline(stdin);
+	}
+	catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s.\n", e.what());
+		return 0;
+	}
+
+	tokenize(line, tokens);
+	if(tokens.size() < 1) {
+		fprintf(stderr, "Error: model name expected in line 1.\n");
+		return 0;
+	}
+
+	// make a link to the correct model creator (need to continue reading data,
+	// store for later)
+	make_lower(tokens[0]);
+	if(tokens[0] == "voltageindependentmodel")
+		creator = VoltageIndependentModel::create_model;
+	else {
+		fprintf(stderr, "Error: Unrecognized model in line 1. Options are:\n" \
+			"   VoltageIndependentModel - Voltage-Independent Transmission\n");
+		return 0;
+	}
+
+	// Line 2: Static or differential conductance?
+	try {
+		line = getline(stdin);
+	}
+	catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s.\n", e.what());
+		return 0;
+	}
+	tokenize(line, tokens);
+	if(tokens.size() < 1) {
+		fprintf(stderr, "Error: conductance type expected in line 2.\n");
+		return 0;
+	}
+	make_lower(tokens[0]);
+	if(tokens[0] == "static")
+		type = 's';
+	else if(tokens[0] == "differential")
+		type = 'd';
+	else {
+		fprintf(stderr, "Error: Unrecognized conductance type in line 2.\n   " \
+			"It must be \"Static\" or \"Differential\".\n");
+		return 0;
+	}
+
+	// Line 3: number of trials
+	try {
+		line = getline(stdin);
+	}
+	catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s.\n", e.what());
+		return 0;
+	}
+	tokenize(line, tokens);
+	if(tokens.size() < 1) {
+		fprintf(stderr, "Error: number of trials expected in line 3.\n");
+		return 0;
+	}
+	try {
+		n = stoi(tokens[0]);
+	}
+	catch(const invalid_argument &e) {
+		fprintf(stderr, "Error: unrecognizable number '%s'.\n",
+			tokens[0].c_str());
+		return 0;
+	}
+
+	// Line 4: Fermi level
+	try {
+		line = getline(stdin);
+	}
+	catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s.\n", e.what());
+		return 0;
+	}
+	tokenize(line, tokens);
+	if(tokens.size() < 1) {
+		fprintf(stderr, "Error Fermi energy expected in line 4.\n");
+		return 0;
+	}
+	try {
+		EF = stod(tokens[0]);
+	}
+	catch(const invalid_argument &e) {
+		fprintf(stderr, "Error: unable to parse %s to the Fermi energy.\n",
+			tokens[0].c_str());
+		return 0;
+	}
+
+	// Line 5: Random distribution for voltages
+	try {
+		line = getline(stdin);
+	}
+	catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s.\n", e.what());
+		return 0;
+	}
+	tokenize(line, tokens);
+	try {
+		dist_V = distribution_from_tokens(tokens);
+	}
+	catch(const invalid_argument &e) {
+		fprintf(stderr, "Error: unable to form a random number distribution " \
+			"from:\n   %s\n\n%s\n", line.c_str(), e.what());
+		return 0;
+	}
+
+	// invoke the creator for the particular model to read in any other
+	// details
+	try {
+		model = creator(stdin);
+	}
+	catch(const invalid_argument &e) {
+	}
+
+#if 0
 	// process the input
 	if (argc != 12) {
 		fprintf(stderr, "Usage error: ./simulator-v-2d cond model n EF " \
@@ -144,7 +266,9 @@ int main(int argc, char **argv) {
 			"0 <= eta <= 1.\n");
 		return 0;
 	}
+#endif
 
+#if 0
 	shared_ptr<RandomDistribution> dist_eta, dist_gamma, dist_eps, dist_V;
 	dist_eta = make_shared<ConstantDistribution>(eta);
 	dist_eps = make_shared<NormalDistribution>(epsilon0, depsilon);
@@ -183,6 +307,7 @@ int main(int argc, char **argv) {
 
 		printf("%.6f %.6f\n", V, GV);
 	}
+#endif
 
 	return 0;
 }

@@ -17,9 +17,24 @@ using std::shared_ptr;
 
 /**
  * \brief Abstract base class a conductance model.
+ *
+ * Each class must also specify a function with signature
+ *    shared_ptr<ConductanceModel> function(FILE *f)
+ *
+ * f is the input stream for reading details on the probability distributions
+ * and/or other details for setting up the model. This function returns a
+ * shared pointer to the new ConductanceModel object and is the primary way
+ * for making ConductanceModel objects.
  */
 class ConductanceModel {
 protected:
+	/**
+	 * \brief Constructor specifying the distribution for eta.
+	 *
+	 * \param[in] eta The distribution for eta.
+	 */
+	ConductanceModel(shared_ptr<const RandomDistribution> eta);
+
 	/**
 	 * \brief Random distribution for eta, the relative voltage drop.
 	 */
@@ -27,13 +42,6 @@ protected:
 
 public:
 	ConductanceModel() = delete;
-
-	/**
-	 * \brief Constructor specifying the distribution for eta.
-	 *
-	 * \param[in] eta The distribution for eta.
-	 */
-	ConductanceModel(shared_ptr<const RandomDistribution> eta);
 
 	/**
 	 * \brief Destructor.

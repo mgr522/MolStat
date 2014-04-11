@@ -7,6 +7,7 @@
  */
 
 #include "string_tools.h"
+#include <cstdlib>
 
 using namespace std;
 
@@ -57,6 +58,22 @@ static bool next_token(string::const_iterator &next,
 	}
 
 	return true;
+}
+
+string getline(FILE *f) {
+	string line;
+	char *cline;
+	size_t chars;
+
+	cline = nullptr;
+	chars = 0;
+	chars = getline(&cline, &chars, f);
+	if(chars == -1)
+		throw runtime_error("EOF encountered");
+
+	line = cline;
+	free(cline);
+	return line;
 }
 
 void tokenize(const std::string &str, std::vector<std::string> &vec) {

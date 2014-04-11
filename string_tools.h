@@ -11,6 +11,17 @@
 
 #include <string>
 #include <vector>
+#include <cstdio>
+
+/**
+ * \brief Gets a line from the desired stream and puts it in std::string form.
+ *
+ * \exception std::runtime_error if EOF is encountered.
+ *
+ * \param[in,out] f The stream.
+ * \return The string.
+ */
+std::string getline(FILE *f);
 
 /**
  * \brief Tokenizes a string.
