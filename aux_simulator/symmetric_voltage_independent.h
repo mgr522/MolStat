@@ -24,7 +24,7 @@ using std::shared_ptr;
  * indepedent of the voltage; the conductances, however, are not.
  */
 class SymmetricVoltageIndependentModel : public ConductanceModel {
-protected:
+public:
 	/**
 	 * \brief Random distribution for epsilon, the channel energy.
 	 */
@@ -35,31 +35,10 @@ protected:
 	 */
 	shared_ptr<const RandomDistribution> dist_gamma;
 
-public:
 	/**
-	 * \brief Function that reads in probability distributions from the input
-	 *    stream and constructs a VoltageIndependentModel using the desired
-	 *    parameters.
-	 *
-	 * \exception std::runtime_error if the input is invalid or incomplete.
-	 *
-	 * \param[in,out] f Input stream.
-	 * \return Shared pointer to the new ConductanceModel.
+	 * \brief Default constructor.
 	 */
-	static shared_ptr<ConductanceModel> create_model(FILE *f);
-
-	SymmetricVoltageIndependentModel() = delete;
-
-	/**
-	 * \brief Constructor specifying the necessary random distributions.
-	 *
-	 * \param[in] eta The distribution for eta.
-	 * \param[in] eps The distribution for epsilon.
-	 * \param[in] gamma The distribution for gamma.
-	 */
-	SymmetricVoltageIndependentModel(shared_ptr<const RandomDistribution> eta,
-		shared_ptr<const RandomDistribution> eps,
-		shared_ptr<const RandomDistribution> gamma);
+	SymmetricVoltageIndependentModel() = default;
 
 	/**
 	 * \brief Destructor.
@@ -71,11 +50,12 @@ public:
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \param[in] EF The Fermi energy.
+	 * \param[in] eta The relative voltage drop.
 	 * \param[in] V The voltage.
 	 * \return The static conductance.
 	 */
 	virtual double static_conductance(shared_ptr<gsl_rng> r,
-		const double EF, const double V) const;
+		const double EF, const double eta, const double V) const;
 
 	/**
 	 * \brief Gets the differential conductance for a random set of model
@@ -83,11 +63,12 @@ public:
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \param[in] EF The Fermi energy.
+	 * \param[in] eta The relative voltage drop.
 	 * \param[in] V The voltage.
 	 * \return The differential conductance.
 	 */
 	virtual double diff_conductance(shared_ptr<gsl_rng> r,
-		const double EF, const double V) const;
+		const double EF, const double eta, const double V) const;
 
 	/**
 	 * \brief Calculates the transmission for fixed values of epsilon and gamma.

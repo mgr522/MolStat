@@ -23,11 +23,26 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <map>
 #include "string_tools.h"
 #include "aux_simulator/rng.h"
 #include "aux_simulator/symmetric_voltage_independent.h"
 
 using namespace std;
+
+/**
+ * \brief Takes the list of distributions from the input deck and constructs
+ *    a model of the specified type.
+ *
+ * \throw invalid_argument if any required distributions are not specified.
+ *
+ * \param[in] str The name of the type, assumed to be lowercase.
+ * \param[in] parameters Map of distribution names (lowercase) to the
+ *    distributions.
+ * \return A shared pointer to the model object.
+ */
+shared_ptr<ConductanceModel> set_distributions(const string str,
+	const map<string, shared_ptr<RandomDistribution>> &parameters);
 
 /**
  * \brief Main function for simulating a histogram.
@@ -49,13 +64,14 @@ int main(int argc, char **argv) {
 	char type;
 	int i, n;
 	double EF;
-	double V, GV;
+	double eta, V, GV;
+	map<string, shared_ptr<RandomDistribution>> parameters;
 	shared_ptr<ConductanceModel> model;
-	shared_ptr<RandomDistribution> dist_V;
-	function<shared_ptr<ConductanceModel>(FILE *)> creator;
-	function<double(const double, const double)> conductance_function;
+	shared_ptr<RandomDistribution> dist_V, dist_eta;
+	function<double(const double, const double, const double)>
+		conductance_function;
 
-	string line;
+	string line, modeltype, name;
 	vector<string> tokens;
 
 	// setup the simulation -- read in parameters from stdin
@@ -76,14 +92,8 @@ int main(int argc, char **argv) {
 
 	// make a link to the correct model creator (need to continue reading data,
 	// store for later)
-	make_lower(tokens[0]);
-	if(tokens[0] == "symmetricvoltageindependentmodel")
-		creator = SymmetricVoltageIndependentModel::create_model;
-	else {
-		fprintf(stderr, "Error: Unrecognized model in line 1. Options are:\n" \
-			"   VoltageIndependentModel - Voltage-Independent Transmission\n");
-		return 0;
-	}
+	modeltype = tokens[0];
+	make_lower(modeltype);
 
 	// Line 2: Static or differential conductance?
 	try {
@@ -153,58 +163,124 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-	// Line 5: Random distribution for voltages
+	// all subsequent lines specify random number distributions
+	// EOF is flagged by a runtime_error in the getline function
 	try {
-		line = getline(stdin);
+		while(true) {
+			line = getline(stdin);
+
+			tokenize(line, tokens);
+			if(tokens.size() > 0) {
+				name = tokens[0];
+				make_lower(name);
+
+				// need to remove the front entry for the distribution generator
+				tokens.erase(tokens.begin());
+
+				// create a random distribution from the contents of the line
+				try {
+					parameters[name] = distribution_from_tokens(tokens);
+				}
+				catch(const invalid_argument &e) {
+					fprintf(stderr, "Error: unable to form a random number " \
+						"distribution from:\n   %s\n%s\n", line.c_str(), e.what());
+				}
+			}
+		}
 	}
 	catch(const runtime_error &e) {
-		fprintf(stderr, "Error: %s.\n", e.what());
-		return 0;
-	}
-	tokenize(line, tokens);
-	if(tokens.size() == 0) {
-		fprintf(stderr, "Error: expecting voltage distribution on line 5.\n");
-		return 0;
-	}
-	tokens.erase(tokens.begin());
+	}	
+
 	try {
-		dist_V = distribution_from_tokens(tokens);
+		model = set_distributions(modeltype, parameters);
 	}
 	catch(const invalid_argument &e) {
-		fprintf(stderr, "Error: unable to form a random number distribution " \
-			"from:\n   %s\n%s\n", line.c_str(), e.what());
+		fprintf(stderr, "Error initializine the model: %s\n", e.what());
 		return 0;
 	}
 
-	// invoke the creator for the particular model to read in any other
-	// details
+	// make sure there are distributions for V and eta
 	try {
-		model = creator(stdin);
+		dist_eta = parameters.at("eta");
 	}
-	catch(const runtime_error &e) {
-		fprintf(stderr, "Error: invalid model parameters.\n   %s\n", e.what());
+	catch(const out_of_range &e) {
+		fprintf(stderr, "Error: a distribution for \"eta\" must be specified." \
+			"\n");
+		return 0;
+	}
+	try {
+		dist_V = parameters.at("v");
+	}
+	catch(const out_of_range &e) {
+		fprintf(stderr, "Error: a distribution for \"V\" must be specified." \
+			"\n");
 		return 0;
 	}
 
 	// set the conductance function
-	if(type == 's')
-		conductance_function = [=] (const double a, const double b) {
-			return model->static_conductance(r, a, b);
+	if(type == 's') {
+		conductance_function = [=] (const double a, const double b,
+			const double c) {
+
+			return model->static_conductance(r, a, b, c);
 		};
-	else if(type == 'd')
-		conductance_function = [=] (const double a, const double b) {
-			return model->diff_conductance(r, a, b);
+	}
+	else if(type == 'd') {
+		conductance_function = [=] (const double a, const double b,
+			const double c) {
+
+			return model->diff_conductance(r, a, b, c);
 		};
+	}
 
 	// Get the requested number of voltage-conductance data points
 	for (i = 0; i < n; ++i) {
 		V = dist_V->sample(r);
-		GV = conductance_function(EF, V);
+		eta = dist_eta->sample(r);
+		GV = conductance_function(EF, eta, V);
 
 		printf("%.6f %.6f\n", V, GV);
 	}
 
 	return 0;
+}
+
+shared_ptr<ConductanceModel> set_distributions(const string str,
+	const map<string, shared_ptr<RandomDistribution>> &parameters) {
+
+	// create the actual model and process the random number distributions
+	if(str == "symmetricvoltageindependentmodel") {
+		shared_ptr<SymmetricVoltageIndependentModel> model =
+			make_shared<SymmetricVoltageIndependentModel>();
+
+		// populate the necessary random number generators
+		try {
+			model->dist_gamma = parameters.at("gamma");
+		}
+		catch(const out_of_range &e) {
+			throw invalid_argument("A distribution for \"gamma\" must be " \
+				"specified.");
+		}
+
+		try {
+			model->dist_eps = parameters.at("epsilon");
+		}
+		catch(const out_of_range &e) {
+			throw invalid_argument("A distribution for \"epsilon\" must be " \
+				"specified.");
+		}
+
+		return model;
+	}
+	else {
+		throw "Unrecognized model. Options are:\n" \
+			"   SymmetricVoltageIndependentModel - " \
+				"Symmetric-Coupling, Voltage-Independent Transmission\n";
+	}
+
+	// should never be here
+	throw invalid_argument("Shouldn't be here.");
+	return nullptr;
 }
 
 #if 0
