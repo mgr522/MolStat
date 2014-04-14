@@ -54,6 +54,17 @@ public:
 	 */
 	virtual double diff_conductance(shared_ptr<gsl_rng> r,
 		const double EF, const double eta, const double V) const = 0;
+
+	/**
+	 * \brief Gets the zero bias (differential) conductance for a random set of
+	 *        model parameters.
+	 *
+	 * \param[in] r The handle for GSL random number generation.
+	 * \param[in] EF The Fermi energy.
+	 * \return The differential conductance.
+	 */
+	virtual double zero_bias_conductance(shared_ptr<gsl_rng> r,
+		const double EF) const = 0;
 };
 
 #endif

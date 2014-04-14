@@ -31,6 +31,15 @@
 using namespace std;
 
 /**
+ * \brief Enum for the types of conductance calculations we have.
+ */
+enum class CalculationType {
+	Static, // Voltage-Dependent Static Conductance
+	Differential, // Voltage-Dependend Differential Conductance
+	ZeroBias // Zero-Bias Differential Conductance
+};
+
+/**
  * \brief Takes the list of distributions from the input deck and constructs
  *    a model of the specified type.
  *
@@ -61,15 +70,13 @@ int main(int argc, char **argv) {
 	shared_ptr<gsl_rng> r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
 	gsl_rng_set(r.get(), 0xFEEDFACE);
 
-	char type;
+	CalculationType type;
 	int i, n;
 	double EF;
-	double eta, V, GV;
 	map<string, shared_ptr<RandomDistribution>> parameters;
 	shared_ptr<ConductanceModel> model;
 	shared_ptr<RandomDistribution> dist_V, dist_eta;
-	function<double(const double, const double, const double)>
-		conductance_function;
+	function<void(void)> conductance_function;
 
 	string line, modeltype, name;
 	vector<string> tokens;
@@ -95,7 +102,7 @@ int main(int argc, char **argv) {
 	modeltype = tokens[0];
 	make_lower(modeltype);
 
-	// Line 2: Static or differential conductance?
+	// Line 2: Type of conductance to calculate
 	try {
 		line = getline(stdin);
 	}
@@ -110,12 +117,14 @@ int main(int argc, char **argv) {
 	}
 	make_lower(tokens[0]);
 	if(tokens[0] == "static")
-		type = 's';
+		type = CalculationType::Static;
 	else if(tokens[0] == "differential")
-		type = 'd';
+		type = CalculationType::Differential;
+	else if(tokens[0] == "zerobias")
+		type = CalculationType::ZeroBias;
 	else {
 		fprintf(stderr, "Error: Unrecognized conductance type in line 2.\n   " \
-			"It must be \"Static\" or \"Differential\".\n");
+			"It must be \"Static\", \"Differential\", or \"ZeroBias\".\n");
 		return 0;
 	}
 
@@ -191,55 +200,70 @@ int main(int argc, char **argv) {
 	catch(const runtime_error &e) {
 	}	
 
+	// set the distributions required by the model
 	try {
 		model = set_distributions(modeltype, parameters);
 	}
 	catch(const invalid_argument &e) {
-		fprintf(stderr, "Error initializine the model: %s\n", e.what());
+		fprintf(stderr, "Error initializing the model: %s\n", e.what());
 		return 0;
 	}
 
-	// make sure there are distributions for V and eta
-	try {
-		dist_eta = parameters.at("eta");
-	}
-	catch(const out_of_range &e) {
-		fprintf(stderr, "Error: a distribution for \"eta\" must be specified." \
-			"\n");
-		return 0;
-	}
-	try {
-		dist_V = parameters.at("v");
-	}
-	catch(const out_of_range &e) {
-		fprintf(stderr, "Error: a distribution for \"V\" must be specified." \
-			"\n");
-		return 0;
-	}
+	// set up the run function for each type...
+	// this may require other distributions to be set
+	if(type == CalculationType::Static ||
+		type == CalculationType::Differential) {
 
-	// set the conductance function
-	if(type == 's') {
-		conductance_function = [=] (const double a, const double b,
-			const double c) {
+		// make sure there are distributions for V and eta
+		try {
+			dist_eta = parameters.at("eta");
+		}
+		catch(const out_of_range &e) {
+			fprintf(stderr, "Error: a distribution for \"eta\" must be " \
+				"specified.\n");
+			return 0;
+		}
+		try {
+			dist_V = parameters.at("v");
+		}
+		catch(const out_of_range &e) {
+			fprintf(stderr, "Error: a distribution for \"V\" must be specified." \
+				"\n");
+			return 0;
+		}
 
-			return model->static_conductance(r, a, b, c);
+		// set the conductance function
+		if(type == CalculationType::Static) {
+			conductance_function = [=] () {
+				double V = dist_V->sample(r);
+				double GV = model->static_conductance(r, EF, dist_eta->sample(r),
+					V);
+				printf("%.6f %.6f\n", V, GV);
+			};
+		}
+		else if(type == CalculationType::Differential) {
+			conductance_function = [=] () {
+				double V = dist_V->sample(r);
+				double GV = model->diff_conductance(r, EF, dist_eta->sample(r), V);
+				printf("%.6f %.6f\n", V, GV);
+			};
+		}
+	}
+	else if(type == CalculationType::ZeroBias) {
+		// no extra distributions required... proceed to the calculation
+		conductance_function = [=] () {
+			printf("%.6f\n", model->zero_bias_conductance(r, EF));
 		};
 	}
-	else if(type == 'd') {
-		conductance_function = [=] (const double a, const double b,
-			const double c) {
-
-			return model->diff_conductance(r, a, b, c);
-		};
+	else {
+		// should never be here
+		fprintf(stderr, "An unknown error has occured.\n");
+		return 0;
 	}
 
 	// Get the requested number of voltage-conductance data points
 	for (i = 0; i < n; ++i) {
-		V = dist_V->sample(r);
-		eta = dist_eta->sample(r);
-		GV = conductance_function(EF, eta, V);
-
-		printf("%.6f %.6f\n", V, GV);
+		conductance_function();
 	}
 
 	return 0;
@@ -272,11 +296,10 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 
 		return model;
 	}
-	else {
+	else
 		throw "Unrecognized model. Options are:\n" \
 			"   SymmetricVoltageIndependentModel - " \
 				"Symmetric-Coupling, Voltage-Independent Transmission\n";
-	}
 
 	// should never be here
 	throw invalid_argument("Shouldn't be here.");

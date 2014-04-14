@@ -38,6 +38,16 @@ double SymmetricVoltageIndependentModel::diff_conductance(
 	return diff_conductance(EF, V, eta, eps, gamma);
 }
 
+double SymmetricVoltageIndependentModel::zero_bias_conductance(
+	shared_ptr<gsl_rng> r, const double EF) const {
+
+	// get model parameters from the random distributions
+	double eps = dist_eps->sample(r);
+	double gamma = dist_gamma->sample(r);
+
+	return transmission(EF, eps, gamma);
+}
+
 double SymmetricVoltageIndependentModel::transmission(const double E,
 	const double eps, const double gamma) {
 
