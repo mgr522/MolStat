@@ -27,6 +27,7 @@
 #include "string_tools.h"
 #include "aux_simulator/rng.h"
 #include "aux_simulator/symmetric_voltage_independent.h"
+#include "aux_simulator/symmetric_voltage_one_site.h"
 
 using namespace std;
 
@@ -198,7 +199,7 @@ int main(int argc, char **argv) {
 		}
 	}
 	catch(const runtime_error &e) {
-	}	
+	}
 
 	// set the distributions required by the model
 	try {
@@ -277,7 +278,30 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 		shared_ptr<SymmetricVoltageIndependentModel> model =
 			make_shared<SymmetricVoltageIndependentModel>();
 
-		// populate the necessary random number generators
+		// populate the gamma and epsilon distributions
+		try {
+			model->dist_gamma = parameters.at("gamma");
+		}
+		catch(const out_of_range &e) {
+			throw invalid_argument("A distribution for \"gamma\" must be " \
+				"specified.");
+		}
+
+		try {
+			model->dist_eps = parameters.at("epsilon");
+		}
+		catch(const out_of_range &e) {
+			throw invalid_argument("A distribution for \"epsilon\" must be " \
+				"specified.");
+		}
+
+		return model;
+	}
+	else if(str == "symmetricvoltageonesitemodel") {
+		shared_ptr<SymmetricVoltageOneSiteModel> model = 
+			make_shared<SymmetricVoltageOneSiteModel>();
+
+		// populate the gamma and epsilon distributions
 		try {
 			model->dist_gamma = parameters.at("gamma");
 		}
@@ -297,9 +321,11 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 		return model;
 	}
 	else
-		throw "Unrecognized model. Options are:\n" \
+		throw invalid_argument("Unrecognized model. Options are:\n" \
 			"   SymmetricVoltageIndependentModel - " \
-				"Symmetric-Coupling, Voltage-Independent Transmission\n";
+				"Symmetric-Coupling, Voltage-Independent Transmission\n" \
+			"   SymmetricVoltageOneSiteModel - " \
+				"Symmetric-Coupling, Voltage-Dependent One-Site Model\n");
 
 	// should never be here
 	throw invalid_argument("Shouldn't be here.");

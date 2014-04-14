@@ -1,5 +1,5 @@
 /**
- * \file voltage_independent.cc
+ * \file symmetric_voltage_independent.cc
  * \brief Implementation of the voltage-independent tight-binding model for
  *        calculating conductances.
  *
@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
-#include "../string_tools.h"
 
 using namespace std;
 

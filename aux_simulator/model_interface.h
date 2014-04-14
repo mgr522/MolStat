@@ -61,7 +61,7 @@ public:
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \param[in] EF The Fermi energy.
-	 * \return The differential conductance.
+	 * \return The zero-bias (differential) conductance.
 	 */
 	virtual double zero_bias_conductance(shared_ptr<gsl_rng> r,
 		const double EF) const = 0;
