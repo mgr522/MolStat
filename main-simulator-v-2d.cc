@@ -275,12 +275,11 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 
 	// create the actual model and process the random number distributions
 	if(str == "symmetricvoltageindependentmodel") {
-		shared_ptr<SymmetricVoltageIndependentModel> model =
-			make_shared<SymmetricVoltageIndependentModel>();
+		shared_ptr<RandomDistribution> dist_gamma, dist_eps;
 
 		// populate the gamma and epsilon distributions
 		try {
-			model->dist_gamma = parameters.at("gamma");
+			dist_gamma = parameters.at("gamma");
 		}
 		catch(const out_of_range &e) {
 			throw invalid_argument("A distribution for \"gamma\" must be " \
@@ -288,22 +287,22 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 		}
 
 		try {
-			model->dist_eps = parameters.at("epsilon");
+			dist_eps = parameters.at("epsilon");
 		}
 		catch(const out_of_range &e) {
 			throw invalid_argument("A distribution for \"epsilon\" must be " \
 				"specified.");
 		}
 
-		return model;
+		return make_shared<SymmetricVoltageIndependentModel>(dist_eps,
+			dist_gamma);
 	}
 	else if(str == "symmetricvoltageonesitemodel") {
-		shared_ptr<SymmetricVoltageOneSiteModel> model = 
-			make_shared<SymmetricVoltageOneSiteModel>();
+		shared_ptr<RandomDistribution> dist_gamma, dist_eps;
 
 		// populate the gamma and epsilon distributions
 		try {
-			model->dist_gamma = parameters.at("gamma");
+			dist_gamma = parameters.at("gamma");
 		}
 		catch(const out_of_range &e) {
 			throw invalid_argument("A distribution for \"gamma\" must be " \
@@ -311,14 +310,14 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 		}
 
 		try {
-			model->dist_eps = parameters.at("epsilon");
+			dist_eps = parameters.at("epsilon");
 		}
 		catch(const out_of_range &e) {
 			throw invalid_argument("A distribution for \"epsilon\" must be " \
 				"specified.");
 		}
 
-		return model;
+		return make_shared<SymmetricVoltageOneSiteModel>(dist_eps, dist_gamma);
 	}
 	else
 		throw invalid_argument("Unrecognized model. Options are:\n" \
@@ -333,27 +332,6 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 }
 
 #if 0
-// Single-site, voltage-dependent model
-static double transmission_s(double V, double gamma, double epsilon, double E)
-{
-	return gamma*gamma /
-		((E-epsilon-V)*(E-epsilon-V) + gamma*gamma);
-}
-
-double diff_conductance_s(double V, double gamma, double epsilon, double eta,
-	double EF) {
-
-	return (eta-1.)*transmission_s(V, gamma, epsilon, EF + eta*V) +
-		(2.-eta)*transmission_s(V, gamma, epsilon, EF + (eta-1.)*V);
-}
-
-double static_conductance_s(double V, double gamma, double epsilon, double eta,
-	double EF) {
-
-	return gamma/V * (atan((EF-epsilon-V+eta*V)/gamma)
-		- atan((EF-epsilon-V+(eta-1.)*V)/gamma));
-}
-
 // Double-site, voltage-dependent model
 static double transmission_d(double V, double gamma, double epsilon,
 	double beta, double E) {

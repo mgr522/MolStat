@@ -12,7 +12,7 @@
 
 #include <memory>
 #include "rng.h"
-#include "symmetric_voltage_independent.h"
+#include "model_interface.h"
 
 using std::shared_ptr;
 
@@ -20,13 +20,30 @@ using std::shared_ptr;
  * \brief Class encapsulating the voltage-dependent, one-site model (symmetric
  *    coupling).
  */
-class SymmetricVoltageOneSiteModel : public SymmetricVoltageIndependentModel {
-public:
+class SymmetricVoltageOneSiteModel : public ConductanceModel {
+protected:
+	/**
+	 * \brief Random distribution for epsilon, the channel energy.
+	 */
+	shared_ptr<const RandomDistribution> dist_eps;
 
 	/**
-	 * \brief Default constructor.
+	 * \brief Random distribution for gamma, the channel-lead coupling.
 	 */
-	SymmetricVoltageOneSiteModel() = default;
+	shared_ptr<const RandomDistribution> dist_gamma;
+
+public:
+	SymmetricVoltageOneSiteModel() = delete;
+
+	/**
+	 * \brief Constructor requiring the random distributions.
+	 *
+	 * \param[in] eps The distribution for epsilon.
+	 * \param[in] gamma The distribution for gamma.
+	 */
+	SymmetricVoltageOneSiteModel(
+		const shared_ptr<const RandomDistribution> &eps,
+		const shared_ptr<const RandomDistribution> &gamma);
 
 	/**
 	 * \brief Destructor.

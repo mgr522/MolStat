@@ -11,8 +11,8 @@ LIBS=-L$(GSL_LIB) -lgsl -lgslcblas -lm
 
 all: libaux_simulator.a
 
-libaux_simulator.a: rng.o symmetric_voltage_independent.o symmetric_voltage_one_site.o
-	ar rvs libaux_simulator.a rng.o symmetric_voltage_independent.o symmetric_voltage_one_site.o
+libaux_simulator.a: rng.o symmetric_voltage_independent.o symmetric_voltage_one_site.o asymmetric_voltage_independent.o
+	ar rvs libaux_simulator.a rng.o symmetric_voltage_independent.o symmetric_voltage_one_site.o asymmetric_voltage_independent.o
 
 rng.o: rng.h rng.cc
 	$(CPP) $(CXXFLAGS) -c -o rng.o rng.cc $(INCLUDE)
@@ -22,6 +22,9 @@ symmetric_voltage_independent.o: symmetric_voltage_independent.h symmetric_volta
 
 symmetric_voltage_one_site.o: symmetric_voltage_one_site.h symmetric_voltage_one_site.cc symmetric_voltage_independent.h model_interface.h rng.h
 	$(CPP) $(CXXFLAGS) -c -o symmetric_voltage_one_site.o symmetric_voltage_one_site.cc $(INCLUDE)
+
+asymmetric_voltage_independent.o: asymmetric_voltage_independent.h asymmetric_voltage_independent.cc model_interface.h rng.h
+	$(CPP) $(CXXFLAGS) -c -o asymmetric_voltage_independent.o asymmetric_voltage_independent.cc $(INCLUDE)
 
 clean:
 	rm -f libaux_simulator.a *.o

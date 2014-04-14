@@ -8,12 +8,18 @@
  */
 
 #include "symmetric_voltage_one_site.h"
+#include "symmetric_voltage_independent.h"
 #include <cmath>
 #include <string>
 #include <vector>
 #include <stdexcept>
 
 using namespace std;
+
+SymmetricVoltageOneSiteModel::SymmetricVoltageOneSiteModel(
+	const shared_ptr<const RandomDistribution> &eps,
+	const shared_ptr<const RandomDistribution> &gamma)
+	: dist_eps(eps), dist_gamma(gamma) {}
 
 double SymmetricVoltageOneSiteModel::static_conductance(
 	shared_ptr<gsl_rng> r, const double EF, const double eta,

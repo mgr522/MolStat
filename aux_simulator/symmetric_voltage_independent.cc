@@ -15,6 +15,11 @@
 
 using namespace std;
 
+SymmetricVoltageIndependentModel::SymmetricVoltageIndependentModel(
+	const shared_ptr<const RandomDistribution> &eps,
+	const shared_ptr<const RandomDistribution> &gamma)
+	: dist_eps(eps), dist_gamma(gamma) {}
+
 double SymmetricVoltageIndependentModel::static_conductance(
 	shared_ptr<gsl_rng> r, const double EF, const double eta,
 	const double V) const {
