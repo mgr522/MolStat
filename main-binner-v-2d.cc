@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 
 	// get the command-line arguments
 	if(argc != 3) {
-		fprintf(stderr, "Usage: ./binner nbin ntrials\n" \
+		fprintf(stderr, "Usage: ./binner ntrials nbin\n" \
 			"   ntrials is the number of trials in the input data\n" \
 			"   nbin is the number of bins to use\n" \
 			"NOTE: The data is expected through stdin\n");
