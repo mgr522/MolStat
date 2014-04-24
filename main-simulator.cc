@@ -1,17 +1,39 @@
 /**
- * \file main-simulator-v-2d.cc
+ * \file main-simulator.cc
  * \brief Main function for simulating conductance data using Landauer theory.
  *
- * Statistical parameters (for example, the average level energy) are provided
- * on the command-line and used to simulate conductance data. This data can
- * subsequently be binned into a histogram to test the fitting procedures.
+ * This code reads in various input parameters from standard in, and uses these
+ * parameters to simulate conductance data. The conductance data is designed to
+ * be binned into conductance histograms. Both zero-bias (1D) and voltage-
+ * dependent (2D) conductance data/histograms can be simulated.
  *
- * This code produces voltage-dependent conductance histograms. Two types are
- * presently implemented:
- *    - Static conductance (I/V)
- *    - Differential conductance (dI/dV)
- * Symmetric coupling (same coupling to the left and right leads) is assumed,
- * unless otherwise specified.
+ * The expected input has the following structure, detailed by line number.
+ *    -# The model to use for simulating conductance data. Possibilities are
+ *       - SymmetricVoltageIndependentModel
+ *       - AsymmetricVoltageIndependentModel
+ *       - SymmetricVoltageOneSiteModel
+ *
+ *       Details on this models can be found elsewhere in the documentation.
+ *    -# Type of conductance to calculate. This can be
+ *       - Differential
+ *       - Static
+ *       - ZeroBias
+ *
+ *       Static and differential conductances are voltage-dependent, the
+ *       ZeroBias option calculates the zero-bias differential conductance.
+ *    -# The number of conductance data points to simulate. One will be output
+ *       per line.
+ *    -# The Fermi energy of the system.
+ *    -# (Remaining lines): Probability distributions for any necessary
+ *       parameters (one per line). Each line will be
+ *
+ *       name distribution [distribution-parameters]
+ *
+ *       More information can be found elsewhere in the documentation. If
+ *       voltage-dependent histograms are requested, distributions must be
+ *       specified for eta (the relative voltage drop at the two leads)
+ *       and for V (the voltage). Each model will have certain required
+ *       parameters.
  *
  * \author Matthew G.\ Reuter
  * \date April 2014
