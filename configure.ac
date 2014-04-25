@@ -26,9 +26,21 @@ AC_PROG_RANLIB
 # output for the config header file
 AC_CONFIG_HEADERS([src/config.h])
 
+# We need these to build the documentation
+AC_CHECK_PROG([HAVE_DOXYGEN],[doxygen],[YES],[NO])
+if test $HAVE_DOXYGEN = YES; then
+   AC_PATH_PROG(DOXYGEN,doxygen)
+fi
+AC_CHECK_PROG([HAVE_PDFLATEX],[pdflatex],[YES],[NO])
+if test $HAVE_PDFLATEX = YES; then
+   AC_PATH_PROG(PDFLATEX,pdflatex)
+fi
+AM_CONDITIONAL([CAN_BUILD_DOC], [test $HAVE_DOXYGEN = YES && test $HAVE_PDFLATEX = YES])
+
 # files to be generated
 AC_CONFIG_FILES([
 	Makefile
+		doc/Makefile
 		src/Makefile
 			src/aux_simulator/Makefile
 ])
