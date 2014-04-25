@@ -1,3 +1,5 @@
+SUBDIRS = aux_simulator
+
 bin_PROGRAMS = simulator
 
 simulator_SOURCES = main-simulator.cc
