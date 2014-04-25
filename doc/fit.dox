@@ -1,0 +1,39 @@
+/**
+\page page_fit Fitting Conductance Histograms
+
+The forms for fitting are (\f$ \widehat{P}_G \f$ is the line shape of the
+histogram and \f$ g \equiv G/\mathrm{G}_0 \f$ is the conductance in units of
+\f$ \mathrm{G}_0 \f$)
+   - Symmetric-coupling, non-resonant tunneling
+     \f[ \widehat{P}_G(g) \propto \frac{1}{\sqrt{g(1-g)^3}} \exp \left[
+         - \frac{\left( c\sqrt{g} - d\sqrt{1-g} \right)^2}{2(1-g)} \right], \f]
+     where \f$ c \f$ is the average level alignment (relative to the standard
+     deviation in channel coupling) and \f$ d \f$ is the average channel
+     coupling (also relative to its standard deviation).
+
+     This form is detailed in P.\ D.\ Williams, M.\ G.\ Reuter. J.\ Phys.\ 
+     Chem.\ C \b 117, 5937-5942 (2013).
+   - Symmetric-coupling, resonant tunneling
+     \f[ \widehat{P}_G(g) \propto \frac{1}{\sqrt{g^3(1-g)}} \exp \left[
+         - \gamma^2 \frac{1-g}{2g} \right], \f]
+     where \f$ \gamma \f$ is the average channel coupling (relative to the
+     standard deviation in level alignment).
+
+     This form is detailed in P.\ D.\ Williams, M.\ G.\ Reuter. J.\ Phys.\ 
+     Chem.\ C \b 117, 5937-5942 (2013).
+   - Asymmetric-coupling, resonant tunneling
+     \f[ \widehat{P}_G(g) \propto g^{-3/2} \int\limits_{(2-g-2\sqrt{1-g})/g}
+         ^{(2-g+2\sqrt{1-g})/g} \mathrm{d}x \frac{x(1+x^2)^{-3/2}}{\sqrt{
+         4x-g(1+x)^2}} \left( 1 + \frac{(\gamma_\mathrm{L} + x \gamma_
+         \mathrm{R})^2}{1+x^2} \right) \exp \left[ - \frac{(x \gamma_\mathrm{L}
+         - \gamma_\mathrm{R})^2}{2(1+x^2)} - \frac{r^2 (\gamma_\mathrm{L}^2 +
+         \gamma_\mathrm{R}^2)[4x - g(1+x)^2]}{8g(1+x^2)} \right], \f]
+     where \f$ \gamma_\mathrm{L(R)} \f$ is the average coupling to the left
+     (right) electrode (relative to the standard deviation in the coupling)
+     and \f$ r \f$ is the standard deviaton of the coupling relative to the
+     standard deviation of the level alignment. Note that the fits are
+     somewhat insensitive to \f$ r \f$.
+
+     This form is detailed in P.\ D.\ Williams, M.\ G.\ Reuter. J.\ Phys.\ 
+     Chem.\ C \b 117, 5937-5942 (2013).
+*/

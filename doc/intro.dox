@@ -1,7 +1,28 @@
 /**
-\mainpage Conductance Histogram Fitting Software
+\mainpage General Information
 
-\section intro_sec Introduction
+\section sec_intro Introduction
+Conductance histograms are a common way for tabulating and analyzing
+experimental data on electric conductance through nanometer-scaled systems
+(i.e., systems where quantum mechanical effects are inherent). Introductions
+to conductance histograms can be found in \cite krans-767,
+\cite xu-1221, \cite venkataraman-458, and \cite reuter-2243. This software
+package simulates conductance histograms using simple model systems (see \cite
+reuter-2243) and provides tools for fitting conductance histograms to
+specified functional forms (perhaps \cite williams-5937). Note that this
+software does not rely on first-principles calculations of electron transport
+properties. Studies that construct histograms from such calculations have been
+reported in, for example, \cite french-887.
+
+There are three main tasks performed by this package.
+   -# Simulate conductance histograms using one of the implemented models. The
+      general idea for this technique is presented in \cite reuter-2243. This
+      process will be discussed in \ref page_simulate.
+   -# Bin conductance data into a histogram.
+   -# Fit a conductance histogram (or a peak from a conductance histogram) to
+      a specified functional form. This process will be discussed in
+      \ref page_fit.
+
 This software package simulates and quantatively analyses conductance
 histograms. Several programs are included:
    -# A simulator for simulating conductance data using simple models. Details
