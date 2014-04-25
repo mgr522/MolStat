@@ -23,4 +23,58 @@ gives the aggregate transmission probability for an electron with energy
 Several types of conductance can be considered:
    -# Zero-bias conductance
       \f[ \left. \left( \frac{\partial}{\partial V} I(V) \right) \right|_{V=0} = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
+   -# Differential conductance
+      \f[ \frac{\partial}{\partial V} I(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F}+(\eta-1)eV) \right] + \frac{2e}{h} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V}T(E). \f]
+	-# Static conductance
+      \f[ \frac{I(V)}{V} = \frac{2e}{hV} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E T(E). \f]
+   .
+Various models (described below) are used to calculate \f$T(E)\f$; from this
+transmission, all of the above conductances can be calculated.
+
+\section sec_running_simulator Running the Simulator
+The general procedure for simulating is as follows. Specify
+   - a model for calculating \f$T(E)\f$. Each model has several parameters,
+     such as channel energies, channel-electrode couplings, etc.
+   - random distributions for each of these parameters. The available random
+     number distributions are descibed below.
+   - the Fermi energy, the number of conductance points to simulate, and
+     information on binning the conductance data into a histogram.
+   .
+From this information, the simulator gets the requested number of conductance
+values, where each value corresponds to random model parameters from the
+specified distributions. Finally, the histogram data is printed to standard
+out.
+
+Following is an example input file (routed to standard in). Note that the
+line breaks are important.
+\verbatim
+SymmetricVoltageIndependentModel
+Differential
+100000
+0.
+eta constant 0.5
+V uniform -2. 2.
+gamma normal 0.8 0.05
+epsilon normal -6. 0.05
+\endverbatim
+\todo Add binning functionality to the simulator.
+The lines are interpreted as follows:
+   -# The model to use for calculating the transmission function.
+   -# The type of conductance to calculate. Must be ``ZeroBias'', ``Static'',
+      or ``Differential''.
+   -# The number of conductance data points to simulate.
+   -# The Fermi energy.
+   -# Random distributions (one per line) for the various parameters. For
+      example, ``eta
+      constant 0.5'' specifies the constant distribution (0.5) for eta; that
+      is, eta is always 0.5.
+      .
+      ZeroBias calculations do not require any parameters other than those
+      needed by the model. Static and Differential conductance calculations
+      also require distributions for V (\f$V\f$) and eta (\f$\eta\f$).
+
+\section sec_rng Random Number Distributions
+
+
+\section sec_models Implemented Models
 */
