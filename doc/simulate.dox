@@ -1,3 +1,26 @@
 /**
 \page page_simulate Simulating Conductance Histograms
+
+\section sec_landauer Landauer Theory
+All of the simulators are based on the Landauer-B\"uttiker-Imry theory of
+conductance through quantum systems \cite buttiker-6207, \cite imry-s306.
+Within this theory, the zero-temperature current is given as
+\f[
+I(V) = \frac{2e}{h} \int\limits_{E_\mathrm{F} + (\eta-1)eV}^{E_\mathrm{F} + \eta eV} \mathrm{d}E T(E),
+\f]
+where
+   - \f$I\f$ is the current,
+   - \f$V\f$ is the applied bias,
+   - \f$E_\mathrm{F}\f$ is the Fermi energy of the system,
+   - \f$\eta\f$ is the relative voltage drop at the two electrodes, \f$0\le\eta\le1\f$,
+   - \f$E\f$ is the incident energy of the electron,
+   - \f$T(E)\f$ is the transmission function.
+   .
+The transmission function depends on the specific model and system used, and
+gives the aggregate transmission probability for an electron with energy
+\f$E\f$ to tunnel from one electrode to the other.
+
+Several types of conductance can be considered:
+   -# Zero-bias conductance
+      \f[ \left. \left( \frac{\partial}{\partial V} I(V) \right) \right|_{V=0} = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
 */
