@@ -68,10 +68,10 @@ The lines are interpreted as follows:
       example, ``eta
       constant 0.5'' specifies the constant distribution (0.5) for eta; that
       is, eta is always 0.5.
-      .
-      ZeroBias calculations do not require any parameters other than those
-      needed by the model. Static and Differential conductance calculations
-      also require distributions for V (\f$V\f$) and eta (\f$\eta\f$).
+
+ZeroBias calculations do not require any parameters other than those
+needed by the model. Static and Differential conductance calculations
+also require distributions for V (\f$V\f$) and eta (\f$\eta\f$).
 
 \section sec_rng Random Number Distributions
 

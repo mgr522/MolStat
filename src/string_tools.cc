@@ -85,7 +85,7 @@ void tokenize(const std::string &str, std::vector<std::string> &vec) {
 		vec.push_back(token);
 }
 
-void make_lower(string &str) {
+void make_lower(std::string &str) {
 	for(char &c : str)
 		c = tolower(c);
 }

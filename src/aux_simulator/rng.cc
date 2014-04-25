@@ -19,7 +19,7 @@
 using namespace std;
 
 shared_ptr<RandomDistribution> distribution_from_tokens(
-	const vector<string> &tokens) {
+	const std::vector<std::string> &tokens) {
 
 	shared_ptr<RandomDistribution> ret;
 

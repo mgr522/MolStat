@@ -6,8 +6,7 @@ experimental data on electric conductance through nanometer-scaled systems
 (i.e., systems where quantum mechanical effects are inherent). Introductions
 to conductance histograms can be found in \cite krans-767,
 \cite xu-1221, \cite venkataraman-458, and \cite reuter-2243. This software
-package simulates conductance histograms using simple model systems (see \cite
-reuter-2243) and provides tools for fitting conductance histograms to
+package simulates conductance histograms using simple model systems (see \cite reuter-2243) and provides tools for fitting conductance histograms to
 specified functional forms (perhaps \cite williams-5937). Note that this
 software does not rely on first-principles calculations of electron transport
 properties. Studies that construct histograms from such calculations have been
