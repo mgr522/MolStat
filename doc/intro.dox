@@ -34,12 +34,12 @@ easy (we hope). The first step is to run
 autoreconf --install
 \endverbatim
 from the package's base directory. In addition to any of the usual options for
-configure, the \-\-with-gsl option should specify the location of the GSL. For
+configure, the `--with-gsl` option should specify the location of the GSL. For
 example, on a Mac using GSL from MacPorts, the configure script would be
 \verbatim
 ./configure --with-gsl=/opt/local
 \endverbatim
-The \-\-prefix command may be useful if you plan to ``install'' the executables.
+The `--prefix` command may be useful if you plan to ``install'' the executables.
 Finally,
 \verbatim
 make
@@ -49,7 +49,7 @@ and, optionally,
 make install
 \endverbatim
 
-\subsubsection checkfitter Verifying the Installation
+\subsection checkfitter Verifying the Installation
 Several tests are also provided to verify a successful compilation. They can
 be run as follows. We assume that $(FITTER) is the base package's base
 directory and that the compiled executables are in the path.
