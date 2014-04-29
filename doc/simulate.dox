@@ -2,7 +2,7 @@
 \page page_simulate Simulating Conductance Histograms
 
 \section sec_landauer Landauer Theory
-All of the simulators are based on the Landauer-B\"uttiker-Imry theory of
+All of the simulators are based on the Landauer-B&uuml;ttiker-Imry theory of
 conductance through quantum systems \cite buttiker-6207, \cite imry-s306.
 Within this theory, the zero-temperature current is given as
 \f[
@@ -41,7 +41,7 @@ The general procedure for simulating is as follows. Specify
      information on binning the conductance data into a histogram.
    .
 From this information, the simulator gets the requested number of conductance
-values, where each value corresponds to random model parameters from the
+values, where each value uses random model parameters from the
 specified distributions. Finally, the histogram data is printed to standard
 out.
 
@@ -58,22 +58,38 @@ gamma normal 0.8 0.05
 epsilon normal -6. 0.05
 \endverbatim
 \todo Add binning functionality to the simulator.
+
 The lines are interpreted as follows:
-   -# The model to use for calculating the transmission function.
-   -# The type of conductance to calculate. Must be ``ZeroBias'', ``Static'',
-      or ``Differential''.
+   -# The model to use for calculating the transmission function and
+      conductance.
+   -# The type of conductance to calculate. Must be `ZeroBias`, `Static`,
+      or `Differential`.
    -# The number of conductance data points to simulate.
    -# The Fermi energy.
    -# Random distributions (one per line) for the various parameters. For
-      example, ``eta
-      constant 0.5'' specifies the constant distribution (0.5) for eta; that
-      is, eta is always 0.5.
+      example, `eta
+      constant 0.5` specifies the constant distribution (0.5) for \f$\eta\f$; that
+      is, \f$\eta\f$ is always 0.5.
 
-ZeroBias calculations do not require any parameters other than those
-needed by the model. Static and Differential conductance calculations
-also require distributions for V (\f$V\f$) and eta (\f$\eta\f$).
+`ZeroBias` calculations do not require any parameters other than those
+needed by the model. `Static` and `Differential` conductance calculations
+also require distributions for `V` (\f$V\f$) and `eta` (\f$\eta\f$).
 
 \section sec_rng Random Number Distributions
+Random number distributions are key to the simulator. For versatility, we
+have an abstract notion of random number distributions, allowing models to be
+combined with various distributions. In this section we list the implemented
+random number distributions, along with how each one is used in the input file.
+
+All random number distributions have a common syntax:
+\verbatim
+variable-name distribution [distribution-parameters]
+\endverbatim
+where
+   - `variable-name` is the name of the model variable.
+   - `distribution` is the name of the distribution (see below).
+   - `[distribution-parameters]` are the parameter(s) required by the specified
+     distribution.
 
 
 \section sec_models Implemented Models
