@@ -126,4 +126,21 @@ processing `[distribution-parameters]` is implemented. The distributions
 listed above should provide sufficient examples.
 
 \section sec_models Implemented Conductance Models
+Finally, we list the implemented conductance models.
+- `SymmetricVoltageIndependentModel`
+   - Single-site, voltage-independent model with symmetric site/lead couplings.
+   - Implemented by the class SymmetricVoltageIndependentModel.
+   - Model parameters are
+      - `epsilon`, the site-energy \f$\varepsilon\f$
+      - `gamma`, the site/lead coupling \f$\Gamma\f$
+   - Starting from \f$ \hat{H} = \left[ \varepsilon \right] \f$ and
+     \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma/2 \right] \f$, the
+     transmission function is
+     \f[ T(E) = \frac{\Gamma^2}{(E-\varepsilon)^2 + \Gamma^2}. \f]
+   - Zero-bias conductance:
+     \f[ g = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
+   - Differential conductance:
+     \f[ g(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
+   - Static conductance:
+     \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + \eta eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1)eV}{\Gamma} \right) \right]. \f]
 */
