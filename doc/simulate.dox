@@ -91,6 +91,39 @@ where
    - `[distribution-parameters]` are the parameter(s) required by the specified
      distribution.
 
+The implemented random distributions are
+   - Constant distribution: \f$ P(x) = \delta(x-x_c)\f$.
+      - `distribution-name` is `Constant`
+      - `[distribution-parameters]` are `value`
+         - `value` is \f$x_c\f$.
+      - Implemented by the class ConstantDistribution.
 
-\section sec_models Implemented Models
+   - Uniform distribution: \f$ P(x) = 1/(b-a) \f$ for \f$a\le x \le b\f$.
+      - `distribution-name` is `Uniform`
+      - `[distribution-parameters]` are `lower upper`
+         - `lower` is \f$a\f$.
+         - `upper` is \f$b\f$.
+      - Implemented by the class UniformDistribution.
+
+   - Normal distribution: \f$ P(x) = (2\pi \sigma^2)^{-1/2} \exp\left[ - (x-x_0)^2 / (2 \sigma^2) \right] \f$.
+      - `distribution-name` is `Normal` or `Gaussian`
+      - `[distribution-parameters]` are `average stdev`
+         - `average` is \f$ x_0 \f$.
+         - `stdev` is \f$\sigma\f$.
+      - Implemented by the class NormalDistribution.
+
+\subsection add_rnd_subsec Adding Random Distributions
+Random number distributions are computationally described by the
+RandomDistribution class. Adding a new random number distribution requires
+a class derived from RandomDistribution that implements the `sample` function.
+This function takes in a `gsl_rng` construct from GSL and returns a random
+number from the distribution.
+
+Finally, the new random number distribution needs to be added to the
+::distribution_from_tokens function so that it is processed. In this function,
+the `distribution` tag for the input deck is defined and the code for
+processing `[distribution-parameters]` is implemented. The distributions
+listed above should provide sufficient examples.
+
+\section sec_models Implemented Conductance Models
 */
