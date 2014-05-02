@@ -144,6 +144,24 @@ Finally, we list the implemented conductance models.
    - Static conductance:
      \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + \eta eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1)eV}{\Gamma} \right) \right]. \f]
 
+- `AsymmetricVoltageIndependentModel`
+   - Single-site, voltage-independent model with asymmetric site/lead couplings.
+   - Implemented by the class AsymmetricVoltageIndependentModel.
+   - Model parameters are
+      - `epsilon`, the site-energy \f$\varepsilon\f$
+      - `gammaL`, the site/lead coupling for one electrode \f$\Gamma_\mathrm{L}\f$
+      - `gammaR`, the site/lead coupling for the other electrode \f$\Gamma_\mathrm{R}\f$
+   - Starting from \f$ \hat{H} = \left[ \varepsilon \right] \f$ and
+     \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma_\mathrm{L,R}/2 \right] \f$, the
+     transmission function is
+     \f[ T(E) = \frac{4\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{4(E-\varepsilon)^2 + \Gamma_\mathrm{L} \Gamma_\mathrm{R}}. \f]
+   - Zero-bias conductance:
+     \f[ g = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
+   - Differential conductance:
+     \f[ g(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
+   - Static conductance:
+     \f[ g(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2(E_\mathrm{F} - \varepsilon + \eta eV)}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2(E_\mathrm{F} - \varepsilon + (\eta-1)eV)}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
+
 - `SymmetricVoltageOneSiteModel`
    - Single-site model with symmetric site/lead couplings and voltage-dependent
      site-energy. It is very closely related to the SymmetricVoltageIndependentModel above.
@@ -163,4 +181,6 @@ Finally, we list the implemented conductance models.
      \f[ g(V) = \frac{2e^2}{h} \left[ (\eta-1) T(E_\mathrm{F} + \eta eV) + (2-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
    - Static conductance:
      \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-2) eV}{\Gamma} \right) \right]. \f]
+
+\subsection add_conductance_model_subsec Adding Conductance Models
 */
