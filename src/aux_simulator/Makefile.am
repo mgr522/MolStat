@@ -6,5 +6,7 @@ libaux_simulator_a_SOURCES = rng.h \
 	symmetric_voltage_independent.cc \
 	symmetric_voltage_one_site.h \
 	symmetric_voltage_one_site.cc \
+	symmetric_voltage_two_site.h \
+	symmetric_voltage_two_site.cc \
 	asymmetric_voltage_independent.h \
 	asymmetric_voltage_independent.cc

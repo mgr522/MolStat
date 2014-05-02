@@ -48,9 +48,6 @@ double SymmetricVoltageOneSiteModel::diff_conductance(
 double SymmetricVoltageOneSiteModel::zero_bias_conductance(
 	shared_ptr<gsl_rng> r, const double EF) const {
 
-	fprintf(stderr, "Warning: Zero-bias conductances have not been tested " \
-		"in this model.\n");
-
 	// get model parameters from the random distributions
 	double eps = dist_eps->sample(r);
 	double gamma = dist_gamma->sample(r);
