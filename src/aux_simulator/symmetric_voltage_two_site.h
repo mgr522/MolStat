@@ -121,7 +121,8 @@ public:
 		const double EF) const;
 
 	/**
-	 * \brief Calculates the transmission for fixed values of epsilon and gamma.
+	 * \brief Calculates the transmission for fixed values of the model
+	 *    parameters.
 	 *
 	 * \param[in] E The incident energy of the electron.
 	 * \param[in] V The voltage.
