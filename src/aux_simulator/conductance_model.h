@@ -1,5 +1,5 @@
 /**
- * \file model_interface.h
+ * \file conductance_model.h
  * \brief Interface for the various tight-binding models and their transmission
  *        functions/conductances.
  *
@@ -7,8 +7,8 @@
  * \date April 2014
  */
 
-#ifndef __model_interface_h__
-#define __model_interface_h__
+#ifndef __conductance_model_h__
+#define __conductance_model_h__
 
 #include <memory>
 #include "rng.h"

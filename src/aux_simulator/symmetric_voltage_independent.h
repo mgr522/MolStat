@@ -12,7 +12,7 @@
 
 #include <memory>
 #include "rng.h"
-#include "model_interface.h"
+#include "conductance_model.h"
 
 using std::shared_ptr;
 
