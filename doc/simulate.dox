@@ -126,7 +126,15 @@ processing `[distribution-parameters]` is implemented. The distributions
 listed above should provide sufficient examples.
 
 \section sec_models Implemented Conductance Models
-Finally, we list the implemented conductance models.
+Finally, we list the implemented conductance models. Note that all of these
+models are implemented by classes derived from ConductanceModel. Each of these
+classes encapsulates not only the mathematical relationships described herein,
+but also the random number distributions for the various model parameters. The
+three abstract functions in ConductanceModel --
+ConductanceModel::zero_bias_conductance, ConductanceModel::diff_conductance,
+and ConductanceModel::static_conductance -- all generate a random set of model
+parameters (from the distributions) and calculate the appropriate conductance.
+
 - `SymmetricVoltageIndependentModel`
    - Single-site, voltage-independent model with symmetric site/lead couplings.
    - Implemented by the class SymmetricVoltageIndependentModel.
@@ -183,4 +191,9 @@ Finally, we list the implemented conductance models.
      \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-2) eV}{\Gamma} \right) \right]. \f]
 
 \subsection add_conductance_model_subsec Adding Conductance Models
+Adding a conductance model is designed to be straightforward, requiring the
+following steps.
+-# Derive a class from ConductanceModel, implementing the ConductanceModel::static_conductance, ConductanceModel::diff_conductance, and ConductanceModel::zero_bias_conductance member functions. As a side note, these three functions may use the transmission function, or other model-specific functions, which are implemented as static member functions of the derived class (as needed).
+-# Add a case for the new model in the ::set_distributions function. This block of code should check that all necessary random number distributions are specified and properly route them to the ConductanceModel. Finally, the case returns a shared pointer to the ConductanceModel. The implemented cases should provide sufficient examples.
+-# Add a note to the end of the ::set_distributions function so that (minimal) runtime support is present.
 */

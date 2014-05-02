@@ -1,6 +1,8 @@
 /**
 \page page_fit Fitting Conductance Histograms
 
+\todo Update this section once the tweaked fitting code is complete.
+
 The forms for fitting are (\f$ \widehat{P}_G \f$ is the line shape of the
 histogram and \f$ g \equiv G/\mathrm{G}_0 \f$ is the conductance in units of
 \f$ \mathrm{G}_0 \f$)
