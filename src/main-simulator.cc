@@ -47,7 +47,7 @@
 #include <functional>
 #include <map>
 #include "string_tools.h"
-#include "aux_simulator/rng.h"
+#include "aux_random_distributions/rng.h"
 #include "aux_simulator/symmetric_voltage_independent.h"
 #include "aux_simulator/asymmetric_voltage_independent.h"
 #include "aux_simulator/symmetric_voltage_one_site.h"

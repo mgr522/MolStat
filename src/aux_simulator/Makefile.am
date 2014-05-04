@@ -1,7 +1,5 @@
 noinst_LIBRARIES = libaux_simulator.a
-libaux_simulator_a_SOURCES = rng.h \
-	rng.cc \
-	conductance_model.h \
+libaux_simulator_a_SOURCES = conductance_model.h \
 	symmetric_voltage_independent.h \
 	symmetric_voltage_independent.cc \
 	symmetric_voltage_one_site.h \

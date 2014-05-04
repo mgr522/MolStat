@@ -11,7 +11,7 @@
 #define __symmetric_voltage_two_site_h__
 
 #include <memory>
-#include "rng.h"
+#include "../aux_random_distributions/rng.h"
 #include "conductance_model.h"
 
 using std::shared_ptr;

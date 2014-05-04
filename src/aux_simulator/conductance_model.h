@@ -11,7 +11,7 @@
 #define __conductance_model_h__
 
 #include <memory>
-#include "rng.h"
+#include "../aux_random_distributions/rng.h"
 
 using std::shared_ptr;
 
