@@ -11,6 +11,8 @@
 #define __conductance_model_h__
 
 #include <memory>
+#include <string>
+#include <map>
 #include "../aux_random_distributions/rng.h"
 
 using std::shared_ptr;
@@ -66,5 +68,19 @@ public:
 	virtual double zero_bias_conductance(shared_ptr<gsl_rng> r,
 		const double EF) const = 0;
 };
+
+/**
+ * \brief Uses the distributions from the input deck to constructs a model of
+ *    the specified type.
+ *
+ * \throw invalid_argument if any required distributions are not specified.
+ *
+ * \param[in] str The name of the model type, assumed to be lowercase.
+ * \param[in] parameters Map of distribution names (lowercase) to the
+ *    distributions.
+ * \return A shared pointer to the model object.
+ */
+shared_ptr<ConductanceModel> make_model(const std::string str,
+	const std::map<std::string, shared_ptr<RandomDistribution>> &parameters);
 
 #endif
