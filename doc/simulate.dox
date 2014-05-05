@@ -217,6 +217,6 @@ parameters (from the distributions) and calculate the appropriate conductance.
 Adding a conductance model is designed to be straightforward, requiring the
 following steps.
 -# Derive a class from ConductanceModel, implementing the ConductanceModel::static_conductance, ConductanceModel::diff_conductance, and ConductanceModel::zero_bias_conductance member functions. As a side note, these three functions may use the transmission function, or other model-specific functions, which are implemented as static member functions of the derived class (as needed).
--# Add a case for the new model in the ::make_model function. This block of code should check that all necessary random number distributions are specified and properly route them to the ConductanceModel. Finally, the case returns a shared pointer to the ConductanceModel. The implemented cases should provide sufficient examples.
+-# Add a case for the new model in the ::make_model function. This block of code should check that all necessary random number distributions are specified and properly route them to the ConductanceModel. Finally, the case returns a shared pointer to the ConductanceModel. The implemented cases should provide sufficient examples. Note that the name of the model should be in lowercase.
 -# Add a note to the end of the ::make_model function so that (minimal) runtime support is present.
 */

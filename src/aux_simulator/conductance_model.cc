@@ -15,6 +15,32 @@
 
 using namespace std;
 
+/**
+ * \brief Gets a distribution with the desired name from the map, throwing an
+ *    exception if none is found.
+ *
+ * \throw invalid_argument if there is not a distribution with the name `name`.
+ *
+ * \param[in] name The name of the distribution.
+ * \oaram[in] parameters The map of distributions.
+ * \return The distribution.
+ */
+static shared_ptr<RandomDistribution> find_distribution(const string name,
+	const map<string, shared_ptr<RandomDistribution>> &parameters) {
+
+	shared_ptr<RandomDistribution> ret;
+
+	try {
+		ret = parameters.at(name.c_str());
+	}
+	catch(const out_of_range &e) {
+		throw invalid_argument(("A distribution for \"" + name + "\" must be " \
+			"specified.").c_str());
+	}
+
+	return ret;
+}
+
 shared_ptr<ConductanceModel> make_model(const std::string str,
 	const std::map<std::string, shared_ptr<RandomDistribution>> &parameters) {
 
@@ -22,74 +48,25 @@ shared_ptr<ConductanceModel> make_model(const std::string str,
 	if(str == "symmetriconesitemodel") {
 		shared_ptr<RandomDistribution> dist_gamma, dist_eps;
 
-		// populate the gamma and epsilon distributions
-		try {
-			dist_gamma = parameters.at("gamma");
-		}
-		catch(const out_of_range &e) {
-			throw invalid_argument("A distribution for \"gamma\" must be " \
-				"specified.");
-		}
-
-		try {
-			dist_eps = parameters.at("epsilon");
-		}
-		catch(const out_of_range &e) {
-			throw invalid_argument("A distribution for \"epsilon\" must be " \
-				"specified.");
-		}
+		dist_gamma = find_distribution("gamma", parameters);
+		dist_eps = find_distribution("epsilon", parameters);
 
 		return make_shared<SymmetricOneSiteModel>(dist_eps, dist_gamma);
 	}
 	else if(str == "symmetricvoltageonesitemodel") {
 		shared_ptr<RandomDistribution> dist_gamma, dist_eps;
 
-		// populate the gamma and epsilon distributions
-		try {
-			dist_gamma = parameters.at("gamma");
-		}
-		catch(const out_of_range &e) {
-			throw invalid_argument("A distribution for \"gamma\" must be " \
-				"specified.");
-		}
-
-		try {
-			dist_eps = parameters.at("epsilon");
-		}
-		catch(const out_of_range &e) {
-			throw invalid_argument("A distribution for \"epsilon\" must be " \
-				"specified.");
-		}
+		dist_gamma = find_distribution("gamma", parameters);
+		dist_eps = find_distribution("epsilon", parameters);
 
 		return make_shared<SymmetricVoltageOneSiteModel>(dist_eps, dist_gamma);
 	}
 	else if(str == "asymmetriconesitemodel") {
 		shared_ptr<RandomDistribution> dist_gammaL, dist_gammaR, dist_eps;
 
-		// populate the gamma and epsilon distributions
-		try {
-			dist_gammaL = parameters.at("gammal");
-		}
-		catch(const out_of_range &e) {
-			throw invalid_argument("A distribution for \"gammaL\" must be " \
-				"specified.");
-		}
-
-		try {
-			dist_gammaR = parameters.at("gammar");
-		}
-		catch(const out_of_range &e) {
-			throw invalid_argument("A distribution for \"gammaR\" must be " \
-				"specified.");
-		}
-
-		try {
-			dist_eps = parameters.at("epsilon");
-		}
-		catch(const out_of_range &e) {
-			throw invalid_argument("A distribution for \"epsilon\" must be " \
-				"specified.");
-		}
+		dist_gammaL = find_distribution("gammal", parameters);
+		dist_gammaR = find_distribution("gammar", parameters);
+		dist_eps = find_distribution("epsilon", parameters);
 
 		return make_shared<AsymmetricOneSiteModel>(dist_eps, dist_gammaL,
 			dist_gammaR);
