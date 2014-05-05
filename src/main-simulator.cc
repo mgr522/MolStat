@@ -7,36 +7,8 @@
  * be binned into conductance histograms. Both zero-bias (1D) and voltage-
  * dependent (2D) conductance data/histograms can be simulated.
  *
- * The expected input has the following structure, detailed by line number.
- *    -# The model to use for simulating conductance data. Possibilities are
- *       - SymmetricVoltageIndependentModel
- *       - AsymmetricVoltageIndependentModel
- *       - SymmetricVoltageOneSiteModel
- *
- *       Details on this models can be found elsewhere in the documentation.
- *    -# Type of conductance to calculate. This can be
- *       - Differential
- *       - Static
- *       - ZeroBias
- *
- *       Static and differential conductances are voltage-dependent, the
- *       ZeroBias option calculates the zero-bias differential conductance.
- *    -# The number of conductance data points to simulate. One will be output
- *       per line.
- *    -# The Fermi energy of the system.
- *    -# (Remaining lines): Probability distributions for any necessary
- *       parameters (one per line). Each line will be
- *
- *       name distribution [distribution-parameters]
- *
- *       More information can be found elsewhere in the documentation. If
- *       voltage-dependent histograms are requested, distributions must be
- *       specified for eta (the relative voltage drop at the two leads)
- *       and for V (the voltage). Each model will have certain required
- *       parameters.
- *
  * \author Matthew G.\ Reuter
- * \date April 2014
+ * \date May 2014
  */
 
 #include <memory>
@@ -48,8 +20,8 @@
 #include <map>
 #include "string_tools.h"
 #include "aux_random_distributions/rng.h"
-#include "aux_simulator/symmetric_voltage_independent.h"
-#include "aux_simulator/asymmetric_voltage_independent.h"
+#include "aux_simulator/symmetric_one_site.h"
+#include "aux_simulator/asymmetric_one_site.h"
 #include "aux_simulator/symmetric_voltage_one_site.h"
 
 using namespace std;
@@ -297,7 +269,7 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 	const map<string, shared_ptr<RandomDistribution>> &parameters) {
 
 	// create the actual model and process the random number distributions
-	if(str == "symmetricvoltageindependentmodel") {
+	if(str == "symmetriconesitemodel") {
 		shared_ptr<RandomDistribution> dist_gamma, dist_eps;
 
 		// populate the gamma and epsilon distributions
@@ -317,8 +289,7 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 				"specified.");
 		}
 
-		return make_shared<SymmetricVoltageIndependentModel>(dist_eps,
-			dist_gamma);
+		return make_shared<SymmetricOneSiteModel>(dist_eps, dist_gamma);
 	}
 	else if(str == "symmetricvoltageonesitemodel") {
 		shared_ptr<RandomDistribution> dist_gamma, dist_eps;
@@ -342,7 +313,7 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 
 		return make_shared<SymmetricVoltageOneSiteModel>(dist_eps, dist_gamma);
 	}
-	else if(str == "asymmetricvoltageindependentmodel") {
+	else if(str == "asymmetriconesitemodel") {
 		shared_ptr<RandomDistribution> dist_gammaL, dist_gammaR, dist_eps;
 
 		// populate the gamma and epsilon distributions
@@ -370,17 +341,17 @@ shared_ptr<ConductanceModel> set_distributions(const string str,
 				"specified.");
 		}
 
-		return make_shared<AsymmetricVoltageIndependentModel>(dist_eps,
-			dist_gammaL, dist_gammaR);
+		return make_shared<AsymmetricOneSiteModel>(dist_eps, dist_gammaL,
+			dist_gammaR);
 	}
 	else
 		throw invalid_argument("Unrecognized model. Options are:\n" \
-			"   SymmetricVoltageIndependentModel - " \
-				"Symmetric-Coupling, Voltage-Independent Transmission\n" \
+			"   SymmetricOneSiteModel - " \
+				"Symmetric-Coupling, One-Site Model\n" \
 			"   SymmetricVoltageOneSiteModel - " \
 				"Symmetric-Coupling, Voltage-Dependent One-Site Model\n" \
-			"   AsymmetricVoltageIndependentModel - " \
-				"Asymmetric-Coupling, Voltage-Independent Transmission\n");
+			"   AsymmetricOneSiteModel - " \
+				"Asymmetric-Coupling, One-Site Model\n");
 
 	// should never be here
 	throw invalid_argument("Shouldn't be here.");

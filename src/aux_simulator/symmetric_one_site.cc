@@ -1,13 +1,13 @@
 /**
- * \file symmetric_voltage_independent.cc
- * \brief Implementation of the voltage-independent tight-binding model for
+ * \file symmetric_one_site.cc
+ * \brief Implementation of the symmetric-coupling, one-site model for
  *        calculating conductances.
  *
  * \author Matthew G.\ Reuter
  * \date April 2014
  */
 
-#include "symmetric_voltage_independent.h"
+#include "symmetric_one_site.h"
 #include <cmath>
 #include <string>
 #include <vector>
@@ -15,12 +15,12 @@
 
 using namespace std;
 
-SymmetricVoltageIndependentModel::SymmetricVoltageIndependentModel(
+SymmetricOneSiteModel::SymmetricOneSiteModel(
 	const shared_ptr<const RandomDistribution> &eps,
 	const shared_ptr<const RandomDistribution> &gamma)
 	: dist_eps(eps), dist_gamma(gamma) {}
 
-double SymmetricVoltageIndependentModel::static_conductance(
+double SymmetricOneSiteModel::static_conductance(
 	shared_ptr<gsl_rng> r, const double EF, const double eta,
 	const double V) const {
 
@@ -31,7 +31,7 @@ double SymmetricVoltageIndependentModel::static_conductance(
 	return static_conductance(EF, V, eta, eps, gamma);
 }
 
-double SymmetricVoltageIndependentModel::diff_conductance(
+double SymmetricOneSiteModel::diff_conductance(
 	shared_ptr<gsl_rng> r, const double EF, const double eta,
 	const double V) const {
 
@@ -42,7 +42,7 @@ double SymmetricVoltageIndependentModel::diff_conductance(
 	return diff_conductance(EF, V, eta, eps, gamma);
 }
 
-double SymmetricVoltageIndependentModel::zero_bias_conductance(
+double SymmetricOneSiteModel::zero_bias_conductance(
 	shared_ptr<gsl_rng> r, const double EF) const {
 
 	// get model parameters from the random distributions
@@ -52,20 +52,20 @@ double SymmetricVoltageIndependentModel::zero_bias_conductance(
 	return transmission(EF, eps, gamma);
 }
 
-double SymmetricVoltageIndependentModel::transmission(const double E,
+double SymmetricOneSiteModel::transmission(const double E,
 	const double eps, const double gamma) {
 
 	return gamma*gamma / ((E-eps)*(E-eps) + gamma*gamma);
 }
 
-double SymmetricVoltageIndependentModel::static_conductance(const double EF,
+double SymmetricOneSiteModel::static_conductance(const double EF,
 	const double V, const double eta, const double eps, const double gamma) {
 
 	return gamma / V
 		* (atan((EF-eps+eta*V) / gamma) - atan((EF-eps+(eta-1.)*V) / gamma));
 }
 
-double SymmetricVoltageIndependentModel::diff_conductance(const double EF,
+double SymmetricOneSiteModel::diff_conductance(const double EF,
 	const double V, const double eta, const double eps, const double gamma) {
 
 	return eta * transmission(EF + eta*V, eps, gamma) +

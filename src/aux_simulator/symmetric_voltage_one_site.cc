@@ -8,7 +8,7 @@
  */
 
 #include "symmetric_voltage_one_site.h"
-#include "symmetric_voltage_independent.h"
+#include "symmetric_one_site.h"
 #include <cmath>
 #include <string>
 #include <vector>
@@ -58,13 +58,13 @@ double SymmetricVoltageOneSiteModel::zero_bias_conductance(
 double SymmetricVoltageOneSiteModel::transmission(const double E,
 	const double V, const double eps, const double gamma) {
 
-	return SymmetricVoltageIndependentModel::transmission(E, eps+V, gamma);
+	return SymmetricOneSiteModel::transmission(E, eps+V, gamma);
 }
 
 double SymmetricVoltageOneSiteModel::static_conductance(const double EF,
 	const double V, const double eta, const double eps, const double gamma) {
 
-	return SymmetricVoltageIndependentModel::static_conductance(EF, V, eta,
+	return SymmetricOneSiteModel::static_conductance(EF, V, eta,
 		eps+V, gamma);
 }
 

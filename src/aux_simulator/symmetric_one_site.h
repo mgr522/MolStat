@@ -1,14 +1,14 @@
 /**
- * \file asymmetric_voltage_independent.h
- * \brief The asymmetric-coupling, voltage-independent tight-binding model for
- *        calculating conductances.
+ * \file symmetric_one_site.h
+ * \brief The symmetric-coupling, one-site tight-binding model for calculating
+ *    conductances.
  *
  * \author Matthew G.\ Reuter
  * \date April 2014
  */
 
-#ifndef __asymmetric_voltage_independent_h__
-#define __asymmetric_voltage_independent_h__
+#ifndef __symmetric_one_site_h__
+#define __symmetric_one_site_h__
 
 #include <memory>
 #include "../aux_random_distributions/rng.h"
@@ -17,13 +17,9 @@
 using std::shared_ptr;
 
 /**
- * \brief Class encapsulating the voltage-independent model (asymmetric
- *    coupling).
- *
- * Note: the tight-binding model, that is, the transmission function, is
- * indepedent of the voltage; the conductances, however, are not.
+ * \brief Class encapsulating the symmetric-coupling, one-sitet model.
  */
-class AsymmetricVoltageIndependentModel : public ConductanceModel {
+class SymmetricOneSiteModel : public ConductanceModel {
 protected:
 	/**
 	 * \brief Random distribution for epsilon, the channel energy.
@@ -31,34 +27,27 @@ protected:
 	shared_ptr<const RandomDistribution> dist_eps;
 
 	/**
-	 * \brief Random distribution for gammaL, one channel-lead coupling.
+	 * \brief Random distribution for gamma, the channel-lead coupling.
 	 */
-	shared_ptr<const RandomDistribution> dist_gammaL;
-
-	/**
-	 * \brief Random distribution for gammaR, one channel-lead coupling.
-	 */
-	shared_ptr<const RandomDistribution> dist_gammaR;
+	shared_ptr<const RandomDistribution> dist_gamma;
 
 public:
-	AsymmetricVoltageIndependentModel() = delete;
+	SymmetricOneSiteModel() = delete;
 
 	/**
 	 * \brief Constructor requiring the random distributions.
 	 *
 	 * \param[in] eps The distribution for epsilon.
-	 * \param[in] gammaL The distribution for gammaL.
-	 * \param[in] gammaR The distribution for gammaR.
+	 * \param[in] gamma The distribution for gamma.
 	 */
-	AsymmetricVoltageIndependentModel(
+	SymmetricOneSiteModel(
 		const shared_ptr<const RandomDistribution> &eps,
-		const shared_ptr<const RandomDistribution> &gammaL,
-		const shared_ptr<const RandomDistribution> &gammaR);
+		const shared_ptr<const RandomDistribution> &gamma);
 
 	/**
 	 * \brief Destructor.
 	 */
-	virtual ~AsymmetricVoltageIndependentModel() = default;
+	virtual ~SymmetricOneSiteModel() = default;
 
 	/**
 	 * \brief Gets the static conductance for a random set of model parameters.
@@ -97,17 +86,15 @@ public:
 		const double EF) const;
 
 	/**
-	 * \brief Calculates the transmission for fixed values of epsilon and the.
-	 *     gammas.
+	 * \brief Calculates the transmission for fixed values of epsilon and gamma.
 	 *
 	 * \param[in] E The incident energy of the electron.
 	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL The left channel-lead coupling, gammaL.
-	 * \param[in] gammaR The right channel-lead coupling, gammaR.
+	 * \param[in] gamma The channel-lead coupling, gamma.
 	 * \return The transmission.
 	 */
 	static double transmission(const double E, const double eps,
-		const double gammaL, const double gammaR);
+		const double gamma);
 
 	/**
 	 * \brief Calculates the static conductance for fixed values of the model
@@ -117,13 +104,11 @@ public:
 	 * \param[in] V The voltage.
 	 * \param[in] eta The relative voltage drops at the leads.
 	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL The left channel-lead coupling, gammaL.
-	 * \param[in] gammaR The right channel-lead coupling, gammaR.
+	 * \param[in] gamma The channel-lead coupling, gamma.
 	 * \return The static conductance.
 	 */
 	static double static_conductance(const double EF, const double V,
-		const double eta, const double eps, const double gammaL,
-		const double gammaR);
+		const double eta, const double eps, const double gamma);
 
 	/**
 	 * \brief Calculates the differential conductance for fixed values of the
@@ -133,13 +118,11 @@ public:
 	 * \param[in] V The voltage.
 	 * \param[in] eta The relative voltage drops at the leads.
 	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL The left channel-lead coupling, gammaL.
-	 * \param[in] gammaR The right channel-lead coupling, gammaR.
+	 * \param[in] gamma The channel-lead coupling, gamma.
 	 * \return The differential conductance.
 	 */
 	static double diff_conductance(const double EF, const double V,
-		const double eta, const double eps, const double gammaL,
-		const double gammaR);
+		const double eta, const double eps, const double gamma);
 };
 
 #endif
