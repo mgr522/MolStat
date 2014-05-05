@@ -16,6 +16,27 @@
 
 using namespace std;
 
+/**
+ * \brief Turns a string into a double.
+ *
+ * \throw invalid_argument if the string cannot be cast to a double.
+ *
+ * \param[in] str The string to be cast.
+ * \return The double.
+ */
+static double read_double(const string &str) {
+	double ret;
+
+	try {
+		ret = stod(str);
+	}
+	catch(const invalid_argument &e) {
+		throw invalid_argument("Unable to convert \"" + str + "\" to a double.");
+	}
+
+	return ret;
+}
+
 shared_ptr<RandomDistribution> distribution_from_tokens(
 	const std::vector<std::string> &tokens) {
 
@@ -37,13 +58,7 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 				"   constant value\n" \
 				"where value is the value to be returned.");
 
-		try {
-			val = stod(tokens[1]);
-		}
-		catch(const invalid_argument &e) {
-			throw invalid_argument("Constant Distribution: Unable to convert " \
-				"the first argument to a double.");
-		}
+		val = read_double(tokens[1]);
 
 		ret = make_shared<ConstantDistribution>(val);
 	}
@@ -57,14 +72,8 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 				"   uniform lower upper\n" \
 				"where lower and upper are the bounds, respectively.");
 
-		try {
-			lower = stod(tokens[1]);
-			upper = stod(tokens[2]);
-		}
-		catch(const invalid_argument &e) {
-			throw invalid_argument("Uniform Distribution: Unable to convert " \
-				"the first and/or second argument to a double.");
-		}
+		lower = read_double(tokens[1]);
+		upper = read_double(tokens[2]);
 
 		if(lower >= upper)
 			throw invalid_argument("Uniform Distribution: The lower bound must " \
@@ -81,18 +90,12 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 			throw invalid_argument("Invalid normal distribution. Use\n" \
 				"   normal mean standard-deviation\n");
 
-		try {
-			mean = stod(tokens[1]);
-			stdev = stod(tokens[2]);
-		}
-		catch(const invalid_argument &e) {
-			throw invalid_argument("Normal Distribution: Unable to convert " \
-				"the first and/or second argument to a double.");
-		}
+		mean = read_double(tokens[1]);
+		stdev = read_double(tokens[2]);
 
 		if(stdev <= 0.)
 			throw invalid_argument("Normal Distribution: The standard deviation" \
-				"must be positive.");
+				" must be positive.");
 
 		ret = make_shared<NormalDistribution>(mean, stdev);
 	}
