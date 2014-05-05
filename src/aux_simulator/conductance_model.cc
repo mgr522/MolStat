@@ -61,6 +61,16 @@ shared_ptr<ConductanceModel> make_model(const std::string str,
 
 		return make_shared<SymmetricVoltageOneSiteModel>(dist_eps, dist_gamma);
 	}
+	else if(str == "symmetricvoltagetwositemodel") {
+		shared_ptr<RandomDistribution> dist_gamma, dist_eps, dist_beta;
+
+		dist_gamma = find_distribution("gamma", parameters);
+		dist_eps = find_distribution("epsilon", parameters);
+		dist_beta = find_distribution("beta", parameters);
+
+		return make_shared<SymmetricVoltageTwoSiteModel>(dist_eps, dist_gamma,
+			dist_beta);
+	}
 	else if(str == "asymmetriconesitemodel") {
 		shared_ptr<RandomDistribution> dist_gammaL, dist_gammaR, dist_eps;
 
@@ -77,6 +87,8 @@ shared_ptr<ConductanceModel> make_model(const std::string str,
 				"Symmetric-Coupling, One-Site Model\n" \
 			"   SymmetricVoltageOneSiteModel - " \
 				"Symmetric-Coupling, Voltage-Dependent One-Site Model\n" \
+			"   SymmetricVoltageTwoSiteModel - " \
+				"Symmetric-Coupling, Voltage-Dependent Two-Site Model\n" \
 			"   AsymmetricOneSiteModel - " \
 				"Asymmetric-Coupling, One-Site Model\n");
 
