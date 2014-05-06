@@ -50,16 +50,11 @@ protected:
 
 public:
 	class const_iterator;
-	Histogram2D() = delete;
 
 	/**
-	 * \brief Constructor that specifies the number of bins for the first
-	 *    and second variables.
-	 *
-	 * \param[in] n1 Number of bins for the first variable.
-	 * \param[in] n2 Number of bins for the second variable.
+	 * \brief Default constructor.
 	 */
-	Histogram2D(const int n1, const int n2);
+	Histogram2D();
 
 	/**
 	 * \brief Adds a data element to the histogram.
@@ -71,8 +66,11 @@ public:
 
 	/**
 	 * \brief Bin the based on what's stored in the queue.
+	 *
+	 * \param[in] n1 Number of bins for the first variable.
+	 * \param[in] n2 Number of bins for the second variable.
 	 */
-	void bin();
+	void bin(const size_t n1, const size_t n2);
 
 	/**
 	 * \brief Get an iterator to the front of this histogram.
@@ -101,12 +99,12 @@ public:
 		/**
 		 * \brief The bin index for the first variable.
 		 */
-		int bin1;
+		size_t bin1;
 
 		/**
 		 * \brief The bin index for the second variable.
 		 */
-		int bin2;
+		size_t bin2;
 
 		/**
 		 * \brief The value of the first variable in the middle of this bin.
@@ -134,6 +132,11 @@ public:
 		void set_output();
 
 	public:
+		/**
+		 * \brief Default constructor.
+		 */
+		const_iterator();
+
 		/**
 		 * \brief Constucts the iterator; based on the GSL histogram handle.
 		 *
