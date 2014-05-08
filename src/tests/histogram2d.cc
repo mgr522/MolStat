@@ -1,5 +1,5 @@
 /**
- * \file test_histogram.cc
+ * \file histogram.cc
  * \brief Test suite for the Histogram2D class.
  *
  * \author Matthew G.\ Reuter
