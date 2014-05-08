@@ -23,34 +23,29 @@ using namespace std;
  */
 int main(int argc, char **argv) {
 	const double thresh = 1.0e-6;
+	typedef AsymmetricOneSiteModel model;
 
 	// check known values for several parameter sets
 	assert(abs(0.0475907
-		- AsymmetricOneSiteModel::transmission(0., -4., 0.8, 1.0)) < thresh);
+		- model::transmission(0., -4., 0.8, 1.0)) < thresh);
 	assert(abs(0.0482617
-		- AsymmetricOneSiteModel::static_conductance(0., 1., 0.5, -4., 0.8, 1.0))
-		< thresh);
+		- model::static_conductance(0., 1., 0.5, -4., 0.8, 1.0)) < thresh);
 	assert(abs(0.0496212
-		- AsymmetricOneSiteModel::diff_conductance(0., 1., 0.5, -4., 0.8, 1.0))
-		< thresh);
+		- model::diff_conductance(0., 1., 0.5, -4., 0.8, 1.0)) < thresh);
 
 	assert(abs(0.000799281
-		- AsymmetricOneSiteModel::transmission(1., -9., 0.4, 0.2)) < thresh);
+		- model::transmission(1., -9., 0.4, 0.2)) < thresh);
 	assert(abs(0.000819131
-		- AsymmetricOneSiteModel::static_conductance(1., -0.4, 0.8, -9., 0.4, 0.2))
-		< thresh);
+		- model::static_conductance(1., -0.4, 0.8, -9., 0.4, 0.2)) < thresh);
 	assert(abs(0.000839689
-		- AsymmetricOneSiteModel::diff_conductance(1., -0.4, 0.8, -9., 0.4, 0.2))
-		< thresh);
+		- model::diff_conductance(1., -0.4, 0.8, -9., 0.4, 0.2)) < thresh);
 
 	assert(abs(0.00330201
-		- AsymmetricOneSiteModel::transmission(3., -17., 0.67, 1.98)) < thresh);
+		- model::transmission(3., -17., 0.67, 1.98)) < thresh);
 	assert(abs(0.00347858
-		- AsymmetricOneSiteModel::static_conductance(3., 1.4, 0.14, -17., 0.67, 1.98))
-		< thresh);
+		- model::static_conductance(3., 1.4, 0.14, -17., 0.67, 1.98)) < thresh);
 	assert(abs(0.00366672
-		- AsymmetricOneSiteModel::diff_conductance(3., 1.4, 0.14, -17., 0.67, 1.98))
-		< thresh);
+		- model::diff_conductance(3., 1.4, 0.14, -17., 0.67, 1.98)) < thresh);
 
 	return 0;
 }

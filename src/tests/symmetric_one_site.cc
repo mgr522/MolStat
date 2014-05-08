@@ -23,34 +23,29 @@ using namespace std;
  */
 int main(int argc, char **argv) {
 	const double thresh = 1.0e-6;
+	typedef SymmetricOneSiteModel model;
 
 	// check known values for several parameter sets
 	assert(abs(0.0384615
-		- SymmetricOneSiteModel::transmission(0., -4., 0.8)) < thresh);
+		- model::transmission(0., -4., 0.8)) < thresh);
 	assert(abs(0.0390172
-		- SymmetricOneSiteModel::static_conductance(0., 1., 0.5, -4., 0.8))
-		< thresh);
+		- model::static_conductance(0., 1., 0.5, -4., 0.8)) < thresh);
 	assert(abs(0.0401438
-		- SymmetricOneSiteModel::diff_conductance(0., 1., 0.5, -4., 0.8))
-		< thresh);
+		- model::diff_conductance(0., 1., 0.5, -4., 0.8)) < thresh);
 
 	assert(abs(0.00159744
-		- SymmetricOneSiteModel::transmission(1., -9., 0.4)) < thresh);
+		- model::transmission(1., -9., 0.4)) < thresh);
 	assert(abs(0.00163709
-		- SymmetricOneSiteModel::static_conductance(1., -0.4, 0.8, -9., 0.4))
-		< thresh);
+		- model::static_conductance(1., -0.4, 0.8, -9., 0.4)) < thresh);
 	assert(abs(0.00167814
-		- SymmetricOneSiteModel::diff_conductance(1., -0.4, 0.8, -9., 0.4))
-		< thresh);
+		- model::diff_conductance(1., -0.4, 0.8, -9., 0.4)) < thresh);
 
 	assert(abs(0.00112099
-		- SymmetricOneSiteModel::transmission(3., -17., 0.67)) < thresh);
+		- model::transmission(3., -17., 0.67)) < thresh);
 	assert(abs(0.00118115
-		- SymmetricOneSiteModel::static_conductance(3., 1.4, 0.14, -17., 0.67))
-		< thresh);
+		- model::static_conductance(3., 1.4, 0.14, -17., 0.67)) < thresh);
 	assert(abs(0.00124526
-		- SymmetricOneSiteModel::diff_conductance(3., 1.4, 0.14, -17., 0.67))
-		< thresh);
+		- model::diff_conductance(3., 1.4, 0.14, -17., 0.67)) < thresh);
 
 	return 0;
 }
