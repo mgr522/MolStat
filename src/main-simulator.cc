@@ -3,9 +3,9 @@
  * \brief Main function for simulating conductance data using Landauer theory.
  *
  * This code reads in various input parameters from standard in, and uses these
- * parameters to simulate conductance data. The conductance data is designed to
- * be binned into conductance histograms. Both zero-bias (1D) and voltage-
- * dependent (2D) conductance histograms can be simulated.
+ * parameters to simulate conductance data. The conductance data is then binned
+ * into conductance histograms. Both zero-bias (1D) and voltage-dependent (2D)
+ * conductance histograms can be simulated.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
