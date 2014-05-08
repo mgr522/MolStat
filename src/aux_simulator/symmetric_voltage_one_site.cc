@@ -1,5 +1,5 @@
 /**
- * \file symmetric_voltage_one_site.cc
+ * \file aux_simulator/symmetric_voltage_one_site.cc
  * \brief Implementation of the symmetric-coupling, voltage-dependent one-site
  *    tight-binding model for calculating conductances.
  *

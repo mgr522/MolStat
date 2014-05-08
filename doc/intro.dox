@@ -50,9 +50,8 @@ make install
 \endverbatim
 
 \subsection checkfitter Verifying the Installation
-Several tests are also provided to verify a successful compilation. They can
-be run as follows. We assume that $(FITTER) is the base package's base
-directory and that the compiled executables are in the path.
+Several tests are also provided to verify a successful compilation, and can be
+run using `make check`.
    -# Testing the symmetric-coupled, resonant tunneling model.
       \verbatim
 cd $(FITTER)/examples
@@ -92,11 +91,7 @@ r = 1.097273e+01
       \note The fit is somewhat insensitive to \f$ r \f$.
       \note The order of gammaL and gammaR is arbitrary and may be reversed.
 
-Owing to the simplicity of the codes, tests are not provided for the simulator
-and binner programs.
-
 \todo Integrate these fitter tests into make check.
-\todo Create tests for the simulator code.
 
 \section changelog Version Changes
 \subsection v1_0 v1.0 (May 2014)
