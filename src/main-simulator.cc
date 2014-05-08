@@ -5,7 +5,7 @@
  * This code reads in various input parameters from standard in, and uses these
  * parameters to simulate conductance data. The conductance data is designed to
  * be binned into conductance histograms. Both zero-bias (1D) and voltage-
- * dependent (2D) conductance data/histograms can be simulated.
+ * dependent (2D) conductance histograms can be simulated.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
@@ -54,6 +54,8 @@ int main(int argc, char **argv) {
 
 	CalculationType type;
 	int i, n;
+	size_t nbin;
+	function<double(double)> gmask;
 	double EF;
 	map<string, shared_ptr<RandomDistribution>> parameters;
 	shared_ptr<ConductanceModel> model;
@@ -133,7 +135,43 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-	// Line 4: Fermi level
+	// Line 4: Binning information
+	try {
+		line = getline(stdin);
+	}
+	catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s.\n", e.what());
+		return 0;
+	}
+	tokenize(line, tokens);
+	if(tokens.size() < 2) {
+		fprintf(stderr, "Error: binning information expected in line 4.\n");
+		return 0;
+	}
+	try {
+		nbin = stoul(tokens[0]);
+	}
+	catch(const invalid_argument &e) {
+		fprintf(stderr, "Error: unrecognizable number '%s'.\n",
+			tokens[0].c_str());
+		return 0;
+	}
+	make_lower(tokens[1]);
+	if(tokens[1] == "log")
+		gmask = [] (const double g) {
+			return log10(g);
+		};
+	else if(tokens[1] == "linear")
+		gmask = [] (const double g) {
+			return g;
+		};
+	else {
+		fprintf(stderr, "Error: unknown binning type '%s'.\nShould be 'log' " \
+			"or 'linear'.\n", tokens[1].c_str());
+		return 0;
+	}
+
+	// Line 5: Fermi level
 	try {
 		line = getline(stdin);
 	}
@@ -143,7 +181,7 @@ int main(int argc, char **argv) {
 	}
 	tokenize(line, tokens);
 	if(tokens.size() < 1) {
-		fprintf(stderr, "Error Fermi energy expected in line 4.\n");
+		fprintf(stderr, "Error Fermi energy expected in line 5.\n");
 		return 0;
 	}
 	try {
@@ -221,21 +259,21 @@ int main(int argc, char **argv) {
 				double V = dist_V->sample(r);
 				double GV = model->static_conductance(r, EF, dist_eta->sample(r),
 					V);
-				hist.add_data(V, GV);
+				hist.add_data(V, gmask(GV));
 			};
 		}
 		else if(type == CalculationType::Differential) {
 			conductance_function = [&] () {
 				double V = dist_V->sample(r);
 				double GV = model->diff_conductance(r, EF, dist_eta->sample(r), V);
-				hist.add_data(V, log10(GV));
+				hist.add_data(V, gmask(GV));
 			};
 		}
 	}
 	else if(type == CalculationType::ZeroBias) {
 		// no extra distributions required... proceed to the calculation
 		conductance_function = [&] () {
-			hist.add_data(0.0, model->zero_bias_conductance(r, EF));
+			hist.add_data(0.0, gmask(model->zero_bias_conductance(r, EF)));
 		};
 	}
 	else {
@@ -249,7 +287,6 @@ int main(int argc, char **argv) {
 		conductance_function();
 	}
 
-	size_t nbin = 100;
 	// bin the data into a histogram
 	if(type == CalculationType::Static || type == CalculationType::Differential)
 		hist.bin(nbin, nbin);

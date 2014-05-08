@@ -37,13 +37,14 @@ The general procedure for simulating is as follows. Specify
      such as channel energies, channel-electrode couplings, etc.
    - random distributions for each of these parameters. The available random
      number distributions are descibed below.
+   - how many bins to use in the histogram.
    - the Fermi energy, the number of conductance points to simulate, and
      information on binning the conductance data into a histogram.
    .
 From this information, the simulator gets the requested number of conductance
-values, where each value uses random model parameters from the
-specified distributions. Finally, the histogram data is printed to standard
-out.
+values (where each value uses random model parameters from the
+specified distributions), bins the conductance data, and, finally, outputs
+the histogram to standard out.
 
 Following is an example input file (routed to standard in). Note that the
 line breaks are important.
@@ -51,6 +52,7 @@ line breaks are important.
 SymmetricOneSiteModel
 Differential
 100000
+100 log
 0.
 eta constant 0.5
 V uniform -2. 2.
@@ -64,6 +66,12 @@ The lines are interpreted as follows:
    -# The type of conductance to calculate. Must be `ZeroBias`, `Static`,
       or `Differential`.
    -# The number of conductance data points to simulate.
+	-# The number of bins to use and the type of binning. For Static and
+      Differential conductance histograms, the specified number of bins is used
+      for both the voltage and conductance axes. The binning type must be `log`
+      or `linear`, and specifies whether \f$\log_{10}(g)\f$ or \f$g\f$ is
+      binned, respectively. The printed conductance values will be either
+		\f$\log_{10}(g)\f$ or \f$g\f$.
    -# The Fermi energy.
    -# Random distributions (one per line) for the various parameters. For
       example, `eta
@@ -73,6 +81,18 @@ The lines are interpreted as follows:
 `ZeroBias` calculations do not require any parameters other than those
 needed by the model. `Static` and `Differential` conductance calculations
 also require distributions for `V` (\f$V\f$) and `eta` (\f$\eta\f$).
+
+Finally, the histogram is output with one bin per line. For Static and
+Differential conductance histograms each line is
+\verbatim
+V mask(g) counts
+\endverbatim
+where `mask` is either \f$mask(g)=g\f$ or \f$mask(g)=\log_{10}(g)\f$,
+depending on the binning type. For ZeroBias conductance histograms, each line
+similarly reads
+\verbatim
+mask(g) counts
+\endverbatim
 
 \section sec_rng Random Number Distributions
 Random number distributions are key to the simulator. For versatility, we
