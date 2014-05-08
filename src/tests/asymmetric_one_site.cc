@@ -15,7 +15,7 @@
 using namespace std;
 
 /**
- * \brief Main function for testing the symmetric-coupling, one-site model.
+ * \brief Main function for testing the asymmetric-coupling, one-site model.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
