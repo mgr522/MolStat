@@ -1,5 +1,5 @@
 /**
- * \file asymmetric_one_site.cc
+ * \file tests/asymmetric_one_site.cc
  * \brief Test suite for the asymmetric-coupling, single-site tight-binding
  *     model.
  *

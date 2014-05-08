@@ -1,5 +1,5 @@
 /**
- * \file symmetric_voltage_one_site.cc
+ * \file tests/symmetric_voltage_one_site.cc
  * \brief Test suite for the symmetric-coupling, voltage-dependent, single-site
  *     tight-binding model.
  *

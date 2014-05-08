@@ -1,5 +1,5 @@
 /**
- * \file symmetric_one_site.cc
+ * \file tests/symmetric_one_site.cc
  * \brief Test suite for the symmetric-coupling, single-site tight-binding
  *     model.
  *
