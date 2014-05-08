@@ -18,9 +18,11 @@
 #include <vector>
 #include <functional>
 #include <map>
+#include <cmath>
 #include "string_tools.h"
 #include "aux_random_distributions/rng.h"
 #include "aux_simulator/conductance_model.h"
+#include "aux_binner/histogram2d_interface.h"
 
 using namespace std;
 
@@ -57,6 +59,7 @@ int main(int argc, char **argv) {
 	shared_ptr<ConductanceModel> model;
 	shared_ptr<RandomDistribution> dist_V, dist_eta;
 	function<void(void)> conductance_function;
+	Histogram2D hist;
 
 	string line, modeltype, name;
 	vector<string> tokens;
@@ -214,25 +217,25 @@ int main(int argc, char **argv) {
 
 		// set the conductance function
 		if(type == CalculationType::Static) {
-			conductance_function = [=] () {
+			conductance_function = [&] () {
 				double V = dist_V->sample(r);
 				double GV = model->static_conductance(r, EF, dist_eta->sample(r),
 					V);
-				printf("%.6f %.6f\n", V, GV);
+				hist.add_data(V, GV);
 			};
 		}
 		else if(type == CalculationType::Differential) {
-			conductance_function = [=] () {
+			conductance_function = [&] () {
 				double V = dist_V->sample(r);
 				double GV = model->diff_conductance(r, EF, dist_eta->sample(r), V);
-				printf("%.6f %.6f\n", V, GV);
+				hist.add_data(V, log10(GV));
 			};
 		}
 	}
 	else if(type == CalculationType::ZeroBias) {
 		// no extra distributions required... proceed to the calculation
-		conductance_function = [=] () {
-			printf("%.6f\n", model->zero_bias_conductance(r, EF));
+		conductance_function = [&] () {
+			hist.add_data(0.0, model->zero_bias_conductance(r, EF));
 		};
 	}
 	else {
@@ -244,6 +247,28 @@ int main(int argc, char **argv) {
 	// Get the requested number of voltage-conductance data points
 	for (i = 0; i < n; ++i) {
 		conductance_function();
+	}
+
+	size_t nbin = 100;
+	// bin the data into a histogram
+	if(type == CalculationType::Static || type == CalculationType::Differential)
+		hist.bin(nbin, nbin);
+	else if(type == CalculationType::ZeroBias)
+		hist.bin(1, nbin);
+
+	// iterate through the bins and output the data
+	for(Histogram2D::const_iterator iter = hist.begin();
+		iter != hist.end();
+		++iter) {
+
+		if(type == CalculationType::Static ||
+			type == CalculationType::Differential) {
+
+			printf("%.6f %.6f %.6f\n", iter.variable1(), iter.variable2(),
+				iter.bin_count());
+		}
+		else if(type == CalculationType::ZeroBias)
+			printf("%.6f %.6f\n", iter.variable2(), iter.bin_count());
 	}
 
 	return 0;

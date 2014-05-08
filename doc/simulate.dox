@@ -57,7 +57,6 @@ V uniform -2. 2.
 gamma normal 0.8 0.05
 epsilon normal -6. 0.05
 \endverbatim
-\todo Add binning functionality to the simulator.
 
 The lines are interpreted as follows:
    -# The model to use for calculating the transmission function and
