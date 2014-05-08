@@ -1,4 +1,4 @@
-SUBDIRS = aux_random_distributions aux_simulator aux_binner
+SUBDIRS = aux_random_distributions aux_simulator aux_binner tests
 
 bin_PROGRAMS = simulator
 

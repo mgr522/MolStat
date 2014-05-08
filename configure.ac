@@ -45,6 +45,7 @@ AC_CONFIG_FILES([
 			src/aux_binner/Makefile
 			src/aux_random_distributions/Makefile
 			src/aux_simulator/Makefile
+			src/tests/Makefile
 ])
 
 # finish up

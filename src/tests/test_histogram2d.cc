@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <assert.h>
 #include <cmath>
-#include "histogram2d_interface.h"
+#include "../aux_binner/histogram2d_interface.h"
 
 using namespace std;
 
