@@ -14,8 +14,8 @@
 #include <queue>
 
 /**
- * \brief Class that manages, and provides options for, binning data into 2D
- *    histograms using the GSL interface.
+ * \brief Class that manages and bins data into 2D histograms using the GSL
+ *    interface.
  *
  * In the beginning, this class simply collects (and stores) data that will
  * eventually be binned into a histogram. The data is in the form of a pair,
@@ -195,6 +195,9 @@ public:
 		 */
 		bool operator!= (const const_iterator &rhs) const;
 
+		/**
+		 * \brief Histogram2D::end() const needs to set the iterator to the end.
+	 	 */
 		friend const_iterator Histogram2D::end() const;
 	};
 };
