@@ -138,7 +138,14 @@ The implemented random distributions are
          - `sigma` is \f$\sigma\f$, the standard deviation (in log-space).
       - Implemented by the class LognormalDistribution.
 
-\todo Add gamma distribution.
+	- Gamma distribution: \f$ P(x) = \frac{1}{\Gamma(a) b^a} x^{a-1} e^{-x/b} \f$.
+      - `distribution-name` is `Gamma`
+      - `[distribution-parameters]` are `a b`
+         - `a` is \f$ a \f$, the shape factor.
+         - `b` is \f$b\f$, the scale factor.
+      - Implemented by the class GammaDistribution.
+
+\todo Implement the gamma distribution.
 
 \subsection add_rnd_subsec Adding Random Distributions
 Random number distributions are computationally described by the
