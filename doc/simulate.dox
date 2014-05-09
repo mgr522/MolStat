@@ -157,81 +157,37 @@ parameters (from the distributions) and calculate the appropriate conductance.
 
 - `SymmetricOneSiteModel`
    - Single-site model with symmetric site/lead couplings.
-   - Implemented by the class SymmetricOneSiteModel.
+   - Implemented by the class SymmetricOneSiteModel; full details are presented
+     there.
    - Model parameters are
-      - `epsilon`, the site-energy \f$\varepsilon\f$
-      - `gamma`, the site/lead coupling \f$\Gamma\f$
-   - Starting from \f$ \hat{H} = \left[ \varepsilon \right] \f$ and
-     \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma/2 \right] \f$, the
-     transmission function is
-     \f[ T(E) = \frac{\Gamma^2}{(E-\varepsilon)^2 + \Gamma^2}. \f]
-   - Zero-bias conductance:
-     \f[ g = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
-   - Differential conductance:
-     \f[ g(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
-   - Static conductance:
-     \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + \eta eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1)eV}{\Gamma} \right) \right]. \f]
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling.
 
 - `AsymmetricOneSiteModel`
    - Single-site model with asymmetric site/lead couplings.
-   - Implemented by the class AsymmetricOneSiteModel.
+   - Implemented by the class AsymmetricOneSiteModel; full details are
+     presented there.
    - Model parameters are
-      - `epsilon`, the site-energy \f$\varepsilon\f$
-      - `gammaL`, the site/lead coupling for one electrode \f$\Gamma_\mathrm{L}\f$
-      - `gammaR`, the site/lead coupling for the other electrode \f$\Gamma_\mathrm{R}\f$
-   - Starting from \f$ \hat{H} = \left[ \varepsilon \right] \f$ and
-     \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma_\mathrm{L,R}/2 \right] \f$, the
-     transmission function is
-     \f[ T(E) = \frac{4\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{4(E-\varepsilon)^2 + (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})^2}. \f]
-   - Zero-bias conductance:
-     \f[ g = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
-   - Differential conductance:
-     \f[ g(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
-   - Static conductance:
-     \f[ g(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2(E_\mathrm{F} - \varepsilon + \eta eV)}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2(E_\mathrm{F} - \varepsilon + (\eta-1)eV)}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode.
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode.
 
 - `SymmetricVoltageOneSiteModel`
    - Single-site model with symmetric site/lead couplings and a voltage-dependent site-energy. It is very closely related to the SymmetricOneSiteModel above.
-   - Implemented by the class SymmetricVoltageOneSiteModel.
+   - Implemented by the class SymmetricVoltageOneSiteModel; full details are
+     presented there.
    - Model parameters are
-      - `epsilon`, the site-energy \f$\varepsilon\f$
-      - `gamma`, the site/lead coupling \f$\Gamma\f$
-   - Starting from \f$ \hat{H} = \left[ \varepsilon + eV \right] \f$ and
-     \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma/2 \right] \f$, the
-     transmission function is
-     \f[ T(E) = \frac{\Gamma^2}{(E-\varepsilon-eV)^2 + \Gamma^2}. \f]
-   - Zero-bias conductance:
-     \f[ g = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
-   - Differential conductance (with intermediate quantities):
-     \f[ \frac{\partial}{\partial V}T(E) = \frac{2e\Gamma^2(E - \varepsilon-eV)}{[(E-\varepsilon-eV)^2+\Gamma^2]^2}; \f]
-     \f[ \frac{2e}{h} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V} T(E) = \frac{2e^2}{h} T(E_\mathrm{F}+(\eta-1)eV) - \frac{2e^2}{h}T(E_\mathrm{F}+\eta eV); \f]
-     \f[ g(V) = \frac{2e^2}{h} \left[ (\eta-1) T(E_\mathrm{F} + \eta eV) + (2-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
-   - Static conductance:
-     \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-2) eV}{\Gamma} \right) \right]. \f]
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling.
 
 - `SymmetricVoltageTwoSiteModel`
    - Two-site model with symmetric site/lead couplings and voltage-dependent site-energies.
-   - Implemented by the class SymmetricVoltageTwoSiteModel.
+   - Implemented by the class SymmetricVoltageTwoSiteModel; full details are
+     presented there.
    - Model parameters are
-      - `epsilon`, the site-energy \f$\varepsilon\f$
-      - `gamma`, the site/lead coupling \f$\Gamma\f$
-      - `beta`, the inter-site coupling \f$\beta\f$
-   - Starting from \f[ \hat{H} = \left[ \begin{array}{cc} \varepsilon-eV/2 & \beta \\ \beta & \varepsilon+eV/2 \end{array} \right], \;\;\;\;
-     \hat{\Sigma}_\mathrm{L} = \left[ \begin{array}{cc} -i\Gamma/2 & 0 \\ 0 & 0 \end{array} \right], \;\;\;\;
-     \hat{\Sigma}_\mathrm{R} = \left[ \begin{array}{cc} 0 & 0 \\ 0 & -i\Gamma/2 \end{array} \right], \f]
-     the transmission function is
-     \f[ T(E) = \frac{16 \Gamma^2 \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma^2-e^2V^2\right]^2 + 16 \Gamma^2(E-\varepsilon)^2}. \f]
-   - Zero-bias conductance:
-     \f[ g = \frac{2e^2}{h} T(E_\mathrm{F}).\f]
-   - Differential conductance (with intermediate quantities):
-     \f[ \frac{\partial}{\partial V} T(E) = \frac{64e^2V\Gamma^2\beta^2\left[ 4(E-\varepsilon)^2 - 4\beta^2 - \Gamma^2 - e^2V^2 \right]}{\left[ \left( 4(E-\varepsilon)^2 - 4\beta^2 - \Gamma^2 - e^2V^2 \right)^2 + 16\Gamma^2(E-\varepsilon)^2 \right]^2}; \f]
-     \f{eqnarray*}{ \frac{2e}{h} && \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V}T(E) = \left\{ -\frac{8e^2V\Gamma\beta^2}{(4\beta^2+e^2V^2+\Gamma^2)^2}\mathrm{Re}\left[ \mathrm{arctan}\left( \frac{2z}{\Gamma - i\sqrt{4\beta^2+e^2V^2}} \right) \right] \right. \\
-     && + \frac{8e^2V\Gamma^2\beta^2z(4z^2+\Gamma^2-12\beta^2-3e^2V^2)}{(4\beta^2+e^2V^2)(4\beta^2+e^2V^2+\Gamma^2)\left[ 16z^4 + 8(\Gamma^2-4\beta^2-e^2V^2)z^2 + (4\beta^2 + e^2V^2 + \Gamma^2)^2 \right]} \\
-     && \left. - \frac{4e^2V\Gamma^2\beta^2(12\beta^2+3e^2V^2+\Gamma^2)}{(4\beta^2+e^2V^2+\Gamma^2)^2(4\beta^2+e^2V^2)^{3/2}} \mathrm{Im}\left[ \mathrm{arctan}\left( \frac{2z}{\Gamma - i\sqrt{4\beta^2+e^2V^2}} \right) \right] \right\}_{z=E_\mathrm{F}-\varepsilon+(\eta-1)eV}^{E_\mathrm{F}-\varepsilon+\eta eV} \f}
-     The differential conductance is obtained using these formulae in the above general equations.
-   - Static conductance:
-     \f{eqnarray*}{ g(V) & = & \frac{2e^2}{h} \frac{4\beta^2\Gamma}{eV\sqrt{4\beta^2+e^2V^2}} \mathrm{Im} \left[ \frac{\mathrm{arctan}\left( 2(E_\mathrm{F} - \varepsilon + \eta eV) / (\Gamma -i\sqrt{4\beta^2+e^2V^2}) \right)}{\Gamma - i\sqrt{4\beta^2+e^2V^2}} \right] \\
-     && -\frac{2e^2}{h} \frac{4\beta^2\Gamma}{eV\sqrt{4\beta^2+e^2V^2}} \mathrm{Im} \left[ \frac{\mathrm{arctan}\left( 2(E_\mathrm{F} - \varepsilon + (\eta-1) eV) / (\Gamma -i\sqrt{4\beta^2+e^2V^2}) \right)}{\Gamma - i\sqrt{4\beta^2+e^2V^2}} \right]. \f}
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
+      - `beta` (\f$\beta\f$), the inter-site coupling.
 
 \subsection add_conductance_model_subsec Adding Conductance Models
 Adding a conductance model is designed to be straightforward, requiring the

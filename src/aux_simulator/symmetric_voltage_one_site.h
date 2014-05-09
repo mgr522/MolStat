@@ -19,6 +19,21 @@ using std::shared_ptr;
 /**
  * \brief Class encapsulating the voltage-dependent, one-site model (symmetric
  *    coupling).
+ *
+ * Model parameters are
+ * - `epsilon` (\f$\varepsilon\f$), the site-energy,
+ * - `gamma` (\f$\Gamma\f$), the site/lead coupling.
+ *
+ * Starting from \f$ \hat{H} = \left[ \varepsilon + eV \right] \f$ and
+ * \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma/2 \right] \f$, the
+ * transmission function is
+ * \f[ T(E) = \frac{\Gamma^2}{(E-\varepsilon-eV)^2 + \Gamma^2}. \f]
+ * - Differential conductance (with intermediate quantities):
+ *   \f[ \frac{\partial}{\partial V}T(E) = \frac{2e\Gamma^2(E - \varepsilon-eV)}{[(E-\varepsilon-eV)^2+\Gamma^2]^2}; \f]
+ *   \f[ \frac{2e}{h} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V} T(E) = \frac{2e^2}{h} T(E_\mathrm{F}+(\eta-1)eV) - \frac{2e^2}{h}T(E_\mathrm{F}+\eta eV); \f]
+ *   \f[ g(V) = \frac{2e^2}{h} \left[ (\eta-1) T(E_\mathrm{F} + \eta eV) + (2-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
+ * - Static conductance:
+ *   \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-2) eV}{\Gamma} \right) \right]. \f]
  */
 class SymmetricVoltageOneSiteModel : public ConductanceModel {
 protected:

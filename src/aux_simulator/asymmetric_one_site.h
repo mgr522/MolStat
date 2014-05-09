@@ -19,6 +19,20 @@ using std::shared_ptr;
 /**
  * \brief Class encapsulating the asymmetric-coupling, one-site tight-binding
  *    model.
+ *
+ * Model parameters are
+ * - `epsilon` (\f$\varepsilon\f$), the site-energy,
+ * - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode.
+ * - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode.
+ *
+ * Starting from \f$ \hat{H} = \left[ \varepsilon \right] \f$ and
+ * \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma_\mathrm{L,R}/2 \right] \f$,
+ * the transmission function is
+ * \f[ T(E) = \frac{4\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{4(E-\varepsilon)^2 + (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})^2}. \f]
+ * - Differential conductance:
+ *   \f[ g(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
+ * - Static conductance:
+ *   \f[ g(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2(E_\mathrm{F} - \varepsilon + \eta eV)}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2(E_\mathrm{F} - \varepsilon + (\eta-1)eV)}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
  */
 class AsymmetricOneSiteModel : public ConductanceModel {
 protected:

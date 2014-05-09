@@ -19,6 +19,26 @@ using std::shared_ptr;
 /**
  * \brief Class encapsulating the voltage-dependent, two-site model (symmetric
  *    coupling).
+ *
+ * Model parameters are
+ * - `epsilon` (\f$\varepsilon\f$), the site-energy,
+ * - `gamma` (\f$\Gamma\f$), the site/lead coupling,
+ * - `beta` (\f$\beta\f$), the inter-site coupling.
+ *
+ * Starting from \f[ \hat{H} = \left[ \begin{array}{cc} \varepsilon-eV/2 & \beta \\ \beta & \varepsilon+eV/2 \end{array} \right], \;\;\;\;
+ * \hat{\Sigma}_\mathrm{L} = \left[ \begin{array}{cc} -i\Gamma/2 & 0 \\ 0 & 0 \end{array} \right], \;\;\;\;
+ * \hat{\Sigma}_\mathrm{R} = \left[ \begin{array}{cc} 0 & 0 \\ 0 & -i\Gamma/2 \end{array} \right], \f]
+ * the transmission function is
+ * \f[ T(E) = \frac{16 \Gamma^2 \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma^2-e^2V^2\right]^2 + 16 \Gamma^2(E-\varepsilon)^2}. \f]
+ * - Intermediate quantities for the differential conductance:
+ *   \f[ \frac{\partial}{\partial V} T(E) = \frac{64e^2V\Gamma^2\beta^2\left[ 4(E-\varepsilon)^2 - 4\beta^2 - \Gamma^2 - e^2V^2 \right]}{\left[ \left( 4(E-\varepsilon)^2 - 4\beta^2 - \Gamma^2 - e^2V^2 \right)^2 + 16\Gamma^2(E-\varepsilon)^2 \right]^2}; \f]
+ *   \f{eqnarray*}{&& \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V}T(E) = \left\{ -\frac{8e^2V\Gamma\beta^2}{(4\beta^2+e^2V^2+\Gamma^2)^2}\mathrm{Re}\left[ \mathrm{arctan}\left( \frac{2z}{\Gamma - i\sqrt{4\beta^2+e^2V^2}} \right) \right] \right. \\
+ *   && + \frac{8e^2V\Gamma^2\beta^2z(4z^2+\Gamma^2-12\beta^2-3e^2V^2)}{(4\beta^2+e^2V^2)(4\beta^2+e^2V^2+\Gamma^2)\left[ 16z^4 + 8(\Gamma^2-4\beta^2-e^2V^2)z^2 + (4\beta^2 + e^2V^2 + \Gamma^2)^2 \right]} \\
+ *   && \left. - \frac{4e^2V\Gamma^2\beta^2(12\beta^2+3e^2V^2+\Gamma^2)}{(4\beta^2+e^2V^2+\Gamma^2)^2(4\beta^2+e^2V^2)^{3/2}} \mathrm{Im}\left[ \mathrm{arctan}\left( \frac{2z}{\Gamma - i\sqrt{4\beta^2+e^2V^2}} \right) \right] \right\}_{z=E_\mathrm{F}-\varepsilon+(\eta-1)eV}^{E_\mathrm{F}-\varepsilon+\eta eV} \f}
+ *   The differential conductance is obtained using these formulae in the general expressions (see the section on \ref sec_landauer).
+ * - Static conductance:
+ *   \f{eqnarray*}{ g(V) & = & \frac{2e^2}{h} \frac{4\beta^2\Gamma}{eV\sqrt{4\beta^2+e^2V^2}} \mathrm{Im} \left[ \frac{\mathrm{arctan}\left( 2(E_\mathrm{F} - \varepsilon + \eta eV) / (\Gamma -i\sqrt{4\beta^2+e^2V^2}) \right)}{\Gamma - i\sqrt{4\beta^2+e^2V^2}} \right] \\
+ *   && -\frac{2e^2}{h} \frac{4\beta^2\Gamma}{eV\sqrt{4\beta^2+e^2V^2}} \mathrm{Im} \left[ \frac{\mathrm{arctan}\left( 2(E_\mathrm{F} - \varepsilon + (\eta-1) eV) / (\Gamma -i\sqrt{4\beta^2+e^2V^2}) \right)}{\Gamma - i\sqrt{4\beta^2+e^2V^2}} \right]. \f}
  */
 class SymmetricVoltageTwoSiteModel : public ConductanceModel {
 protected:

@@ -17,7 +17,20 @@
 using std::shared_ptr;
 
 /**
- * \brief Class encapsulating the symmetric-coupling, one-sitet model.
+ * \brief Class encapsulating the symmetric-coupling, one-site model.
+ *
+ * Model parameters are
+ * - `epsilon` (\f$\varepsilon\f$), the site-energy,
+ * - `gamma` (\f$\Gamma\f$), the site/lead coupling.
+ *
+ * Starting from \f$ \hat{H} = \left[ \varepsilon \right] \f$ and
+ * \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma/2 \right] \f$, the
+ * transmission function is
+ * \f[ T(E) = \frac{\Gamma^2}{(E-\varepsilon)^2 + \Gamma^2}. \f]
+ * - Differential conductance:
+ *   \f[ g(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
+ * - Static conductance:
+ *   \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + \eta eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1)eV}{\Gamma} \right) \right]. \f]
  */
 class SymmetricOneSiteModel : public ConductanceModel {
 protected:
