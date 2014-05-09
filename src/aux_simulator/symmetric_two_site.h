@@ -58,14 +58,13 @@ protected:
 	 *    conductance (fixed values of the model parameters).
 	 *
 	 * \param[in] z The limit of integration.
-	 * \param[in] V The voltage.
 	 * \param[in] eps The channel energy, epsilon.
 	 * \param[in] gamma The channel-lead coupling, gamma.
 	 * \param[in] beta The site-site coupling, beta.
 	 * \return The antiderivative needed for the static conductance.
 	 */
-	static double static_c_integral(const double z, const double V,
-		const double eps, const double gamma, const double beta);
+	static double static_c_integral(const double z, const double eps,
+		const double gamma, const double beta);
 
 public:
 	SymmetricTwoSiteModel() = delete;
@@ -128,13 +127,12 @@ public:
 	 *    parameters.
 	 *
 	 * \param[in] E The incident energy of the electron.
-	 * \param[in] V The voltage.
 	 * \param[in] eps The channel energy, epsilon.
 	 * \param[in] gamma The channel-lead coupling, gamma.
 	 * \param[in] beta The site-site coupling, beta.
 	 * \return The transmission.
 	 */
-	static double transmission(const double E, const double V, const double eps,
+	static double transmission(const double E, const double eps,
 		const double gamma, const double beta);
 
 	/**

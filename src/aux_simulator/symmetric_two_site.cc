@@ -56,11 +56,11 @@ double SymmetricTwoSiteModel::zero_bias_conductance(
 	double gamma = dist_gamma->sample(r);
 	double beta = dist_beta->sample(r);
 
-	return SymmetricTwoSiteModel::transmission(EF, 0., eps, gamma, beta);
+	return SymmetricTwoSiteModel::transmission(EF, eps, gamma, beta);
 }
 
 double SymmetricTwoSiteModel::transmission(const double E,
-	const double V, const double eps, const double gamma, const double beta) {
+	const double eps, const double gamma, const double beta) {
 
 	double temp = 4.*(E-eps)*(E-eps) - 4.*beta*beta - gamma*gamma;
 
@@ -69,7 +69,7 @@ double SymmetricTwoSiteModel::transmission(const double E,
 }
 
 double SymmetricTwoSiteModel::static_c_integral(const double z,
-	const double V, const double eps, const double gamma, const double beta) {
+	const double eps, const double gamma, const double beta) {
 
 	return 2.*beta*gamma / (4.*beta*beta + gamma*gamma) *
 		real(complex<double>(gamma, 2.*beta)
@@ -81,18 +81,18 @@ double SymmetricTwoSiteModel::static_conductance(const double EF,
 	const double V, const double eta, const double eps, const double gamma,
 	const double beta) {
 
-	return (SymmetricTwoSiteModel::static_c_integral(EF+eta*V, V,
-		eps, gamma, beta) - SymmetricTwoSiteModel::static_c_integral(
-		EF+(eta-1.)*V, V, eps, gamma, beta)) / V;
+	return (SymmetricTwoSiteModel::static_c_integral(EF+eta*V, eps, gamma,
+		beta) - SymmetricTwoSiteModel::static_c_integral(EF+(eta-1.)*V, eps,
+		gamma, beta)) / V;
 }
 
 double SymmetricTwoSiteModel::diff_conductance(const double EF,
 	const double V, const double eta, const double eps, const double gamma,
 	const double beta) {
 
-	return eta * SymmetricTwoSiteModel::transmission(EF + eta*V, V,
-		eps, gamma, beta)
+	return eta * SymmetricTwoSiteModel::transmission(EF + eta*V, eps, gamma,
+		beta)
 
-		+ (1.-eta) * SymmetricTwoSiteModel::transmission(EF + (eta-1.)*V,
-		V, eps, gamma, beta);
+		+ (1.-eta) * SymmetricTwoSiteModel::transmission(EF + (eta-1.)*V, eps,
+		gamma, beta);
 }

@@ -27,21 +27,21 @@ int main(int argc, char **argv) {
 
 	// check known values for several parameter sets
 	assert(abs(0.101007
-		- model::transmission(0., 1., -4., 0.8, -3.)) < thresh);
+		- model::transmission(0., -4., 0.8, -3.)) < thresh);
 	assert(abs(0.127042
 		- model::static_conductance(0., 1., 0.5, -4., 0.8, -3.)) < thresh);
 	assert(abs(0.186815
 		- model::diff_conductance(0., 1., 0.5, -4., 0.8, -3.)) < thresh);
 
 	assert(abs(0.000431590
-		- model::transmission(1., -0.4, -3., 0.4, -0.8)) < thresh);
+		- model::transmission(1., -3., 0.4, -0.8)) < thresh);
 	assert(abs(0.000494645
 		- model::static_conductance(1., -0.4, 0.8, -3., 0.4, -0.8)) < thresh);
 	assert(abs(0.000568266
 		- model::diff_conductance(1., -0.4, 0.8, -3., 0.4, -0.8)) < thresh);
 
 	assert(abs(0.459683
-		- model::transmission(3., 1.4, 1.1, 0.67, -1.6)) < thresh);
+		- model::transmission(3., 1.1, 0.67, -1.6)) < thresh);
 	assert(abs(0.560554
 		- model::static_conductance(3., 1.4, 0.14, 1.1, 0.67, -1.6)) < thresh);
 	assert(abs(0.230111
