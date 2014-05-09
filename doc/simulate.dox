@@ -131,7 +131,14 @@ The implemented random distributions are
          - `stdev` is \f$\sigma\f$.
       - Implemented by the class NormalDistribution.
 
-\todo Add lognormal and chi2 distributions.
+   - Lognormal distribution: \f$ P(x) = \frac{1}{x \sqrt{2\pi \sigma^2}} \exp\left[ - \frac{(\ln(x) - \zeta)^2}{2\sigma^2} \right] \f$.
+      - `distribution-name` is `Lognormal`
+      - `[distribution-parameters]` are `zeta sigma`
+         - `zeta` is \f$ \zeta \f$, the mean (in log-space).
+         - `sigma` is \f$\sigma\f$, the standard deviation (in log-space).
+      - Implemented by the class LognormalDistribution.
+
+\todo Add gamma distribution.
 
 \subsection add_rnd_subsec Adding Random Distributions
 Random number distributions are computationally described by the
