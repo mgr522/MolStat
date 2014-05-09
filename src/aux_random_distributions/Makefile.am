@@ -6,4 +6,6 @@ libaux_random_distributions_a_SOURCES = rng.h \
 	uniform.h \
 	uniform.cc \
 	normal.h \
-	normal.cc
+	normal.cc \
+	lognormal.h \
+	lognormal.cc

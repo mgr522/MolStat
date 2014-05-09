@@ -13,6 +13,7 @@
 #include "constant.h"
 #include "uniform.h"
 #include "normal.h"
+#include "lognormal.h"
 
 using namespace std;
 
@@ -88,7 +89,7 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 		// distribution, respectively
 		if(tokens.size() < 3)
 			throw invalid_argument("Invalid normal distribution. Use\n" \
-				"   normal mean standard-deviation\n");
+				"   normal mean standard-deviation");
 
 		mean = read_double(tokens[1]);
 		stdev = read_double(tokens[2]);
@@ -98,6 +99,24 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 				" must be positive.");
 
 		ret = make_shared<NormalDistribution>(mean, stdev);
+	}
+	else if(type == "lognormal") {
+		double zeta, sigma;
+
+		// tokens[1] and tokens[2] are the mean and standard deviation (in log-
+		// space), respectively
+		if(tokens.size() < 3)
+			throw invalid_argument("Invalid lognormal distribution. Use\n" \
+				"   lognormal zeta sigma");
+
+		zeta = read_double(tokens[1]);
+		sigma = read_double(tokens[2]);
+
+		if(sigma <= 0.)
+			throw invalid_argument("Lognormal Distribution: The standard " \
+				"deviation (sigma) must be positive.");
+
+		ret = make_shared<LognormalDistribution>(zeta, sigma);
 	}
 	else
 		throw invalid_argument("Unrecognized probability distribution.\n" \
