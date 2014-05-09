@@ -131,6 +131,8 @@ The implemented random distributions are
          - `stdev` is \f$\sigma\f$.
       - Implemented by the class NormalDistribution.
 
+\todo Add lognormal and chi2 distributions.
+
 \subsection add_rnd_subsec Adding Random Distributions
 Random number distributions are computationally described by the
 RandomDistribution class. Adding a new random number distribution requires
@@ -169,7 +171,7 @@ parameters (from the distributions) and calculate the appropriate conductance.
      presented there.
    - Model parameters are
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode.
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
       - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode.
 
 - `SymmetricVoltageOneSiteModel`
@@ -187,6 +189,16 @@ parameters (from the distributions) and calculate the appropriate conductance.
    - Model parameters are
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
       - `gamma` (\f$\Gamma\f$), the site/lead coupling,
+      - `beta` (\f$\beta\f$), the inter-site coupling.
+
+- `AsymmetricTwoSiteModel`
+   - Two-site model with asymmetric site/lead couplings.
+   - Implemented by the class AsymmetricTwoSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
       - `beta` (\f$\beta\f$), the inter-site coupling.
 
 - `SymmetricVoltageTwoSiteModel`
