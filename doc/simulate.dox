@@ -180,6 +180,15 @@ parameters (from the distributions) and calculate the appropriate conductance.
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
       - `gamma` (\f$\Gamma\f$), the site/lead coupling.
 
+- `SymmetricTwoSiteModel`
+   - Two-site model with symmetric site/lead couplings.
+   - Implemented by the class SymmetricTwoSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
+      - `beta` (\f$\beta\f$), the inter-site coupling.
+
 - `SymmetricVoltageTwoSiteModel`
    - Two-site model with symmetric site/lead couplings and voltage-dependent site-energies.
    - Implemented by the class SymmetricVoltageTwoSiteModel; full details are

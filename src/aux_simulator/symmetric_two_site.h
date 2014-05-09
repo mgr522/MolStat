@@ -19,6 +19,22 @@ using std::shared_ptr;
 /**
  * \brief Class encapsulating the voltage-dependent, two-site model (symmetric
  *    coupling).
+ *
+ * Model parameters are
+ * - `epsilon` (\f$\varepsilon\f$), the site-energy,
+ * - `gamma` (\f$\Gamma\f$), the site/lead coupling,
+ * - `beta` (\f$\beta\f$), the inter-site coupling.
+ *
+ * Starting from \f[ \hat{H} = \left[ \begin{array}{cc} \varepsilon & \beta \\ \beta & \varepsilon \end{array} \right], \;\;\;\;
+ * \hat{\Sigma}_\mathrm{L} = \left[ \begin{array}{cc} -i\Gamma/2 & 0 \\ 0 & 0 \end{array} \right], \;\;\;\;
+ * \hat{\Sigma}_\mathrm{R} = \left[ \begin{array}{cc} 0 & 0 \\ 0 & -i\Gamma/2 \end{array} \right], \f]
+ * the transmission function is
+ * \f[ T(E) = \frac{16 \Gamma^2 \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma^2\right]^2 + 16 \Gamma^2(E-\varepsilon)^2}. \f]
+ * - Differential conductance:
+ *   \f[ g(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
+ * - Static conductance:
+ *   \f{eqnarray*}{ g(V) & = & \frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+e^2V^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon + \eta eV)}{2\beta + i\Gamma} \right) \right] \\
+ *   && -\frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+e^2V^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon + (\eta-1) eV)}{2\beta + i\Gamma} \right) \right]. \f}
  */
 class SymmetricTwoSiteModel : public ConductanceModel {
 protected:
