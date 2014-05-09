@@ -14,6 +14,7 @@
 #include "uniform.h"
 #include "normal.h"
 #include "lognormal.h"
+#include "gamma.h"
 
 using namespace std;
 
@@ -118,13 +119,32 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 
 		ret = make_shared<LognormalDistribution>(zeta, sigma);
 	}
+	else if(type == "gamma") {
+		double shape, scale;
+
+		// tokens[1] and tokens[2] are the shape and scale factors, respectively
+		if(tokens.size() < 3)
+			throw invalid_argument("Invalid gamma distribution. Use\n" \
+				"   gamma shape scale");
+
+		shape = read_double(tokens[1]);
+		scale = read_double(tokens[2]);
+
+		if(shape <= 0. || scale <= 0.)
+			throw invalid_argument("Gamma Distribution: The shape and scale " \
+				"factors must be positive.");
+
+		ret = make_shared<GammaDistribution>(shape, scale);
+	}
 	else
 		throw invalid_argument("Unrecognized probability distribution.\n" \
 			"Possible options are:\n" \
 			"   Constant - Specify a value.\n" \
 			"   Uniform - Uniform distribution.\n" \
 			"   Normal - Normal (Gaussian) distribution.\n" \
-			"   Gaussian - Normal (Gaussian) distribution.\n");
+			"   Gaussian - Normal (Gaussian) distribution.\n" \
+			"   Lognormal - Lognormal distribution.\n" \
+			"   Gamma - Gamma distribution.\n");
 
 	return ret;
 }

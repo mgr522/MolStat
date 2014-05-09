@@ -8,4 +8,6 @@ libaux_random_distributions_a_SOURCES = rng.h \
 	normal.h \
 	normal.cc \
 	lognormal.h \
-	lognormal.cc
+	lognormal.cc \
+	gamma.h \
+	gamma.cc

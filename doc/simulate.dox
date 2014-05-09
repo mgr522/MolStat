@@ -145,8 +145,6 @@ The implemented random distributions are
          - `b` is \f$b\f$, the scale factor.
       - Implemented by the class GammaDistribution.
 
-\todo Implement the gamma distribution.
-
 \subsection add_rnd_subsec Adding Random Distributions
 Random number distributions are computationally described by the
 RandomDistribution class. Adding a new random number distribution requires
