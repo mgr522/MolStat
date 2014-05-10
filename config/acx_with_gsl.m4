@@ -23,6 +23,11 @@ AC_DEFUN([ACX_WITH_GSL],
       [AC_MSG_ERROR([Unable to find the gsl/gsl_randist.h header file.])])
     AC_CHECK_HEADER([gsl/gsl_histogram2d.h], [],
       [AC_MSG_ERROR([Unable to find the gsl/gsl_histogram2d.h header file.])])
+
+    # Check for the GSL libraries
+    AC_CHECK_LIB([m], [cos])
+    AC_CHECK_LIB([gslcblas], [cblas_dgemm])
+    AC_CHECK_LIB([gsl], [gsl_blas_dgemm])
   else
     AC_MSG_ERROR([Unable to find GSL.])
   fi
