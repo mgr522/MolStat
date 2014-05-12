@@ -19,6 +19,9 @@
 #include <functional>
 #include <map>
 #include <cmath>
+#include <forward_list>
+#include <array>
+#include <limits>
 #include "string_tools.h"
 #include "aux_random_distributions/rng.h"
 #include "aux_random_distributions/constant.h"
@@ -60,27 +63,36 @@ enum class HistogramType {
  * \return Exit status; 0 for normal.
  */
 int main(int argc, char **argv) {
-
 	// initialize the GSL random number generator
 	gsl_rng_env_setup();
 	shared_ptr<gsl_rng> r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
 	gsl_rng_set(r.get(), 0xFEEDFACE);
 
-	int i, n;
-	size_t nbin;
+	// simulation variables
+	size_t ntrials, nbin, i;
 	function<double(double)> gmask, invgmask;
+
+	// model variables
 	double EF;
 	map<string, shared_ptr<RandomDistribution>> parameters;
 	shared_ptr<ConductanceModel> model;
 	shared_ptr<RandomDistribution> dist_V, dist_eta;
 
+	// I/O variables
 	string line, modeltype, name;
 	vector<string> tokens;
 
+	// histogram variables
 	CalculationType ctype;
 	HistogramType htype;
-	Histogram1D hist1;
-	Histogram2D hist2;
+	shared_ptr<Histogram1D> hist1;
+	shared_ptr<Histogram2D> hist2;
+
+	// variables for setting up the histograms / storing the random data
+	array<double, 2>
+		mins{{numeric_limits<double>::max(), numeric_limits<double>::max()}},
+		maxs{{-numeric_limits<double>::max(), -numeric_limits<double>::max()}};
+	forward_list<array<double, 2>> gdata;
 
 	// setup the simulation -- read in parameters from stdin
 	// Line 1: One token specifying the model to use
@@ -149,7 +161,7 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	try {
-		n = stoi(tokens[0]);
+		ntrials = stoul(tokens[0]);
 	}
 	catch(const invalid_argument &e) {
 		fprintf(stderr, "Error: unrecognizable number '%s'.\n",
@@ -296,7 +308,7 @@ int main(int argc, char **argv) {
 	}
 
 	// Get the requested number of voltage/conductance data points
-	for (i = 0; i < n; ++i) {
+	for (i = 0; i < ntrials; ++i) {
 		double V, GV;
 
 		if(ctype == CalculationType::Static ||
@@ -314,33 +326,51 @@ int main(int argc, char **argv) {
 			GV = model->zero_bias_conductance(r, EF);
 		}
 
-		if(htype == HistogramType::OneD)
-			hist1.add_data(gmask(GV));
-		else if(htype == HistogramType::TwoD)
-			hist2.add_data(V, gmask(GV));
+		// check the limits
+		if(V < mins[0])
+			mins[0] = V;
+		if(V > maxs[0])
+			maxs[0] = V;
+		if(GV < mins[1])
+			mins[1] = GV;
+		if(GV > maxs[1])
+			maxs[1] = GV;
+
+		// add the data to the list
+		gdata.emplace_front(array<double, 2>{{V, GV}});
 	}
 
-	// bin the data into a histogram and iterate through the bins to output
-	// the histogram
+	// set up the histogram, populate it, and print it
 	if(htype == HistogramType::OneD) {
-		hist1.bin(nbin);
+		hist1 = make_shared<Histogram1D>(nbin, mins[1], maxs[1]);
 
-		for(Histogram1D::const_iterator iter = hist1.begin();
-			iter != hist1.end();
+		while(!gdata.empty()) {
+			hist1->add_data(gdata.front()[1]);
+			gdata.pop_front();
+		}
+
+		for(Histogram1D::const_iterator iter = hist1->begin();
+			iter != hist1->end();
 			++iter) {
 
-			printf("%.6f %.6f\n", invgmask(iter.variable()), iter.bin_count());
+			printf("%.6f %.6f\n", iter.get_variable()[0], iter.get_bin_count());
 		}
 	}
 	else if(htype == HistogramType::TwoD) {
-		hist2.bin(nbin, nbin);
+		hist2 = make_shared<Histogram2D>(array<size_t, 2>{{nbin, nbin}},
+			mins, maxs);
 
-		for(Histogram2D::const_iterator iter = hist2.begin();
-			iter != hist2.end();
+		while(!gdata.empty()) {
+			hist2->add_data(gdata.front());
+			gdata.pop_front();
+		}
+
+		for(Histogram2D::const_iterator iter = hist2->begin();
+			iter != hist2->end();
 			++iter) {
 
-			printf("%.6f %.6f %.6f\n", iter.variable1(),
-				invgmask(iter.variable2()), iter.bin_count());
+			printf("%.6f %.6f %.6f\n", iter.get_variable()[0],
+				iter.get_variable()[1], iter.get_bin_count());
 		}
 	}
 
