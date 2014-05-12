@@ -342,7 +342,7 @@ int main(int argc, char **argv) {
 
 	// set up the histogram, populate it, and print it
 	if(htype == HistogramType::OneD) {
-		hist1 = make_shared<Histogram1D>(nbin, mins[1], maxs[1]);
+		hist1 = make_shared<Histogram1D>(nbin, mins[1], maxs[1], gmask, invgmask);
 
 		while(!gdata.empty()) {
 			hist1->add_data(gdata.front()[1]);
@@ -358,7 +358,7 @@ int main(int argc, char **argv) {
 	}
 	else if(htype == HistogramType::TwoD) {
 		hist2 = make_shared<Histogram2D>(array<size_t, 2>{{nbin, nbin}},
-			mins, maxs);
+			mins, maxs, gmask, invgmask);
 
 		while(!gdata.empty()) {
 			hist2->add_data(gdata.front());

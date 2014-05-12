@@ -15,7 +15,7 @@ Histogram1D::Histogram1D(const std::size_t nbin, const double minval,
 	: Histogram<1>(),
 	  hist(gsl_histogram_alloc(nbin), &gsl_histogram_free) {
 
-	gsl_histogram_set_ranges_uniform(hist.get(), minval, maxval);
+	gsl_histogram_set_ranges_uniform(hist.get(), gmask(minval), gmask(maxval));
 }
 
 Histogram1D::Histogram1D(const std::size_t nbin, const double minval,
@@ -24,7 +24,7 @@ Histogram1D::Histogram1D(const std::size_t nbin, const double minval,
 	: Histogram<1>(gmask, invgmask),
 	  hist(gsl_histogram_alloc(nbin), &gsl_histogram_free) {
 
-	gsl_histogram_set_ranges_uniform(hist.get(), minval, maxval);
+	gsl_histogram_set_ranges_uniform(hist.get(), gmask(minval), gmask(maxval));
 }
 
 void Histogram1D::add_data(const double v) {

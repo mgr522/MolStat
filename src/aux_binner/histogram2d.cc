@@ -15,8 +15,8 @@ Histogram2D::Histogram2D(const std::array<std::size_t, 2> &nbin,
 	: Histogram<2>(),
 	  hist(gsl_histogram2d_alloc(nbin[0], nbin[1]), &gsl_histogram2d_free) {
 
-	gsl_histogram2d_set_ranges_uniform(hist.get(), mins[0], maxs[0], mins[1],
-		maxs[1]);
+	gsl_histogram2d_set_ranges_uniform(hist.get(), mins[0], maxs[0],
+		gmask(mins[1]), gmask(maxs[1]));
 }
 
 Histogram2D::Histogram2D(const std::array<std::size_t, 2> &nbin,
@@ -26,8 +26,8 @@ Histogram2D::Histogram2D(const std::array<std::size_t, 2> &nbin,
 	: Histogram<2>(gmask, invgmask),
 	  hist(gsl_histogram2d_alloc(nbin[0], nbin[1]), &gsl_histogram2d_free) {
 
-	gsl_histogram2d_set_ranges_uniform(hist.get(), mins[0], maxs[0], mins[1],
-		maxs[1]);
+	gsl_histogram2d_set_ranges_uniform(hist.get(), mins[0], maxs[0],
+		gmask(mins[1]), gmask(maxs[1]));
 }
 
 void Histogram2D::add_data(const std::array<double, 2> &v) {
