@@ -11,36 +11,15 @@
 
 #include <memory>
 #include <gsl/gsl_histogram.h>
-#include <queue>
+#include "histogram_interface.h"
 
 /**
- * \brief Interface for making histograms using GSL.
- *
- * In the beginning, this class simply collects (and stores) data that will
- * eventually be binned into a histogram. At some point, the user decides to
- * bin; the bounds of the bins are determined by the data. After the initial
- * binning, data can still be added. It is not stored, but rather just added
- * to the bin counts.
+ * \brief Implements 1D histograms.
  *
  * An iterator-style class is also provided for iterating through the bins.
  */
-class Histogram1D {
+class Histogram1D : public Histogram<1> {
 protected:
-	/**
-	 * \brief List of the data to be binned into the histogram.
-	 */
-	std::queue<double> data;
-
-	/**
-	 * \brief The minimum value of the variable.
-	 */
-	double minval;
-
-	/**
-	 * \brief The maximum value of the variable.
-	 */
-	double maxval;
-
 	/**
 	 * \brief The handle to the GSL histogram functions.
 	 */
@@ -50,9 +29,15 @@ public:
 	class const_iterator;
 
 	/**
-	 * \brief Default constructor.
+	 * \brief Constructor requiring the number of bins in the histogram and the
+	 *    ranges of the variables.
+	 *
+	 * \param[jn] nbin The number of bins to use.
+	 * \param[in] minval The minimum value in the histogram range.
+	 * \param[in] maxval The maximum value in the histogram range.
 	 */
-	Histogram1D();
+	Histogram1D(const std::size_t nbin, const double minval,
+		const double maxval);
 
 	/**
 	 * \brief Adds a data element to the histogram.
@@ -62,11 +47,11 @@ public:
 	void add_data(const double v);
 
 	/**
-	 * \brief Bin the based on what's stored in the queue.
+	 * \brief Adds a data element to the histogram.
 	 *
-	 * \param[in] n Number of bins to use.
+	 * \param[in] v The variable.
 	 */
-	void bin(const size_t n);
+	virtual void add_data(const std::array<double, 1> &v);
 
 	/**
 	 * \brief Get an iterator to the front of this histogram.
@@ -85,43 +70,25 @@ public:
 	/**
 	 * \brief Iterator class for accessing the histogram bins.
 	 */
-	class const_iterator {
-	private:
+	class const_iterator : public Histogram<1>::const_iterator {
+	protected:
 		/**
 		 * \brief The GSL histogram handle.
 		 */
 		const std::shared_ptr<const gsl_histogram> hist;
 
 		/**
-		 * \brief The bin index.
-		 */
-		size_t bin;
-
-		/**
-		 * \brief The value of the variable in the middle of this bin.
-		 */
-		double val_;
-
-		/**
-		 * \brief The bin count of this bin.
-		 */
-		double bincount_;
-
-		/**
 		 * \brief Advances the values of bin to the next bin.
 		 */
-		void next_bin();
+		virtual void next_bin();
 
 		/**
 		 * \brief Sets the values of val_ and bincount_ for this bin.
 		 */
-		void set_output();
+		virtual void set_output();
 
 	public:
-		/**
-		 * \brief Default constructor.
-		 */
-		const_iterator();
+		const_iterator() = delete;
 
 		/**
 		 * \brief Constucts the iterator; based on the GSL histogram handle.
@@ -143,20 +110,6 @@ public:
 		 * \return State of the iterator after iteration.
 		 */
 		const_iterator operator++(int);
-
-		/**
-		 * \brief Get the value of the variable in the middle of this bin.
-		 *
-		 * \return The value of the variable in the middle of this bin.
-		 */
-		double variable() const;
-
-		/**
-		 * \brief Get the bin count of this bin.
-		 *
-		 * \return The bin count of this bin.
-		 */
-		double bin_count() const;
 
 		/**
 		 * \brief Determine if these iterators refer to the same state.
