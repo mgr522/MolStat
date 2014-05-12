@@ -21,7 +21,9 @@
 #include <cmath>
 #include "string_tools.h"
 #include "aux_random_distributions/rng.h"
+#include "aux_random_distributions/constant.h"
 #include "aux_simulator/conductance_model.h"
+#include "aux_binner/histogram1d.h"
 #include "aux_binner/histogram2d.h"
 
 using namespace std;
@@ -33,6 +35,18 @@ enum class CalculationType {
 	Static, // Voltage-Dependent Static Conductance
 	Differential, // Voltage-Dependend Differential Conductance
 	ZeroBias // Zero-Bias Differential Conductance
+};
+
+/**
+ * \brief Enum for the type of histogram (1D or 2D).
+ *
+ * A `ZeroBias` CalculationType is always 1D. `Static` and `Differential` are
+ * usually 2D, but can be 1D if the voltage's random distribution is a
+ * ConstantDistribution.
+ */
+enum class HistogramType {
+	OneD, // 1D Histogram
+	TwoD // 2D Histogram
 };
 
 /**
@@ -52,7 +66,6 @@ int main(int argc, char **argv) {
 	shared_ptr<gsl_rng> r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
 	gsl_rng_set(r.get(), 0xFEEDFACE);
 
-	CalculationType type;
 	int i, n;
 	size_t nbin;
 	function<double(double)> gmask;
@@ -60,11 +73,14 @@ int main(int argc, char **argv) {
 	map<string, shared_ptr<RandomDistribution>> parameters;
 	shared_ptr<ConductanceModel> model;
 	shared_ptr<RandomDistribution> dist_V, dist_eta;
-	function<void(void)> conductance_function;
-	Histogram2D hist;
 
 	string line, modeltype, name;
 	vector<string> tokens;
+
+	CalculationType ctype;
+	HistogramType htype;
+	Histogram1D hist1;
+	Histogram2D hist2;
 
 	// setup the simulation -- read in parameters from stdin
 	// Line 1: One token specifying the model to use
@@ -101,12 +117,18 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	make_lower(tokens[0]);
-	if(tokens[0] == "static")
-		type = CalculationType::Static;
-	else if(tokens[0] == "differential")
-		type = CalculationType::Differential;
-	else if(tokens[0] == "zerobias")
-		type = CalculationType::ZeroBias;
+	if(tokens[0] == "static") {
+		ctype = CalculationType::Static;
+		htype = HistogramType::TwoD;
+	}
+	else if(tokens[0] == "differential") {
+		ctype = CalculationType::Differential;
+		htype = HistogramType::TwoD;
+	}
+	else if(tokens[0] == "zerobias") {
+		ctype = CalculationType::ZeroBias;
+		htype = HistogramType::OneD;
+	}
 	else {
 		fprintf(stderr, "Error: Unrecognized conductance type in line 2.\n   " \
 			"It must be \"Static\", \"Differential\", or \"ZeroBias\".\n");
@@ -219,6 +241,7 @@ int main(int argc, char **argv) {
 		}
 	}
 	catch(const runtime_error &e) {
+		// this just means we hit EOF -- stop trying to read more
 	}
 
 	// set the distributions required by the model
@@ -230,10 +253,10 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-	// set up the run function for each type...
-	// this may require other distributions to be set
-	if(type == CalculationType::Static ||
-		type == CalculationType::Differential) {
+	// set up other variables for the simulation, including setting other
+	// distributions
+	if(ctype == CalculationType::Static ||
+		ctype == CalculationType::Differential) {
 
 		// make sure there are distributions for V and eta
 		try {
@@ -253,28 +276,13 @@ int main(int argc, char **argv) {
 			return 0;
 		}
 
-		// set the conductance function
-		if(type == CalculationType::Static) {
-			conductance_function = [&] () {
-				double V = dist_V->sample(r);
-				double GV = model->static_conductance(r, EF, dist_eta->sample(r),
-					V);
-				hist.add_data(V, gmask(GV));
-			};
-		}
-		else if(type == CalculationType::Differential) {
-			conductance_function = [&] () {
-				double V = dist_V->sample(r);
-				double GV = model->diff_conductance(r, EF, dist_eta->sample(r), V);
-				hist.add_data(V, gmask(GV));
-			};
-		}
+		// check if V is a ConstantDistribution. If it is, this is really a 1D
+		// histogram
+		if(dynamic_pointer_cast<ConstantDistribution>(dist_V) != nullptr)
+			htype = HistogramType::OneD;
 	}
-	else if(type == CalculationType::ZeroBias) {
-		// no extra distributions required... proceed to the calculation
-		conductance_function = [&] () {
-			hist.add_data(0.0, gmask(model->zero_bias_conductance(r, EF)));
-		};
+	else if(ctype == CalculationType::ZeroBias) {
+		// nothing required
 	}
 	else {
 		// should never be here
@@ -282,30 +290,52 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-	// Get the requested number of voltage-conductance data points
+	// Get the requested number of voltage/conductance data points
 	for (i = 0; i < n; ++i) {
-		conductance_function();
+		double V, GV;
+
+		if(ctype == CalculationType::Static ||
+			ctype == CalculationType::Differential) {
+
+			V = dist_V->sample(r);
+
+			if(ctype == CalculationType::Static)
+				GV = model->static_conductance(r, EF, dist_eta->sample(r), V);
+			else
+				GV = model->diff_conductance(r, EF, dist_eta->sample(r), V);
+		}
+		else if(ctype == CalculationType::ZeroBias) {
+			GV = model->zero_bias_conductance(r, EF);
+		}
+
+		if(htype == HistogramType::OneD)
+			hist1.add_data(gmask(GV));
+		else if(htype == HistogramType::TwoD)
+			hist2.add_data(V, gmask(GV));
 	}
 
-	// bin the data into a histogram
-	if(type == CalculationType::Static || type == CalculationType::Differential)
-		hist.bin(nbin, nbin);
-	else if(type == CalculationType::ZeroBias)
-		hist.bin(1, nbin);
+	// bin the data into a histogram and iterate through the bins to output
+	// the histogram
+	if(htype == HistogramType::OneD) {
+		hist1.bin(nbin);
 
-	// iterate through the bins and output the data
-	for(Histogram2D::const_iterator iter = hist.begin();
-		iter != hist.end();
-		++iter) {
+		for(Histogram1D::const_iterator iter = hist1.begin();
+			iter != hist1.end();
+			++iter) {
 
-		if(type == CalculationType::Static ||
-			type == CalculationType::Differential) {
+			printf("%.6f %.6f\n", iter.variable(), iter.bin_count());
+		}
+	}
+	else if(htype == HistogramType::TwoD) {
+		hist2.bin(nbin, nbin);
+
+		for(Histogram2D::const_iterator iter = hist2.begin();
+			iter != hist2.end();
+			++iter) {
 
 			printf("%.6f %.6f %.6f\n", iter.variable1(), iter.variable2(),
 				iter.bin_count());
 		}
-		else if(type == CalculationType::ZeroBias)
-			printf("%.6f %.6f\n", iter.variable2(), iter.bin_count());
 	}
 
 	return 0;
