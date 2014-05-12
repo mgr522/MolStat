@@ -1,6 +1,6 @@
 /**
  * \file histogram1d.h
- * \brief Provides an interface for the GSL histogram functions.
+ * \brief Provides a class for making 1D histograms from data.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
@@ -27,6 +27,7 @@ protected:
 
 public:
 	class const_iterator;
+	Histogram1D() = delete;
 
 	/**
 	 * \brief Constructor requiring the number of bins in the histogram and the

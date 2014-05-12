@@ -62,6 +62,11 @@ protected:
 		const_iterator();
 
 		/**
+		 * \brief Default destructor.
+		 */
+		virtual ~const_iterator() = default;
+
+		/**
 		 * \brief Get the value of the variable in the middle of this bin.
 		 *
 		 * \return The value of the variable in the middle of this bin.
@@ -81,6 +86,11 @@ public:
 	 * \brief Default constructor.
 	 */
 	Histogram() = default;
+
+	/**
+	 * \brief Destructor.
+	 */
+	virtual ~Histogram() = default;
 
 	/**
 	 * \brief Adds a data element to the histogram.

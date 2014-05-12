@@ -21,53 +21,50 @@ using namespace std;
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
  */
 int main(int argc, char **argv) {
-	Histogram2D hist;
+	Histogram2D hist({{2,2}}, {{0.,0.}}, {{1.,1.}});
 	const double thresh = 1.0e-6;
 
 	// artificially populate the histogram
-	hist.add_data(0.4, 0.4); // 1
-	hist.add_data(0.3, 0.7); // 2
-	hist.add_data(0.4, 0.0); // 1
-	hist.add_data(1.0, 0.7); // 4 -- outside since 1. is excluded
-	hist.add_data(0.1, 0.8); // 2
-	hist.add_data(0.6, 0.1); // 3
-	hist.add_data(0.2, 0.2); // 1
-	hist.add_data(0.3, 0.0); // 1
-	hist.add_data(0.7, 1.0); // 4 -- outside since 1. is excluded
-	hist.add_data(0.0, 0.8); // 2
-
-	// make the histogram
-	hist.bin(2, 2);
+	hist.add_data({{0.4, 0.4}}); // 1
+	hist.add_data({{0.3, 0.7}}); // 2
+	hist.add_data({{0.4, 0.0}}); // 1
+	hist.add_data({{1.0, 0.7}}); // 4 -- outside since 1. is excluded
+	hist.add_data({{0.1, 0.8}}); // 2
+	hist.add_data({{0.6, 0.1}}); // 3
+	hist.add_data({{0.2, 0.2}}); // 1
+	hist.add_data({{0.3, 0.0}}); // 1
+	hist.add_data({{0.7, 1.0}}); // 4 -- outside since 1. is excluded
+	hist.add_data({{0.0, 0.8}}); // 2
 
 	// check the bin contents and the iterator class
 	Histogram2D::const_iterator iter = hist.begin();
 
 	// bin 0, 0 (#1 above)
 	// the average is (0.25, 0.25) and the bin count should be 4
-	assert(abs(iter.variable1() - 0.25) < thresh);
-	assert(abs(iter.variable2() - 0.25) < thresh);
-	assert(abs(iter.bin_count() - 4.) < thresh);
+	assert(abs(iter.get_variable()[0] - 0.25) < thresh);
+	assert(abs(iter.get_variable()[1] - 0.25) < thresh);
+	assert(abs(iter.get_bin_count() - 4.) < thresh);
 
 	++iter;
 	// bin 0, 1 (#2 above)
 	// the average is (0.25, 0.75) and the bin count should be 3
-	assert(abs(iter.variable1() - 0.25) < thresh);
-	assert(abs(iter.variable2() - 0.75) < thresh);
-	assert(abs(iter.bin_count() - 3.) < thresh);
+	assert(abs(iter.get_variable()[0] - 0.25) < thresh);
+	assert(abs(iter.get_variable()[1] - 0.75) < thresh);
+	assert(abs(iter.get_bin_count() - 3.) < thresh);
 
 	iter++;
 	// bin 1, 0 (#3 above)
 	// the average is (0.75, 0.25) and the bin count should be 1
-	assert(abs(iter.variable1() - 0.75) < thresh);
-	assert(abs(iter.variable2() - 0.25) < thresh);
-	assert(abs(iter.bin_count() - 1.) < thresh);
+	assert(abs(iter.get_variable()[0] - 0.75) < thresh);
+	assert(abs(iter.get_variable()[1] - 0.25) < thresh);
+	assert(abs(iter.get_bin_count() - 1.) < thresh);
 
 	++iter;
 	// bin 1, 1 (#4 above)
 	// the average is (0.75, 0.75) and the bin count should be 0
-	assert(abs(iter.variable1() - 0.75) < thresh);
-	assert(abs(iter.variable2() - 0.75) < thresh);
-	assert(abs(iter.bin_count() - 0.) < thresh);
+	assert(abs(iter.get_variable()[0] - 0.75) < thresh);
+	assert(abs(iter.get_variable()[1] - 0.75) < thresh);
+	assert(abs(iter.get_bin_count() - 0.) < thresh);
 
 	// just for sanity
 	++iter;

@@ -10,40 +10,16 @@
 #define __histogram2d_h__
 
 #include <memory>
-#include <utility>
 #include <gsl/gsl_histogram2d.h>
-#include <queue>
+#include "histogram_interface.h"
 
 /**
- * \brief Class that manages and bins data into 2D histograms using the GSL
- *    interface.
- *
- * In the beginning, this class simply collects (and stores) data that will
- * eventually be binned into a histogram. The data is in the form of a pair,
- * consisting of two ordered variables. At some point, the user decides to
- * bin; the bounds of the bins are determined by the data. After the initial
- * binning, data can still be added. It is not stored, but rather just added
- * to the bin counts.
+ * \brief Implements 2D histograms.
  *
  * An iterator-style class is also provided for iterating through the bins.
  */
-class Histogram2D {
+class Histogram2D : public Histogram<2> {
 protected:
-	/**
-	 * \brief List of the data to be binned into the histogram.
-	 */
-	std::queue<std::pair<double, double>> data;
-
-	/**
-	 * \brief Stores the minimum values of the first and second variables.
-	 */
-	std::pair<double, double> mins;
-
-	/**
-	 * \brief Stores the maximum values of the first and second variables.
-	 */
-	std::pair<double, double> maxs;
-
 	/**
 	 * \brief The handle to the GSL histogram functions.
 	 */
@@ -51,27 +27,25 @@ protected:
 
 public:
 	class const_iterator;
+	Histogram2D() = delete;
 
 	/**
-	 * \brief Default constructor.
+	 * \brief Constructor requiring the number of bins in the histogram and the
+	 *    ranges of the variables.
+	 *
+	 * \param[in] nbin The number of bins to use, in each dimension.
+	 * \param[in] mins The minimum values in the ranges of each dimension.
+	 * \param[in] maxs The maximum values in the ranges of each dimension.
 	 */
-	Histogram2D();
+	Histogram2D(const std::array<std::size_t, 2> &nbin,
+		const std::array<double, 2> &mins, const std::array<double, 2> &maxs);
 
 	/**
 	 * \brief Adds a data element to the histogram.
 	 *
-	 * \param[in] v1 The first variable.
-	 * \param[in] v2 The second variable.
+	 * \param[in] v The 2D data variable.
 	 */
-	void add_data(const double v1, const double v2);
-
-	/**
-	 * \brief Bin the based on what's stored in the queue.
-	 *
-	 * \param[in] n1 Number of bins for the first variable.
-	 * \param[in] n2 Number of bins for the second variable.
-	 */
-	void bin(const size_t n1, const size_t n2);
+	virtual void add_data(const std::array<double, 2> &v);
 
 	/**
 	 * \brief Get an iterator to the front of this histogram.
@@ -90,53 +64,25 @@ public:
 	/**
 	 * \brief Iterator class for accessing the histogram bins.
 	 */
-	class const_iterator {
-	private:
+	class const_iterator : public Histogram<2>::const_iterator {
+	protected:
 		/**
 		 * \brief The GSL histogram handle.
 		 */
 		const std::shared_ptr<const gsl_histogram2d> hist;
 
 		/**
-		 * \brief The bin index for the first variable.
-		 */
-		size_t bin1;
-
-		/**
-		 * \brief The bin index for the second variable.
-		 */
-		size_t bin2;
-
-		/**
-		 * \brief The value of the first variable in the middle of this bin.
-		 */
-		double val1_;
-
-		/**
-		 * \brief The value of the second variable in the middle of this bin.
-		 */
-		double val2_;
-
-		/**
-		 * \brief The bin count of this bin.
-		 */
-		double bincount_;
-
-		/**
 		 * \brief Advances the values of bin1 and bin2 to the next bin.
 		 */
-		void next_bin();
+		virtual void next_bin();
 
 		/**
 		 * \brief Sets the values of val1_, val2_, and bincount_ for this bin.
 		 */
-		void set_output();
+		virtual void set_output();
 
 	public:
-		/**
-		 * \brief Default constructor.
-		 */
-		const_iterator();
+		const_iterator() = delete;
 
 		/**
 		 * \brief Constucts the iterator; based on the GSL histogram handle.
@@ -158,27 +104,6 @@ public:
 		 * \return State of the iterator after iteration.
 		 */
 		const_iterator operator++(int);
-
-		/**
-		 * \brief Get the value of the first variable in the middle of this bin.
-		 *
-		 * \return The value of the first variable in the middle of this bin.
-		 */
-		double variable1() const;
-
-		/**
-		 * \brief Get the value of the second variable in the middle of this bin.
-		 *
-		 * \return The value of the second variable in the middle of this bin.
-		 */
-		double variable2() const;
-
-		/**
-		 * \brief Get the bin count of this bin.
-		 *
-		 * \return The bin count of this bin.
-		 */
-		double bin_count() const;
 
 		/**
 		 * \brief Determine if these iterators refer to the same state.
