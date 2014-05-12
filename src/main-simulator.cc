@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 
 	int i, n;
 	size_t nbin;
-	function<double(double)> gmask;
+	function<double(double)> gmask, invgmask;
 	double EF;
 	map<string, shared_ptr<RandomDistribution>> parameters;
 	shared_ptr<ConductanceModel> model;
@@ -179,14 +179,19 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	make_lower(tokens[1]);
-	if(tokens[1] == "log")
+	if(tokens[1] == "log") {
 		gmask = [] (const double g) {
 			return log10(g);
 		};
-	else if(tokens[1] == "linear")
-		gmask = [] (const double g) {
+		invgmask = [] (const double logg) {
+			return pow(10., logg);
+		};
+	}
+	else if(tokens[1] == "linear") {
+		gmask = invgmask = [] (const double g) {
 			return g;
 		};
+	}
 	else {
 		fprintf(stderr, "Error: unknown binning type '%s'.\nShould be 'log' " \
 			"or 'linear'.\n", tokens[1].c_str());
@@ -305,6 +310,7 @@ int main(int argc, char **argv) {
 				GV = model->diff_conductance(r, EF, dist_eta->sample(r), V);
 		}
 		else if(ctype == CalculationType::ZeroBias) {
+			V = 0.;
 			GV = model->zero_bias_conductance(r, EF);
 		}
 
@@ -323,7 +329,7 @@ int main(int argc, char **argv) {
 			iter != hist1.end();
 			++iter) {
 
-			printf("%.6f %.6f\n", iter.variable(), iter.bin_count());
+			printf("%.6f %.6f\n", invgmask(iter.variable()), iter.bin_count());
 		}
 	}
 	else if(htype == HistogramType::TwoD) {
@@ -333,8 +339,8 @@ int main(int argc, char **argv) {
 			iter != hist2.end();
 			++iter) {
 
-			printf("%.6f %.6f %.6f\n", iter.variable1(), iter.variable2(),
-				iter.bin_count());
+			printf("%.6f %.6f %.6f\n", iter.variable1(),
+				invgmask(iter.variable2()), iter.bin_count());
 		}
 	}
 
