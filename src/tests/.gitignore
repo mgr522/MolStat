@@ -2,6 +2,9 @@ test-suite.log
 test_asymmetric_one_site
 test_asymmetric_one_site.log
 test_asymmetric_one_site.trs
+test_histogram1d
+test_histogram1d.log
+test_histogram1d.trs
 test_histogram2d
 test_histogram2d.log
 test_histogram2d.trs
