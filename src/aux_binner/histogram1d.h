@@ -10,6 +10,7 @@
 #define __histogram1d_h__
 
 #include <memory>
+#include <functional>
 #include <gsl/gsl_histogram.h>
 #include "histogram_interface.h"
 
@@ -31,7 +32,8 @@ public:
 
 	/**
 	 * \brief Constructor requiring the number of bins in the histogram and the
-	 *    ranges of the variables.
+	 *    ranges of the variables. Assumes the identity function for the
+	 *    conductance mask,
 	 *
 	 * \param[in] nbin The number of bins to use.
 	 * \param[in] minval The minimum value in the histogram range.
@@ -39,6 +41,20 @@ public:
 	 */
 	Histogram1D(const std::size_t nbin, const double minval,
 		const double maxval);
+
+	/**
+	 * \brief Constructor requiring the number of bins in the histogram, the
+	 *    ranges of the variables, and the conductance mask.
+	 *
+	 * \param[in] nbin The number of bins to use.
+	 * \param[in] minval The minimum value in the histogram range.
+	 * \param[in] maxval The maximum value in the histogram range.
+	 * \param[in] gmask The conductance mask function to use when binning.
+	 * \param[in] invgmask The inverse conductance mask function.
+	 */
+	Histogram1D(const std::size_t nbin, const double minval,
+		const double maxval, const std::function<double(double)> gmask,
+		const std::function<double(double)> invgmask);
 
 	/**
 	 * \brief Adds a data element to the histogram.
@@ -95,8 +111,10 @@ public:
 		 * \brief Constucts the iterator; based on the GSL histogram handle.
 		 *
 		 * \param[in] h The GSL histogram handle.
+		 * \param[in] invgmask The inverse conductance mask function.
 	 	 */
-		const_iterator(const std::shared_ptr<const gsl_histogram> h);
+		const_iterator(const std::shared_ptr<const gsl_histogram> h,
+			const std::function<double(double)> invgmask);
 
 		/**
 		 * \brief Prefix forward iteration operator.
