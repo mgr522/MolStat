@@ -22,7 +22,7 @@
 #include "string_tools.h"
 #include "aux_random_distributions/rng.h"
 #include "aux_simulator/conductance_model.h"
-#include "aux_binner/histogram2d_interface.h"
+#include "aux_binner/histogram2d.h"
 
 using namespace std;
 

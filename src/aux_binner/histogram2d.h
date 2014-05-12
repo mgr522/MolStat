@@ -1,15 +1,16 @@
 /**
- * \file histogram2d_interface.h
+ * \file histogram2d.h
  * \brief Provides a class for making 2D histograms from data.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
  */
 
-#ifndef __histogram2d_interface_h__
-#define __histogram2d_interface_h__
+#ifndef __histogram2d_h__
+#define __histogram2d_h__
 
 #include <memory>
+#include <utility>
 #include <gsl/gsl_histogram2d.h>
 #include <queue>
 

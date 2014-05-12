@@ -1,4 +1,6 @@
 noinst_LIBRARIES = libaux_binner.a
 
-libaux_binner_a_SOURCES = histogram2d_interface.h \
-	histogram2d_interface.cc
+libaux_binner_a_SOURCES = histogram1d.h \
+	histogram1d.cc \
+	histogram2d.h \
+	histogram2d.cc

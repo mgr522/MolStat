@@ -1,12 +1,12 @@
 /**
- * \file histogram2d_interface.cc
+ * \file histogram2d.cc
  * \brief Implementation of a class for making 2D histograms from data.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
  */
 
-#include "histogram2d_interface.h"
+#include "histogram2d.h"
 #include <limits>
 
 using namespace std;
