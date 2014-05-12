@@ -33,7 +33,7 @@ public:
 	 * \brief Constructor requiring the number of bins in the histogram and the
 	 *    ranges of the variables.
 	 *
-	 * \param[jn] nbin The number of bins to use.
+	 * \param[in] nbin The number of bins to use.
 	 * \param[in] minval The minimum value in the histogram range.
 	 * \param[in] maxval The maximum value in the histogram range.
 	 */
