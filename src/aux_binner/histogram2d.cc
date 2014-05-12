@@ -1,5 +1,5 @@
 /**
- * \file histogram2d.cc
+ * \file aux_binner/histogram2d.cc
  * \brief Implementation of a class for making 2D histograms from data.
  *
  * \author Matthew G.\ Reuter
