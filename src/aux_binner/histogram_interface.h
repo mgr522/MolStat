@@ -26,6 +26,8 @@
  * BinningStyle.
  *
  * An iterator-style class is provided for iterating through the bins.
+ *
+ * \tparam N The dimensionality of the histogram.
  */
 template <std::size_t N>
 class Histogram {
