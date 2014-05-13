@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <cmath>
 #include "../aux_binner/histogram1d.h"
+#include "../aux_binner/bin_linear.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ using namespace std;
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
  */
 int main(int argc, char **argv) {
-	Histogram1D hist(5, 0., 1.);
+	Histogram1D hist(5, 0., 1., make_shared<BinLinear>());
 	const double thresh = 1.0e-6;
 
 	// artificially populate the histogram
