@@ -28,6 +28,8 @@
 #include "aux_simulator/conductance_model.h"
 #include "aux_binner/histogram1d.h"
 #include "aux_binner/histogram2d.h"
+#include "aux_binner/bin_linear.h"
+#include "aux_binner/bin_log.h"
 
 using namespace std;
 
@@ -70,7 +72,6 @@ int main(int argc, char **argv) {
 
 	// simulation variables
 	size_t ntrials, nbin, i;
-	function<double(double)> gmask, invgmask;
 
 	// model variables
 	double EF;
@@ -83,6 +84,7 @@ int main(int argc, char **argv) {
 	vector<string> tokens;
 
 	// histogram variables
+	shared_ptr<BinStyle> bstyle;
 	CalculationType ctype;
 	HistogramType htype;
 	shared_ptr<Histogram1D> hist1;
@@ -191,19 +193,10 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	make_lower(tokens[1]);
-	if(tokens[1] == "log") {
-		gmask = [] (const double g) {
-			return log10(g);
-		};
-		invgmask = [] (const double logg) {
-			return pow(10., logg);
-		};
-	}
-	else if(tokens[1] == "linear") {
-		gmask = invgmask = [] (const double g) {
-			return g;
-		};
-	}
+	if(tokens[1] == "log")
+		bstyle = make_shared<BinLog>(10.);
+	else if(tokens[1] == "linear")
+		bstyle = make_shared<BinLinear>();
 	else {
 		fprintf(stderr, "Error: unknown binning type '%s'.\nShould be 'log' " \
 			"or 'linear'.\n", tokens[1].c_str());
@@ -342,7 +335,7 @@ int main(int argc, char **argv) {
 
 	// set up the histogram, populate it, and print it
 	if(htype == HistogramType::OneD) {
-		hist1 = make_shared<Histogram1D>(nbin, mins[1], maxs[1], gmask, invgmask);
+		hist1 = make_shared<Histogram1D>(nbin, mins[1], maxs[1], bstyle);
 
 		while(!gdata.empty()) {
 			hist1->add_data(gdata.front()[1]);
@@ -358,7 +351,7 @@ int main(int argc, char **argv) {
 	}
 	else if(htype == HistogramType::TwoD) {
 		hist2 = make_shared<Histogram2D>(array<size_t, 2>{{nbin, nbin}},
-			mins, maxs, gmask, invgmask);
+			mins, maxs, bstyle);
 
 		while(!gdata.empty()) {
 			hist2->add_data(gdata.front());
