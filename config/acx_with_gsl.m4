@@ -25,6 +25,16 @@ AC_DEFUN([ACX_WITH_GSL],
       [AC_MSG_ERROR([Unable to find the gsl/gsl_histogram.h header file.])])
     AC_CHECK_HEADER([gsl/gsl_histogram2d.h], [],
       [AC_MSG_ERROR([Unable to find the gsl/gsl_histogram2d.h header file.])])
+    AC_CHECK_HEADER([gsl/gsl_blas.h], [],
+      [AC_MSG_ERROR([Unable to find the gsl/gsl_blas.h header file.])])
+    AC_CHECK_HEADER([gsl/gsl_vector.h], [],
+      [AC_MSG_ERROR([Unable to find the gsl/gsl_vector.h header file.])])
+    AC_CHECK_HEADER([gsl/gsl_matrix.h], [],
+      [AC_MSG_ERROR([Unable to find the gsl/gsl_matrix.h header file.])])
+    AC_CHECK_HEADER([gsl/gsl_multifit_nlin.h], [],
+      [AC_MSG_ERROR([Unable to find the gsl/gsl_multifit_nlin.h header file.])])
+    AC_CHECK_HEADER([gsl/gsl_integration.h], [],
+      [AC_MSG_ERROR([Unable to find the gsl/gsl_integration.h header file.])])
 
     # Check for the GSL libraries
     AC_CHECK_LIB([m], [cos])
