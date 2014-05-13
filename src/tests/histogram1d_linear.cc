@@ -22,7 +22,8 @@ using namespace std;
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
  */
 int main(int argc, char **argv) {
-	Histogram1D hist(5, 0., 1., make_shared<BinLinear>());
+	shared_ptr<BinStyle> bstyle(make_shared<BinLinear>());
+	Histogram1D hist(5, 0., 1., bstyle);
 	const double thresh = 1.0e-6;
 
 	// artificially populate the histogram
@@ -46,31 +47,31 @@ int main(int argc, char **argv) {
 	// bin 0 (#1 above)
 	// the average coordinate is 0.1 and the bin count should be 4
 	assert(abs(iter.get_variable()[0] - 0.1) < thresh);
-	assert(abs(iter.get_bin_count() - 4.) < thresh);
+	assert(abs(iter.get_bin_count() - 4.*bstyle->dudg(0.1)) < thresh);
 
 	++iter;
 	// bin 1 (#2 above)
 	// the average coordinate is 0.3 and the bin count should be 1
 	assert(abs(iter.get_variable()[0] - 0.3) < thresh);
-	assert(abs(iter.get_bin_count() - 1.) < thresh);
+	assert(abs(iter.get_bin_count() - 1.*bstyle->dudg(0.3)) < thresh);
 
 	iter++;
 	// bin 2 (#3 above)
 	// the average coordinate is 0.5 and the bin count should be 2
 	assert(abs(iter.get_variable()[0] - 0.5) < thresh);
-	assert(abs(iter.get_bin_count() - 2.) < thresh);
+	assert(abs(iter.get_bin_count() - 2.*bstyle->dudg(0.5)) < thresh);
 
 	++iter;
 	// bin 3 (#4 above)
 	// the average coordinate is 0.7 and the bin count should be 2
 	assert(abs(iter.get_variable()[0] - 0.7) < thresh);
-	assert(abs(iter.get_bin_count() - 2.) < thresh);
+	assert(abs(iter.get_bin_count() - 2.*bstyle->dudg(0.7)) < thresh);
 
 	iter++;
 	// bin 4 (#5 above)
 	// the average coordinate is 0.9 and the bin count should be 3
 	assert(abs(iter.get_variable()[0] - 0.9) < thresh);
-	assert(abs(iter.get_bin_count() - 3.) < thresh);
+	assert(abs(iter.get_bin_count() - 3.*bstyle->dudg(0.9)) < thresh);
 
 	// just for sanity
 	++iter;

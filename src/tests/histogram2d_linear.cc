@@ -1,6 +1,6 @@
 /**
- * \file tests/histogram2d.cc
- * \brief Test suite for the Histogram2D class.
+ * \file tests/histogram2d_linear.cc
+ * \brief Test suite for the Histogram2D class (linear binning)
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
@@ -15,14 +15,15 @@
 using namespace std;
 
 /**
- * \brief Main function for testing the histogram class.
+ * \brief Main function for testing the Histogram2D class (linear binning).
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
  */
 int main(int argc, char **argv) {
-	Histogram2D hist({{2,2}}, {{0.,0.}}, {{1.,1.}}, make_shared<BinLinear>());
+	shared_ptr<BinStyle> bstyle(make_shared<BinLinear>());
+	Histogram2D hist({{2,2}}, {{0.,0.}}, {{1.,1.}}, bstyle);
 	const double thresh = 1.0e-6;
 
 	// artificially populate the histogram
@@ -44,28 +45,28 @@ int main(int argc, char **argv) {
 	// the average is (0.25, 0.25) and the bin count should be 4
 	assert(abs(iter.get_variable()[0] - 0.25) < thresh);
 	assert(abs(iter.get_variable()[1] - 0.25) < thresh);
-	assert(abs(iter.get_bin_count() - 4.) < thresh);
+	assert(abs(iter.get_bin_count() - 4.*bstyle->dudg(0.25)) < thresh);
 
 	++iter;
 	// bin 0, 1 (#2 above)
 	// the average is (0.25, 0.75) and the bin count should be 3
 	assert(abs(iter.get_variable()[0] - 0.25) < thresh);
 	assert(abs(iter.get_variable()[1] - 0.75) < thresh);
-	assert(abs(iter.get_bin_count() - 3.) < thresh);
+	assert(abs(iter.get_bin_count() - 3.*bstyle->dudg(0.75)) < thresh);
 
 	iter++;
 	// bin 1, 0 (#3 above)
 	// the average is (0.75, 0.25) and the bin count should be 1
 	assert(abs(iter.get_variable()[0] - 0.75) < thresh);
 	assert(abs(iter.get_variable()[1] - 0.25) < thresh);
-	assert(abs(iter.get_bin_count() - 1.) < thresh);
+	assert(abs(iter.get_bin_count() - 1.*bstyle->dudg(0.25)) < thresh);
 
 	++iter;
 	// bin 1, 1 (#4 above)
 	// the average is (0.75, 0.75) and the bin count should be 0
 	assert(abs(iter.get_variable()[0] - 0.75) < thresh);
 	assert(abs(iter.get_variable()[1] - 0.75) < thresh);
-	assert(abs(iter.get_bin_count() - 0.) < thresh);
+	assert(abs(iter.get_bin_count() - 0.*bstyle->dudg(0.75)) < thresh);
 
 	// just for sanity
 	++iter;

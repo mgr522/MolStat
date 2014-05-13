@@ -8,9 +8,12 @@ test_histogram1d_linear.trs
 test_histogram1d_log
 test_histogram1d_log.log
 test_histogram1d_log.trs
-test_histogram2d
-test_histogram2d.log
-test_histogram2d.trs
+test_histogram2d_linear
+test_histogram2d_linear.log
+test_histogram2d_linear.trs
+test_histogram2d_log
+test_histogram2d_log.log
+test_histogram2d_log.trs
 test_symmetric_one_site
 test_symmetric_one_site.log
 test_symmetric_one_site.trs
