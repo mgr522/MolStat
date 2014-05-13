@@ -25,8 +25,8 @@
  *
  * Suppose we bin in a variable \f$u(g)\f$ that, as written, is a function of
  * \f$g\f$. The obtained histogram estimates \f$P(u(g))\f$, which, using the
- * change-of-variable formula for probability density functions \cite
- * bk:ghahramani-2001, is related to \f$P(g)\f$ by
+ * change-of-variable formula for probability density functions
+ * \cite bk:ghahramani-2000, is related to \f$P(g)\f$ by
  * \f[ P(g) = P(u(g)) \frac{\mathrm{d}u}{\mathrm{d}g}. \f]
  *
  * This class provides a general framework for specifying \f$u(g)\f$,
