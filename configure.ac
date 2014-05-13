@@ -43,6 +43,7 @@ AC_CONFIG_FILES([
 		doc/Makefile
 		src/Makefile
 			src/aux_binner/Makefile
+			src/aux_fitter/Makefile
 			src/aux_random_distributions/Makefile
 			src/aux_simulator/Makefile
 			src/tests/Makefile

@@ -1,11 +1,3 @@
-/*
-This work is licensed under the Creative Commons Attribution 3.0 United States
-License. To view a copy of this license, visit
-http://creativecommons.org/licenses/by/3.0/us/ or send a letter to Creative
-Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
-
-Copyright (C) 2013 Oak Ridge National Laboratory
-*/
 /**
  * \file main-fitter.cc
  * \brief Main function for fitting histogram data to the desired functional
@@ -40,7 +32,7 @@ Copyright (C) 2013 Oak Ridge National Laboratory
 #include <gsl/gsl_multifit_nlin.h>
 #include <queue>
 
-#include "models.h"
+#include "aux_fitter/models.h"
 
 using namespace std;
 
