@@ -24,7 +24,7 @@ using namespace std;
  * \throw invalid_argument if there is not a distribution with the name `name`.
  *
  * \param[in] name The name of the distribution.
- * \oaram[in] parameters The map of distributions.
+ * \param[in] parameters The map of distributions.
  * \return The distribution.
  */
 static shared_ptr<RandomDistribution> find_distribution(const string name,
