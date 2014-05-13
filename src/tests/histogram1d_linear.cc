@@ -1,6 +1,6 @@
 /**
- * \file tests/histogram1d.cc
- * \brief Test suite for the Histogram1D class.
+ * \file tests/histogram1d_linear.cc
+ * \brief Test suite for the Histogram1D class, linear binning.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
@@ -14,7 +14,7 @@
 using namespace std;
 
 /**
- * \brief Main function for testing the histogram class.
+ * \brief Main function for testing the Histogram1D class with linear binning.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
