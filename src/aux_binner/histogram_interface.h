@@ -11,7 +11,7 @@
 
 #include <memory>
 #include <array>
-#include <functional>
+#include "bin_style.h"
 
 /**
  * \brief Interface for making histograms using GSL.
@@ -21,10 +21,9 @@
  * the histogram, as well as the minimum and maximum values for all variables.
  * The data elements are then added (one at a time) to make the histogram.
  *
- * The user may also specify a pair of functions, gmask and invgmask. gmask,
- * the conductance mask, will be applied to data before it is binned. The
- * inverse conductance mask, invgmask, will be applied after binning but before
- * output.
+ * The user also needs to specify the binning style for how the data is to be
+ * binned. More information on binning styles can be found in the notes for
+ * BinningStyle.
  *
  * An iterator-style class is provided for iterating through the bins.
  */
@@ -55,9 +54,9 @@ protected:
 		double bincount;
 
 		/**
-		 * \brief The inverse conductance mask.
+		 * \brief The binning style.
 		 */
-		const std::function<double(double)> invgmask;
+		std::shared_ptr<const BinStyle> bstyle;
 
 		/**
 		 * \brief Advances the values of bin to the next bin.
@@ -73,9 +72,11 @@ protected:
 		const_iterator() = delete;
 
 		/**
-		 * \brief Constructor specifying the inverse conductance mask.
+		 * \brief Constructor specifying binning style.
+		 *
+		 * \param[in] bstyle_ The binning style.
 		 */
-		const_iterator(const std::function<double(double)> invgmask_);
+		const_iterator(const std::shared_ptr<const BinStyle> bstyle_);
 
 		/**
 		 * \brief Default destructor.
@@ -98,29 +99,19 @@ protected:
 	};
 
 	/**
-	 * \brief The function to apply to conductance values before binning.
+	 * \brief The binning style.
 	 */
-	const std::function<double(double)> gmask;
-
-	/**
-	 * \brief The inverse mask function for conductances.
-	 */
-	const std::function<double(double)> invgmask;
+	std::shared_ptr<const BinStyle> bstyle;
 
 public:
-	/**
-	 * \brief Default constructor. Assumes the identity function for the masks.
-	 */
-	Histogram();
+	Histogram() = delete;
 
 	/**
-	 * \brief Constructor that processes the conductance mask functions.
+	 * \brief Constructor that processes the binning style.
 	 *
-	 * \param[in] gmask_ The conductance mask to use when binning data.
-	 * \param[in] invgmask_ The inverse conductance mask.
+	 * \param[in] bstyle_ The binning style.
 	 */
-	Histogram(const std::function<double(double)> gmask_,
-		const std::function<double(double)> invgmask_);
+	Histogram(const std::shared_ptr<const BinStyle> bstyle_);
 
 	/**
 	 * \brief Destructor.
@@ -137,21 +128,14 @@ public:
 
 // Implementations of non-virtual functions
 template<std::size_t N>
-Histogram<N>::Histogram()
-	: gmask([] (double g) { return g; }),
-	  invgmask([] (double g) { return g; }) {
-}
-
-template<std::size_t N>
-Histogram<N>::Histogram(const std::function<double(double)> gmask_,
-	const std::function<double(double)> invgmask_)
-	: gmask(gmask_), invgmask(invgmask_) {
+Histogram<N>::Histogram(const std::shared_ptr<const BinStyle> bstyle_)
+	: bstyle(bstyle_) {
 }
 
 template<std::size_t N>
 Histogram<N>::const_iterator::const_iterator(
-	const std::function<double(double)> invgmask_)
-	: bincount(0), invgmask(invgmask_) {
+	const std::shared_ptr<const BinStyle> bstyle_)
+	: bincount(0), bstyle(bstyle_) {
 
 	for(std::size_t i = 0; i < N; ++i) {
 		bin[i] = 0;

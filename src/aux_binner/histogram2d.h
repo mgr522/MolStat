@@ -12,6 +12,7 @@
 #include <memory>
 #include <gsl/gsl_histogram2d.h>
 #include "histogram_interface.h"
+#include "bin_style.h"
 
 /**
  * \brief Implements 2D histograms.
@@ -30,31 +31,17 @@ public:
 	Histogram2D() = delete;
 
 	/**
-	 * \brief Constructor requiring the number of bins in the histogram and the
-	 *    ranges of the variables. Assumes the identity function for the
-	 *    conductance mask.
+	 * \brief Constructor requiring the number of bins in the histogram, the
+	 *    ranges of the variables, and the binning style.
 	 *
 	 * \param[in] nbin The number of bins to use, in each dimension.
 	 * \param[in] mins The minimum values in the ranges of each dimension.
 	 * \param[in] maxs The maximum values in the ranges of each dimension.
-	 */
-	Histogram2D(const std::array<std::size_t, 2> &nbin,
-		const std::array<double, 2> &mins, const std::array<double, 2> &maxs);
-
-	/**
-	 * \brief Constructor requiring the number of bins in the histogram and the
-	 *    ranges of the variables.
-	 *
-	 * \param[in] nbin The number of bins to use, in each dimension.
-	 * \param[in] mins The minimum values in the ranges of each dimension.
-	 * \param[in] maxs The maximum values in the ranges of each dimension.
-	 * \param[in] gmask The conductance mask function to use when binning.
-	 * \param[in] invgmask The inverse conductance mask function.
+	 * \param[in] bstyle The binning style.
 	 */
 	Histogram2D(const std::array<std::size_t, 2> &nbin,
 		const std::array<double, 2> &mins, const std::array<double, 2> &maxs,
-		const std::function<double(double)> gmask,
-		const std::function<double(double)> invgmask);
+		const std::shared_ptr<const BinStyle> bstyle);
 
 	/**
 	 * \brief Adds a data element to the histogram.
@@ -104,10 +91,10 @@ public:
 		 * \brief Constucts the iterator; based on the GSL histogram handle.
 		 *
 		 * \param[in] h The GSL histogram handle.
-		 * \param[in] invgmask The inverse conductance mask function.
+		 * \param[in] bstyle The binning style.
 	 	 */
 		const_iterator(const std::shared_ptr<const gsl_histogram2d> h,
-			const std::function<double(double)> invgmask);
+			const std::shared_ptr<const BinStyle> bstyle);
 
 		/**
 		 * \brief Prefix forward iteration operator.

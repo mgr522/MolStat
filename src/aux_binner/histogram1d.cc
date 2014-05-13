@@ -11,24 +11,16 @@
 using namespace std;
 
 Histogram1D::Histogram1D(const std::size_t nbin, const double minval,
-	const double maxval)
-	: Histogram<1>(),
+	const double maxval, const std::shared_ptr<const BinStyle> bstyle)
+	: Histogram<1>(bstyle),
 	  hist(gsl_histogram_alloc(nbin), &gsl_histogram_free) {
 
-	gsl_histogram_set_ranges_uniform(hist.get(), gmask(minval), gmask(maxval));
-}
-
-Histogram1D::Histogram1D(const std::size_t nbin, const double minval,
-	const double maxval, const std::function<double(double)> gmask,
-	const std::function<double(double)> invgmask)
-	: Histogram<1>(gmask, invgmask),
-	  hist(gsl_histogram_alloc(nbin), &gsl_histogram_free) {
-
-	gsl_histogram_set_ranges_uniform(hist.get(), gmask(minval), gmask(maxval));
+	gsl_histogram_set_ranges_uniform(hist.get(), bstyle->gmask(minval),
+		bstyle->gmask(maxval));
 }
 
 void Histogram1D::add_data(const double v) {
-	gsl_histogram_increment(hist.get(), gmask(v));
+	gsl_histogram_increment(hist.get(), bstyle->gmask(v));
 }
 
 void Histogram1D::add_data(const std::array<double, 1> &v) {
@@ -36,11 +28,11 @@ void Histogram1D::add_data(const std::array<double, 1> &v) {
 }
 
 Histogram1D::const_iterator Histogram1D::begin() const {
-	return const_iterator(hist, invgmask);
+	return const_iterator(hist, bstyle);
 }
 
 Histogram1D::const_iterator Histogram1D::end() const {
-	const_iterator ret(hist, invgmask);
+	const_iterator ret(hist, bstyle);
 
 	// move the bin index to the end
 	ret.bin[0] = gsl_histogram_bins(hist.get());
@@ -58,17 +50,18 @@ void Histogram1D::const_iterator::set_output() {
 	if(bin[0] < gsl_histogram_bins(hist.get())) {
 		double upper, lower;
 
-		bincount = gsl_histogram_get(hist.get(), bin[0]);
-
 		gsl_histogram_get_range(hist.get(), bin[0], &lower, &upper);
-		val[0] = 0.5*(invgmask(upper) + invgmask(lower));
+		val[0] = 0.5*(bstyle->invgmask(upper) + bstyle->invgmask(lower));
+
+		bincount = gsl_histogram_get(hist.get(), bin[0])
+			* bstyle->dudg(val[0]);
 	}
 }
 
 Histogram1D::const_iterator::const_iterator(
 	const std::shared_ptr<const gsl_histogram> h,
-	const std::function<double(double)> invgmask)
-	: Histogram<1>::const_iterator(invgmask), hist(h) {
+	const std::shared_ptr<const BinStyle> bstyle)
+	: Histogram<1>::const_iterator(bstyle), hist(h) {
 
 	set_output();
 }

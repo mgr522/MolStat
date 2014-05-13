@@ -11,35 +11,25 @@
 using namespace std;
 
 Histogram2D::Histogram2D(const std::array<std::size_t, 2> &nbin,
-	const std::array<double, 2> &mins, const std::array<double, 2> &maxs)
-	: Histogram<2>(),
-	  hist(gsl_histogram2d_alloc(nbin[0], nbin[1]), &gsl_histogram2d_free) {
-
-	gsl_histogram2d_set_ranges_uniform(hist.get(), mins[0], maxs[0],
-		gmask(mins[1]), gmask(maxs[1]));
-}
-
-Histogram2D::Histogram2D(const std::array<std::size_t, 2> &nbin,
 	const std::array<double, 2> &mins, const std::array<double, 2> &maxs,
-	const std::function<double(double)> gmask,
-	const std::function<double(double)> invgmask)
-	: Histogram<2>(gmask, invgmask),
+	const std::shared_ptr<const BinStyle> bstyle)
+	: Histogram<2>(bstyle),
 	  hist(gsl_histogram2d_alloc(nbin[0], nbin[1]), &gsl_histogram2d_free) {
 
 	gsl_histogram2d_set_ranges_uniform(hist.get(), mins[0], maxs[0],
-		gmask(mins[1]), gmask(maxs[1]));
+		bstyle->gmask(mins[1]), bstyle->gmask(maxs[1]));
 }
 
 void Histogram2D::add_data(const std::array<double, 2> &v) {
-	gsl_histogram2d_increment(hist.get(), v[0], gmask(v[1]));
+	gsl_histogram2d_increment(hist.get(), v[0], bstyle->gmask(v[1]));
 }
 
 Histogram2D::const_iterator Histogram2D::begin() const {
-	return const_iterator(hist, invgmask);
+	return const_iterator(hist, bstyle);
 }
 
 Histogram2D::const_iterator Histogram2D::end() const {
-	const_iterator ret(hist, invgmask);
+	const_iterator ret(hist, bstyle);
 
 	// move the bin indices to the end
 	ret.bin[0] = gsl_histogram2d_nx(hist.get());
@@ -70,20 +60,21 @@ void Histogram2D::const_iterator::set_output() {
 
 		double upper, lower;
 
-		bincount = gsl_histogram2d_get(hist.get(), bin[0], bin[1]);
-
 		gsl_histogram2d_get_xrange(hist.get(), bin[0], &lower, &upper);
 		val[0] = 0.5*(upper + lower);
 
 		gsl_histogram2d_get_yrange(hist.get(), bin[1], &lower, &upper);
-		val[1] = 0.5*(invgmask(upper) + invgmask(lower));
+		val[1] = 0.5*(bstyle->invgmask(upper) + bstyle->invgmask(lower));
+
+		bincount = gsl_histogram2d_get(hist.get(), bin[0], bin[1])
+			* bstyle->dudg(val[1]);
 	}
 }
 
 Histogram2D::const_iterator::const_iterator(
 	const std::shared_ptr<const gsl_histogram2d> h,
-	const std::function<double(double)> invgmask)
-	: Histogram<2>::const_iterator(invgmask), hist(h) {
+	const std::shared_ptr<const BinStyle> bstyle)
+	: Histogram<2>::const_iterator(bstyle), hist(h) {
 
 	set_output();
 }
