@@ -9,14 +9,14 @@
 #include "bin_log.h"
 #include <cmath>
 
-double BinLog::gmask(const double g) {
+double BinLog::gmask(const double g) const {
 	return log10(g);
 }
 
-double BinLog::invgmask(const double u) {
+double BinLog::invgmask(const double u) const {
 	return pow(10., u);
 }
 
-double BinLog::dudg(const double g) {
+double BinLog::dudg(const double g) const {
 	return 1. / (g * log(10.));
 }

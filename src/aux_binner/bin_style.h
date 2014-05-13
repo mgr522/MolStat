@@ -50,7 +50,7 @@ public:
 	 * \param[in] g The conductance value.
 	 * \return The transformed conductance.
 	 */
-	virtual double gmask(const double g) = 0;
+	virtual double gmask(const double g) const = 0;
 
 	/**
 	 * \brief The inverse conductance mask, \f$g=u^{-1}(u)\f$.
@@ -58,7 +58,7 @@ public:
 	 * \param[in] u The transformed conductance value.
 	 * \return The conductance.
 	 */
-	virtual double invgmask(const double u) = 0;
+	virtual double invgmask(const double u) const = 0;
 
 	/**
 	 * \brief The derivative \f$\mathrm{d}u / \mathrm{d}g \f$.
@@ -66,7 +66,7 @@ public:
 	 * \param[in] g The conductance value, \f$g\f$.
 	 * \return The derivative evaluated at \f$g\f$, \f$u'(g)\f$.
 	 */
-	virtual double dudg(const double g) = 0;
+	virtual double dudg(const double g) const = 0;
 };
 
 #endif

@@ -8,14 +8,14 @@
 
 #include "bin_linear.h"
 
-double BinLinear::gmask(const double g) {
+double BinLinear::gmask(const double g) const {
 	return g;
 }
 
-double BinLinear::invgmask(const double u) {
+double BinLinear::invgmask(const double u) const {
 	return u;
 }
 
-double BinLinear::dudg(const double g) {
+double BinLinear::dudg(const double g) const {
 	return 1.;
 }
