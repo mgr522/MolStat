@@ -14,15 +14,25 @@
 /**
  * \brief Logarithmic binning style.
  *
- * \f$u(g) = \log(g)\f$. Then, \f$u^{-1}(u) = 10^u\f$ and
- * \f$u'(g) = [g \ln(10)]^{-1} \f$.
+ * \f$u(g) = \log_b(g)\f$. Then, \f$u^{-1}(u) = b^u\f$ and
+ * \f$u'(g) = [g \ln(b)]^{-1} \f$.
  */
 class BinLog : public BinStyle {
-public:
+protected:
 	/**
-	 * \brief Default constructor.
+	 * \brief The base of the logarithm.
 	 */
-	BinLog() = default;
+	const double b;
+
+public:
+	BinLog() = delete;
+
+	/**
+	 * \brief Constructor specifying the base of logarithm to use.
+	 *
+	 * \param[in] b_ The base.
+	 */
+	BinLog(const double b_);
 
 	/**
 	 * \brief Destructor.
