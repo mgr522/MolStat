@@ -208,11 +208,11 @@ int FitModel<N>::df(const gsl_vector *x, void *params, gsl_matrix *J) const {
 		// get the data point
 		const std::pair<std::array<double, N>, double> &datai = data[i];
 
-		const std::vector<double> jac(jacobian(fitparam, datai));
+		const std::vector<double> jac(jacobian(fitparam, datai.first));
 
 		// set the matrix elements
 		for(j = 0; j < nfit; ++j)
-			;
+			gsl_matrix_set(J, i, j, jac[j]);
 	}
 
 	return GSL_SUCCESS;
@@ -221,6 +221,25 @@ int FitModel<N>::df(const gsl_vector *x, void *params, gsl_matrix *J) const {
 template<std::size_t N>
 int FitModel<N>::fdf(const gsl_vector *x, void *params, gsl_vector *f,
 	gsl_matrix *J) const {
+
+	std::size_t i, j;
+	const std::size_t n = data.size();
+	const std::vector<double> fitparam(gsl_to_std(x));
+
+	for(i = 0; i < n; ++i) {
+		// get the data point
+		const std::pair<std::array<double, N>, double> &datai = data[i];
+
+		const std::pair<double, std::vector<double>> 
+			vals(resid_j(fitparam, datai.first));
+
+		// set the residual
+		gsl_vector_set(f, i, vals.first - datai.second);
+
+		// set the matrix elements
+		for(j = 0; j < nfit; ++j)
+			gsl_matrix_set(J, i, j, vals.second[j]);
+	}
 
 	return GSL_SUCCESS;
 }
