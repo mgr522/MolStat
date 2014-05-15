@@ -59,7 +59,14 @@ std::vector<double> SymmetricResonantFitModel::jacobian(
 std::list<std::vector<double>> SymmetricResonantFitModel::initial_guesses()
 	const {
 
+	const list<double> list_gamma{5., 10., 20., 35., 50.};
 	list<vector<double>> ret;
+
+	for(list<double>::const_iterator gamma = list_gamma.cbegin();
+		gamma != list_gamma.cend(); ++gamma) {
+
+		ret.emplace_back(vector<double>{*gamma, 1.});
+	}
 
 	return ret;
 }
