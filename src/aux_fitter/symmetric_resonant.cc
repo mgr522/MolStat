@@ -43,7 +43,7 @@ std::vector<double> SymmetricResonantFitModel::jacobian(
 	const double gamma = fitparam[GAMMA];
 	const double norm = fitparam[NORM];
 
-	vector<double> ret(2);
+	vector<double> ret(nfit);
 
 	ret[GAMMA] = -gamma * norm * sqrt((1.0 - g) / g)
 		* exp(-0.5*gamma*gamma*(1.0-g)/g) / (g*g);
@@ -65,8 +65,19 @@ std::list<std::vector<double>> SymmetricResonantFitModel::initial_guesses()
 	for(list<double>::const_iterator gamma = list_gamma.cbegin();
 		gamma != list_gamma.cend(); ++gamma) {
 
-		ret.emplace_back(vector<double>{*gamma, 1.});
+		vector<double> init(nfit);
+		init[GAMMA] = *gamma;
+		init[NORM] = 1.;
+
+		ret.emplace_back(init);
 	}
 
 	return ret;
+}
+
+void SymmetricResonantFitModel::print_fit(FILE *f,
+	const std::shared_ptr<gsl_vector> fitparam) const {
+
+	fprintf(f, "gamma=% .3e, norm=% .3e", gsl_vector_get(fitparam.get(), GAMMA),
+		gsl_vector_get(fitparam.get(), NORM));
 }

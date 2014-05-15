@@ -78,6 +78,15 @@ public:
 	 * \return A list of initial guesses.
 	 */
 	virtual std::list<std::vector<double>> initial_guesses() const;
+
+	/**
+	 * \brief Prints the fit variables from a gsl_vector.
+	 *
+	 * \param[in] f The output stream.
+	 * \param[in] fitparam The fitting parameters.
+	 */
+	virtual void print_fit(FILE *f, const std::shared_ptr<gsl_vector> fitparam)
+		const;
 };
 
 #endif
