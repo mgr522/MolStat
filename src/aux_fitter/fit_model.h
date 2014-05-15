@@ -179,7 +179,7 @@ std::vector<double> gsl_to_std(const gsl_vector *gslv);
 template<std::size_t N>
 FitModel<N>::FitModel(const std::size_t nfit_,
 	const std::vector<std::pair<std::array<double, N>, double>> &data_)
-	: nfit(nfit_), data(data_) {
+	: data(data_), nfit(nfit_) {
 }
 
 template<std::size_t N>
