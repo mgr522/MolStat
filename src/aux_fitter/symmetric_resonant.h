@@ -49,11 +49,12 @@ public:
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.
+	 * \param[in] f The observed value of the fit function at x.
 	 * \return The function evaluated at these independent variables and
 	 *    fitting parameters.
 	 */
-	virtual double fit_function(const std::vector<double> &fitparam,
-		const std::array<double, 1> &x) const;
+	virtual double resid(const std::vector<double> &fitparam,
+		const std::array<double, 1> &x, const double f) const;
 
 	/**
 	 * \brief Calculates the Jacobian of the fit function for a given set of
@@ -61,11 +62,12 @@ public:
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.
+	 * \param[in] f The observed value of the fit function at x.
 	 * \return The Jacobian evaluated at these independent variables and
 	 *    fitting parameters.
 	 */
 	virtual std::vector<double> jacobian(const std::vector<double> &fitparam,
-		const std::array<double, 1> &x) const;
+		const std::array<double, 1> &x, const double f) const;
 
 	/* There is no redundency in calculating fit_function and jacobian, so we
 	 * can use the simple default resid_j function in FitModel<1>. */

@@ -110,16 +110,17 @@ public:
 		const;
 
 	/**
-	 * \brief Evaluates the fit function for this model at a given set of
+	 * \brief Evaluates the residual for this data point at a given set of
 	 *    independent variables and fitting parameters.
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.
+	 * \param[in] f The observed value of the fit function at x.
 	 * \return The function evaluated at these independent variables and
 	 *    fitting parameters.
 	 */
-	virtual double fit_function(const std::vector<double> &fitparam,
-		const std::array<double, N> &x) const = 0;
+	virtual double resid(const std::vector<double> &fitparam,
+		const std::array<double, N> &x, const double f) const = 0;
 
 	/**
 	 * \brief Calculates the Jacobian of the fit function for a given set of
@@ -127,11 +128,12 @@ public:
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.
+	 * \param[in] f The observed value of the fit function at x.
 	 * \return The Jacobian evaluated at these independent variables and
 	 *    fitting parameters.
 	 */
 	virtual std::vector<double> jacobian(const std::vector<double> &fitparam,
-		const std::array<double, N> &x) const = 0;
+		const std::array<double, N> &x, const double f) const = 0;
 
 	/**
 	 * \brief Calculates both the residuals and Jacobian of the fit for a given
@@ -144,12 +146,13 @@ public:
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.
+	 * \param[in] f The observed value of the fit function at x.
 	 * \return A pair of the residual and Jacobian evaluated at these
 	 *    independent variables and fitting parameters.
 	 */
 	virtual std::pair<double, std::vector<double>> resid_j(
-		const std::vector<double> &fitparam, const std::array<double, N> &x)
-		const;
+		const std::vector<double> &fitparam, const std::array<double, N> &x,
+		const double f) const;
 
 	/**
 	 * \brief Gets a GSL handle for fitting data to this model.
@@ -192,7 +195,7 @@ int FitModel<N>::f(const gsl_vector *x, void *params, gsl_vector *f) const {
 		// get the data point
 		const std::pair<std::array<double, N>, double> &datai = data[i];
 
-		gsl_vector_set(f, i, fit_function(fitparam, datai.first) - datai.second);
+		gsl_vector_set(f, i, resid(fitparam, datai.first, datai.second));
 	}
 
 	return GSL_SUCCESS;
@@ -208,7 +211,8 @@ int FitModel<N>::df(const gsl_vector *x, void *params, gsl_matrix *J) const {
 		// get the data point
 		const std::pair<std::array<double, N>, double> &datai = data[i];
 
-		const std::vector<double> jac(jacobian(fitparam, datai.first));
+		const std::vector<double> jac(jacobian(fitparam, datai.first,
+			datai.second));
 
 		// set the matrix elements
 		for(j = 0; j < nfit; ++j)
@@ -231,10 +235,10 @@ int FitModel<N>::fdf(const gsl_vector *x, void *params, gsl_vector *f,
 		const std::pair<std::array<double, N>, double> &datai = data[i];
 
 		const std::pair<double, std::vector<double>> 
-			vals(resid_j(fitparam, datai.first));
+			vals(resid_j(fitparam, datai.first, datai.second));
 
 		// set the residual
-		gsl_vector_set(f, i, vals.first - datai.second);
+		gsl_vector_set(f, i, vals.first);
 
 		// set the matrix elements
 		for(j = 0; j < nfit; ++j)
@@ -246,12 +250,13 @@ int FitModel<N>::fdf(const gsl_vector *x, void *params, gsl_vector *f,
 
 template<std::size_t N>
 std::pair<double, std::vector<double>> FitModel<N>::resid_j(
-	const std::vector<double> &fitparam, const std::array<double, N> &x) const {
+	const std::vector<double> &fitparam, const std::array<double, N> &x,
+	const double f) const {
 
 	std::pair<double, std::vector<double>> ret;
 
-	ret.first = fit_function(fitparam, x);
-	ret.second = jacobian(fitparam, x);
+	ret.first = resid(fitparam, x, f);
+	ret.second = jacobian(fitparam, x, f);
 
 	return ret;
 }
