@@ -9,6 +9,10 @@
  */
 
 #include "fit_model_1d.h"
+#include "symmetric_resonant.h"
+#include <exception>
+
+using namespace std;
 
 /**
  * \brief Gets a FitModel<1> object from a tokenized string (name of the model)
@@ -23,5 +27,17 @@
 std::shared_ptr<FitModel<1>> get_fit_model(const std::string &name,
 	std::vector<std::pair<std::array<double, 1>, double>> &data) {
 
-	return nullptr;
+	shared_ptr<FitModel<1>> ret;
+
+	if(name == "symmetricresonant")
+		ret = make_shared<SymmetricResonantFitModel>(data);
+	else {
+		throw invalid_argument("Error: unrecognized fit model: '%s'.\n" \
+			"Recognized options are\n" \
+			"   - 'SymmetricResonant'\n" \
+			"     resonant tunneling through a single site, symmetric coupling."
+		);
+	}
+
+	return ret;
 }
