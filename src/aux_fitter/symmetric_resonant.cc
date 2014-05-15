@@ -12,7 +12,7 @@
 using namespace std;
 
 SymmetricResonantFitModel::SymmetricResonantFitModel(
-	const std::vector<std::pair<std::array<double, 1>, double>> &data)
+	const std::list<std::pair<std::array<double, 1>, double>> &data)
 	: FitModel<1>(2, data) {
 }
 

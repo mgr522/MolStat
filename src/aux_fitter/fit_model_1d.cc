@@ -25,7 +25,7 @@ using namespace std;
  * \return Pointer to the FitModel.
  */
 std::shared_ptr<FitModel<1>> get_fit_model(const std::string &name,
-	std::vector<std::pair<std::array<double, 1>, double>> &data) {
+	std::list<std::pair<std::array<double, 1>, double>> &data) {
 
 	shared_ptr<FitModel<1>> ret;
 
