@@ -76,8 +76,15 @@ std::list<std::vector<double>> SymmetricResonantFitModel::initial_guesses()
 }
 
 void SymmetricResonantFitModel::print_fit(FILE *f,
-	const std::shared_ptr<gsl_vector> fitparam) const {
+	const std::vector<double> &fitparam) const {
 
-	fprintf(f, "gamma=% .3e, norm=% .3e", gsl_vector_get(fitparam.get(), GAMMA),
-		gsl_vector_get(fitparam.get(), NORM));
+	fprintf(f, "gamma=% .3e, norm=% .3e", fitparam[GAMMA], fitparam[NORM]);
+}
+
+void SymmetricResonantFitModel::process_fit_parameters(
+	std::vector<double> &fitparams) const {
+
+	// sometimes gamma goes negative.
+	if(fitparams[GAMMA] < 0.)
+		fitparams[GAMMA] = -fitparams[GAMMA];
 }

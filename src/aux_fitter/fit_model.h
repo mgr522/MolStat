@@ -176,8 +176,22 @@ public:
 	 * \param[in] f The output stream.
 	 * \param[in] fitparam The fitting parameters.
 	 */
-	virtual void print_fit(FILE *f, const std::shared_ptr<gsl_vector> fitparam)
+	virtual void print_fit(FILE *f, const std::vector<double> &fitparam)
 		const = 0;
+
+	/**
+	 * \brief Perform post-processing on a set of fit parameters.
+	 *
+	 * Sometimes the fit produces unphysical parameters. For example, the
+	 * product of gammaL and gammaR may be the dominant quantity in the fit,
+	 * and the fit produces gammaL < 0 and gammaR < 0. We can fix that to make
+	 * them both positive, as required physically.
+	 *
+	 * This basic implementation does nothing.
+	 *
+	 * \param[in,out] fitparams The fitting parameters.
+	 */
+	virtual void process_fit_parameters(std::vector<double> &fitparams) const;
 };
 
 // Other function prototypes
@@ -299,6 +313,11 @@ gsl_multifit_function_fdf FitModel<N>::gsl_handle() const {
 	fit.params = (void*)this;
 
 	return fit;
+}
+
+template<std::size_t N>
+void FitModel<N>::process_fit_parameters(std::vector<double> &fitparams)
+	const {
 }
 
 #endif

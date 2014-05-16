@@ -85,8 +85,17 @@ public:
 	 * \param[in] f The output stream.
 	 * \param[in] fitparam The fitting parameters.
 	 */
-	virtual void print_fit(FILE *f, const std::shared_ptr<gsl_vector> fitparam)
+	virtual void print_fit(FILE *f, const std::vector<double> &fitparam)
 		const;
+
+	/**
+	 * \brief Perform post-processing on a set of fit parameters.
+	 *
+	 * This basic implementation does nothing.
+	 *
+	 * \param[in,out] fitparams The fitting parameters.
+	 */
+	virtual void process_fit_parameters(std::vector<double> &fitparams) const;
 };
 
 #endif
