@@ -9,6 +9,14 @@ TESTS = test_histogram1d_linear \
 	test_asymmetric_two_site \
 	test_symmetric_voltage_two_site \
 	test_gsl_std_vector
+
+if HAVE_PYTHON
+TESTS += fit-symmetric-resonant.py
+endif
+
+TEST_EXTENSIONS = .py
+PY_LOG_COMPILER = $(PYTHON_BIN)
+
 check_PROGRAMS = test_histogram1d_linear \
 	test_histogram1d_log \
 	test_histogram2d_linear \
