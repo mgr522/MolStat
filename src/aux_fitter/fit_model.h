@@ -138,7 +138,7 @@ public:
 		const std::array<double, N> &x, const double f) const = 0;
 
 	/**
-	 * \brief Calculates both the residuals and Jacobian of the fit for a given
+	 * \brief Calculates both the residual and Jacobian of the fit for a given
 	 *    set of fitting parameters.
 	 *
 	 * This basic implementation simply calls the two independent routines and
