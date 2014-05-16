@@ -112,8 +112,8 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-	// make a link to the correct model creator (need to continue reading data,
-	// store for later)
+	// store the model name for later (need to continue reading data before
+	// invoking the constructor.
 	modeltype = tokens[0];
 	make_lower(modeltype);
 

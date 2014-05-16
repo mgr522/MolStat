@@ -12,15 +12,15 @@
  * \date May 2014
  */
 
-#include <gsl/gsl_blas.h>
-
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
 #include <list>
 #include <utility>
+#include <gsl/gsl_blas.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multifit_nlin.h>
+#include "string_tools.h"
 #include "aux_fitter/fit_model_1d.h"
 
 using namespace std;
@@ -55,27 +55,98 @@ int main(int argc, char **argv) {
 
 	// counters & auxiliary variables
 	size_t i, iter;
+	double g, pdf;
+	FILE *f;
+	string line, modelname;
+	vector<string> tokens;
 
 	gsl_set_error_handler_off();
 
-	// read in the data points from the STDIN
-	size_t nbin = 39;
-	for(i = 0; i < nbin; ++i) {
-		double g, pdf;
-		scanf("%le %le", &g, &pdf);
-
-		data.emplace_back(pair<array<double, 1>, double>({{g}}, pdf));
+	// set up the fit -- read in parameters from stdin
+	// Line 1: One token specifying the model to use for fitting
+	try {
+		line = getline(stdin);
+	}
+	catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s.\n", e.what());
+		return 0;
 	}
 
+	tokenize(line, tokens);
+	if(tokens.size() < 1) {
+		fprintf(stderr, "Error: model name expected in line 1.\n");
+		return 0;
+	}
+
+	// store the model name for later (need to continue reading data before
+	// invoking the constructor
+	modelname = tokens[0];
+	make_lower(modelname);
+
+	// Line 2: The file name of the conductance histogram data to fit
+	try {
+		line = getline(stdin);
+	} catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s.\n", e.what());
+		return 0;
+	}
+	tokenize(line, tokens);
+	if(tokens.size() < 1) {
+		fprintf(stderr, "Error: file name expected in line 2.\n");
+		return 0;
+	}
+
+	// read in the data points from the specified file
+	f = fopen(tokens[0].c_str(), "r");
+	if(!f) {
+		fprintf(stderr, "Error opening %s for input.\n", tokens[0].c_str());
+		return 0;
+	}
+
+	// read all lines in the file.
+	while(fscanf(f, "%le %le", &g, &pdf) != EOF) {
+		data.emplace_back(pair<array<double, 1>, double>({{g}}, pdf));
+	}
+	fclose(f);
+	size_t nbin = data.size();
+
 	// set the model
-	model = get_fit_model("symmetricresonant", data);
+	try {
+		model = get_fit_model(modelname, data);
+	} catch(const invalid_argument &e) {
+		fprintf(stderr, "Error: unknown model '%s'.\n", modelname.c_str());
+		return 0;
+	}
 	bestfit.resize(model->nfit);
 
 	// set up GSL details
 	fdf = model->gsl_handle();
 	vec.reset(gsl_vector_alloc(model->nfit), &gsl_vector_free);
 
-iterprint = true;
+	// Line 3: Print options
+	try {
+		line = getline(stdin);
+	} catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s.\n", e.what());
+		return 0;
+	}
+	tokenize(line, tokens);
+	if(tokens.size() < 1) {
+		fprintf(stderr, "Error: output options expected in line 3.\n");
+		return 0;
+	}
+	line = tokens[0];
+	make_lower(line);
+	if(line == "print")
+		iterprint = true;
+	else if(line == "noprint")
+		iterprint = false;
+	else {
+		fprintf(stderr, "Error: unrecognized output option: '%s'.\n" \
+			"Possible options are 'print' and 'noprint'.\n",
+			tokens[0].c_str());
+		return 0;
+	}
 
 #if 0
 	// model-specific setup
