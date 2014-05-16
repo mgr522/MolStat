@@ -149,19 +149,6 @@ int main(int argc, char **argv) {
 	}
 
 #if 0
-	// model-specific setup
-	if(model == 'n') {
-		params = 2; // number of parameters in the fit
-
-		// set up a range for initial values
-		double cvals[] = {50.0, 100.0, 200.0, 300.0, 400.0, 500.0};
-		double dvals[] = {5.0, 10.0, 20.0, 30.0, 40.0, 50.0};
-		for(int i = 0; i < 6; ++i)
-		for(int j = 0; j < 6; ++j) {
-			initvals.push(cvals[i]);
-			initvals.push(dvals[j]);
-		}
-	}
 	else if(model == 'a') {
 		params = 3; // number of parameters in the fit
 
@@ -179,7 +166,6 @@ int main(int argc, char **argv) {
 		// allocate numerical integration workspace
 		data.w = gsl_integration_workspace_alloc(2000);
 	}
-	normparams = params + 1; // number of parameters, including the norm
 #endif
 
 	solver.reset(
@@ -258,11 +244,6 @@ int main(int argc, char **argv) {
 		// make sure the fit parameters are good
 		model->process_fit_parameters(bestfit);
 #if 0
-		// do some post-processing (i.e., the fit might have let the gammas
-		// become negative, etc.)
-		if(model == 'n') {
-			// no problems seen, as yet
-		}
 		else if(model == 'a') {
 			fits[0] = gsl_vector_get(bestfit, 0);
 			fits[1] = gsl_vector_get(bestfit, 1);
