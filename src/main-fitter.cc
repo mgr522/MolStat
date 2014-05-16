@@ -25,18 +25,6 @@
 
 using namespace std;
 
-#if 0
-/**
- * \brief Prints the status of the nonlinear fit after each iteration.
- *
- * \param[in] iter The present iteration.
- * \param[in] s The GSL solver.
- * \param[in] model The model being used.
- */
-void iteration_print(size_t iter, shared_ptr<gsl_multifit_fdfsolver> s,
-	char model);
-#endif
-
 /**
  * \brief Main function.
  *
@@ -53,7 +41,7 @@ int main(int argc, char **argv) {
 	gsl_multifit_function_fdf fdf;
 
 	// status of the fit
-	shared_ptr<gsl_vector> vec, bestfit, beststdev;
+	shared_ptr<gsl_vector> vec;
 	bool hasfit, iterprint;
 	double resid, bestresid;
 	int status;
@@ -61,6 +49,7 @@ int main(int argc, char **argv) {
 	// model & parameters
 	shared_ptr<FitModel<1>> model;
 	list<pair<array<double, 1>, double>> data;
+	vector<double> bestfit;
 	list<vector<double>> initvals;
 	list<vector<double>>::const_iterator initval;
 
@@ -80,12 +69,13 @@ int main(int argc, char **argv) {
 
 	// set the model
 	model = get_fit_model("symmetricresonant", data);
+	bestfit.resize(model->nfit);
 
 	// set up GSL details
 	fdf = model->gsl_handle();
 	vec.reset(gsl_vector_alloc(model->nfit), &gsl_vector_free);
-	bestfit.reset(gsl_vector_alloc(model->nfit), &gsl_vector_free);
-	beststdev.reset(gsl_vector_alloc(model->nfit), &gsl_vector_free);
+
+iterprint = true;
 
 #if 0
 	// model-specific setup
@@ -133,25 +123,26 @@ int main(int argc, char **argv) {
 	initvals = model->initial_guesses();
 	for(initval = initvals.cbegin(); initval != initvals.cend(); ++initval) {
 		// load the initial values
-		for(i = 0; i < model->nfit; ++i) {
+		for(i = 0; i < model->nfit; ++i)
 			gsl_vector_set(vec.get(), i, (*initval)[i]);
-		}
 		gsl_multifit_fdfsolver_set(solver.get(), &fdf, vec.get());
 
 		// start iterating
 		iter = 0;
-#if 0
-		if(iterprint)
-			iteration_print(iter, solver, model);
-#endif
+		if(iterprint) {
+			fprintf(stdout, "Iter=%3zu ", iter);
+			model->print_fit(stdout, gsl_to_std(solver->x));
+			fprintf(stdout, "\n");
+		}
 
 		do {
 			++iter;
 			status = gsl_multifit_fdfsolver_iterate(solver.get());
-#if 0
-			if(iterprint)
-				iteration_print(iter, solver, model);
-#endif
+			if(iterprint) {
+				fprintf(stdout, "Iter=%3zu ", iter);
+				model->print_fit(stdout, gsl_to_std(solver->x));
+				fprintf(stdout, "\n");
+			}
 
 			if(status)
 				break;
@@ -161,12 +152,8 @@ int main(int argc, char **argv) {
 		} while(status == GSL_CONTINUE && iter < 1000);
 
 		if(iterprint) {
-			if(status != GSL_CONTINUE && status != GSL_SUCCESS) {
+			if(status != GSL_CONTINUE && status != GSL_SUCCESS)
 				printf("   %s\n\n", gsl_strerror(status));
-			}
-			else {
-				printf("\n");
-			}
 		}
 
 		// did we converge, iteration out, or error out?
@@ -179,11 +166,14 @@ int main(int argc, char **argv) {
 
 		// do some final processing
 		resid = gsl_blas_dnrm2(solver->f);
+		if(iterprint)
+			printf("Residual = %.6e\n\n", resid);
+
 		if(!hasfit || resid < bestresid) {
 			// copy over the parameters
 			bestresid = resid;
 			for(i = 0; i < model->nfit; ++i)
-				gsl_vector_set(bestfit.get(), i, gsl_vector_get(solver->x, i));
+				bestfit[i] = gsl_vector_get(solver->x, i);
 
 			hasfit = true;
 		}
@@ -193,21 +183,14 @@ int main(int argc, char **argv) {
 	if(!hasfit) {
 		fprintf(stderr, "Error fitting.\n");
 	}
-#if 0
 	else {
+		// make sure the fit parameters are good
+		model->process_fit_parameters(bestfit);
+#if 0
 		// do some post-processing (i.e., the fit might have let the gammas
 		// become negative, etc.)
 		if(model == 'n') {
 			// no problems seen, as yet
-		}
-		else if(model == 'r') {
-			fits[0] = gsl_vector_get(bestfit, 0);
-			norm = gsl_vector_get(bestfit, 1);
-
-			// gamma might be negative, fix it
-			if(fits[0] < 0.0) {
-				gsl_vector_set(bestfit, 0, -fits[0]);
-			}
 		}
 		else if(model == 'a') {
 			fits[0] = gsl_vector_get(bestfit, 0);
@@ -226,50 +209,13 @@ int main(int argc, char **argv) {
 				gsl_vector_set(bestfit, 2, -fits[2]);
 			}
 		}
+#endif
 
 		// print ou the fit
 		printf("Resid = %.6e\n", bestresid);
-		printf("Constant of proportionality = %.6e\n",
-			gsl_vector_get(bestfit, params));
-		if(model == 'n') {
-			printf("c = %.6e\n", gsl_vector_get(bestfit, 0));
-			printf("d = %.6e\n", gsl_vector_get(bestfit, 1));
-		}
-		else if(model == 'r') {
-			printf("gamma = %.6e\n", gsl_vector_get(bestfit, 0));
-		}
-		else if(model == 'a') {
-			printf("gammaL = %.6e\n", gsl_vector_get(bestfit, 0));
-			printf("gammaR = %.6e\n", gsl_vector_get(bestfit, 1));
-			printf("r = %.6e\n", gsl_vector_get(bestfit, 2));
-		}
+		model->print_fit(stdout, bestfit);
+		printf("\n");
 	}
-
-	// free all allocations
-	if(model == 'a')
-		gsl_integration_workspace_free(data.w);
-#endif
 
 	return 0;
 }
-
-#if 0
-void iteration_print(size_t iter, shared_ptr<gsl_multifit_fdfsolver> s,
-	char model) {
-
-	if(model == 'n') {
-		printf("iter %04u: c=%.4e d=%.4e resid=%.4e\n", (unsigned int)iter,
-			gsl_vector_get(s->x, 0), gsl_vector_get(s->x, 1),
-			gsl_blas_dnrm2(s->f));
-	}
-	else if(model == 'r') {
-		printf("iter %04u: c=%.4e resid=%.4e\n", (unsigned int)iter,
-			gsl_vector_get(s->x, 0), gsl_blas_dnrm2(s->f));
-	}
-	else if(model == 'a') {
-		printf("iter %04u: gamma1=%.4e gamma2=%.4e c=%.4e resid=%.4e\n",
-			(unsigned int)iter, gsl_vector_get(s->x, 0), gsl_vector_get(s->x, 1),
-			gsl_vector_get(s->x, 2), gsl_blas_dnrm2(s->f));
-	}
-}
-#endif
