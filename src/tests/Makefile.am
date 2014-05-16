@@ -11,7 +11,8 @@ TESTS = test_histogram1d_linear \
 	test_gsl_std_vector
 
 if HAVE_PYTHON
-TESTS += fit-symmetric-resonant.py
+TESTS += fit-symmetric-resonant.py \
+	fit-symmetric-nonresonant.py
 endif
 
 TEST_EXTENSIONS = .py
