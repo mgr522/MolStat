@@ -19,7 +19,7 @@
  * symmetric coupling to the leads is \f[
  * \hat{P}(g) = \frac{N}{\sqrt{g(1-g)^3}} \exp\left[ - \frac{(c \sqrt{g} - d \sqrt{1-g})^2}{2(1-g)} \right],
  * \f] where \f$g\f$ is the conductance in atomic units. The fitting parameters
- * are \f$\c\f$, the average level alignment relative to the standard deviation
+ * are \f$c\f$, the average level alignment relative to the standard deviation
  * in the channel coupling; \f$d\f$, the average channel coupling relative to
  * its standard deviation; and \f$N\f$, the normalization constant.
  *
