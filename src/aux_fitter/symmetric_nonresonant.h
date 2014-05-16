@@ -79,7 +79,7 @@ public:
 	 * \brief Calculates the Jacobian of the fit function for a given set of
 	 *    fitting parameters and a specific set of independent variables.
 	 *
-	 * For reference, the elements of the Jaocbian are given by
+	 * For reference, the elements of the Jacobian are given by
 	 * \f{eqnarray}
 	 * \frac{\partial \hat{P}(g)}{\partial c} & = & -\frac{N (c\sqrt{g} - d\sqrt{1-g})}{(1-g)^{5/2}} \exp\left[ - \frac{(c\sqrt{g} - d\sqrt{1-g})^2}{2(1-g)} \right]; \\
 	 * \frac{\partial \hat{P}(g)}{\partial d} & = & \frac{N (c\sqrt{g} - d\sqrt{1-g})}{\sqrt{g} (1-g)^2} \exp\left[ - \frac{(c\sqrt{g} - d\sqrt{1-g})^2}{2(1-g)} \right]; \\

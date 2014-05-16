@@ -81,7 +81,7 @@ public:
 	 * \brief Calculates the Jacobian of the fit function for a given set of
 	 *    fitting parameters and a specific set of independent variables.
 	 *
-	 * For reference, the elements of the Jaocbian are given by
+	 * For reference, the elements of the Jacobian are given by
 	 * \f{eqnarray}
 	 * \frac{\partial \hat{P}(g)}{\partial \gamma} & = & -\frac{N \gamma}{g^2} \sqrt{\frac{1-g}{g}} \exp\left[ -\gamma^2 \frac{1-g}{2g} \right]; \\
 	 * \frac{\partial \hat{P}(g)}{\partial N} & = & \frac{1}{\sqrt{g^3(1-g)}} \exp\left[ -\gamma^2 \frac{1-g}{2g} \right].
