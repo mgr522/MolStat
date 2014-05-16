@@ -6,4 +6,6 @@ libaux_fitter_a_SOURCES = fit_model.h \
 	symmetric_resonant.h \
 	symmetric_resonant.cc \
 	symmetric_nonresonant.h \
-	symmetric_nonresonant.cc
+	symmetric_nonresonant.cc \
+	asymmetric_resonant.h \
+	asymmetric_resonant.cc

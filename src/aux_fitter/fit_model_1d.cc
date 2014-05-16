@@ -11,6 +11,7 @@
 #include "fit_model_1d.h"
 #include "symmetric_resonant.h"
 #include "symmetric_nonresonant.h"
+#include "asymmetric_resonant.h"
 #include <exception>
 
 using namespace std;
@@ -34,13 +35,17 @@ std::shared_ptr<FitModel<1>> get_fit_model(const std::string &name,
 		ret = make_shared<SymmetricResonantFitModel>(data);
 	else if(name == "symmetricnonresonant")
 		ret = make_shared<SymmetricNonresonantFitModel>(data);
+	else if(name == "asymmetricresonant")
+		ret = make_shared<AsymmetricResonantFitModel>(data);
 	else {
 		throw invalid_argument("Error: unrecognized fit model: '%s'.\n" \
 			"Recognized options are\n" \
 			"   - 'SymmetricResonant'\n" \
-			"     resonant tunneling through a single site, symmetric coupling." \
+			"     resonant tunneling through a single site, symmetric coupling.\n" \
 			"   - 'SymmetricNonresonant'\n" \
-			"     nonresonant tunneling through a single site, symmetric coupling."
+			"     nonresonant tunneling through a single site, symmetric coupling.\n" \
+			"   - 'AsymmetricResonant'\n" \
+			"     resonant tunneling through a single site, asymmetric coupling."
 		);
 	}
 
