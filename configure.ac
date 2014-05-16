@@ -17,6 +17,10 @@ AM_PROG_AR
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
+# python is needed for some "make check" scripts
+AX_PYTHON
+AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != ":"])
+
 # look for GSL
 ACX_WITH_GSL
 
