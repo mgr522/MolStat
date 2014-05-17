@@ -12,7 +12,8 @@ TESTS = test_histogram1d_linear \
 
 if HAVE_PYTHON
 TESTS += fit-symmetric-resonant.py \
-	fit-symmetric-nonresonant.py
+	fit-symmetric-nonresonant.py \
+	fit-asymmetric-resonant.py
 endif
 
 TEST_EXTENSIONS = .py
