@@ -1,7 +1,7 @@
 /**
 \page page_fit Fitting Conductance Histograms
 
-\todo Update this section once the tweaked fitting code is complete.
+\todo Update this section.
 
 The forms for fitting are (\f$ \widehat{P}_G \f$ is the line shape of the
 histogram and \f$ g \equiv G/\mathrm{G}_0 \f$ is the conductance in units of
@@ -35,6 +35,9 @@ histogram and \f$ g \equiv G/\mathrm{G}_0 \f$ is the conductance in units of
      and \f$ r \f$ is the standard deviaton of the coupling relative to the
      standard deviation of the level alignment. Note that the fits are
      somewhat insensitive to \f$ r \f$.
+
+      \note The fit is somewhat insensitive to \f$ r \f$.
+      \note The order of gammaL and gammaR is arbitrary and may be reversed.
 
      This form is detailed in P.\ D.\ Williams, M.\ G.\ Reuter. J.\ Phys.\ 
      Chem.\ C \b 117, 5937-5942 (2013).

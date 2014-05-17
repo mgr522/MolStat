@@ -52,46 +52,6 @@ make install
 \subsection checkfitter Verifying the Installation
 Several tests are also provided to verify a successful compilation, and can be
 run using `make check`.
-   -# Testing the symmetric-coupled, resonant tunneling model.
-      \verbatim
-cd $(FITTER)/examples
-fitter 39 r < symmetric-resonant.dat
-      \endverbatim
-      The output should be
-      \verbatim
-Resid = 4.310146e-01
-Constant of proportionality = 3.956725e+00
-gamma = 9.946165e+00
-      \endverbatim
-   -# Testing the symmetric-coupled, nonresonant tunneling model.
-      \verbatim
-cd $(FITTER)/examples
-fitter 87 n < symmetric-nonresonant.dat
-      \endverbatim
-      The output should be
-      \verbatim
-Resid = 2.752039e+01
-Constant of proportionality = 1.179997e+01
-c = 5.824024e+01
-d = 9.698352e+00
-      \endverbatim
-   -# Testing the asymmetric-coupled, resonant tunneling model.
-      \verbatim
-cd $(FITTER)/examples
-fitter 73 a < asymmetric-resonant.dat
-      \endverbatim
-      The output should be
-      \verbatim
-resid = 5.151838e+00
-Constant of proportionality = 3.481548e+00
-gammaL = 1.732841e+01
-gammaR = 1.193090e+01
-r = 1.097273e+01
-      \endverbatim
-      \note The fit is somewhat insensitive to \f$ r \f$.
-      \note The order of gammaL and gammaR is arbitrary and may be reversed.
-
-\todo Integrate these fitter tests into make check.
 
 \section changelog Version Changes
 \subsection v1_0 v1.0 (May 2014)
