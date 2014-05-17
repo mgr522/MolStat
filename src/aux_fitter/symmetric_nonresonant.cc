@@ -83,6 +83,6 @@ std::list<std::vector<double>> SymmetricNonresonantFitModel::initial_guesses()
 void SymmetricNonresonantFitModel::print_fit(FILE *f,
 	const std::vector<double> &fitparam) const {
 
-	fprintf(f, "c=% .3e, d=% .3e, norm=% .3e", fitparam[C], fitparam[D],
+	fprintf(f, "c=%.4e, d=%.4e, norm=%.4e", fitparam[C], fitparam[D],
 		fitparam[NORM]);
 }

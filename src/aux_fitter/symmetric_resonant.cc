@@ -78,7 +78,7 @@ std::list<std::vector<double>> SymmetricResonantFitModel::initial_guesses()
 void SymmetricResonantFitModel::print_fit(FILE *f,
 	const std::vector<double> &fitparam) const {
 
-	fprintf(f, "gamma=% .3e, norm=% .3e", fitparam[GAMMA], fitparam[NORM]);
+	fprintf(f, "gamma=%.4e, norm=%.4e", fitparam[GAMMA], fitparam[NORM]);
 }
 
 void SymmetricResonantFitModel::process_fit_parameters(
