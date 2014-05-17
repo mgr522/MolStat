@@ -22,9 +22,9 @@ double AsymmetricResonantFitModel::resid(const std::vector<double> &fitparam,
 
 	vector<double> params(nfit+1);
 	double error, intmin, intmax, integral;
-	gsl_function f;
-	f.function = &AsymmetricResonantFitModel::int_p;
-	f.params = &params;
+	gsl_function func;
+	func.function = &AsymmetricResonantFitModel::int_p;
+	func.params = &params;
 
 	const double g = x[0];
 
@@ -38,9 +38,9 @@ double AsymmetricResonantFitModel::resid(const std::vector<double> &fitparam,
 	intmax = (2.0 - g + 2.0*sqrt(1.0-g)) / g;
 
 	// calculate the integral
-	gsl_integration_qags(&f, intmin, intmax, 0.0, 1.0e-7, nquad, w, &integral,
-		&error);
-	integral *= norm / (g*sqrt(g));
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, nquad, w.get(),
+		&integral, &error);
+	integral *= fitparam[NORM] / (g*sqrt(g));
 	return integral - f;
 }
 
@@ -50,8 +50,8 @@ std::vector<double> AsymmetricResonantFitModel::jacobian(
 
 	vector<double> params(nfit+1), ret(nfit);
 	double error, intmin, intmax, integral, intgl, intgr, intr;
-	gsl_function f;
-	f.params = &params;
+	gsl_function func;
+	func.params = &params;
 
 	const double g = x[0];
 	const double gammaL = fitparam[GAMMAL];
@@ -69,20 +69,20 @@ std::vector<double> AsymmetricResonantFitModel::jacobian(
 	intmax = (2.0 - g + 2.0*sqrt(1.0-g)) / g;
 
 	// evaluate the four integrals
-	f.function = &AsymmetricResonantFitModel::int_p;
-	gsl_integration_qags(&f, intmin, intmax, 0.0, 1.0e-7, 2000, w,
+	func.function = &AsymmetricResonantFitModel::int_p;
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
 		&integral, &error);
 
-	f.function = &AsymmetricResonantFitModel::int_dp_dgammal;
-	gsl_integration_qags(&f, intmin, intmax, 0.0, 1.0e-7, 2000, w,
+	func.function = &AsymmetricResonantFitModel::int_dp_dgammaL;
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
 		&intgl, &error);
 
-	f.function = &AsymmetricResonantFitModel::int_dp_dgammar;
-	gsl_integration_qags(&f, intmin, intmax, 0.0, 1.0e-7, 2000, w,
+	func.function = &AsymmetricResonantFitModel::int_dp_dgammaR;
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
 		&intgr, &error);
 
-	f.function = &AsymmetricResonantFitModel::int_dp_dr;
-	gsl_integration_qags(&f, intmin, intmax, 0.0, 1.0e-7, 2000, w,
+	func.function = &AsymmetricResonantFitModel::int_dp_dr;
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
 		&intr, &error);
 
 	// set the derivatives
@@ -105,8 +105,8 @@ std::pair<double, std::vector<double>> AsymmetricResonantFitModel::resid_j(
 	pair<double, vector<double>> ret;
 	vector<double> params(nfit+1);
 	double error, intmin, intmax, integral, intgl, intgr, intr;
-	gsl_function f;
-	f.params = &params;
+	gsl_function func;
+	func.params = &params;
 
 	ret.second.resize(nfit);
 
@@ -126,20 +126,20 @@ std::pair<double, std::vector<double>> AsymmetricResonantFitModel::resid_j(
 	intmax = (2.0 - g + 2.0*sqrt(1.0-g)) / g;
 
 	// evaluate the four integrals
-	f.function = &AsymmetricResonantFitModel::int_p;
-	gsl_integration_qags(&f, intmin, intmax, 0.0, 1.0e-7, 2000, w,
+	func.function = &AsymmetricResonantFitModel::int_p;
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
 		&integral, &error);
 
-	f.function = &AsymmetricResonantFitModel::int_dp_dgammal;
-	gsl_integration_qags(&f, intmin, intmax, 0.0, 1.0e-7, 2000, w,
+	func.function = &AsymmetricResonantFitModel::int_dp_dgammaL;
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
 		&intgl, &error);
 
-	f.function = &AsymmetricResonantFitModel::int_dp_dgammar;
-	gsl_integration_qags(&f, intmin, intmax, 0.0, 1.0e-7, 2000, w,
+	func.function = &AsymmetricResonantFitModel::int_dp_dgammaR;
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
 		&intgr, &error);
 
-	f.function = &AsymmetricResonantFitModel::int_dp_dr;
-	gsl_integration_qags(&f, intmin, intmax, 0.0, 1.0e-7, 2000, w,
+	func.function = &AsymmetricResonantFitModel::int_dp_dr;
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
 		&intr, &error);
 
 	// set the residual and derivatives
@@ -157,6 +157,42 @@ std::pair<double, std::vector<double>> AsymmetricResonantFitModel::resid_j(
 	return ret;
 }
 
+std::list<std::vector<double>> AsymmetricResonantFitModel::initial_guesses()
+	const {
+
+	const list<double> list_gamma{},
+		list_r{};
+	list<vector<double>> ret;
+
+	for(list<double>::const_iterator gammaL = list_gamma.cbegin();
+		gammaL != list_gamma.cend(); ++gammaL) {
+	for(list<double>::const_iterator gammaR = list_gamma.cbegin();
+		gammaR != list_gamma.cend(); ++gammaR) {
+	for(list<double>::const_iterator r = list_r.cbegin();
+		r != list_r.cend(); ++r) {
+
+		vector<double> init(nfit);
+		init[GAMMAL] = *gammaL;
+		init[GAMMAR] = *gammaR;
+		init[R] = *r;
+
+		ret.emplace_back(init);
+	}}}
+
+	return ret;
+}
+
+void AsymmetricResonantFitModel::print_fit(FILE *f,
+	const std::vector<double> &fitparam) const {
+
+	fprintf(f, "gammaL=%.4e, gammaR=%.4e, r=%.4e, norm=%.4e",
+		fitparam[GAMMAL], fitparam[GAMMAR], fitparam[R], fitparam[NORM]);
+}
+
+void AsymmetricResonantFitModel::process_fit_parameters(
+	std::vector<double> &fitparams) const {
+}
+
 double AsymmetricResonantFitModel::int_p(double x, void *params) {
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
@@ -164,7 +200,6 @@ double AsymmetricResonantFitModel::int_p(double x, void *params) {
 	const double gammaL = fitparams[GAMMAL];
 	const double gammaR = fitparams[GAMMAR];
 	const double r = fitparams[R];
-	const double norm = fitparams[NORM];
 
 	const double temp1 = 4.0*x - g*(1.0+x)*(1.0+x);
 	const double temp2 = 1.0 + x*x;
@@ -182,7 +217,6 @@ double AsymmetricResonantFitModel::int_dp_dr(double x, void *params) {
 	const double gammaL = fitparams[GAMMAL];
 	const double gammaR = fitparams[GAMMAR];
 	const double r = fitparams[R];
-	const double norm = fitparams[NORM];
 
 	const double temp1 = 4.0*x - g*(1.0+x)*(1.0+x);
 	const double temp2 = 1.0 + x*x;
@@ -200,7 +234,6 @@ double AsymmetricResonantFitModel::int_dp_dgammaL(double x, void *params) {
 	const double gammaL = fitparams[GAMMAL];
 	const double gammaR = fitparams[GAMMAR];
 	const double r = fitparams[R];
-	const double norm = fitparams[NORM];
 
 	const double temp1 = 4.0*x - g*(1.0+x)*(1.0+x);
 	const double temp2 = 1.0 + x*x;
@@ -222,7 +255,6 @@ double AsymmetricResonantFitModel::int_dp_dgammaR(double x, void *params) {
 	const double gammaL = fitparams[GAMMAL];
 	const double gammaR = fitparams[GAMMAR];
 	const double r = fitparams[R];
-	const double norm = fitparams[NORM];
 
 	const double temp1 = 4.0*x - g*(1.0+x)*(1.0+x);
 	const double temp2 = 1.0 + x*x;

@@ -43,7 +43,7 @@ protected:
 	/**
 	 * \brief Integration workspace for GSL numerical integration.
 	 */
-	std::unique_ptr<gsl_integration_workspace> w;
+	std::shared_ptr<gsl_integration_workspace> w;
 
 	/**
 	 * \brief GSL integrand function for the fit function integral.
