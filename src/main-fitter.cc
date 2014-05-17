@@ -148,26 +148,6 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-#if 0
-	else if(model == 'a') {
-		params = 3; // number of parameters in the fit
-
-		// set up a range for initial values
-		double gammavals[] = {5.0, 10.0, 20.0, 30.0, 40.0};
-		double cvals[] = {0.1, 0.5, 1.0, 2.0, 10.0};
-		for(int i = 0; i < 5; ++i)
-		for(int j = 0; j <= i; ++j)
-		for(int k = 0; k < 5; ++k) {
-			initvals.push(gammavals[i]);
-			initvals.push(gammavals[j]);
-			initvals.push(cvals[k]);
-		}
-
-		// allocate numerical integration workspace
-		data.w = gsl_integration_workspace_alloc(2000);
-	}
-#endif
-
 	solver.reset(
 		gsl_multifit_fdfsolver_alloc(gsl_multifit_fdfsolver_lmsder, nbin,
 			model->nfit),
@@ -243,25 +223,6 @@ int main(int argc, char **argv) {
 	else {
 		// make sure the fit parameters are good
 		model->process_fit_parameters(bestfit);
-#if 0
-		else if(model == 'a') {
-			fits[0] = gsl_vector_get(bestfit, 0);
-			fits[1] = gsl_vector_get(bestfit, 1);
-			fits[2] = gsl_vector_get(bestfit, 2);
-			norm = gsl_vector_get(bestfit, 3);
-
-			// both gammas might be negative, fix it
-			if(fits[0] < 0.0 && fits[1] < 0.0) {
-				gsl_vector_set(bestfit, 0, -fits[0]);
-				gsl_vector_set(bestfit, 1, -fits[1]);
-			}
-
-			// r might be negative, fix it
-			if(fits[2] < 0.0) {
-				gsl_vector_set(bestfit, 2, -fits[2]);
-			}
-		}
-#endif
 
 		// print ou the fit
 		printf("Resid = %.6e\n", bestresid);
