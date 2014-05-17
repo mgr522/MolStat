@@ -167,7 +167,7 @@ int main(int argc, char **argv) {
 		// start iterating
 		iter = 0;
 		if(iterprint) {
-			fprintf(stdout, "Iter=%3zu ", iter);
+			fprintf(stdout, "Iter=%3zu, ", iter);
 			model->print_fit(stdout, gsl_to_std(solver->x));
 			fprintf(stdout, "\n");
 		}
@@ -176,7 +176,7 @@ int main(int argc, char **argv) {
 			++iter;
 			status = gsl_multifit_fdfsolver_iterate(solver.get());
 			if(iterprint) {
-				fprintf(stdout, "Iter=%3zu ", iter);
+				fprintf(stdout, "Iter=%3zu, ", iter);
 				model->print_fit(stdout, gsl_to_std(solver->x));
 				fprintf(stdout, "\n");
 			}

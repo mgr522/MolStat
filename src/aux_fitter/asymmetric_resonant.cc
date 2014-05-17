@@ -70,19 +70,19 @@ std::vector<double> AsymmetricResonantFitModel::jacobian(
 
 	// evaluate the four integrals
 	func.function = &AsymmetricResonantFitModel::int_p;
-	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, nquad, w.get(),
 		&integral, &error);
 
 	func.function = &AsymmetricResonantFitModel::int_dp_dgammaL;
-	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, nquad, w.get(),
 		&intgl, &error);
 
 	func.function = &AsymmetricResonantFitModel::int_dp_dgammaR;
-	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, nquad, w.get(),
 		&intgr, &error);
 
 	func.function = &AsymmetricResonantFitModel::int_dp_dr;
-	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, nquad, w.get(),
 		&intr, &error);
 
 	// set the derivatives
@@ -127,23 +127,23 @@ std::pair<double, std::vector<double>> AsymmetricResonantFitModel::resid_j(
 
 	// evaluate the four integrals
 	func.function = &AsymmetricResonantFitModel::int_p;
-	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, nquad, w.get(),
 		&integral, &error);
 
 	func.function = &AsymmetricResonantFitModel::int_dp_dgammaL;
-	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, nquad, w.get(),
 		&intgl, &error);
 
 	func.function = &AsymmetricResonantFitModel::int_dp_dgammaR;
-	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, nquad, w.get(),
 		&intgr, &error);
 
 	func.function = &AsymmetricResonantFitModel::int_dp_dr;
-	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, 2000, w.get(),
+	gsl_integration_qags(&func, intmin, intmax, 0.0, 1.0e-7, nquad, w.get(),
 		&intr, &error);
 
 	// set the residual and derivatives
-	ret.first = integral - f;
+	ret.first = norm * integral / (g*sqrt(g)) - f;
 
 	ret.second[GAMMAL] = norm / (g*sqrt(g)) * intgl;
 
@@ -175,6 +175,7 @@ std::list<std::vector<double>> AsymmetricResonantFitModel::initial_guesses()
 		init[GAMMAL] = *gammaL;
 		init[GAMMAR] = *gammaR;
 		init[R] = *r;
+		init[NORM] = 1.;
 
 		ret.emplace_back(init);
 	}}}
