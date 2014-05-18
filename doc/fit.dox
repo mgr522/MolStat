@@ -3,6 +3,8 @@
 
 \todo Update this section.
 
+\todo Perhaps add a section on binning styles.
+
 The forms for fitting are (\f$ \widehat{P}_G \f$ is the line shape of the
 histogram and \f$ g \equiv G/\mathrm{G}_0 \f$ is the conductance in units of
 \f$ \mathrm{G}_0 \f$)

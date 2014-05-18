@@ -31,6 +31,8 @@ using namespace std;
  * Parses the input parameters and outputs the best-fit parameters (and,
  * optionally, iteration-to-iteration details).
  *
+ * \todo Add options for bin types.
+ *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status; 0 for normal.

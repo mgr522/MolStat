@@ -53,6 +53,9 @@ make install
 Several tests are also provided to verify a successful compilation, and can be
 run using `make check`.
 
+\note Note that the `fit-asymmetric-resonant.py` test can take several minutes
+to run.
+
 \section changelog Version Changes
 \subsection v1_0 v1.0 (May 2014)
    - Initial release.
