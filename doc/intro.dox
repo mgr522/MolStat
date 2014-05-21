@@ -1,25 +1,49 @@
 /**
-\mainpage General Information
+\mainpage Introduction
 
-Conductance histograms are a common way for tabulating and analyzing
-experimental data on electric conductance through nanometer-scaled systems
-(i.e., systems where quantum mechanical effects are inherent). Introductions
-to conductance histograms can be found in \cite krans-767,
-\cite xu-1221, \cite venkataraman-458, and \cite reuter-2243. This software
-package simulates conductance histograms using simple model systems (see \cite reuter-2243) and provides tools for fitting conductance histograms to
-specified functional forms (perhaps \cite williams-5937). Note that this
-software does not rely on first-principles calculations of electron transport
-properties. Studies that construct histograms from such calculations have been
-reported in, for example, \cite french-887.
+This software package provides tools for understanding and interpreting
+single-molecule behavior. Single-molecule experiments generally cannot
+determine, let alone control, the microscopic details of the system and, as
+such, are usually performed many times and interpreted statistically.
 
-There are three main tasks performed by this package.
-   -# Simulate conductance histograms using one of the implemented models. The
-      general idea for this technique is presented in \cite reuter-2243. This
-      process will be discussed in \ref page_simulate.
-   -# Bin conductance data into a histogram.
-   -# Fit a conductance histogram (or a peak from a conductance histogram) to
-      a specified functional form. This process will be discussed in
-      \ref page_fit.
+The key idea to understand and interpret these single-molecule measurements is
+that each measurement samples from a distribution of possible microscopic
+configurations. The observed data is thus probabilistic---not deterministic---
+and a combination of probability theory and statistical mechanics can be used
+to provide meaning to the data.
+
+For a particular single-molecule process, there are several physical variables
+that determine the observed behavior. For example, \"molecular conductance\"
+experiments rely on the level alignment, the electrode-molecule couplings, and
+the applied bias. This software assumes that each of these
+parameters is a random variable from some distribution and that each
+experimental measurement samples from their collective distributions.
+The combination of conventional physical theories and probability theory then
+relates these underlying physical parameters to the observed data.
+Instead of measuring, for instance, *the* single-molecule conductance, the
+multitude of experiments collectively measures the probability density function
+of the conductance observable, which is more well-defined. The goal of this
+software package is to understand how these microscopic physical parameters
+relate to observables, in this statistical sense.
+
+More information can be found throughout this manual.
+
+\section intro_general_concepts General Concepts
+There are two primary functions of this software package.
+-# Simulate the probability density function of the experimental observable
+   using known distributions on the underlying physical parameters. For the
+   molecular conductance example, we put distributions around the level
+   alignments and coupling strengths, sample from these distributions, and
+   estimate the probability density function for the conductance observable.
+-# Infer the statistics of the underlying physical parameters from the
+   probability density function of the observable. This amounts to a
+   (non-linear) fitting problem. Due to the mathematical effort required to
+   obtain functional forms to fit against, the number of models is much more
+   limited than for the simulator.
+
+In both cases, the code was designed to be extensible and to accomodate new
+observables, new models, or both. This guide describes how to use the existing
+models and, also, how to add new ones.
 
 \section sec_install Installation
 This package requires the GNU Scientific Library (GSL), which can be obtained
@@ -53,8 +77,7 @@ make install
 Several tests are also provided to verify a successful compilation, and can be
 run using `make check`.
 
-\note Note that the `fit-asymmetric-resonant.py` test can take several minutes
-to run.
+\note The `fit-asymmetric-resonant.py` test can take several minutes to run.
 
 \section changelog Version Changes
 \subsection v1_0 v1.0 (May 2014)
