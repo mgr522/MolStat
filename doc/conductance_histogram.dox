@@ -1,8 +1,12 @@
 /**
-\page page_simulate Simulating Conductance Histograms
+\page page_conductance_histograms Molecular Conductance: Conductance Histograms
+
+This chapter deals with using MolStat to simulate and fit conductance
+histograms. We begin with the theory behind molecular conductance, introduce
+conductance histograms, and then detail the software interface and features.
 
 \section sec_landauer Landauer Theory
-All of the simulators are based on the Landauer-B&uuml;ttiker-Imry theory of
+All of the tools are based on the Landauer-B&uuml;ttiker-Imry theory of
 conductance through quantum systems \cite buttiker-6207, \cite imry-s306.
 Within this theory, the zero-temperature current is given as
 \f[
@@ -28,19 +32,47 @@ Several types of conductance can be considered:
 	-# Static conductance
       \f[ \frac{I(V)}{V} = \frac{2e}{hV} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E T(E). \f]
    .
-Various models (described below) are used to calculate \f$T(E)\f$; from this
+Various models (described below) can be used to calculate \f$T(E)\f$; from this
 transmission, all of the above conductances can be calculated.
 
-\section sec_running_simulator Running the Simulator
-The general procedure for simulating is as follows. Specify
-   - a model for calculating \f$T(E)\f$. Each model has several parameters,
-     such as channel energies, channel-electrode couplings, etc.
-   - random distributions for each of these parameters. The available random
-     number distributions are descibed below.
-   - how many bins to use in the histogram.
-   - the Fermi energy, the number of conductance points to simulate, and
-     information on binning the conductance data into a histogram.
-   .
+\section conductance_histograms Conductance Histograms
+Conductance histograms are a common way for tabulating and analyzing
+experimental data on electric conductance through nanometer-scaled systems
+(i.e., systems where quantum mechanical effects are inherent). Introductions
+to conductance histograms can be found in \cite krans-767,
+\cite xu-1221, \cite venkataraman-458, and \cite reuter-2243. In essence, the
+conductance through the system is measured many (thousands) of times, and the
+conductance data is binned into a histogram.
+
+In MolStat, we assume that the conductance histogram reports the probability
+density function of the conductance observable \cite reuter-2243. As
+described in the introduction and in Refs.\ \cite reuter-2243 and
+\cite williams-5937, MolStat then regards the physical parameters in the
+transmission as random variables that determine the conductance's probability
+density function.
+
+The two operations supported by MolStat are
+-# Simulating conductance histograms using simple model systems (see
+   \cite reuter-2243). This operation is described in
+   \ref sec_cond_hist_simulate. Note that these model systems do not rely on
+   first-principles electronic structure calculations; they are
+   phenomenological. Other studies that construct histogram from such *ab
+   initio* calculations have been reported in, for instance, \cite french-887.
+-# Fit a conductance histogram (or, more accurately, a peak from a conductance
+   histogram) to a specified functional form. This process is discussed in
+   \ref sec_cond_hist_fit.
+
+\section sec_cond_hist_simulate Simulating Conductance Histograms
+The general procedure for simulating a conductance histogram is as follows.
+Specify
+- a model for calculating \f$T(E)\f$. Each model has several parameters, such
+  as channel energies, channel-electrode couplings, etc.
+- random distributions for each of these parameters. The available random
+  number distributions are descibed below.
+- how many bins to use in the histogram.
+- the Fermi energy, the number of conductance points to simulate, and
+  information on binning the conductance data into a histogram.
+.
 From this information, the simulator gets the requested number of conductance
 values (where each value uses random model parameters from the
 specified distributions), bins the conductance data, and, finally, outputs
@@ -60,23 +92,21 @@ gamma normal 0.8 0.05
 epsilon normal -6. 0.05
 \endverbatim
 
-The lines are interpreted as follows:
-   -# The model to use for calculating the transmission function and
-      conductance.
-   -# The type of conductance to calculate. Must be `ZeroBias`, `Static`,
-      or `Differential`.
-   -# The number of conductance data points to simulate.
-	-# The number of bins to use and the type of binning. For Static and
-      Differential conductance histograms, the specified number of bins is used
-      for both the voltage and conductance axes. The binning type must be `log`
-      or `linear`, and specifies whether \f$\log_{10}(g)\f$ or \f$g\f$ is
-      binned, respectively. The printed conductance values will be either
-		\f$\log_{10}(g)\f$ or \f$g\f$.
-   -# The Fermi energy.
-   -# Random distributions (one per line) for the various parameters. For
-      example, `eta
-      constant 0.5` specifies the constant distribution (0.5) for \f$\eta\f$; that
-      is, \f$\eta\f$ is always 0.5.
+The lines of this input file are interpreted as follows:
+-# The model to use for calculating the transmission function and conductance.
+-# The type of conductance to calculate. Must be `ZeroBias`, `Static`, or
+   `Differential`.
+-# The number of conductance data points to simulate.
+-# The number of bins to use and the type of binning. For Static and
+   Differential conductance histograms, the specified number of bins is used
+   for both the voltage and conductance axes. The binning type must be `log`
+   or `linear`, and specifies whether \f$\log_{10}(g)\f$ or \f$g\f$ is binned,
+   respectively. The printed conductance values will be either
+   \f$\log_{10}(g)\f$ or \f$g\f$.
+-# The Fermi energy.
+-# Random distributions (one per line) for the various parameters. For example,
+   `eta constant 0.5` specifies the constant distribution (0.5) for \f$\eta\f$;
+   that is, \f$\eta\f$ is always 0.5.
 
 `ZeroBias` calculations do not require any parameters other than those
 needed by the model. `Static` and `Differential` conductance calculations
@@ -94,72 +124,7 @@ similarly reads
 mask(g) counts
 \endverbatim
 
-\section sec_rng Random Number Distributions
-Random number distributions are key to the simulator. For versatility, we
-have an abstract notion of random number distributions, allowing models to be
-combined with various distributions. In this section we list the implemented
-random number distributions, along with how each one is used in the input file.
-
-All random number distributions have a common syntax:
-\verbatim
-variable-name distribution [distribution-parameters]
-\endverbatim
-where
-   - `variable-name` is the name of the model variable.
-   - `distribution` is the name of the distribution (see below).
-   - `[distribution-parameters]` are the parameter(s) required by the specified
-     distribution.
-
-The implemented random distributions are
-   - Constant distribution: \f$ P(x) = \delta(x-x_c)\f$.
-      - `distribution-name` is `Constant`
-      - `[distribution-parameters]` are `value`
-         - `value` is \f$x_c\f$.
-      - Implemented by the class ConstantDistribution.
-
-   - Uniform distribution: \f$ P(x) = 1/(b-a) \f$ for \f$a\le x \le b\f$.
-      - `distribution-name` is `Uniform`
-      - `[distribution-parameters]` are `lower upper`
-         - `lower` is \f$a\f$.
-         - `upper` is \f$b\f$.
-      - Implemented by the class UniformDistribution.
-
-   - Normal distribution: \f$ P(x) = (2\pi \sigma^2)^{-1/2} \exp\left[ - (x-x_0)^2 / (2 \sigma^2) \right] \f$.
-      - `distribution-name` is `Normal` or `Gaussian`
-      - `[distribution-parameters]` are `average stdev`
-         - `average` is \f$ x_0 \f$.
-         - `stdev` is \f$\sigma\f$.
-      - Implemented by the class NormalDistribution.
-
-   - Lognormal distribution: \f$ P(x) = \frac{1}{x \sqrt{2\pi \sigma^2}} \exp\left[ - \frac{(\ln(x) - \zeta)^2}{2\sigma^2} \right] \f$.
-      - `distribution-name` is `Lognormal`
-      - `[distribution-parameters]` are `zeta sigma`
-         - `zeta` is \f$ \zeta \f$, the mean (in log-space).
-         - `sigma` is \f$\sigma\f$, the standard deviation (in log-space).
-      - Implemented by the class LognormalDistribution.
-
-	- Gamma distribution: \f$ P(x) = \frac{1}{\Gamma(a) b^a} x^{a-1} e^{-x/b} \f$.
-      - `distribution-name` is `Gamma`
-      - `[distribution-parameters]` are `a b`
-         - `a` is \f$ a \f$, the shape factor.
-         - `b` is \f$b\f$, the scale factor.
-      - Implemented by the class GammaDistribution.
-
-\subsection add_rnd_subsec Adding Random Distributions
-Random number distributions are computationally described by the
-RandomDistribution class. Adding a new random number distribution requires
-a class derived from RandomDistribution that implements the `sample` function.
-This function takes in a `gsl_rng` construct from GSL and returns a random
-number from the distribution.
-
-Finally, the new random number distribution needs to be added to the
-::distribution_from_tokens function so that it is processed. In this function,
-the `distribution` tag for the input deck is defined and the code for
-processing `[distribution-parameters]` is implemented. The distributions
-listed above should provide sufficient examples. Note that the name of the
-distribution should be in lowercase.
-
-\section sec_models Implemented Conductance Models
+\subsection subsec_cond_hist_sim_models Models for Simulating Conductance
 Finally, we list the implemented conductance models. Note that all of these
 models are implemented by classes derived from ConductanceModel. Each of these
 classes encapsulates not only the mathematical relationships described herein,
@@ -222,10 +187,12 @@ parameters (from the distributions) and calculate the appropriate conductance.
       - `gamma` (\f$\Gamma\f$), the site/lead coupling,
       - `beta` (\f$\beta\f$), the inter-site coupling.
 
-\subsection add_conductance_model_subsec Adding Conductance Models
+\subsubsection subsubsec_add_conductance_model Adding Conductance Models
 Adding a conductance model is designed to be straightforward, requiring the
 following steps.
 -# Derive a class from ConductanceModel, implementing the ConductanceModel::static_conductance, ConductanceModel::diff_conductance, and ConductanceModel::zero_bias_conductance member functions. As a side note, these three functions may use the transmission function, or other model-specific functions, which are implemented as static member functions of the derived class (as needed).
 -# Add a case for the new model in the ::make_model function. This block of code should check that all necessary random number distributions are specified and properly route them to the ConductanceModel. Finally, the case returns a shared pointer to the ConductanceModel. The implemented cases should provide sufficient examples. Note that the name of the model should be in lowercase.
 -# Add a note to the end of the ::make_model function so that (minimal) runtime support is present.
+
+
 */

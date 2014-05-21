@@ -1,0 +1,70 @@
+/**
+ \page page_general_details General Mathematical Ideas
+
+\todo Add a section on binning styles, histograms, probability density functions, etc.
+
+\section sec_rng Random Number Distributions
+Random number distributions are key to the simulator. For versatility, we
+have an abstract notion of random number distributions, allowing models to be
+combined with various distributions. In this section we list the implemented
+random number distributions, along with how each one is used in the input file.
+
+All random number distributions have a common syntax:
+\verbatim
+variable-name distribution [distribution-parameters]
+\endverbatim
+where
+   - `variable-name` is the name of the model variable.
+   - `distribution` is the name of the distribution (see below).
+   - `[distribution-parameters]` are the parameter(s) required by the specified
+     distribution.
+
+The implemented random distributions are
+   - Constant distribution: \f$ P(x) = \delta(x-x_c)\f$.
+      - `distribution-name` is `Constant`
+      - `[distribution-parameters]` are `value`
+         - `value` is \f$x_c\f$.
+      - Implemented by the class ConstantDistribution.
+
+   - Uniform distribution: \f$ P(x) = 1/(b-a) \f$ for \f$a\le x \le b\f$.
+      - `distribution-name` is `Uniform`
+      - `[distribution-parameters]` are `lower upper`
+         - `lower` is \f$a\f$.
+         - `upper` is \f$b\f$.
+      - Implemented by the class UniformDistribution.
+
+   - Normal distribution: \f$ P(x) = (2\pi \sigma^2)^{-1/2} \exp\left[ - (x-x_0)^2 / (2 \sigma^2) \right] \f$.
+      - `distribution-name` is `Normal` or `Gaussian`
+      - `[distribution-parameters]` are `average stdev`
+         - `average` is \f$ x_0 \f$.
+         - `stdev` is \f$\sigma\f$.
+      - Implemented by the class NormalDistribution.
+
+   - Lognormal distribution: \f$ P(x) = \frac{1}{x \sqrt{2\pi \sigma^2}} \exp\left[ - \frac{(\ln(x) - \zeta)^2}{2\sigma^2} \right] \f$.
+      - `distribution-name` is `Lognormal`
+      - `[distribution-parameters]` are `zeta sigma`
+         - `zeta` is \f$ \zeta \f$, the mean (in log-space).
+         - `sigma` is \f$\sigma\f$, the standard deviation (in log-space).
+      - Implemented by the class LognormalDistribution.
+
+	- Gamma distribution: \f$ P(x) = \frac{1}{\Gamma(a) b^a} x^{a-1} e^{-x/b} \f$.
+      - `distribution-name` is `Gamma`
+      - `[distribution-parameters]` are `a b`
+         - `a` is \f$ a \f$, the shape factor.
+         - `b` is \f$b\f$, the scale factor.
+      - Implemented by the class GammaDistribution.
+
+\subsection add_rnd_subsec Adding Random Distributions
+Random number distributions are computationally described by the
+RandomDistribution class. Adding a new random number distribution requires
+a class derived from RandomDistribution that implements the `sample` function.
+This function takes in a `gsl_rng` construct from GSL and returns a random
+number from the distribution.
+
+Finally, the new random number distribution needs to be added to the
+::distribution_from_tokens function so that it is processed. In this function,
+the `distribution` tag for the input deck is defined and the code for
+processing `[distribution-parameters]` is implemented. The distributions
+listed above should provide sufficient examples. Note that the name of the
+distribution should be in lowercase.
+*/
