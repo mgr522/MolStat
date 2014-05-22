@@ -7,8 +7,7 @@ TESTS = test_histogram1d_linear \
 	test_symmetric_voltage_one_site \
 	test_symmetric_two_site \
 	test_asymmetric_two_site \
-	test_symmetric_voltage_two_site \
-	test_gsl_std_vector
+	test_symmetric_voltage_two_site
 
 if HAVE_PYTHON
 TESTS += fit-symmetric-resonant.py \
@@ -28,8 +27,7 @@ check_PROGRAMS = test_histogram1d_linear \
 	test_symmetric_voltage_one_site \
 	test_symmetric_two_site \
 	test_asymmetric_two_site \
-	test_symmetric_voltage_two_site \
-	test_gsl_std_vector
+	test_symmetric_voltage_two_site
 
 test_histogram1d_linear_SOURCES = histogram1d_linear.cc
 test_histogram1d_linear_LDADD = ../../general/histogram_tools/libhistogram_tools.a
@@ -60,6 +58,3 @@ test_asymmetric_two_site_LDADD = ../simulator_models/libsimulator_models.a
 
 test_symmetric_voltage_two_site_SOURCES = symmetric_voltage_two_site.cc
 test_symmetric_voltage_two_site_LDADD = ../simulator_models/libsimulator_models.a
-
-test_gsl_std_vector_SOURCES = gsl_std_vector.cc
-test_gsl_std_vector_LDADD = ../fitter_models/libfitter_models.a

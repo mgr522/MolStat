@@ -1,5 +1,5 @@
 /**
- * \file fit_model.h
+ * \file fit_model_interface.h
  * \brief Defines an abstract class encapsulating a model for nonlinear
  *    fitting.
  *

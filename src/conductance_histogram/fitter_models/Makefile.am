@@ -1,9 +1,7 @@
 noinst_LIBRARIES = libfitter_models.a
 
-libfitter_models_a_SOURCES = fit_model.h \
-	fit_model.cc \
-	fit_model_1d.h \
-	fit_model_1d.cc \
+libfitter_models_a_SOURCES = cond_hist_fit_model.h \
+	cond_hist_fit_model.cc \
 	symmetric_resonant.h \
 	symmetric_resonant.cc \
 	symmetric_nonresonant.h \

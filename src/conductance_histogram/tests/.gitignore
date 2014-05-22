@@ -11,9 +11,6 @@ test_asymmetric_one_site.trs
 test_asymmetric_two_site
 test_asymmetric_two_site.log
 test_asymmetric_two_site.trs
-test_gsl_std_vector
-test_gsl_std_vector.log
-test_gsl_std_vector.trs
 test_histogram1d_linear
 test_histogram1d_linear.log
 test_histogram1d_linear.trs

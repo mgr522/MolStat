@@ -9,7 +9,7 @@
 #ifndef __symmetric_resonant_h__
 #define __symmetric_resonant_h__
 
-#include "fit_model.h"
+#include <general/fitter_tools/fit_model_interface.h>
 
 /**
  * \brief The fit model for resonant tunneling through a single site with

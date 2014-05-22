@@ -9,7 +9,7 @@
 #ifndef __asymmetric_resonant_h__
 #define __asymmetric_resonant_h__
 
-#include "fit_model.h"
+#include <general/fitter_tools/fit_model_interface.h>
 #include <gsl/gsl_integration.h>
 
 /**

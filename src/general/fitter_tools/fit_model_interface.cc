@@ -1,12 +1,12 @@
 /**
- * \file fit_model.cc
+ * \file fit_model_interface.cc
  * \brief Implementations for non-templated functions in fit_model.h.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
  */
 
-#include "fit_model.h"
+#include "fit_model_interface.h"
 
 std::vector<double> gsl_to_std(const gsl_vector *gslv) {
 	std::vector<double> ret(gslv->size);

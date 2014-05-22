@@ -9,7 +9,7 @@
 #ifndef __symmetric_nonresonant_h__
 #define __symmetric_nonresonant_h__
 
-#include "fit_model.h"
+#include <general/fitter_tools/fit_model_interface.h>
 
 /**
  * \brief The fit model for nonresonant tunneling through a single site with

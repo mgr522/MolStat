@@ -1,5 +1,5 @@
 /**
- * \file gsl_std_vector.cc
+ * \file test_gsl_std_vector.cc
  * \brief Test suite for interconverting gsl and std vector types.
  *
  * \author Matthew G.\ Reuter
@@ -8,7 +8,7 @@
 
 #include <cstdio>
 #include <assert.h>
-#include "../fitter_models/fit_model.h"
+#include "fit_model_interface.h"
 
 using namespace std;
 

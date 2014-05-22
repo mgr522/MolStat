@@ -22,7 +22,7 @@
 #include <gsl/gsl_multifit_nlin.h>
 
 #include <general/string_tools.h>
-#include "fitter_models/fit_model_1d.h"
+#include "fitter_models/cond_hist_fit_model.h"
 
 using namespace std;
 
@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
 
 	// set the model
 	try {
-		model = get_fit_model(modelname, data);
+		model = get_cond_hist_fit_model(modelname, data);
 	} catch(const invalid_argument &e) {
 		fprintf(stderr, "Error: unknown model '%s'.\n", modelname.c_str());
 		return 0;
