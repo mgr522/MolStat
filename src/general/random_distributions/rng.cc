@@ -9,7 +9,7 @@
 
 #include "rng.h"
 #include <gsl/gsl_randist.h>
-#include <string_tools.h>
+#include <general/string_tools.h>
 #include "constant.h"
 #include "uniform.h"
 #include "normal.h"

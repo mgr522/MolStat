@@ -13,7 +13,7 @@
 #include <memory>
 #include <string>
 #include <map>
-#include <random_distributions/rng.h>
+#include <general/random_distributions/rng.h>
 
 using std::shared_ptr;
 

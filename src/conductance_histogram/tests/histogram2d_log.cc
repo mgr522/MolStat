@@ -10,8 +10,8 @@
 #include <assert.h>
 #include <cmath>
 
-#include <histogram_tools/histogram2d.h>
-#include <histogram_tools/bin_log.h>
+#include <general/histogram_tools/histogram2d.h>
+#include <general/histogram_tools/bin_log.h>
 
 using namespace std;
 

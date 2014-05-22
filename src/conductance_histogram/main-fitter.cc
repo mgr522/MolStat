@@ -21,7 +21,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multifit_nlin.h>
 
-#include <string_tools.h>
+#include <general/string_tools.h>
 #include "fitter_models/fit_model_1d.h"
 
 using namespace std;

@@ -19,8 +19,6 @@ endif
 TEST_EXTENSIONS = .py
 PY_LOG_COMPILER = $(PYTHON_BIN)
 
-AM_CPPFLAGS = -I../../general
-
 check_PROGRAMS = test_histogram1d_linear \
 	test_histogram1d_log \
 	test_histogram2d_linear \

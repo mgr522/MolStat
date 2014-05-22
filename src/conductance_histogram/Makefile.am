@@ -4,8 +4,6 @@ SUBDIRS = simulator_models \
 
 bin_PROGRAMS = simulator fitter
 
-AM_CPPFLAGS = -I../general
-
 simulator_SOURCES = main-simulator.cc
 
 simulator_LDADD = ../general/libaux.a \

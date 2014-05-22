@@ -1,7 +1,5 @@
 noinst_LIBRARIES = libfitter_models.a
 
-AM_CPPFLAGS = -I../../general
-
 libfitter_models_a_SOURCES = fit_model.h \
 	fit_model.cc \
 	fit_model_1d.h \

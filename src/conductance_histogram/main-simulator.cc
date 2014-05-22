@@ -23,13 +23,13 @@
 #include <array>
 #include <limits>
 
-#include <string_tools.h>
-#include <random_distributions/rng.h>
-#include <random_distributions/constant.h>
-#include <histogram_tools/histogram1d.h>
-#include <histogram_tools/histogram2d.h>
-#include <histogram_tools/bin_linear.h>
-#include <histogram_tools/bin_log.h>
+#include <general/string_tools.h>
+#include <general/random_distributions/rng.h>
+#include <general/random_distributions/constant.h>
+#include <general/histogram_tools/histogram1d.h>
+#include <general/histogram_tools/histogram2d.h>
+#include <general/histogram_tools/bin_linear.h>
+#include <general/histogram_tools/bin_log.h>
 #include "simulator_models/conductance_model.h"
 
 using namespace std;

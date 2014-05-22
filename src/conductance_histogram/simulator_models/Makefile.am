@@ -1,7 +1,5 @@
 noinst_LIBRARIES = libsimulator_models.a
 
-AM_CPPFLAGS = -I../../general
-
 libsimulator_models_a_SOURCES = conductance_model.h \
 	conductance_model.cc \
 	symmetric_one_site.h \

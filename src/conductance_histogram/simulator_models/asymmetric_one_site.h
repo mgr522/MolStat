@@ -4,14 +4,14 @@
  *        conductances.
  *
  * \author Matthew G.\ Reuter
- * \date April 2014
+ * \date May 2014
  */
 
 #ifndef __asymmetric_one_site_h__
 #define __asymmetric_one_site_h__
 
 #include <memory>
-#include <random_distributions/rng.h>
+#include <general/random_distributions/rng.h>
 #include "conductance_model.h"
 
 using std::shared_ptr;

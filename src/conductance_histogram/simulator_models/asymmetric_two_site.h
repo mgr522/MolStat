@@ -11,7 +11,7 @@
 #define __asymmetric_two_site_h__
 
 #include <memory>
-#include <random_distributions/rng.h>
+#include <general/random_distributions/rng.h>
 #include "conductance_model.h"
 
 using std::shared_ptr;
