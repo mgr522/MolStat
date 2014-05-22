@@ -1,3 +1,6 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
 /**
  * \file main-fitter.cc
  * \brief Main function for fitting histogram data to the desired functional
