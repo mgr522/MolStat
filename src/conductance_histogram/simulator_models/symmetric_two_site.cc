@@ -1,5 +1,5 @@
 /**
- * \file aux_simulator/symmetric_two_site.cc
+ * \file simulator_models/symmetric_two_site.cc
  * \brief Implementation of the symmetric-coupling, two-site tight-binding
  *    model for calculating conductances.
  *

@@ -317,7 +317,7 @@ a new model,
    the SymmetricResonantFitModel may be mathematically positive or negative
    (the fit function only depends on \f$\gamma^2\f$), but physically it should
    be positive. This function ensures that, in this example, \f$\gamma>0\f$.
--# Add the model, using an input name, to the ::get_fit_model function. Also
-   consider adding a note to the error message so as to provide (minimal)
-   runtime support.
+-# Add the model, using an input name, to the ::get_cond_hist_fit_model
+   function. Also consider adding a note to the error message so as to provide
+   (minimal) runtime support.
 */

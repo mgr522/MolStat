@@ -1,5 +1,5 @@
 /**
- * \file aux_simulator/symmetric_one_site.cc
+ * \file simulator_models/symmetric_one_site.cc
  * \brief Implementation of the symmetric-coupling, one-site model for
  *        calculating conductances.
  *

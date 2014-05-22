@@ -1,5 +1,5 @@
 /**
- * \file aux_binner/histogram1d.cc
+ * \file histogram1d.cc
  * \brief Implementation of an interface for the GSL histogram functions.
  *
  * \author Matthew G.\ Reuter

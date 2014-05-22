@@ -1,5 +1,5 @@
 /**
- * \file tests/histogram2d_log.cc
+ * \file test_histogram2d_log.cc
  * \brief Test suite for the Histogram2D class (logarithmic binning)
  *
  * \author Matthew G.\ Reuter

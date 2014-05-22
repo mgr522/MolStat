@@ -1,5 +1,5 @@
 /**
- * \file tests/histogram2d_linear.cc
+ * \file test_histogram2d_linear.cc
  * \brief Test suite for the Histogram2D class (linear binning)
  *
  * \author Matthew G.\ Reuter
