@@ -46,11 +46,13 @@ AC_CONFIG_FILES([
 	Makefile
 		doc/Makefile
 		src/Makefile
-			src/aux_binner/Makefile
-			src/aux_fitter/Makefile
-			src/aux_random_distributions/Makefile
-			src/aux_simulator/Makefile
-			src/tests/Makefile
+			src/general/Makefile
+				src/general/histogram_tools/Makefile
+				src/general/random_distributions/Makefile
+			src/conductance_histogram/Makefile
+				src/conductance_histogram/fitter_models/Makefile
+				src/conductance_histogram/simulator_models/Makefile
+				src/conductance_histogram/tests/Makefile
 ])
 
 # finish up
