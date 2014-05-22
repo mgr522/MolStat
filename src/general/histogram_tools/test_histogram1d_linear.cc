@@ -1,3 +1,6 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
 /**
  * \file test_histogram1d_linear.cc
  * \brief Test suite for the Histogram1D class, linear binning.

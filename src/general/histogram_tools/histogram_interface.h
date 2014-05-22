@@ -1,3 +1,6 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
 /**
  * \file histogram_interface.h
  * \brief Provides an interface for the GSL histogram (1D and 2D) functions.
