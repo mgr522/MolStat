@@ -1,3 +1,6 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
 /**
 \mainpage Introduction
 
@@ -84,7 +87,25 @@ run using `make check`.
    - Initial release.
 
 \section license_sec License
-\todo Add a license.
+MolStat is distributed under the Creative Commons Attribution-NonCommercial 4.0
+International Public License. A full version of the license is provided in the
+`LICENSE` file in the top-level directory, and can be found online at
+http://creativecommons.org/licenses/by-nc/4.0/legalcode. In \"human-readable\"
+terms, this license allows you to
+- _Share_ -- copy and redistribute MolStat in any medium or format
+- _Adapt_ -- remix, transform, and built upon MolStat
+.
+provided you adhere to the following terms
+- _Attribution_ -- You must give *appropriate credit* (\ref reference_sec),
+  provide a link to the license, and indicate if changes were made. You may do
+  so in any reasonable manner, but not in any way that suggests the authors of
+  MolStat endorse you or your use.
+- _Non-Commercial_ -- You may not use MolStat for commercial purposes.
+.
+The authors of MolStat cannot revoke these freedoms as long as you follow the
+license terms. (Adapted from http://creativecommons.org/licenses/by-nc/4.0).
+
+MolStat (c) 2014, Northwestern University.
 
 \section reference_sec Citing this software
 You can cite this software by referencing, as appropriate, \cite reuter-2243
