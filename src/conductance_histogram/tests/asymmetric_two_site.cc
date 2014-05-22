@@ -1,3 +1,6 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
 /**
  * \file tests/asymmetric_two_site.cc
  * \brief Test suite for the asymmetric-coupling, two-site tight-binding
