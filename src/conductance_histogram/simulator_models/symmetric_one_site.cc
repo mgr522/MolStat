@@ -1,3 +1,6 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
 /**
  * \file simulator_models/symmetric_one_site.cc
  * \brief Implementation of the symmetric-coupling, one-site model for
