@@ -2,7 +2,12 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- \page page_general_details General Mathematical Ideas
+\page page_general_details General Mathematical Ideas
+
+In this section we discuss general mathematical concepts underlying MolStat.
+First is information on random number distributions (particularly the MolStat
+interface for them). Second is histograms, including a discussion on binning
+styles.
 
 \todo Add a section on binning styles, histograms, probability density functions, etc.
 
@@ -70,4 +75,6 @@ the `distribution` tag for the input deck is defined and the code for
 processing `[distribution-parameters]` is implemented. The distributions
 listed above should provide sufficient examples. Note that the name of the
 distribution should be in lowercase.
+
+\section sec_histograms Histograms
 */
