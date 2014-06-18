@@ -4,6 +4,10 @@
 /**
 \mainpage Introduction
 
+\todo Create a pared-down \"Users' manual\" for the package that doesn't list
+every class, etc.; it only focuses on the pertinent details to use and/or
+extend the software package.
+
 This software package provides tools for understanding and interpreting
 single-molecule behavior. Single-molecule experiments generally cannot
 determine, let alone control, the microscopic details of the system and, as
@@ -39,10 +43,10 @@ There are two primary functions of this software package.
    alignments and coupling strengths, sample from these distributions, and
    estimate the probability density function for the conductance observable.
 -# Infer the statistics of the underlying physical parameters from the
-   probability density function of the observable. This amounts to a
-   (non-linear) fitting problem. Due to the mathematical effort required to
-   obtain functional forms to fit against, the number of models is much more
-   limited than for the simulator.
+   probability density function of the observable. This amounts to an inverse
+   problem, which is, essentially, a (non-linear) fitting problem. Due to the
+   mathematical effort required to obtain functional forms to fit against, the
+   number of models is much more limited than for the simulator.
 
 In both cases, the code was designed to be extensible and to accomodate new
 observables, new models, or both. This guide describes how to use the existing
@@ -83,7 +87,7 @@ run using `make check`.
 \note The `fit-asymmetric-resonant.py` test can take several minutes to run.
 
 \section changelog Version Changes
-\subsection v1_0 v1.0 (May 2014)
+\subsection v1_0 v1.0 (June 2014)
    - Initial release.
 
 \section license_sec License
@@ -125,5 +129,5 @@ acknowledge financial and computational support from
 
 Matthew G.\ Reuter \n
 mgreuter@u.northwestern.edu \n
-May 2014
+June 2014
 */
