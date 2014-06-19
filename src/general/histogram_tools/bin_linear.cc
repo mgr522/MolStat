@@ -6,19 +6,19 @@
  * \brief Implements linear binning.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date June 2014
  */
 
 #include "bin_linear.h"
 
-double BinLinear::gmask(const double g) const {
-	return g;
+double BinLinear::mask(const double x) const {
+	return x;
 }
 
-double BinLinear::invgmask(const double u) const {
+double BinLinear::invmask(const double u) const {
 	return u;
 }
 
-double BinLinear::dudg(const double g) const {
+double BinLinear::dmaskdx(const double x) const {
 	return 1.;
 }

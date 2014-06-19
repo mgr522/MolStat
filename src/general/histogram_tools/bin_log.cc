@@ -6,7 +6,7 @@
  * \brief Implements logarithmic binning.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date June 2014
  */
 
 #include "bin_log.h"
@@ -16,14 +16,14 @@ BinLog::BinLog(const double b_)
 	: b(b_) {
 }
 
-double BinLog::gmask(const double g) const {
-	return log(g) / log(b);
+double BinLog::mask(const double x) const {
+	return log(x) / log(b);
 }
 
-double BinLog::invgmask(const double u) const {
+double BinLog::invmask(const double u) const {
 	return pow(b, u);
 }
 
-double BinLog::dudg(const double g) const {
-	return 1. / (g * log(b));
+double BinLog::dmaskdx(const double x) const {
+	return 1. / (x * log(b));
 }

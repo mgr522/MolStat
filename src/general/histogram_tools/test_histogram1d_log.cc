@@ -52,31 +52,31 @@ int main(int argc, char **argv) {
 	// bin 0 (#1 above)
 	// the average coordinate is 5.5e-5 and the bin count should be 4
 	assert(abs(iter.get_variable()[0] - 5.5e-5) < thresh);
-	assert(abs(iter.get_bin_count() - 4.*bstyle->dudg(5.5e-5)) < thresh);
+	assert(abs(iter.get_bin_count() - 4.*bstyle->dmaskdx(5.5e-5)) < thresh);
 
 	++iter;
 	// bin 1 (#2 above)
 	// the average coordinate is 5.5e-4 and the bin count should be 0
 	assert(abs(iter.get_variable()[0] - 5.5e-4) < thresh);
-	assert(abs(iter.get_bin_count() - 0.*bstyle->dudg(5.5e-4)) < thresh);
+	assert(abs(iter.get_bin_count() - 0.*bstyle->dmaskdx(5.5e-4)) < thresh);
 
 	iter++;
 	// bin 2 (#3 above)
 	// the average coordinate is 5.5e-3 and the bin count should be 4
 	assert(abs(iter.get_variable()[0] - 5.5e-3) < thresh);
-	assert(abs(iter.get_bin_count() - 4.*bstyle->dudg(5.5e-3)) < thresh);
+	assert(abs(iter.get_bin_count() - 4.*bstyle->dmaskdx(5.5e-3)) < thresh);
 
 	++iter;
 	// bin 3 (#4 above)
 	// the average coordinate is 5.5e-2 and the bin count should be 2
 	assert(abs(iter.get_variable()[0] - 5.5e-2) < thresh);
-	assert(abs(iter.get_bin_count() - 2.*bstyle->dudg(5.5e-2)) < thresh);
+	assert(abs(iter.get_bin_count() - 2.*bstyle->dmaskdx(5.5e-2)) < thresh);
 
 	iter++;
 	// bin 4 (#5 above)
 	// the average coordinate is 5.5e-1 and the bin count should be 3
 	assert(abs(iter.get_variable()[0] - 5.5e-1) < thresh);
-	assert(abs(iter.get_bin_count() - 3.*bstyle->dudg(5.5e-1)) < thresh);
+	assert(abs(iter.get_bin_count() - 3.*bstyle->dmaskdx(5.5e-1)) < thresh);
 
 	// just for sanity
 	++iter;

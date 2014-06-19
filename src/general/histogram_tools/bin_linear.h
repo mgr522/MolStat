@@ -6,7 +6,7 @@
  * \brief Implements linear binning.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date June 2014
  */
 
 #ifndef __bin_linear_h__
@@ -15,9 +15,9 @@
 #include "bin_style.h"
 
 /**
- * \brief Linear binning style.
+ * \brief Linear binning style. This is the \"identity\" mask.
  *
- * \f$u(g) = g\f$. Trivially, \f$u^{-1}(u) = u\f$ and \f$u'(g) = 1\f$.
+ * \f$u = f(x) = x\f$. Trivially, \f$x = f^{-1}(u) = u\f$ and \f$f'(x) = 1\f$.
  */
 class BinLinear : public BinStyle {
 public:
@@ -32,28 +32,28 @@ public:
 	virtual ~BinLinear() = default;
 
 	/**
-	 * \brief The conductance mask, \f$u(g) = g\f$.
+	 * \brief The mask function, \f$u = f(x) = x\f$.
 	 *
-	 * \param[in] g The conductance value.
-	 * \return The transformed conductance.
+	 * \param[in] x The unmasked data value.
+	 * \return The transformed (masked) data value.
 	 */
-	virtual double gmask(const double g) const;
+	virtual double mask(const double x) const;
 
 	/**
-	 * \brief The inverse conductance mask, \f$g=u^{-1}(u) = u\f$.
+	 * \brief The inverse mask function, \f$x=f^{-1}(u) = u\f$.
 	 *
-	 * \param[in] u The transformed conductance value.
-	 * \return The conductance.
+	 * \param[in] u The transformed (masked) data value.
+	 * \return The unmasked data value.
 	 */
-	virtual double invgmask(const double u) const;
+	virtual double invmask(const double u) const;
 
 	/**
-	 * \brief The derivative \f$\mathrm{d}u / \mathrm{d}g = 1\f$.
+	 * \brief The derivative \f$\mathrm{d}f / \mathrm{d}x = 1\f$.
 	 *
-	 * \param[in] g The conductance value, \f$g\f$.
-	 * \return The derivative evaluated at \f$g\f$, \f$u'(g)\f$.
+	 * \param[in] x The unmasked value, \f$x\f$.
+	 * \return The derivative evaluated at \f$x\f$, \f$f'(x)\f$.
 	 */
-	virtual double dudg(const double g) const;
+	virtual double dmaskdx(const double x) const;
 };
 
 #endif

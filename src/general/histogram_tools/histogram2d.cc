@@ -20,11 +20,11 @@ Histogram2D::Histogram2D(const std::array<std::size_t, 2> &nbin,
 	  hist(gsl_histogram2d_alloc(nbin[0], nbin[1]), &gsl_histogram2d_free) {
 
 	gsl_histogram2d_set_ranges_uniform(hist.get(), mins[0], maxs[0],
-		bstyle->gmask(mins[1]), bstyle->gmask(maxs[1]));
+		bstyle->mask(mins[1]), bstyle->mask(maxs[1]));
 }
 
 void Histogram2D::add_data(const std::array<double, 2> &v) {
-	gsl_histogram2d_increment(hist.get(), v[0], bstyle->gmask(v[1]));
+	gsl_histogram2d_increment(hist.get(), v[0], bstyle->mask(v[1]));
 }
 
 Histogram2D::const_iterator Histogram2D::begin() const {
@@ -67,10 +67,10 @@ void Histogram2D::const_iterator::set_output() {
 		val[0] = 0.5*(upper + lower);
 
 		gsl_histogram2d_get_yrange(hist.get(), bin[1], &lower, &upper);
-		val[1] = 0.5*(bstyle->invgmask(upper) + bstyle->invgmask(lower));
+		val[1] = 0.5*(bstyle->invmask(upper) + bstyle->invmask(lower));
 
 		bincount = gsl_histogram2d_get(hist.get(), bin[0], bin[1])
-			* bstyle->dudg(val[1]);
+			* bstyle->dmaskdx(val[1]);
 	}
 }
 

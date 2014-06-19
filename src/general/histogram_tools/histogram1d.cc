@@ -18,12 +18,12 @@ Histogram1D::Histogram1D(const std::size_t nbin, const double minval,
 	: Histogram<1>(bstyle),
 	  hist(gsl_histogram_alloc(nbin), &gsl_histogram_free) {
 
-	gsl_histogram_set_ranges_uniform(hist.get(), bstyle->gmask(minval),
-		bstyle->gmask(maxval));
+	gsl_histogram_set_ranges_uniform(hist.get(), bstyle->mask(minval),
+		bstyle->mask(maxval));
 }
 
 void Histogram1D::add_data(const double v) {
-	gsl_histogram_increment(hist.get(), bstyle->gmask(v));
+	gsl_histogram_increment(hist.get(), bstyle->mask(v));
 }
 
 void Histogram1D::add_data(const std::array<double, 1> &v) {
@@ -54,10 +54,10 @@ void Histogram1D::const_iterator::set_output() {
 		double upper, lower;
 
 		gsl_histogram_get_range(hist.get(), bin[0], &lower, &upper);
-		val[0] = 0.5*(bstyle->invgmask(upper) + bstyle->invgmask(lower));
+		val[0] = 0.5*(bstyle->invmask(upper) + bstyle->invmask(lower));
 
 		bincount = gsl_histogram_get(hist.get(), bin[0])
-			* bstyle->dudg(val[0]);
+			* bstyle->dmaskdx(val[0]);
 	}
 }
 

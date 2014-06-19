@@ -49,28 +49,28 @@ int main(int argc, char **argv) {
 	// the average is (0.25, 0.25) and the bin count should be 4
 	assert(abs(iter.get_variable()[0] - 0.25) < thresh);
 	assert(abs(iter.get_variable()[1] - 0.25) < thresh);
-	assert(abs(iter.get_bin_count() - 4.*bstyle->dudg(0.25)) < thresh);
+	assert(abs(iter.get_bin_count() - 4.*bstyle->dmaskdx(0.25)) < thresh);
 
 	++iter;
 	// bin 0, 1 (#2 above)
 	// the average is (0.25, 0.75) and the bin count should be 3
 	assert(abs(iter.get_variable()[0] - 0.25) < thresh);
 	assert(abs(iter.get_variable()[1] - 0.75) < thresh);
-	assert(abs(iter.get_bin_count() - 3.*bstyle->dudg(0.75)) < thresh);
+	assert(abs(iter.get_bin_count() - 3.*bstyle->dmaskdx(0.75)) < thresh);
 
 	iter++;
 	// bin 1, 0 (#3 above)
 	// the average is (0.75, 0.25) and the bin count should be 1
 	assert(abs(iter.get_variable()[0] - 0.75) < thresh);
 	assert(abs(iter.get_variable()[1] - 0.25) < thresh);
-	assert(abs(iter.get_bin_count() - 1.*bstyle->dudg(0.25)) < thresh);
+	assert(abs(iter.get_bin_count() - 1.*bstyle->dmaskdx(0.25)) < thresh);
 
 	++iter;
 	// bin 1, 1 (#4 above)
 	// the average is (0.75, 0.75) and the bin count should be 0
 	assert(abs(iter.get_variable()[0] - 0.75) < thresh);
 	assert(abs(iter.get_variable()[1] - 0.75) < thresh);
-	assert(abs(iter.get_bin_count() - 0.*bstyle->dudg(0.75)) < thresh);
+	assert(abs(iter.get_bin_count() - 0.*bstyle->dmaskdx(0.75)) < thresh);
 
 	// just for sanity
 	++iter;

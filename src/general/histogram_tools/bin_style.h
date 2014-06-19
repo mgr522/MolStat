@@ -6,7 +6,7 @@
  * \brief Provides an interface for various binning styles.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date June 2014
  */
 
 #ifndef __bin_style_h__
@@ -17,23 +17,17 @@
  *
  * The purpose of histograms (at least for determining single-molecule
  * conductances) is to estimate the probability density function of the
- * conductance. In the most simplest case, we bin on a \"linear\" scale; that
- * is, bin in \f$g\f$ to directly estimate \f$P(g)\f$.
+ * conductance. In the simplest case, we bin on a \"linear\" scale; that is,
+ * bin in \f$x\f$ to directly estimate \f$P_{\hat{x}}(x)\f$.
  *
  * But, this is not the only way to perform the binning, and other venues may
- * produce better results. For example, it is common to bin logarithmically
- * when the measured conductance values span an order of magnitude (or more).
- * In this case we bin in \f$\log(g)\f$, but still try to estimate \f$P(g)\f$
- * rather than \f$P(\log(g))\f$.
- *
- * Suppose we bin in a variable \f$u(g)\f$ that, as written, is a function of
- * \f$g\f$. The obtained histogram estimates \f$P(u(g))\f$, which, using the
- * change-of-variable formula for probability density functions
- * \cite bk:ghahramani-2000, is related to \f$P(g)\f$ by
- * \f[ P(g) = P(u(g)) \frac{\mathrm{d}u}{\mathrm{d}g}. \f]
- *
- * This class provides a general framework for specifying \f$u(g)\f$,
- * \f$u^{-1}(u)\f$, and \f$\mathrm{d}u / \mathrm{d}g\f$.
+ * produce better results. This class interfaces all of the mathematical
+ * quantities needed for a binning style:
+ * -# The mask function for binning in \f$u\f$: \f$ u = f(x) \f$.
+ * -# The inverse of the mask function: \f$ x = f^{-1}(u) \f$.
+ * -# The derivative of the mask function: \f$ \mathrm{d}f / \mathrm{d}x \f$.
+ * .
+ * Full details about binning styles can be found in \ref sec_histograms.
  */
 class BinStyle {
 public:
@@ -48,28 +42,28 @@ public:
 	virtual ~BinStyle() = default;
 
 	/**
-	 * \brief The conductance mask, \f$u(g)\f$.
+	 * \brief The mask function, \f$u=f(x)\f$.
 	 *
-	 * \param[in] g The conductance value.
-	 * \return The transformed conductance.
+	 * \param[in] x The unmasked data value.
+	 * \return The transformed (masked) data value.
 	 */
-	virtual double gmask(const double g) const = 0;
+	virtual double mask(const double x) const = 0;
 
 	/**
-	 * \brief The inverse conductance mask, \f$g=u^{-1}(u)\f$.
+	 * \brief The inverse mask function, \f$x=f^{-1}(u)\f$.
 	 *
-	 * \param[in] u The transformed conductance value.
-	 * \return The conductance.
+	 * \param[in] u The transformed (masked) data value.
+	 * \return The unmasked data value.
 	 */
-	virtual double invgmask(const double u) const = 0;
+	virtual double invmask(const double u) const = 0;
 
 	/**
-	 * \brief The derivative \f$\mathrm{d}u / \mathrm{d}g \f$.
+	 * \brief The derivative \f$\mathrm{d}f / \mathrm{d}x \f$.
 	 *
-	 * \param[in] g The conductance value, \f$g\f$.
-	 * \return The derivative evaluated at \f$g\f$, \f$u'(g)\f$.
+	 * \param[in] x The unmasked data value, \f$x\f$.
+	 * \return The derivative evaluated at \f$x\f$, \f$f'(x)\f$.
 	 */
-	virtual double dudg(const double g) const = 0;
+	virtual double dmaskdx(const double x) const = 0;
 };
 
 #endif

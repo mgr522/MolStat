@@ -6,7 +6,7 @@
  * \brief Implements logarithmic binning.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date June 2014
  */
 
 #ifndef __bin_log_h__
@@ -17,8 +17,8 @@
 /**
  * \brief Logarithmic binning style.
  *
- * \f$u(g) = \log_b(g)\f$. Then, \f$u^{-1}(u) = b^u\f$ and
- * \f$u'(g) = [g \ln(b)]^{-1} \f$.
+ * \f$u = f(x) = \log_b(x)\f$. Then, \f$x = f^{-1}(u) = b^u\f$ and
+ * \f$f'(x) = [x \ln(b)]^{-1} \f$.
  */
 class BinLog : public BinStyle {
 protected:
@@ -43,28 +43,28 @@ public:
 	virtual ~BinLog() = default;
 
 	/**
-	 * \brief The conductance mask, \f$u(g) = \log(g)\f$.
+	 * \brief The mask function, \f$u = f(x) = \log_b(x)\f$.
 	 *
-	 * \param[in] g The conductance value.
-	 * \return The transformed conductance.
+	 * \param[in] x The unmasked data value.
+	 * \return The transformed (masked) data value.
 	 */
-	virtual double gmask(const double g) const;
+	virtual double mask(const double x) const;
 
 	/**
-	 * \brief The inverse conductance mask, \f$g=u^{-1}(u) = 10^u\f$.
+	 * \brief The inverse mask function, \f$x=f^{-1}(u) = b^u\f$.
 	 *
-	 * \param[in] u The transformed conductance value.
-	 * \return The conductance.
+	 * \param[in] u The transformed (masked) data value.
+	 * \return The unmasked data value.
 	 */
-	virtual double invgmask(const double u) const;
+	virtual double invmask(const double u) const;
 
 	/**
-	 * \brief The derivative \f$\mathrm{d}u / \mathrm{d}g = [g \ln(10)]^{-1}\f$.
+	 * \brief The derivative \f$\mathrm{d}f / \mathrm{d}x = [x \ln(b)]^{-1}\f$.
 	 *
-	 * \param[in] g The conductance value, \f$g\f$.
-	 * \return The derivative evaluated at \f$g\f$, \f$u'(g)\f$.
+	 * \param[in] x The unmasked data value, \f$x\f$.
+	 * \return The derivative evaluated at \f$x\f$, \f$f'(x)\f$.
 	 */
-	virtual double dudg(const double g) const;
+	virtual double dmaskdx(const double x) const;
 };
 
 #endif
