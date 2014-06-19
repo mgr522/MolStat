@@ -5,9 +5,9 @@
 \page page_general_details General Mathematical Ideas
 
 In this section we discuss general mathematical concepts underlying MolStat.
-First is information on probability density functions (and elements of
-probability theory). Second is random number distributions, focusing on the
-MolStat interface for usingthem. Finally is a discussion on histograms,
+First is information on probability density functions and elements of
+probability theory. Second is random number distributions, focusing on the
+MolStat interface for using them. Finally is a discussion on histograms,
 including some comments on binning styles.
 
 \todo Add a section on binning styles, histograms, etc.
@@ -26,8 +26,8 @@ P(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left[ - \frac{(x-\bar{x})^2}{2\sigma^2
 \f] is the probability density function for a normal random variable with
 average \f$ \bar{x} \f$ and variance \f$\sigma^2\f$. When the random variable
 \f$\hat{x}\f$ is measured, \f$P(x)\mathrm{d}x\f$ gives the probability that
-\f$\hat{x}\f$ has a probability between \f$x\f$ and \f$x+\mathrm{d}x\f$.
-Finally, \f$P(x)\ge 0\f$ for all \f$x\f$ in the domain.
+\f$\hat{x}\f$ has a value between \f$x\f$ and \f$x+\mathrm{d}x\f$. Finally,
+\f$P(x)\ge 0\f$ for all \f$x\f$ in the domain.
 
 \note For now, we only consider continuous random variables with continuous
 probability density functions. See \cite bk:ghahramani-2000 for other
@@ -60,11 +60,12 @@ In this way, it can be verified, using integration by parts, that
 \f[ \int \mathrm{d}x P_{\hat{x}}(x) = \int \mathrm{d}y P_{\hat{y}}(y). \f]
 
 \section sec_rng Random Number Distributions
-Random number distributions are key to simulating single-molecule behavior. For
-versatility, we have an abstract notion of random number distributions, allowing
-models to be combined with various distributions. In this section we list the
-implemented random number distributions, along with how each one is used in the
-input file.
+The theories for single-molecule behavior that underlie MolStat assume that
+the various physical parameters are random variables. When simulating
+single-molecule behavior, it is thus necessary to specify the probability
+density function for each of these random variables. In this section we list
+the implemented random number distributions, along with how each is invoked in
+the input file.
 
 All random number distributions have a common syntax:
 \verbatim
@@ -119,8 +120,8 @@ This function takes in a `gsl_rng` construct from GSL and returns a random
 number from the distribution.
 
 Finally, the new random number distribution needs to be added to the
-::distribution_from_tokens function so that it is processed. In this function,
-the `distribution` tag for the input deck is defined and the code for
+::distribution_from_tokens function so that it is processed from input. In this
+function, the `distribution` tag for the input deck is defined and the code for
 processing `[distribution-parameters]` is implemented. The distributions
 listed above should provide sufficient examples. Note that the name of the
 distribution should be in lowercase.
