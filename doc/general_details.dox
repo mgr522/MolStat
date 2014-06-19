@@ -5,17 +5,66 @@
 \page page_general_details General Mathematical Ideas
 
 In this section we discuss general mathematical concepts underlying MolStat.
-First is information on random number distributions (particularly the MolStat
-interface for them). Second is histograms, including a discussion on binning
-styles.
+First is information on probability density functions (and elements of
+probability theory). Second is random number distributions, focusing on the
+MolStat interface for usingthem. Finally is a discussion on histograms,
+including some comments on binning styles.
 
-\todo Add a section on binning styles, histograms, probability density functions, etc.
+\todo Add a section on binning styles, histograms, etc.
+
+\section sec_pdf Probability Density Functions
+Probability density functions and, more generally, the idea of a random
+variable, are central to MolStat. In this section we summarize some elements of
+probability theory that are used, in various forms, throughout. Standard texts
+on probability, such as \cite bk:ghahramani-2000, should be consulted for
+additional information.
+
+A random variable is a quantity whose value is unknown until measured. When a
+measurement is performed, the probability density function describes the
+likelihood of measuring a particular value. For example, \f[
+P(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left[ - \frac{(x-\bar{x})^2}{2\sigma^2} \right]
+\f] is the probability density function for a normal random variable with
+average \f$ \bar{x} \f$ and variance \f$\sigma^2\f$. When the random variable
+\f$\hat{x}\f$ is measured, \f$P(x)\mathrm{d}x\f$ gives the probability that
+\f$\hat{x}\f$ has a probability between \f$x\f$ and \f$x+\mathrm{d}x\f$.
+Finally, \f$P(x)\ge 0\f$ for all \f$x\f$ in the domain.
+
+\note For now, we only consider continuous random variables with continuous
+probability density functions. See \cite bk:ghahramani-2000 for other
+possibilities.
+
+\subsection subsec_pdf_props Properties of Probability Density Functions
+We now detail a few general properties of probability density functions.
+-# _Normalization_. The probability density function \f$P(x)\f$ is normalized
+if
+\f[
+\int \mathrm{d}x P(x) = 1,
+\f]
+where the bounds of integration cover the domain of the random variable.
+
+-# _Moments_. Let \f$\hat{x}\f$ be a random variable with probability density
+function \f$P(x)\f$. The expected value, or first moment, of \f$\hat{x}\f$ is
+\f[ \left< \hat{x} \right> = \int \mathrm{d}x x P(x). \f]
+More generally, the \f$n^\mathrm{th}\f$ moment of \f$\hat{x}\f$ is
+\f[ \left< \hat{x}^n \right> = \int \mathrm{d}x x^n P(x), \f]
+and the expected value of a function of \f$\hat{x}\f$ is
+\f[ \left< f(\hat{x}) \right> = \int \mathrm{d}x f(x) P(x). \f]
+
+-# _Change of variable_. As before, let \f$\hat{x}\f$ be a random variable with
+probability density function \f$P_{\hat{x}}(x)\f$. Now consider a random
+variable \f$ \hat{y} \f$ given by \f$ \hat{x} = f(\hat{y}) \f$, for some
+differentiable function \f$f\f$. The probability density function for
+\f$\hat{y}\f$ is then given by
+\f[ P_{\hat{y}}(y) = P_{\hat{x}}(f(y)) \left| \frac{\mathrm{d}}{\mathrm{d} y} f(y) \right|. \f]
+In this way, it can be verified, using integration by parts, that
+\f[ \int \mathrm{d}x P_{\hat{x}}(x) = \int \mathrm{d}y P_{\hat{y}}(y). \f]
 
 \section sec_rng Random Number Distributions
-Random number distributions are key to the simulator. For versatility, we
-have an abstract notion of random number distributions, allowing models to be
-combined with various distributions. In this section we list the implemented
-random number distributions, along with how each one is used in the input file.
+Random number distributions are key to simulating single-molecule behavior. For
+versatility, we have an abstract notion of random number distributions, allowing
+models to be combined with various distributions. In this section we list the
+implemented random number distributions, along with how each one is used in the
+input file.
 
 All random number distributions have a common syntax:
 \verbatim
