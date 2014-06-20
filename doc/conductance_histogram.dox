@@ -227,7 +227,7 @@ The lines are interpreted as follows.
    far) are for 1-D histograms. The file should have two numbers per line: the
    conductance, and the histogram counts in this bin.
 -# All following lines are optional and have the form `command options`.
-   The following list details the commands and any options they require.
+   The commands, and any options they require, are
    - `noprint` (recommended) -- only output the best fit parameters at the end
      of the program.
    - `print` -- output iteration-by-iteration results for all initial guesses.
@@ -242,7 +242,8 @@ The lines are interpreted as follows.
        `guess` command is a list of name/value pairs. Each fit parameter
        (remember that fit parameters depend on the model) must be given an
        initial value. All name/value pairs should appear on the same line. See
-       an example of this syntax in the above example input file.
+       an example of this syntax in the above example input file. The \"norm\"
+       parameter does not need to be specified, but it can be.
 
 \subsection subsec_implemented_fits Implemented Fitting Models
 We now list the implemented models for fitting conductance histograms. Note

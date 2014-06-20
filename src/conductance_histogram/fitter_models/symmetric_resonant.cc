@@ -27,7 +27,13 @@ std::vector<double> SymmetricResonantFitModel::create_initial_guess(
 			"ResonantFitModel must specify the \"gamma\" parameter.");
 	}
 
-	ret[NORM] = 1.;
+	try {
+		ret[NORM] = values.at("norm");
+	}
+	catch(const out_of_range &e) {
+		// norm not specified
+		ret[NORM] = 1.;
+	}
 
 	return ret;
 }

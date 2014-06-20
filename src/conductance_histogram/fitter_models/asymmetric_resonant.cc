@@ -30,7 +30,13 @@ std::vector<double> AsymmetricResonantFitModel::create_initial_guess(
 			" parameters.");
 	}
 
-	ret[NORM] = 1.;
+	try {
+		ret[NORM] = values.at("norm");
+	}
+	catch(const out_of_range &e) {
+		// norm not specified
+		ret[NORM] = 1.;
+	}
 
 	return ret;
 }
