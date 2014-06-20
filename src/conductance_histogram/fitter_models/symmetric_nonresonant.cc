@@ -14,6 +14,25 @@
 
 using namespace std;
 
+std::vector<double> SymmetricNonresonantFitModel::create_initial_guess(
+	const std::map<std::string, double> &values) const {
+
+	vector<double> ret(3);
+
+	try {
+		ret[C] = values.at("c");
+		ret[D] = values.at("d");
+	}
+	catch(const out_of_range &e) {
+		throw invalid_argument("Initial guesses for the Symmetric" \
+			"NonresonantFitModel must specify \"c\" and \"d\" parameters.");
+	}
+
+	ret[NORM] = 1.;
+
+	return ret;
+}
+
 SymmetricNonresonantFitModel::SymmetricNonresonantFitModel(
 	const std::list<std::pair<std::array<double, 1>, double>> &data)
 	: FitModel<1>(3, data) {

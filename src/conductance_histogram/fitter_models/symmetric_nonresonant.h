@@ -33,6 +33,23 @@
  * This model is detailed in Reference \cite williams-5937.
  */
 class SymmetricNonresonantFitModel : public FitModel<1> {
+protected:
+	/**
+	 * \brief Converts a map of names to values to an initial guess (ordered
+	 *    vector).
+	 *
+	 * "c" and "d" parameters are needed for this model. See
+	 * FitModel::create_initial_guess for more information.
+	 *
+	 * \throw invalid_argument_exception if "c" and "d" parameters are not
+	 *    specified.
+	 *
+	 * \param[in] values The map of names to values.
+	 * \return A vector containing the initial guess.
+	 */
+	virtual std::vector<double> create_initial_guess(
+		const std::map<std::string, double> &values) const;
+
 public:
 	/**
 	 * \brief Index for the \f$c\f$ fitting parameter.

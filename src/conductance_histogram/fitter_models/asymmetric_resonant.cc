@@ -14,6 +14,27 @@
 
 using namespace std;
 
+std::vector<double> AsymmetricResonantFitModel::create_initial_guess(
+	const std::map<std::string, double> &values) const {
+
+	vector<double> ret(4);
+
+	try {
+		ret[GAMMAL] = values.at("gammal");
+		ret[GAMMAR] = values.at("gammar");
+		ret[R] = values.at("r");
+	}
+	catch(const out_of_range &e) {
+		throw invalid_argument("Initial guesses for the Asymmetric" \
+			"ResonantFitModel must specify \"gammal\", \"gammar\", and \"r\"" \
+			" parameters.");
+	}
+
+	ret[NORM] = 1.;
+
+	return ret;
+}
+
 AsymmetricResonantFitModel::AsymmetricResonantFitModel(
 	const std::list<std::pair<std::array<double, 1>, double>> &data)
 	: FitModel<1>(4, data), w(gsl_integration_workspace_alloc(nquad),

@@ -49,6 +49,22 @@ protected:
 	std::shared_ptr<gsl_integration_workspace> w;
 
 	/**
+	 * \brief Converts a map of names to values to an initial guess (ordered
+	 *    vector).
+	 *
+	 * "gammal", "gammar", and "r" parameters are needed for this model. See
+	 * FitModel::create_initial_guess for more information.
+	 *
+	 * \throw invalid_argument_exception if "gammal", "gammar", and "r"
+	 *    parameters are not specified.
+	 *
+	 * \param[in] values The map of names to values.
+	 * \return A vector containing the initial guess.
+	 */
+	virtual std::vector<double> create_initial_guess(
+		const std::map<std::string, double> &values) const;
+
+	/**
 	 * \brief GSL integrand function for the fit function integral.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[

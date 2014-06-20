@@ -14,6 +14,24 @@
 
 using namespace std;
 
+std::vector<double> SymmetricResonantFitModel::create_initial_guess(
+	const std::map<std::string, double> &values) const {
+
+	vector<double> ret(2);
+
+	try {
+		ret[GAMMA] = values.at("gamma");
+	}
+	catch(const out_of_range &e) {
+		throw invalid_argument("Initial guesses for the Symmetric" \
+			"ResonantFitModel must specify the \"gamma\" parameter.");
+	}
+
+	ret[NORM] = 1.;
+
+	return ret;
+}
+
 SymmetricResonantFitModel::SymmetricResonantFitModel(
 	const std::list<std::pair<std::array<double, 1>, double>> &data)
 	: FitModel<1>(2, data) {

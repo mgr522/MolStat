@@ -7,7 +7,7 @@
  *    fitting.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date June 2014
  */
 
 #ifndef __fit_model_h__
@@ -19,9 +19,11 @@
 #include <utility>
 #include <list>
 #include <string>
+#include <map>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_multifit_nlin.h>
+#include "../string_tools.h"
 
 /**
  * \brief Abstract class encapsulating models that data be fit to.
@@ -49,6 +51,23 @@ private:
 	 * (the array) and the observed value of the fit function.
 	 */
 	const std::list<std::pair<std::array<double, N>, double>> &data;
+
+protected:
+	/**
+	 * \brief Produces an initial guess from a map of names to values.
+	 *
+	 * When specifying initial guesses, the user puts something like
+	 * "guess c c-value d d-value" etc. in the input file.
+	 * FitModel::append_initial_guess converts the list of names and values
+	 * into a map<string, double> object. This function, which depends on the
+	 * model, makes sure all appropriate variables are set and orders them
+	 * correctly.
+	 *
+	 * \param[in] values The map of names to values.
+	 * \return A vector containing the initial guess.
+	 */
+	virtual std::vector<double> create_initial_guess(
+		const std::map<std::string, double> &values) const = 0;
 
 public:
 	/**
@@ -173,6 +192,22 @@ public:
 	 */
 	virtual void append_default_guesses(std::list<std::vector<double>> &guess)
 		const = 0;
+
+	/**
+	 * \brief Appends a user-specified initial guess to a list.
+	 *
+	 * This general routine first converts the user-specified tokens to a
+	 * name-to-value list and then calls the model-dependent
+	 * FitModel::create_initial_guess. More details can be found in the
+	 * documentation for FitModel::create_initial_guess.
+	 *
+	 * \param[in] tokens The list of user-specified tokens. Even elements
+	 *    (0, 2, etc.) are the names of fit variables; odd elements are the
+	 *    specified values for the preceding names.
+	 * \param[in,out] guess A list of initial guesses.
+	 */
+	void append_initial_guess(const std::vector<std::string> &tokens,
+		std::list<std::vector<double>> &guess) const;
 
 	/**
 	 * \brief Prints the fit variables from a gsl_vector.
@@ -317,6 +352,35 @@ gsl_multifit_function_fdf FitModel<N>::gsl_handle() const {
 	fit.params = (void*)this;
 
 	return fit;
+}
+
+template<std::size_t N>
+void FitModel<N>::append_initial_guess(const std::vector<std::string> &tokens,
+	std::list<std::vector<double>> &guess) const {
+
+	std::map<std::string, double> values;
+	size_t i, size = tokens.size();
+
+	if(size % 2 == 1)
+		--size; // there's a name but no value to follow it; ignore
+
+	for(i = 0; i < size; i += 2) {
+		std::string name = tokens[i];
+		make_lower(name);
+		double value;
+
+		try {
+			value = stod(tokens[i+1]);
+		}
+		catch(const std::invalid_argument &e) {
+			// error converting to a double; ignore this pair
+			continue;
+		}
+
+		values[name] = value;
+	}
+
+	guess.emplace_back(create_initial_guess(values));
 }
 
 template<std::size_t N>
