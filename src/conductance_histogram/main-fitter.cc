@@ -172,7 +172,8 @@ int main(int argc, char **argv) {
 								model->append_initial_guess(tokens, initvals);
 							}
 							catch(const invalid_argument &e) {
-								fprintf(stderr, "ERROR: %s\n", e.what());
+								fprintf(stderr, "Error: %s Skipping input line.\n",
+									e.what());
 							}
 						}
 					}
