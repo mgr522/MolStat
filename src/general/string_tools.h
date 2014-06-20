@@ -41,4 +41,14 @@ void tokenize(const std::string &str, std::vector<std::string> &vec);
  */
 void make_lower(std::string &str);
 
+/**
+ * \brief Turns a string into a double.
+ *
+ * \throw invalid_argument if the string cannot be cast to a double.
+ *
+ * \param[in] str The string to be cast.
+ * \return The double.
+ */
+double string_to_double(const std::string &str);
+
 #endif

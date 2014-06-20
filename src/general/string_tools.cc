@@ -92,3 +92,16 @@ void make_lower(std::string &str) {
 	for(char &c : str)
 		c = tolower(c);
 }
+
+double string_to_double(const std::string &str) {
+	double ret;
+
+	try {
+		ret = stod(str);
+	}
+	catch(const invalid_argument &e) {
+		throw invalid_argument("Unable to convert \"" + str + "\" to a double.");
+	}
+
+	return ret;
+}
