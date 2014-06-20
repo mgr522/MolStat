@@ -161,8 +161,23 @@ int main(int argc, char **argv) {
 						make_lower(line);
 						if(line == "default")
 							usedefaultguess = true;
+						else {
+							// this is a user-specified initial guess
+
+							// remove the first token from the vector ("guess")
+							tokens.erase(tokens.begin());
+
+							// process the initial guess
+							try {
+								model->append_initial_guess(tokens, initvals);
+							}
+							catch(const invalid_argument &e) {
+								fprintf(stderr, "ERROR: %s\n", e.what());
+							}
+						}
 					}
 				}
+				// add other keywords/options here
 			}
 		}
 	}
