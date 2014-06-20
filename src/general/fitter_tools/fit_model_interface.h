@@ -167,11 +167,12 @@ public:
 	gsl_multifit_function_fdf gsl_handle() const;
 
 	/**
-	 * \brief Returns a list of initial guesses to use when fitting the data.
+	 * \brief Appends default initial guesses to a list.
 	 *
-	 * \return A list of initial guesses.
+	 * \param[in,out] guess A list of initial guesses.
 	 */
-	virtual std::list<std::vector<double>> initial_guesses() const = 0;
+	virtual void append_default_guesses(std::list<std::vector<double>> &guess)
+		const = 0;
 
 	/**
 	 * \brief Prints the fit variables from a gsl_vector.

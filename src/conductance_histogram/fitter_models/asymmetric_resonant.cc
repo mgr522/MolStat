@@ -160,12 +160,11 @@ std::pair<double, std::vector<double>> AsymmetricResonantFitModel::resid_j(
 	return ret;
 }
 
-std::list<std::vector<double>> AsymmetricResonantFitModel::initial_guesses()
-	const {
+void AsymmetricResonantFitModel::append_default_guesses(
+	std::list<std::vector<double>> &guess) const {
 
 	const list<double> list_gamma{5., 10., 20., 30., 40.},
 		list_r{0.1, 0.5, 1., 2., 10.};
-	list<vector<double>> ret;
 
 	for(list<double>::const_iterator gammaL = list_gamma.cbegin();
 		gammaL != list_gamma.cend(); ++gammaL) {
@@ -180,10 +179,8 @@ std::list<std::vector<double>> AsymmetricResonantFitModel::initial_guesses()
 		init[R] = *r;
 		init[NORM] = 1.;
 
-		ret.emplace_back(init);
+		guess.emplace_back(init);
 	}}}
-
-	return ret;
 }
 
 void AsymmetricResonantFitModel::print_fit(FILE *f,

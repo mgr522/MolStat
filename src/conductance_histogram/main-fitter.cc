@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 
 	// status of the fit
 	shared_ptr<gsl_vector> vec;
-	bool hasfit, iterprint;
+	bool hasfit, iterprint, usedefaultguess;
 	double resid, bestresid;
 	int status;
 
@@ -131,7 +131,9 @@ int main(int argc, char **argv) {
 
 	// Remaining lines: auxiliary options
 	// default options
-	iterprint = false;
+	iterprint = false; // don't print details at every iteration
+	initvals.clear(); // no initial guesses
+	usedefaultguess = false; // user specifies to use the default guesses
 
 	// process the lines and override any of the default options
 	try {
@@ -147,12 +149,30 @@ int main(int argc, char **argv) {
 					iterprint = true;
 				else if(line == "noprint")
 					iterprint = false;
+				else if(line == "guess") {
+					// this line specifies a guess -- is it to use the defaults
+					// or a specific set of parameters?
+					if(tokens.size() == 1) {
+						fprintf(stderr, "Error: No initial guess specified. " \
+							"Skipping line.\n");
+					}
+					else {
+						line = tokens[1];
+						make_lower(line);
+						if(line == "default")
+							usedefaultguess = true;
+					}
+				}
 			}
 		}
 	}
 	catch(const runtime_error &e) {
 		// this just means we hit EOF -- stop trying to read more
 	}
+
+	// do we need to load the default guesses?
+	if(usedefaultguess || initvals.size() == 0)
+		model->append_default_guesses(initvals);
 
 	solver.reset(
 		gsl_multifit_fdfsolver_alloc(gsl_multifit_fdfsolver_lmsder, nbin,
@@ -163,7 +183,6 @@ int main(int argc, char **argv) {
 	hasfit = false;
 
 	// perform fits with all the initial values
-	initvals = model->initial_guesses();
 	for(initval = initvals.cbegin(); initval != initvals.cend(); ++initval) {
 		// load the initial values
 		for(i = 0; i < model->nfit; ++i)

@@ -60,12 +60,11 @@ std::vector<double> SymmetricNonresonantFitModel::jacobian(
 	return ret;
 }
 
-std::list<std::vector<double>> SymmetricNonresonantFitModel::initial_guesses()
-	const {
+void SymmetricNonresonantFitModel::append_default_guesses(
+	std::list<std::vector<double>> &guess) const {
 
 	const list<double> list_c{50., 100., 200., 300., 400., 500.},
 		list_d{5., 10., 20., 30., 40., 50.};
-	list<vector<double>> ret;
 
 	for(list<double>::const_iterator c = list_c.cbegin();
 		c != list_c.cend(); ++c) {
@@ -77,10 +76,8 @@ std::list<std::vector<double>> SymmetricNonresonantFitModel::initial_guesses()
 		init[D] = *d;
 		init[NORM] = 1.;
 
-		ret.emplace_back(init);
+		guess.emplace_back(init);
 	}}
-
-	return ret;
 }
 
 void SymmetricNonresonantFitModel::print_fit(FILE *f,
