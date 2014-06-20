@@ -45,6 +45,11 @@ std::shared_ptr<BinStyle> get_bin_style(
 
 		ret = make_shared<BinLog>(b);
 	}
+	else
+		throw invalid_argument("Unrecognized binning style.\n" \
+			"Possible options are:\n" \
+			"   Linear - Linear binning.\n" \
+			"   Log - Logarithmic binning (base defaults to 10).\n");
 
 	return ret;
 }

@@ -76,6 +76,9 @@ public:
  * The first token (element 0) is the name of the binning style. All subsequent
  * tokens, if any, are options for that binning style.
  *
+ * \throw invalid_argument if a BinStyle object cannot be constructed from the
+ *    provided arguments.
+ *
  * \param[in] tokens The vector of input tokens for creating a BinStyle.
  * \return The BinStyle object.
  */
