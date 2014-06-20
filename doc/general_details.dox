@@ -149,10 +149,9 @@ original data set.
 
 This issue of binning in \f$x\f$ vs.\ binning in \f$\ln(x)\f$ is the crux of
 \"binning styles.\" The actual value used for binning must be accounted for
-using the change-of-variable formula described above. Succinctly, a histogram
-from data binned in \f$x\f$ estimates \f$P_{\hat{x}}(x)\f$ whereas a histogram
-from the same data binned in \f$\ln(x)\f$ estimates
-\f$P_{\ln(\hat{x})}(\ln(x))\f$.
+using the change-of-variable formula described above. If not, a histogram from
+data binned in \f$x\f$ estimates \f$P_{\hat{x}}(x)\f$ whereas a histogram from
+the same data binned in \f$\ln(x)\f$ estimates \f$P_{\ln(\hat{x})}(\ln(x))\f$.
 
 Accordingly, the binning style--that is, the mask (if any) applied to data
 values before binning--must be specified when simulating or fitting histograms
