@@ -203,9 +203,7 @@ Specify
 - a model line shape to fit against the conductance histogram. Each model has
 several parameters, as detailed below.
 - a file name containing the conductance histogram data.
-- output options.
-
-\todo Add a mechanism for additional input guesses to be specified in the input deck.
+- additional options (if desired; none are required).
 
 From this information, the fitter reads in the conductance histogram and uses
 GSL's non-linear least-squares routines to fit the histogram to the desired
@@ -219,6 +217,8 @@ Following is an example input file.
 SymmetricNonresonant
 1,4-dithiolbenzene.dat
 noprint
+guess c 50. d 6.
+guess default
 \endverbatim
 
 The lines are interpreted as follows.
@@ -226,10 +226,23 @@ The lines are interpreted as follows.
 -# The data file containing the conductance histogram. All fitting models (so
    far) are for 1-D histograms. The file should have two numbers per line: the
    conductance, and the histogram counts in this bin.
--# Output options.
+-# All following lines are optional and have the form `command options`.
+   The following list details the commands and any options they require.
    - `noprint` (recommended) -- only output the best fit parameters at the end
      of the program.
-   - `print` -- output iteration-by-iteration results for all starting guesses.
+   - `print` -- output iteration-by-iteration results for all initial guesses.
+   - `guess` -- Specify initial guess(es) to use. Multiple `guess` commands
+     may be present.
+     - `guess default` -- load a \"default\" set of initial guesses for the
+       model. If no other initial guesses are specified, these initial guesses
+       will be automatically loaded. This command may be present with other
+       user-specified initial guesses to use both the user-specified and
+       default sets.
+     - `guess name value ...` -- add a user-specified initial guess. After the
+       `guess` command is a list of name/value pairs. Each fit parameter
+       (remember that fit parameters depend on the model) must be given an
+       initial value. All name/value pairs should appear on the same line. See
+       an example of this syntax in the above example input file.
 
 \subsection subsec_implemented_fits Implemented Fitting Models
 We now list the implemented models for fitting conductance histograms. Note
