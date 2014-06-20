@@ -12,6 +12,10 @@
 #ifndef __bin_style_h__
 #define __bin_style_h__
 
+#include <string>
+#include <memory>
+#include <vector>
+
 /**
  * \brief Interface for an arbitrary binning style.
  *
@@ -65,5 +69,17 @@ public:
 	 */
 	virtual double dmaskdx(const double x) const = 0;
 };
+
+/**
+ * \brief Gets a binning style from a vector of string tokens.
+ *
+ * The first token (element 0) is the name of the binning style. All subsequent
+ * tokens, if any, are options for that binning style.
+ *
+ * \param[in] tokens The vector of input tokens for creating a BinStyle.
+ * \return The BinStyle object.
+ */
+std::shared_ptr<BinStyle> get_bin_style(
+	const std::vector<std::string> &tokens);
 
 #endif

@@ -23,6 +23,7 @@ libmolstat_general_a_SOURCES = string_tools.h \
 	fitter_tools/fit_model_interface.h \
 	fitter_tools/fit_model_interface.cc \
 	histogram_tools/bin_style.h \
+	histogram_tools/bin_style.cc \
 	histogram_tools/bin_linear.h \
 	histogram_tools/bin_linear.cc \
 	histogram_tools/bin_log.h \
