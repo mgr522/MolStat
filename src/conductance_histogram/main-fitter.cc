@@ -12,7 +12,7 @@
  * is output.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date June 2014
  */
 
 #include <cstdio>
@@ -129,29 +129,29 @@ int main(int argc, char **argv) {
 	fdf = model->gsl_handle();
 	vec.reset(gsl_vector_alloc(model->nfit), &gsl_vector_free);
 
-	// Line 3: Print options
+	// Remaining lines: auxiliary options
+	// default options
+	iterprint = false;
+
+	// process the lines and override any of the default options
 	try {
-		line = getline(stdin);
-	} catch(const runtime_error &e) {
-		fprintf(stderr, "Error: %s.\n", e.what());
-		return 0;
+		while(true) {
+			line = getline(stdin);
+
+			tokenize(line, tokens);
+			if(tokens.size() > 0) {
+				line = tokens[0];
+				make_lower(line);
+
+				if(line == "print")
+					iterprint = true;
+				else if(line == "noprint")
+					iterprint = false;
+			}
+		}
 	}
-	tokenize(line, tokens);
-	if(tokens.size() < 1) {
-		fprintf(stderr, "Error: output options expected in line 3.\n");
-		return 0;
-	}
-	line = tokens[0];
-	make_lower(line);
-	if(line == "print")
-		iterprint = true;
-	else if(line == "noprint")
-		iterprint = false;
-	else {
-		fprintf(stderr, "Error: unrecognized output option: '%s'.\n" \
-			"Possible options are 'print' and 'noprint'.\n",
-			tokens[0].c_str());
-		return 0;
+	catch(const runtime_error &e) {
+		// this just means we hit EOF -- stop trying to read more
 	}
 
 	solver.reset(
