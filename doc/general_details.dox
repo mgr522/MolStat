@@ -164,8 +164,10 @@ requires the mask function, \f$u=f(x)\f$; the inverse mask function
 \subsection subsec_impl_binstyle Implemented Binning Styles
 - Linear binning (this is essentially the \"identity\" binning style),
   \f$ u = f(x) = x \f$.
+  - Can be used in input files with `linear`.
   - Implemented in the class BinLinear.
 - Logarithmic binning for some base \f$b\f$, \f$ u = f(x) = \log_b(x) \f$.
+  - Can be used in input files with `log b`, where `b` is \f$b\f$.
   - Implemented in the class BinLog.
 
 \subsection subsec_add_binstyle Adding Binning Styles
