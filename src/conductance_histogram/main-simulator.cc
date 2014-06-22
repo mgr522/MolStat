@@ -185,9 +185,12 @@ int main(int argc, char **argv) {
 	}
 	tokenize(line, tokens);
 	if(tokens.size() < 2) {
-		fprintf(stderr, "Error: binning information expected in line 4.\n");
+		fprintf(stderr, "Error: binning information expected in line 4.\n" \
+			"Number of bins followed by the type of bins.\n");
 		return 0;
 	}
+
+	// first: number of bins to use
 	try {
 		nbin = stoul(tokens[0]);
 	}
@@ -196,14 +199,14 @@ int main(int argc, char **argv) {
 			tokens[0].c_str());
 		return 0;
 	}
-	make_lower(tokens[1]);
-	if(tokens[1] == "log")
-		bstyle = make_shared<BinLog>(10.);
-	else if(tokens[1] == "linear")
-		bstyle = make_shared<BinLinear>();
-	else {
-		fprintf(stderr, "Error: unknown binning type '%s'.\nShould be 'log' " \
-			"or 'linear'.\n", tokens[1].c_str());
+	// remove the number of bins so we can get the binning style
+	tokens.erase(tokens.begin());
+	make_lower(tokens[0]);
+	try {
+		bstyle = get_bin_style(tokens);
+	}
+	catch(const invalid_argument &e) {
+		fprintf(stderr, "Error: unknown binning style.\n");
 		return 0;
 	}
 

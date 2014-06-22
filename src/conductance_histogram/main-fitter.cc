@@ -184,6 +184,7 @@ int main(int argc, char **argv) {
 
 					// first need to remove the "bin" token
 					tokens.erase(tokens.begin());
+					make_lower(tokens[0]);
 
 					try {
 						binstyle = get_bin_style(tokens);
