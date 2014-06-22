@@ -6,6 +6,11 @@ all:
 	rm -f latex/Makefile.bak
 	cd latex; make
 	mv -f latex/refman.pdf fullref.pdf
+	$(DOXYGEN) userman.doxygen
+	sed -i.bak -e 's/latex_count=5/latex_count=8/g' latex/Makefile
+	rm -f latex/Makefile.bak
+	cd latex; make
+	mv -f latex/refman.pdf userman.pdf
 
 .PHONY: clean
 clean::
