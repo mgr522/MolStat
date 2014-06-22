@@ -88,7 +88,7 @@ line breaks are important.
 SymmetricOneSiteModel
 Differential
 100000
-100 log
+100 log 10.
 0.
 eta constant 0.5
 V uniform -2. 2.
@@ -105,8 +105,10 @@ The lines of this input file are interpreted as follows:
    Differential conductance histograms, the specified number of bins is used
    for both the voltage and conductance axes. A list of implemented binning
    styles can be found in \ref subsec_impl_binstyle. Note that the output
-   conductance values will be the masked values, \f$ \{ f(g) \} \f$, where
-   \f$f\f$ is the mask.
+   conductance values will be the unmasked values, \f$\{g\}\f$, such that the
+	output histogram estimates \f$P_{\hat{g}}(g)\f$. (That is, the histogram is
+   constructed in the masked domain, but the final output is coverted back to
+   the unmasked domain.)
 -# The Fermi energy.
 -# Random distributions (one per line) for the various parameters. For example,
    `eta constant 0.5` specifies the constant distribution (0.5) for \f$\eta\f$;
@@ -119,12 +121,11 @@ also require distributions for `V` (\f$V\f$) and `eta` (\f$\eta\f$).
 Finally, the histogram is output with one bin per line. For Static and
 Differential conductance histograms each line is
 \verbatim
-V mask(g) counts
+V g counts
 \endverbatim
-where `mask` is specified by the binning style. For ZeroBias conductance
-histograms, each line similarly reads
+For ZeroBias conductance histograms, each line similarly reads
 \verbatim
-mask(g) counts
+g counts
 \endverbatim
 
 \subsection subsec_cond_hist_sim_models Models for Simulating Conductance
@@ -219,6 +220,7 @@ SymmetricNonresonant
 noprint
 guess c 50. d 6.
 guess default
+bin linear
 \endverbatim
 
 The lines are interpreted as follows.
@@ -231,7 +233,7 @@ The lines are interpreted as follows.
    - `noprint` (recommended) -- only output the best fit parameters at the end
      of the program.
    - `print` -- output iteration-by-iteration results for all initial guesses.
-   - `guess` -- Specify initial guess(es) to use. Multiple `guess` commands
+   - `guess` -- specify initial guess(es) to use. Multiple `guess` commands
      may be present.
      - `guess default` -- load a \"default\" set of initial guesses for the
        model. If no other initial guesses are specified, these initial guesses
@@ -244,6 +246,17 @@ The lines are interpreted as follows.
        initial value. All name/value pairs should appear on the same line. See
        an example of this syntax in the above example input file. The \"norm\"
        parameter does not need to be specified, but it can be.
+   - `bin` -- specify the binning status of the data to be read in. If the data
+     is in `g counts` form (as is produced by the simulator), use
+     `bin linear`. If no `bin` command is issued, `linear` is the default. See
+     \ref subsec_impl_binstyle for a list of implemented binning types.
+     \note The use of non-`linear` binning styles has not been extensively
+        tested. This functionality is provided for convenience, where the user
+        may want to fit data that is not produced from the simulator and was
+        binned, e.g., logarithmically without converting back to \f$g\f$. In
+        this case, the histogram would estimate \f$P_{\ln(\hat{g})}(\ln(g))\f$,
+        not \f$P_{\hat{g}}(g)\f$, and the fitter needs to account for this
+        disparity.
 
 \subsection subsec_implemented_fits Implemented Fitting Models
 We now list the implemented models for fitting conductance histograms. Note

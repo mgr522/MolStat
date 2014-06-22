@@ -169,8 +169,15 @@ requires the mask function, \f$u=f(x)\f$; the inverse mask function
   - Implemented in the class BinLog.
 
 \subsection subsec_add_binstyle Adding Binning Styles
+Binning styles are described by the abstract BinStyle class. Adding a new
+binning style required deriving from this class and implementing the three
+abstract functions.
+-# The mask function, \f$u = f(x)\f$, in `mask`.
+-# The inverse mask function, \f$x = f^{-1}(u)\f$, in `invmask`.
+-# The derivative of the mask function, \f$ \mathrm{d}f / \mathrm{d}x\f$, in
+   `dmaskdx`.
 
-\todo Add a common function for reading in binning styles; use in the simulator
-and fitter; write an \"Adding Binning Styles\" section.
-
+Finally, add the binning style class to the ::get_bin_style function so that
+it can be referenced from the input arguments. The implemented examples should
+be sufficient to explain this procedure.
 */
