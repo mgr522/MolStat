@@ -25,6 +25,7 @@
 #include <gsl/gsl_multifit_nlin.h>
 
 #include <general/string_tools.h>
+#include <general/histogram_tools/bin_style.h>
 #include "fitter_models/cond_hist_fit_model.h"
 
 using namespace std;
@@ -56,6 +57,7 @@ int main(int argc, char **argv) {
 	vector<double> bestfit;
 	list<vector<double>> initvals;
 	list<vector<double>>::const_iterator initval;
+	shared_ptr<BinStyle> binstyle;
 
 	// counters & auxiliary variables
 	size_t i, iter;
@@ -132,6 +134,7 @@ int main(int argc, char **argv) {
 	iterprint = false; // don't print details at every iteration
 	initvals.clear(); // no initial guesses
 	usedefaultguess = false; // user specifies to use the default guesses
+	binstyle = get_bin_style({{"linear"}}); // default to linear bins
 
 	// process the lines and override any of the default options
 	try {
@@ -176,12 +179,39 @@ int main(int argc, char **argv) {
 						}
 					}
 				}
+				else if(line == "bin"){
+					// load a bin style
+
+					// first need to remove the "bin" token
+					tokens.erase(tokens.begin());
+
+					try {
+						binstyle = get_bin_style(tokens);
+					}
+					catch(const invalid_argument &e) {
+						fprintf(stderr, "Error: Unknown binning style. Skipping " \
+							"line.\n");
+					}
+				}
 				// add other keywords/options here
 			}
 		}
 	}
 	catch(const runtime_error &e) {
 		// this just means we hit EOF -- stop trying to read more
+	}
+
+	// use the bin type to "unmask", if necessary, the data so that we fit in
+	// g, not some function of g
+	for(list<pair<array<double, 1>, double>>::iterator iter = data.begin();
+		iter != data.end(); ++iter) {
+
+		// transform the independent variable back to g
+		(*iter).first[0] = binstyle->invmask((*iter).first[0]);
+
+		// transform the PDF: P_g(g)
+		//    = P_mask(g)(mask(g)) * dmaskdx(invmask(u))
+		(*iter).second *= binstyle->dmaskdx((*iter).first[0]);
 	}
 
 	// do we need to load the default guesses?
