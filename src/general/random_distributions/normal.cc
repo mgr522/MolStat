@@ -2,11 +2,13 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file normal.cc
  * \brief Implementation of the normal distribution.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
+ * \endinternal
  */
 
 #include <gsl/gsl_randist.h>

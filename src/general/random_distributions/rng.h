@@ -27,7 +27,9 @@ public:
 	RandomDistribution() = default;
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~RandomDistribution() = default;
 
