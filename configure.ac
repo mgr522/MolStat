@@ -45,6 +45,8 @@ AM_CONDITIONAL([CAN_BUILD_DOC], [test $HAVE_DOXYGEN = YES && test $HAVE_PDFLATEX
 AC_CONFIG_FILES([
 	Makefile
 		doc/Makefile
+		doc/fullref.doxygen
+		doc/userman.doxygen
 		src/Makefile
 			src/general/Makefile
 				src/general/fitter_tools/Makefile

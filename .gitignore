@@ -13,3 +13,5 @@ config/install-sh
 config/missing
 config/test-driver
 configure
+fullref.doxygen
+userman.doxygen
