@@ -1,3 +1,22 @@
+# This file is a part of MolStat, which is distributed under the Creative
+# Commons Attribution-NonCommercial 4.0 International Public License.
+# MolStat (c) 2014, Northwestern University.
+
+##
+ # @file tests/fit-options.py
+ # @brief Test suite for input options (initial guess specification) in the
+ #    conductance histogram fitter.
+ # 
+ # @test Test suite for input options (initial guess specification) in the
+ #    conductance histogram fitter.
+ #
+ # The symmetric, resonant-tunneling model; the symmetric, non-resonant
+ # tunneling model; and the asymmetric, resonant-tunneling model are all
+ # tested with various initial guess combinations.
+ #
+ # @author Matthew G.\ Reuter
+ # @date June 2014
+
 import subprocess
 
 # test for the symmetric, non-resonant model

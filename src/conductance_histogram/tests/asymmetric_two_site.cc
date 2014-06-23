@@ -4,7 +4,10 @@
 /**
  * \file tests/asymmetric_two_site.cc
  * \brief Test suite for the asymmetric-coupling, two-site tight-binding
- *     model.
+ *    model.
+ *
+ * \test Test suite for the asymmetric-coupling, two-site tight-binding
+ *    model.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
@@ -18,11 +21,13 @@
 using namespace std;
 
 /**
+ * \internal
  * \brief Main function for testing the asymmetric-coupling, one-site model.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
+ * \endinternal
  */
 int main(int argc, char **argv) {
 	const double thresh = 1.0e-6;

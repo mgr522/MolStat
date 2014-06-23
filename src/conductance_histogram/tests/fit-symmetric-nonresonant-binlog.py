@@ -1,3 +1,19 @@
+# This file is a part of MolStat, which is distributed under the Creative
+# Commons Attribution-NonCommercial 4.0 International Public License.
+# MolStat (c) 2014, Northwestern University.
+
+##
+ # @file tests/fit-symmetric-nonresonant-binlog.py
+ # @brief Test suite for fitting to the symmetric, nonresonant-tunneling model
+ #    with logarithmic binning.
+ # 
+ # @test Test suite for fitting to the symmetric, nonresonant-tunneling model
+ #    with logarithmic binning. This test is really designed to test the use
+ #    of logarithmic binning, not the actual fitting model.
+ #
+ # @author Matthew G.\ Reuter
+ # @date May 2014
+
 import subprocess
 
 # test the log-binning aspect of the fitter program
