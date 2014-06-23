@@ -2,6 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file test_gsl_std_vector.cc
  * \brief Test suite for interconverting gsl and std vector types.
  *
@@ -9,6 +10,7 @@
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
+ * \endinternal
  */
 
 #include <cstdio>
