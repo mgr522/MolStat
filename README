@@ -1,0 +1,17 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
+
+Thank you for downloading MolStat. We hope you find this software helpful
+and easy to use. Detailed instructions for installation, use, and extension
+of MolStat are included in the documentation files.
+
+There are generally two files,
+doc/userman.pdf -- which is a Users' manual for the standard installation; and
+doc/fullref.pdf -- which is a full code reference intended extending the
+                   capabilities of MolStat.
+The early pages of the two manuals are identical. Note that these files can be
+generated with doxygen in the usual build path of the code.
+
+Thanks for using MolStat, and please let us know if you have any comments or
+ideas for improvement.
