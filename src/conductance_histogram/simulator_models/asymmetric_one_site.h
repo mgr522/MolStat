@@ -40,17 +40,23 @@ using std::shared_ptr;
 class AsymmetricOneSiteModel : public ConductanceModel {
 protected:
 	/**
-	 * \brief Random distribution for epsilon, the channel energy.
+	 * \internal
+	 * \brief Random distribution for \f$\varepsilon\f$, the channel energy.
+	 * \endinternal
 	 */
 	shared_ptr<const RandomDistribution> dist_eps;
 
 	/**
-	 * \brief Random distribution for gammaL, one channel-lead coupling.
+	 * \internal
+	 * \brief Random distribution for \f$\Gamma_\mathrm{L}\f$, one channel-lead
+	 *    coupling.
+	 * \endinternal
 	 */
 	shared_ptr<const RandomDistribution> dist_gammaL;
 
 	/**
-	 * \brief Random distribution for gammaR, one channel-lead coupling.
+	 * \brief Random distribution for \f$\Gamma_\mathrm{R}\f$, one channel-lead
+	 *    coupling.
 	 */
 	shared_ptr<const RandomDistribution> dist_gammaR;
 
@@ -60,9 +66,9 @@ public:
 	/**
 	 * \brief Constructor requiring the random distributions.
 	 *
-	 * \param[in] eps The distribution for epsilon.
-	 * \param[in] gammaL The distribution for gammaL.
-	 * \param[in] gammaR The distribution for gammaR.
+	 * \param[in] eps The distribution for \f$\varepsilon\f$.
+	 * \param[in] gammaL The distribution for \f$\Gamma_\mathrm{L}\f$.
+	 * \param[in] gammaR The distribution for \f$\Gamma_\mathrm{R}\f$.
 	 */
 	AsymmetricOneSiteModel(
 		const shared_ptr<const RandomDistribution> &eps,
@@ -70,7 +76,9 @@ public:
 		const shared_ptr<const RandomDistribution> &gammaR);
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~AsymmetricOneSiteModel() = default;
 
@@ -115,9 +123,11 @@ public:
 	 *     gammas.
 	 *
 	 * \param[in] E The incident energy of the electron.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL The left channel-lead coupling, gammaL.
-	 * \param[in] gammaR The right channel-lead coupling, gammaR.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gammaL The left channel-lead coupling,
+	 *    \f$\Gamma_\mathrm{L}\f$.
+	 * \param[in] gammaR The right channel-lead coupling,
+	 *    \f$\Gamma_\mathrm{R}\f$.
 	 * \return The transmission.
 	 */
 	static double transmission(const double E, const double eps,
@@ -130,9 +140,11 @@ public:
 	 * \param[in] EF The Fermi energy.
 	 * \param[in] V The voltage.
 	 * \param[in] eta The relative voltage drops at the leads.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL The left channel-lead coupling, gammaL.
-	 * \param[in] gammaR The right channel-lead coupling, gammaR.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gammaL The left channel-lead coupling,
+	 *    \f$\Gamma_\mathrm{L}\f$.
+	 * \param[in] gammaR The right channel-lead coupling,
+	 *    \f$\Gamma_\mathrm{R}\f$.
 	 * \return The static conductance.
 	 */
 	static double static_conductance(const double EF, const double V,
@@ -146,9 +158,11 @@ public:
 	 * \param[in] EF The Fermi energy.
 	 * \param[in] V The voltage.
 	 * \param[in] eta The relative voltage drops at the leads.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL The left channel-lead coupling, gammaL.
-	 * \param[in] gammaR The right channel-lead coupling, gammaR.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gammaL The left channel-lead coupling,
+	 *    \f$\Gamma_\mathrm{L}\f$.
+	 * \param[in] gammaR The right channel-lead coupling,
+	 *    \f$\Gamma_\mathrm{R}\f$.
 	 * \return The differential conductance.
 	 */
 	static double diff_conductance(const double EF, const double V,

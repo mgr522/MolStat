@@ -2,12 +2,14 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file simulator_models/symmetric_one_site.cc
  * \brief Implementation of the symmetric-coupling, one-site model for
  *        calculating conductances.
  *
  * \author Matthew G.\ Reuter
  * \date April 2014
+ * \endinternal
  */
 
 #include "symmetric_one_site.h"

@@ -26,12 +26,16 @@ using std::shared_ptr;
 class ConductanceModel {
 public:
 	/**
+	 * \internal
 	 * \brief Default constructor.
+	 * \endinternal
 	 */
 	ConductanceModel() = default;
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~ConductanceModel() = default;
 

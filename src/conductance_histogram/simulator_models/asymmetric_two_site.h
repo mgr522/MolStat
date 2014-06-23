@@ -45,35 +45,47 @@ using std::shared_ptr;
 class AsymmetricTwoSiteModel : public ConductanceModel {
 protected:
 	/**
-	 * \brief Random distribution for epsilon, the channel energy.
+	 * \internal
+	 * \brief Random distribution for \f$\varepsilon\f$, the channel energy.
+	 * \endinternal
 	 */
 	shared_ptr<const RandomDistribution> dist_eps;
 
 	/**
-	 * \brief Random distribution for gammaL, one channel-lead coupling.
+	 * \internal
+	 * \brief Random distribution for \f$\Gamma_\mathrm{L}\f$, one channel-lead
+	 *    coupling.
+	 * \endinternal
 	 */
 	shared_ptr<const RandomDistribution> dist_gammaL;
 
 	/**
-	 * \brief Random distribution for gammaR, one channel-lead coupling.
+	 * \internal
+	 * \brief Random distribution for \f$\Gamma_\mathrm{R}\f$, one channel-lead
+	 *    coupling.
+	 * \endinternal
 	 */
 	shared_ptr<const RandomDistribution> dist_gammaR;
 
 	/**
-	 * \brief Random distribution for beta, the site-site coupling.
+	 * \internal
+	 * \brief Random distribution for \f$\beta\f$, the site-site coupling.
+	 * \endinternal
 	 */
 	shared_ptr<const RandomDistribution> dist_beta;
 
 	/**
+	 * \internal
 	 * \brief Calculates the antiderivative needed for the static
 	 *    conductance (fixed values of the model parameters).
 	 *
 	 * \param[in] z The limit of integration.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL One channel-lead coupling, gammaL.
-	 * \param[in] gammaR One channel-lead coupling, gammaR.
-	 * \param[in] beta The site-site coupling, beta.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gammaL One channel-lead coupling, \f$\Gamma_\mathrm{L}\f$.
+	 * \param[in] gammaR One channel-lead coupling, \f$\Gamma_\mathrm{R}\f$.
+	 * \param[in] beta The site-site coupling, \f$\beta\f$.
 	 * \return The antiderivative needed for the static conductance.
+	 * \endinternal
 	 */
 	static double static_c_integral(const double z, const double eps,
 		const double gammaL, const double gammaR, const double beta);
@@ -84,10 +96,10 @@ public:
 	/**
 	 * \brief Constructor requiring the random distributions.
 	 *
-	 * \param[in] eps The distribution for epsilon.
-	 * \param[in] gammaL The distribution for gammaL.
-	 * \param[in] gammaR The distribution for gammaR.
-	 * \param[in] beta The distribution for beta.
+	 * \param[in] eps The distribution for \f$\varepsilon\f$.
+	 * \param[in] gammaL The distribution for \f$\Gamma_\mathrm{L}\f$.
+	 * \param[in] gammaR The distribution for \f$\Gamma_\mathrm{R}\f$.
+	 * \param[in] beta The distribution for \f$\beta\f$.
 	 */
 	AsymmetricTwoSiteModel(
 		const shared_ptr<const RandomDistribution> &eps,
@@ -96,7 +108,9 @@ public:
 		const shared_ptr<const RandomDistribution> &beta);
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~AsymmetricTwoSiteModel() = default;
 
@@ -141,10 +155,10 @@ public:
 	 *    parameters.
 	 *
 	 * \param[in] E The incident energy of the electron.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL One channel-lead coupling, gammaL.
-	 * \param[in] gammaR One channel-lead coupling, gammaR.
-	 * \param[in] beta The site-site coupling, beta.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gammaL One channel-lead coupling, \f$\Gamma_\mathrm{L}\f$.
+	 * \param[in] gammaR One channel-lead coupling, \f$\Gamma_\mathrm{R}\f$.
+	 * \param[in] beta The site-site coupling, \f$\beta\f$.
 	 * \return The transmission.
 	 */
 	static double transmission(const double E, const double eps,
@@ -157,10 +171,10 @@ public:
 	 * \param[in] EF The Fermi energy.
 	 * \param[in] V The voltage.
 	 * \param[in] eta The relative voltage drops at the leads.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL One channel-lead coupling, gammaL.
-	 * \param[in] gammaR One channel-lead coupling, gammaR.
-	 * \param[in] beta The site-site coupling, beta.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gammaL One channel-lead coupling, \f$\Gamma_\mathrm{L}\f$.
+	 * \param[in] gammaR One channel-lead coupling, \f$\Gamma_\mathrm{R}\f$.
+	 * \param[in] beta The site-site coupling, \f$\beta\f$.
 	 * \return The static conductance.
 	 */
 	static double static_conductance(const double EF, const double V,
@@ -174,10 +188,10 @@ public:
 	 * \param[in] EF The Fermi energy.
 	 * \param[in] V The voltage.
 	 * \param[in] eta The relative voltage drops at the leads.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gammaL One channel-lead coupling, gammaL.
-	 * \param[in] gammaR One channel-lead coupling, gammaR.
-	 * \param[in] beta The site-site coupling, beta.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gammaL One channel-lead coupling, \f$\Gamma_\mathrm{L}\f$.
+	 * \param[in] gammaR One channel-lead coupling, \f$\Gamma_\mathrm{R}\f$.
+	 * \param[in] beta The site-site coupling, \f$\beta\f$.
 	 * \return The differential conductance.
 	 */
 	static double diff_conductance(const double EF, const double V,

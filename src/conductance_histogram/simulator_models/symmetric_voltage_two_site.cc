@@ -2,12 +2,14 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file simulator_models/symmetric_voltage_two_site.cc
  * \brief Implementation of the symmetric-coupling, voltage-dependent two-site
  *    tight-binding model for calculating conductances.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
+ * \endinternal
  */
 
 #include "symmetric_voltage_two_site.h"

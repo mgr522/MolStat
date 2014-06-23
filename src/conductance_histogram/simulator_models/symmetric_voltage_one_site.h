@@ -41,12 +41,16 @@ using std::shared_ptr;
 class SymmetricVoltageOneSiteModel : public ConductanceModel {
 protected:
 	/**
-	 * \brief Random distribution for epsilon, the channel energy.
+	 * \internal
+	 * \brief Random distribution for \f$\varepsilon\f$, the channel energy.
+	 * \endinternal
 	 */
 	shared_ptr<const RandomDistribution> dist_eps;
 
 	/**
-	 * \brief Random distribution for gamma, the channel-lead coupling.
+	 * \internal
+	 * \brief Random distribution for \f$\Gamma\f$, the channel-lead coupling.
+	 * \endinternal
 	 */
 	shared_ptr<const RandomDistribution> dist_gamma;
 
@@ -56,15 +60,17 @@ public:
 	/**
 	 * \brief Constructor requiring the random distributions.
 	 *
-	 * \param[in] eps The distribution for epsilon.
-	 * \param[in] gamma The distribution for gamma.
+	 * \param[in] eps The distribution for \f$\varepsilon\f$.
+	 * \param[in] gamma The distribution for \f$\Gamma\f$.
 	 */
 	SymmetricVoltageOneSiteModel(
 		const shared_ptr<const RandomDistribution> &eps,
 		const shared_ptr<const RandomDistribution> &gamma);
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~SymmetricVoltageOneSiteModel() = default;
 
@@ -109,8 +115,8 @@ public:
 	 *
 	 * \param[in] E The incident energy of the electron.
 	 * \param[in] V The voltage.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gamma The channel-lead coupling, gamma.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gamma The channel-lead coupling, \f$\Gamma\f$.
 	 * \return The transmission.
 	 */
 	static double transmission(const double E, const double V, const double eps,
@@ -123,8 +129,8 @@ public:
 	 * \param[in] EF The Fermi energy.
 	 * \param[in] V The voltage.
 	 * \param[in] eta The relative voltage drops at the leads.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gamma The channel-lead coupling, gamma.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gamma The channel-lead coupling, \f$\Gamma\f$.
 	 * \return The static conductance.
 	 */
 	static double static_conductance(const double EF, const double V,
@@ -137,8 +143,8 @@ public:
 	 * \param[in] EF The Fermi energy.
 	 * \param[in] V The voltage.
 	 * \param[in] eta The relative voltage drops at the leads.
-	 * \param[in] eps The channel energy, epsilon.
-	 * \param[in] gamma The channel-lead coupling, gamma.
+	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
+	 * \param[in] gamma The channel-lead coupling, \f$\Gamma\f$.
 	 * \return The differential conductance.
 	 */
 	static double diff_conductance(const double EF, const double V,

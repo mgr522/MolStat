@@ -2,12 +2,14 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file simulator_models/asymmetric_one_site.cc
  * \brief Implementation for the asymmetric-coupling, tight-binding model for
  * calculating conductances.
  *
  * \author Matthew G.\ Reuter
  * \date April 2014
+ * \endinternal
  */
 
 #include "asymmetric_one_site.h"
