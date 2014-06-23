@@ -2,11 +2,13 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file string_tools.cc
  * \brief Functions for processing strings, useful in I/O.
  *
  * \author Matthew G.\ Reuter
  * \date April 2014
+ * \endinternal
  */
 
 #include "string_tools.h"
