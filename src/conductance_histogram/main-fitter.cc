@@ -31,6 +31,7 @@
 using namespace std;
 
 /**
+ * \internal
  * \brief Main function.
  *
  * Parses the input parameters and outputs the best-fit parameters (and,
@@ -39,6 +40,7 @@ using namespace std;
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status; 0 for normal.
+ * \endinternal
  */
 int main(int argc, char **argv) {
 	// non-linear fitting tools

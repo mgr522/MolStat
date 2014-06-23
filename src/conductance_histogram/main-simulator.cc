@@ -38,7 +38,9 @@
 using namespace std;
 
 /**
+ * \internal
  * \brief Enum for the types of conductance calculations we have.
+ * \endinternal
  */
 enum class CalculationType {
 	Static, // Voltage-Dependent Static Conductance
@@ -47,11 +49,13 @@ enum class CalculationType {
 };
 
 /**
+ * \internal
  * \brief Enum for the type of histogram (1D or 2D).
  *
  * A `ZeroBias` CalculationType is always 1D. `Static` and `Differential` are
  * usually 2D, but can be 1D if the voltage's random distribution is a
  * ConstantDistribution.
+ * \endinternal
  */
 enum class HistogramType {
 	OneD, // 1D Histogram
@@ -59,6 +63,7 @@ enum class HistogramType {
 };
 
 /**
+ * \internal
  * \brief Main function for simulating a histogram.
  *
  * Parses the input parameters and outputs randomly-generated conductance
@@ -67,6 +72,7 @@ enum class HistogramType {
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status; 0 for normal.
+ * \endinternal
  */
 int main(int argc, char **argv) {
 	// initialize the GSL random number generator
