@@ -19,6 +19,8 @@
 /**
  * \brief Gets a line from the desired stream and puts it in std::string form.
  *
+ * \internal
+ *
  * \exception std::runtime_error if EOF is encountered.
  *
  * \param[in,out] f The stream.
@@ -29,6 +31,8 @@ std::string getline(FILE *f);
 /**
  * \brief Tokenizes a string.
  *
+ * \internal
+ *
  * \param[in] str The string to be tokenize.
  * \param[out] vec The strings, in std::vector form.
  */
@@ -37,6 +41,8 @@ void tokenize(const std::string &str, std::vector<std::string> &vec);
 /**
  * \brief Makes a string lower case.
  *
+ * \internal
+ *
  * \param[in,out] str The string.
  */
 void make_lower(std::string &str);
@@ -44,7 +50,9 @@ void make_lower(std::string &str);
 /**
  * \brief Turns a string into a double.
  *
- * \throw invalid_argument if the string cannot be cast to a double.
+ * \internal
+ *
+ * \exception std::invalid_argument if the string cannot be cast to a double.
  *
  * \param[in] str The string to be cast.
  * \return The double.

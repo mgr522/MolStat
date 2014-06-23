@@ -17,6 +17,8 @@ using namespace std;
 /**
  * \brief Gets the next token in the string.
  *
+ * \internal
+ *
  * \param[in,out] next The next character to examine (via iterator).
  * \param[in] end The end of the string.
  * \param[out] tok The token, if a valid token exists.
