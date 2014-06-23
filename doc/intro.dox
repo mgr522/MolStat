@@ -4,10 +4,6 @@
 /**
 \mainpage Introduction
 
-\todo Create a pared-down \"Users' manual\" for the package that doesn't list
-every class, etc.; it only focuses on the pertinent details to use and/or
-extend the software package.
-
 This software package provides tools for understanding and interpreting
 single-molecule behavior. Single-molecule experiments generally cannot
 determine, let alone control, the microscopic details of the system and, as
@@ -116,13 +112,14 @@ You can cite this software by referencing, as appropriate, \cite reuter-2243
 and \cite williams-5937. Thanks!
 
 \section acknowledgments Acknowledgments
-I am indebted to
+I thank the following people for their help, insight, and comments in the
+development of MolStat and the theories behind it.
    - Mr.\ Patrick Williams (Oak Ridge High School)
-   - Prof.\ Mark Ratner (Northwestern)
-   - Prof.\ Latha Venkataraman (Columbia)
+   - Prof.\ Mark Ratner (Northwestern University)
+   - Prof.\ Herre van der Zandt (Delft University of Technology)
+   - Prof.\ Latha Venkataraman (Columbia University)
    .
-for their help in making this package possible.  I also gratefully
-acknowledge financial and computational support from
+I also gratefully acknowledge financial and computational support from
    -# The Wigner Fellowship program at the Oak Ridge National Laboratory,
       which is managed by UT-Batelle, LLC, for the US Department of Energy
       under contract DE-AC05-00OR22725.
