@@ -250,13 +250,12 @@ The lines are interpreted as follows.
      is in `g counts` form (as is produced by the simulator), use
      `bin linear`. If no `bin` command is issued, `linear` is the default. See
      \ref subsec_impl_binstyle for a list of implemented binning types.
-     \note The use of non-`linear` binning styles has not been extensively
-        tested. This functionality is provided for convenience, where the user
-        may want to fit data that is not produced from the simulator and was
-        binned, e.g., logarithmically without converting back to \f$g\f$. In
-        this case, the histogram would estimate \f$P_{\ln(\hat{g})}(\ln(g))\f$,
-        not \f$P_{\hat{g}}(g)\f$, and the fitter needs to account for this
-        disparity.
+     \note The use of non-`linear` binning styles is provided for cases where
+        the user may want to fit data that is not produced from the simulator
+        and was binned, e.g., logarithmically without converting back to
+        \f$g\f$. In this case, the histogram would estimate
+        \f$P_{\ln(\hat{g})}(\ln(g))\f$, not \f$P_{\hat{g}}(g)\f$; the fitter
+        needs to account for this disparity.
 
 \subsection subsec_implemented_fits Implemented Fitting Models
 We now list the implemented models for fitting conductance histograms. Note
