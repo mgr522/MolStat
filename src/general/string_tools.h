@@ -17,45 +17,45 @@
 #include <cstdio>
 
 /**
- * \brief Gets a line from the desired stream and puts it in std::string form.
- *
  * \internal
+ * \brief Gets a line from the desired stream and puts it in std::string form.
  *
  * \exception std::runtime_error if EOF is encountered.
  *
  * \param[in,out] f The stream.
  * \return The string.
+ * \endinternal
  */
 std::string getline(FILE *f);
 
 /**
- * \brief Tokenizes a string.
- *
  * \internal
+ * \brief Tokenizes a string.
  *
  * \param[in] str The string to be tokenize.
  * \param[out] vec The strings, in std::vector form.
+ * \endinternal
  */
 void tokenize(const std::string &str, std::vector<std::string> &vec);
 
 /**
+ * \internal
  * \brief Makes a string lower case.
  *
- * \internal
- *
  * \param[in,out] str The string.
+ * \endinternal
  */
 void make_lower(std::string &str);
 
 /**
- * \brief Turns a string into a double.
- *
  * \internal
+ * \brief Turns a string into a double.
  *
  * \exception std::invalid_argument if the string cannot be cast to a double.
  *
  * \param[in] str The string to be cast.
  * \return The double.
+ * \endinternal
  */
 double string_to_double(const std::string &str);
 

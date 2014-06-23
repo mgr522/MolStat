@@ -15,14 +15,14 @@
 using namespace std;
 
 /**
- * \brief Gets the next token in the string.
- *
  * \internal
+ * \brief Gets the next token in the string.
  *
  * \param[in,out] next The next character to examine (via iterator).
  * \param[in] end The end of the string.
  * \param[out] tok The token, if a valid token exists.
  * \return True if a token is found, false otherwise.
+ * \endinternal
  */
 static bool next_token(string::const_iterator &next,
 	string::const_iterator end, string &tok) {

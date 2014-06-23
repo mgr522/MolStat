@@ -18,13 +18,13 @@
 using namespace std;
 
 /**
- * \brief Main function for testing the ::gsl_to_std function.
- *
  * \internal
+ * \brief Main function for testing the ::gsl_to_std function.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
+ * \endinternal
  */
 int main(int argc, char **argv) {
 	size_t i;
