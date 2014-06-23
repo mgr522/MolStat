@@ -1,4 +1,5 @@
 latex/
 fullref.pdf
 userman.pdf
-warn.log
+warn-fullref.log
+warn-userman.log
