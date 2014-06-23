@@ -45,10 +45,10 @@ protected:
 	 * \brief Converts a map of names to values to an initial guess (ordered
 	 *    vector).
 	 *
-	 * The "gamma" parameter is needed for this model. See
+	 * The `Gamma` parameter is needed for this model. See
 	 * FitModel::create_initial_guess for more information.
 	 *
-	 * \throw invalid_argument_exception if the "gamma" parameter is not
+	 * \throw invalid_argument_exception if the `Gamma` parameter is not
 	 *    specified.
 	 *
 	 * \param[in] values The map of names to values.
@@ -80,7 +80,9 @@ public:
 		const std::list<std::pair<std::array<double, 1>, double>> &data);
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~SymmetricResonantFitModel() = default;
 

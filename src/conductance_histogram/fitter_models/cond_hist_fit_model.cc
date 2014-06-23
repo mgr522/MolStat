@@ -2,6 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file cond_hist_fit_model.cc
  * \brief Implementation of the FitModel interface for its 1-dimensional
  *    (i.e., the fit function maps \f$\mathbb{R}\f$ to \f$\mathbb{R}\f$)
@@ -9,6 +10,7 @@
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
+ * \endinternal
  */
 
 #include "cond_hist_fit_model.h"

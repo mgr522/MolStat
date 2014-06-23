@@ -38,10 +38,10 @@ protected:
 	 * \brief Converts a map of names to values to an initial guess (ordered
 	 *    vector).
 	 *
-	 * "c" and "d" parameters are needed for this model. See
+	 * `c` and `d` parameters are needed for this model. See
 	 * FitModel::create_initial_guess for more information.
 	 *
-	 * \throw invalid_argument_exception if "c" and "d" parameters are not
+	 * \throw invalid_argument_exception if `c` and `d` parameters are not
 	 *    specified.
 	 *
 	 * \param[in] values The map of names to values.
@@ -78,7 +78,9 @@ public:
 		const std::list<std::pair<std::array<double, 1>, double>> &data);
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~SymmetricNonresonantFitModel() = default;
 

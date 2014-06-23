@@ -38,13 +38,17 @@
 class AsymmetricResonantFitModel : public FitModel<1> {
 protected:
 	/**
+	 * \internal
 	 * \brief Maximum number of quadrature points for the adaptive quadrature
 	 *    GSL routines.
+	 * \endinternal
 	 */
 	const std::size_t nquad = 2000;
 
 	/**
+	 * \internal
 	 * \brief Integration workspace for GSL numerical integration.
+	 * \endinternal
 	 */
 	std::shared_ptr<gsl_integration_workspace> w;
 
@@ -52,10 +56,10 @@ protected:
 	 * \brief Converts a map of names to values to an initial guess (ordered
 	 *    vector).
 	 *
-	 * "gammal", "gammar", and "r" parameters are needed for this model. See
+	 * `GammaL`, `GammaR`, and `r` parameters are needed for this model. See
 	 * FitModel::create_initial_guess for more information.
 	 *
-	 * \throw invalid_argument_exception if "gammal", "gammar", and "r"
+	 * \throw invalid_argument_exception if `GammaL`, `GammaR`, and `r`
 	 *    parameters are not specified.
 	 *
 	 * \param[in] values The map of names to values.
@@ -65,6 +69,7 @@ protected:
 		const std::map<std::string, double> &values) const;
 
 	/**
+	 * \internal
 	 * \brief GSL integrand function for the fit function integral.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
@@ -75,10 +80,12 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of x.
+	 * \endinternal
 	 */
 	static double int_p(double x, void *params);
 
 	/**
+	 * \internal
 	 * \brief GSL integrand function for the derivative of the fit function
 	 *    integral with respect to \f$\gamma_\mathrm{L}\f$.
 	 *
@@ -91,10 +98,12 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of x.
+	 * \endinternal
 	 */
 	static double int_dp_dgammaL(double x, void *params);
 
 	/**
+	 * \internal
 	 * \brief GSL integrand function for the derivative of the fit function
 	 *    integral with respect to \f$\gamma_\mathrm{R}\f$.
 	 *
@@ -107,10 +116,12 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of x.
+	 * \endinternal
 	 */
 	static double int_dp_dgammaR(double x, void *params);
 
 	/**
+	 * \internal
 	 * \brief GSL integrand function for the derivative of the fit function
 	 *    integral with respect to \f$r\f$.
 	 *
@@ -122,6 +133,7 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of x.
+	 * \endinternal
 	 */
 	static double int_dp_dr(double x, void *params);
 
@@ -158,7 +170,9 @@ public:
 		const std::list<std::pair<std::array<double, 1>, double>> &data);
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~AsymmetricResonantFitModel() = default;
 

@@ -2,12 +2,14 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file symmetric_nonresonant.cc
  * \brief Implementation of the fitting model for nonresonant tunneling
  *        (symmetric coupling).
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
+ * \endinternal
  */
 
 #include "symmetric_nonresonant.h"
