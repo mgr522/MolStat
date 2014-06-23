@@ -5,6 +5,8 @@
  * \file test_gsl_std_vector.cc
  * \brief Test suite for interconverting gsl and std vector types.
  *
+ * \test Tests the ::gsl_to_std function for use in the FitModel class.
+ *
  * \author Matthew G.\ Reuter
  * \date May 2014
  */
@@ -16,7 +18,9 @@
 using namespace std;
 
 /**
- * \brief Main function for testing the Histogram1D class with linear binning.
+ * \brief Main function for testing the ::gsl_to_std function.
+ *
+ * \internal
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.

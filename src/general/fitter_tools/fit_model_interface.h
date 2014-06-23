@@ -32,7 +32,7 @@
  * extensibility, this class is templated over the number of independent
  * variables of \f$f\f$ (note that this is not the number of fitting
  * parameters). In other words, \f$f:\mathbb{R}^n\to\mathbb{R}\f$. The fit
- * function has nfit fitting parameters.
+ * function has `nfit` fitting parameters.
  *
  * Derived classes do not have to deal with the GSL particulars. Rather, they
  * only need to implement functions to evaluate the fit function and/or its
@@ -46,6 +46,8 @@ class FitModel {
 private:
 	/**
 	 * \brief The data we fit against.
+	 *
+	 * \internal
 	 *
 	 * This is a list of pairs; each pair contains the independent variables
 	 * (the array) and the observed value of the fit function.
@@ -89,6 +91,8 @@ public:
 
 	/**
 	 * \brief Destructor.
+	 *
+	 * \internal
 	 */
 	virtual ~FitModel() = default;
 
@@ -97,6 +101,8 @@ public:
 	 *    parameters and for a given set of fitting parameters.
 	 *
 	 * Conforms to the GSL functional form for gsl_multifit_function_f.
+	 *
+	 * \internal
 	 *
 	 * \param[in] x Vector of fit variables.
 	 * \param[in] model The FitModel<N> model object.
@@ -111,6 +117,8 @@ public:
 	 *
 	 * Conforms to the GSL functional form for gsl_multifit_function_df.
 	 *
+	 * \internal
+	 *
 	 * \param[in] x Vector of fit variables.
 	 * \param[in] model The FitModel<N> model object.
 	 * \param[out] J Jacobian matrix.
@@ -123,6 +131,8 @@ public:
 	 *    set of fitting parameters.
 	 *
 	 * Conforms to the GSL functional form for gsl_multifit_function_fdf.
+	 *
+	 * \internal
 	 *
 	 * \param[in] x Vector of fit variables.
 	 * \param[in] model The FitModel<N> model object.
@@ -181,6 +191,8 @@ public:
 	/**
 	 * \brief Gets a GSL handle for fitting data to this model.
 	 *
+	 * \internal
+	 *
 	 * \return The GSL nonlinear fitting handle.
 	 */
 	gsl_multifit_function_fdf gsl_handle() const;
@@ -222,9 +234,11 @@ public:
 	 * \brief Perform post-processing on a set of fit parameters.
 	 *
 	 * Sometimes the fit produces unphysical parameters. For example, the
-	 * product of gammaL and gammaR may be the dominant quantity in the fit,
-	 * and the fit produces gammaL < 0 and gammaR < 0. We can fix that to make
-	 * them both positive, as required physically.
+	 * product of \f$\Gamma_\mathrm{L}\f$ and \f$\Gamma_\mathrm{R}\f$ may be
+	 * the dominant quantity in the fit (conductance from non-resonant
+	 * tunneling), and the fit produces \f$\Gamma_\mathrm{L} < 0\f$ and
+	 * \f$ \Gamma_\mathrm{R} < 0\f$. We can fix that to make them both positive,
+	 * as required physically.
 	 *
 	 * This basic implementation does nothing.
 	 *
@@ -236,6 +250,8 @@ public:
 // Other function prototypes
 /**
  * \brief Converts a gsl_vector to a std::vector<double>.
+ *
+ * \internal
  *
  * \param[in] gslv The gsl_vector.
  * \return The std::vector<double>.
