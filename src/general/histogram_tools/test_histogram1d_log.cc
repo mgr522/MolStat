@@ -2,11 +2,15 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file test_histogram1d_log.cc
  * \brief Test suite for the Histogram1D class, logarithmic binning.
  *
+ * \test Tests the Histogram1D class with logarithmic binning (BinLog).
+ *
  * \author Matthew G.\ Reuter
  * \date May 2014
+ * \endinternal
  */
 
 #include <cstdio>
@@ -19,12 +23,14 @@
 using namespace std;
 
 /**
+ * \internal
  * \brief Main function for testing the Histogram1D class with logarithmic
  *    binning.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
+ * \endinternal
  */
 int main(int argc, char **argv) {
 	shared_ptr<BinStyle> bstyle(make_shared<BinLog>(10.));

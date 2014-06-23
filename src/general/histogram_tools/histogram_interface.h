@@ -17,6 +17,7 @@
 #include "bin_style.h"
 
 /**
+ * \internal
  * \brief Interface for making histograms using GSL.
  *
  * This class provides a consistent interface to the GSL histogram functions
@@ -31,45 +32,60 @@
  * An iterator-style class is provided for iterating through the bins.
  *
  * \tparam N The dimensionality of the histogram.
+ * \endinternal
  */
 template <std::size_t N>
 class Histogram {
 protected:
 	/**
+	 * \internal
 	 * \brief Iterator class for accessing the histogram bins.
 	 *
 	 * This class needs the inverse conductance function for calculating the
 	 * middle of the bin.
+	 * \endinternal
 	 */
 	class const_iterator {
 	protected:
 		/**
+		 * \internal
 		 * \brief The bin index.
+		 * \endinternal
 		 */
 		std::array<size_t, N> bin;
 
 		/**
+		 * \internal
 		 * \brief The value of the variable(s) in the middle of this bin.
+		 * \endinternal
 		 */
 		std::array<double, N> val;
 
 		/**
+		 * \internal
 		 * \brief The bin count of this bin.
+		 * \endinternal
 		 */
 		double bincount;
 
 		/**
+		 * \internal
 		 * \brief The binning style.
+		 * \endinternal
 		 */
 		std::shared_ptr<const BinStyle> bstyle;
 
 		/**
+		 * \internal
 		 * \brief Advances the values of bin to the next bin.
+		 * \endinternal
 		 */
 		virtual void next_bin() = 0;
 
 		/**
+		 * \internal
 		 * \brief Sets the output values for this bin.
+		 * \endinternal
 		 */
 		virtual void set_output() = 0;
 
@@ -77,34 +93,44 @@ protected:
 		const_iterator() = delete;
 
 		/**
+		 * \internal
 		 * \brief Constructor specifying binning style.
 		 *
 		 * \param[in] bstyle_ The binning style.
+		 * \endinternal
 		 */
 		const_iterator(const std::shared_ptr<const BinStyle> bstyle_);
 
 		/**
+		 * \internal
 		 * \brief Default destructor.
+		 * \endinternal
 		 */
 		virtual ~const_iterator() = default;
 
 		/**
+		 * \internal
 		 * \brief Get the value of the variable in the middle of this bin.
 		 *
 		 * \return The value of the variable in the middle of this bin.
+		 * \endinternal
 		 */
 		const std::array<double, N> &get_variable() const;
 
 		/**
+		 * \internal
 		 * \brief Get the bin count of this bin.
 		 *
 		 * \return The bin count of this bin.
+		 * \endinternal
 		 */
 		double get_bin_count() const;
 	};
 
 	/**
+	 * \internal
 	 * \brief The binning style.
+	 * \endinternal
 	 */
 	std::shared_ptr<const BinStyle> bstyle;
 
@@ -112,21 +138,27 @@ public:
 	Histogram() = delete;
 
 	/**
+	 * \internal
 	 * \brief Constructor that processes the binning style.
 	 *
 	 * \param[in] bstyle_ The binning style.
+	 * \endinternal
 	 */
 	Histogram(const std::shared_ptr<const BinStyle> bstyle_);
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~Histogram() = default;
 
 	/**
+	 * \internal
 	 * \brief Adds a data element to the histogram.
 	 *
 	 * \param[in] v The variable.
+	 * \endinternal
 	 */
 	virtual void add_data(const std::array<double, N> &v) = 0;
 };

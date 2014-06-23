@@ -38,7 +38,9 @@ public:
 	BinLog(const double b_);
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~BinLog() = default;
 

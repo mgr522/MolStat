@@ -22,12 +22,16 @@
 class BinLinear : public BinStyle {
 public:
 	/**
+	 * \internal
 	 * \brief Default constructor.
+	 * \endinternal
 	 */
 	BinLinear() = default;
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~BinLinear() = default;
 

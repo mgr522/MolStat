@@ -2,11 +2,13 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file bin_log.cc
  * \brief Implements logarithmic binning.
  *
  * \author Matthew G.\ Reuter
  * \date June 2014
+ * \endinternal
  */
 
 #include "bin_log.h"

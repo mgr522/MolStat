@@ -36,12 +36,16 @@
 class BinStyle {
 public:
 	/**
+	 * \internal
 	 * \brief Default constructor.
+	 * \endinternal
 	 */
 	BinStyle() = default;
 
 	/**
+	 * \internal
 	 * \brief Destructor.
+	 * \endinternal
 	 */
 	virtual ~BinStyle() = default;
 

@@ -2,11 +2,13 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file histogram1d.cc
  * \brief Implementation of an interface for the GSL histogram functions.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
+ * \endinternal
  */
 
 #include "histogram1d.h"

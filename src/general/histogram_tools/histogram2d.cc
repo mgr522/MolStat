@@ -2,11 +2,13 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
+ * \internal
  * \file histogram2d.cc
  * \brief Implementation of a class for making 2D histograms from data.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
+ * \endinternal
  */
 
 #include "histogram2d.h"

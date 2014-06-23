@@ -25,7 +25,9 @@
 class Histogram2D : public Histogram<2> {
 protected:
 	/**
+	 * \internal
 	 * \brief The handle to the GSL histogram functions.
+	 * \endinternal
 	 */
 	std::shared_ptr<gsl_histogram2d> hist;
 
@@ -73,17 +75,23 @@ public:
 	class const_iterator : public Histogram<2>::const_iterator {
 	protected:
 		/**
+		 * \internal
 		 * \brief The GSL histogram handle.
+		 * \endinternal
 		 */
 		const std::shared_ptr<const gsl_histogram2d> hist;
 
 		/**
+		 * \internal
 		 * \brief Advances the values of bin1 and bin2 to the next bin.
+		 * \endinternal
 		 */
 		virtual void next_bin();
 
 		/**
+		 * \internal
 		 * \brief Sets the values of val1_, val2_, and bincount_ for this bin.
+		 * \endinternal
 		 */
 		virtual void set_output();
 
@@ -130,7 +138,9 @@ public:
 		bool operator!= (const const_iterator &rhs) const;
 
 		/**
+		 * \internal
 		 * \brief Histogram2D::end() const needs to set the iterator to the end.
+		 * \endinternal
 	 	 */
 		friend const_iterator Histogram2D::end() const;
 	};
