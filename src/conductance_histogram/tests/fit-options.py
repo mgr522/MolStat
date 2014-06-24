@@ -19,6 +19,8 @@
 
 import subprocess
 
+## @cond
+
 # test for the symmetric, non-resonant model
 process = subprocess.Popen('../fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 output = process.communicate( \
@@ -95,3 +97,5 @@ assert(output[0] == \
 'Resid = 5.084054e+00\n' \
 'gammaL=1.7103e+01, gammaR=1.1751e+01, r=2.3909e+01, norm=7.7141e+00\n' \
 )
+
+## @endcond
