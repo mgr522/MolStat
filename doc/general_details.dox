@@ -67,10 +67,9 @@ the input file.
 
 All random number distributions have a common syntax:
 \verbatim
-variable-name distribution [distribution-parameters]
+distribution [distribution-parameters]
 \endverbatim
 where
-   - `variable-name` is the name of the model variable.
    - `distribution` is the name of the distribution (see below).
    - `[distribution-parameters]` are the parameter(s) required by the specified
      distribution.

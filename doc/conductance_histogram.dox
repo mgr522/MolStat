@@ -74,8 +74,7 @@ Specify
   number distributions are descibed in \ref sec_rng.
 - how many bins to use in the histogram, as well as a binning style (see
   \ref sec_histograms).
-- the Fermi energy, the number of conductance points to simulate, and
-  information on binning the conductance data into a histogram.
+- the Fermi energy and the number of conductance points to simulate.
 .
 From this information, the simulator gets the requested number of conductance
 values (where each value uses random model parameters from the
@@ -103,7 +102,8 @@ The lines of this input file are interpreted as follows:
 -# The number of conductance data points to simulate.
 -# The number of bins to use and the type of binning. For Static and
    Differential conductance histograms, the specified number of bins is used
-   for both the voltage and conductance axes. A list of implemented binning
+   for both the voltage and conductance axes, and linear binning is always used
+   for the voltage. A list of implemented binning
    styles can be found in \ref subsec_impl_binstyle. Note that the output
    conductance values will be the unmasked values, \f$\{g\}\f$, such that the
 	output histogram estimates \f$P_{\hat{g}}(g)\f$. (That is, the histogram is
@@ -233,6 +233,7 @@ The lines are interpreted as follows.
    - `noprint` (recommended) -- only output the best fit parameters at the end
      of the program.
    - `print` -- output iteration-by-iteration results for all initial guesses.
+     This can produce a large amount of output.
    - `guess` -- specify initial guess(es) to use. Multiple `guess` commands
      may be present.
      - `guess default` -- load a \"default\" set of initial guesses for the
@@ -245,7 +246,7 @@ The lines are interpreted as follows.
        (remember that fit parameters depend on the model) must be given an
        initial value. All name/value pairs should appear on the same line. See
        an example of this syntax in the above example input file. The \"norm\"
-       parameter does not need to be specified, but it can be.
+       parameter (\f$N\f$) does not need to be specified, but it can be.
    - `bin` -- specify the binning status of the data to be read in. If the data
      is in `g counts` form (as is produced by the simulator), use
      `bin linear`. If no `bin` command is issued, `linear` is the default. See
@@ -293,7 +294,8 @@ the model-dependent details to the specific subclass.
 
 - `AsymmetricResonantFitModel`
    - Resonant tunneling through a single channel that is asymmetrically
-     connected to the two leads.
+     connected to the two leads. This model was derived with electron transport
+     through point contacts in mind.
    - Implemented by the class AsymmetricResonantFitModel; full details are
      presented there.
    - Fitting parameters are
@@ -335,10 +337,11 @@ a new model,
    may wish to override the FitModel::resid_j function, which evaluates the
    residual and Jacobian together. The default provided by FitModel simply
    calls the subclass's `resid` and `jacobian` functions.
--# Implement the member function FitModel::initial_guesses, which populates
-   a vector of initial guesses to use for fitting the data. The fit will be
-   performed for each initial guess, and the best fit will be output at the
-   end.
+-# Implement the member function FitModel::append_default_guesses, which
+   populates  a vector of initial guesses to use for fitting the data. The fit
+   will be performed for each initial guess, and the best fit will be output at
+   the end. Similarly, implement the FitModel::create_initial_guess function,
+   which facilitates runtime-specified initial guesses.
 -# Implement the member function FitModel::print_fit, which prints a set of
    fitting parameters to the specified output stream.
 -# If deemed necessary, override the FitModel::process_fit_parameters, which

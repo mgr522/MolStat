@@ -33,8 +33,8 @@ More information can be found throughout this manual.
 
 \section intro_general_concepts General Concepts
 There are two primary functions of this software package.
--# Simulate the probability density function of the experimental observable
-   using known distributions on the underlying physical parameters. For the
+-# Simulate the probability density functions of experimental observables using
+   known distributions on the underlying physical parameters. For the
    molecular conductance example, we put distributions around the level
    alignments and coupling strengths, sample from these distributions, and
    estimate the probability density function for the conductance observable.
@@ -66,7 +66,7 @@ example, on a Mac using GSL from MacPorts, the configure script would be
 \verbatim
 ./configure --with-gsl=/opt/local
 \endverbatim
-The `--prefix` command may be useful if you plan to ``install'' the executables.
+The `--prefix` command may be useful if you plan to \"install\" the executables.
 Finally,
 \verbatim
 make
@@ -75,6 +75,9 @@ and, optionally,
 \verbatim
 make install
 \endverbatim
+
+\note The full autotools build setup is included so that you can, at your
+option, extend MolStat to have new functionalities.
 
 \subsection checkfitter Verifying the Installation
 Several tests are also provided to verify a successful compilation, and can be
