@@ -17,8 +17,8 @@ to provide meaning to the data.
 
 For a particular single-molecule process, there are several physical variables
 that determine the observed behavior. For example, \"molecular conductance\"
-experiments rely on the level alignment, the electrode-molecule couplings, and
-the applied bias. This software assumes that each of these
+experiments depend on the level alignment, the electrode-molecule couplings,
+and the applied bias. This software assumes that each of these
 parameters is a random variable from some distribution and that each
 experimental measurement samples from their collective distributions.
 The combination of conventional physical theories and probability theory then
