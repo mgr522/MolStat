@@ -14,7 +14,6 @@
 #include "string_tools.h"
 #include <cstdlib>
 #include <stdexcept>
-#include <string>
 
 using namespace std;
 

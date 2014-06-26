@@ -49,9 +49,20 @@ observables, new models, or both. This guide describes how to use the existing
 models and, also, how to add new ones.
 
 \section sec_install Installation
-This package requires the GNU Scientific Library (GSL), which can be obtained
-at http://www.gnu.org/software/gsl/. The code has been tested with version 1.16
-of GSL.
+MolStat requires
+- a C++11 compiler. Most modern `g++` and `clang++` compilers are sufficient.
+  Note for Mac users (10.8 and older): the default `libstdc++` does not support
+  C++11. When you run the `configure` script below, specify the compiler using,
+  e.g., `CXX="g++ -stdlib=libc++"`. (The configure script automatically checks
+  for `-std=c++11`.)
+- the GNU autotools suite.
+- the GNU Scientific Library (GSL), which can be obtained at
+  http://www.gnu.org/software/gsl/. MolStat has been tested with version 1.16
+  of GSL.
+- (optional) doxygen, if you want to produce the documentation manuals
+  directly from the code. PDF versions are included in the standard
+  distributions; see the `doc/` directory.
+- (optional) python. Some tests use python.
 
 \subsection build Building the Package
 That you're reading this manual suggests you've already obtained and unpacked
@@ -66,8 +77,8 @@ example, on a Mac using GSL from MacPorts, the configure script would be
 \verbatim
 ./configure --with-gsl=/opt/local
 \endverbatim
-The `--prefix` command may be useful if you plan to \"install\" the executables.
-Finally,
+The `--prefix` command may be useful if you plan to \"install\" the executables
+(see the standard options for the GNU autotools suite). Finally,
 \verbatim
 make
 \endverbatim
@@ -81,7 +92,10 @@ option, extend MolStat to have new functionalities.
 
 \subsection checkfitter Verifying the Installation
 Several tests are also provided to verify a successful compilation, and can be
-run using `make check`.
+run using
+\verbatim
+make check
+\endverbatim
 
 \note The `fit-asymmetric-resonant.py` test can take several minutes to run.
 
