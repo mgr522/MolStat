@@ -87,7 +87,12 @@ run using `make check`.
 
 \section changelog Version Changes
 \subsection v1_0 v1.0 (June 2014)
-   - Initial release.
+   - Initial release; general package framework and layout.
+   - Conductance histogram (single-molecule conductance) tools: simulator and
+     fitter. The simulator produces zero-bias, static, or differential
+     conductance histograms for a variety of model systems. The fitter can
+     fit zero-bias conductance histogram peaks against three forms for
+     resonant or nonresonant tunneling.
 
 \section license_sec License
 MolStat is distributed under the Creative Commons Attribution-NonCommercial 4.0
@@ -117,10 +122,10 @@ and \cite williams-5937. Thanks!
 \section acknowledgments Acknowledgments
 I thank the following people for their help, insight, and comments in the
 development of MolStat and the theories behind it.
-   - Mr.\ Patrick Williams (Oak Ridge High School)
    - Prof.\ Mark Ratner (Northwestern University)
    - Prof.\ Herre van der Zandt (Delft University of Technology)
    - Prof.\ Latha Venkataraman (Columbia University)
+   - Mr.\ Patrick Williams (Oak Ridge High School)
    .
 I also gratefully acknowledge financial and computational support from
    -# The Wigner Fellowship program at the Oak Ridge National Laboratory,
