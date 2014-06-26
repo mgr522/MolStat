@@ -11,6 +11,15 @@
  #    with logarithmic binning. This test is really designed to test the use
  #    of logarithmic binning, not the actual fitting model.
  #
+ # See the documentation in fit-symmetric-nonresonant.py for how the histogram
+ # data was generated. Note: that process produces a histogram in \f$g\f$; this
+ # program tests the use of alternate binning styles. That data was then run
+ # through
+ # @verbatim
+ # awk '//{ print log($1)/log(10), $1*log(10)*$2 }'
+ # @endverbatim
+ # to produce the data file used by this test.
+ #
  # @author Matthew G.\ Reuter
  # @date May 2014
 
@@ -30,6 +39,7 @@ output = process.communicate( \
 assert(output[1] == '')
 
 # check the output string
-assert(output[0] == 'Resid = 2.752118e+01\nc=5.8240e+01, d=9.6983e+00, norm=1.1800e+01\n')
+assert(output[0] == 'Resid = 4.518405e+03\n' \
+'c=5.9138e+01, d=9.8513e+00, norm=1.0147e+04\n')
 
 ## @endcond

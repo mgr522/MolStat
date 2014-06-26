@@ -14,6 +14,10 @@
  # tunneling model; and the asymmetric, resonant-tunneling model are all
  # tested with various initial guess combinations.
  #
+ # See the documentation in fit-symmetric-nonresonant.py,
+ # fit-symmetric-resonant.py, and fit-asymmetric-nonresonant.py for
+ # information on how the input data was generated.
+ #
  # @author Matthew G.\ Reuter
  # @date June 2014
 
@@ -27,7 +31,7 @@ output = process.communicate( \
 'SymmetricNonresonant\n' \
 'symmetric-nonresonant.dat\n' \
 'print\n' \
-'guess c 60. d 10.' \
+'guess c 60. d 10. norm 1.e4' \
 )
 
 # make sure no errors were reported
@@ -35,16 +39,14 @@ assert(output[1] == '')
 
 # check the output string
 assert(output[0] == \
-'Iter=  0, c=6.0000e+01, d=1.0000e+01, norm=1.0000e+00\n' \
-'Iter=  1, c=3.9143e+01, d=6.4286e+00, norm=1.1799e+01\n' \
-'Iter=  2, c=5.9172e+01, d=9.8836e+00, norm=1.1650e+01\n' \
-'Iter=  3, c=5.8225e+01, d=9.6957e+00, norm=1.1796e+01\n' \
-'Iter=  4, c=5.8240e+01, d=9.6983e+00, norm=1.1800e+01\n' \
-'Iter=  5, c=5.8240e+01, d=9.6984e+00, norm=1.1800e+01\n' \
-'Residual = 2.752039e+01\n' \
+'Iter=  0, c=6.0000e+01, d=1.0000e+01, norm=1.0000e+04\n' \
+'Iter=  1, c=5.9112e+01, d=9.8467e+00, norm=1.0146e+04\n' \
+'Iter=  2, c=5.9138e+01, d=9.8512e+00, norm=1.0147e+04\n' \
+'Iter=  3, c=5.9138e+01, d=9.8513e+00, norm=1.0147e+04\n' \
+'Residual = 4.519332e+03\n' \
 '\n' \
-'Resid = 2.752039e+01\n' \
-'c=5.8240e+01, d=9.6984e+00, norm=1.1800e+01\n' \
+'Resid = 4.519332e+03\n' \
+'c=5.9138e+01, d=9.8513e+00, norm=1.0147e+04\n' \
 )
 
 # test for the symmetric, resonant tunneling model
@@ -53,7 +55,7 @@ output = process.communicate( \
 'SymmetricResonant\n' \
 'symmetric-resonant.dat\n' \
 'print\n' \
-'guess gamma 8. norm 3.' \
+'guess gamma 9.7 norm 570.' \
 )
 
 # make sure no errors were reported
@@ -61,15 +63,15 @@ assert(output[1] == '')
 
 # check the output string
 assert(output[0] == \
-'Iter=  0, gamma=8.0000e+00, norm=3.0000e+00\n' \
-'Iter=  1, gamma=1.0225e+01, norm=3.8700e+00\n' \
-'Iter=  2, gamma=9.9417e+00, norm=3.9589e+00\n' \
-'Iter=  3, gamma=9.9460e+00, norm=3.9567e+00\n' \
-'Iter=  4, gamma=9.9462e+00, norm=3.9567e+00\n' \
-'Residual = 4.310146e-01\n' \
+'Iter=  0, gamma=9.7000e+00, norm=5.7000e+02\n' \
+'Iter=  1, gamma=9.7117e+00, norm=5.7172e+02\n' \
+'Iter=  2, gamma=9.7136e+00, norm=5.7256e+02\n' \
+'Iter=  3, gamma=9.7139e+00, norm=5.7269e+02\n' \
+'Iter=  4, gamma=9.7140e+00, norm=5.7271e+02\n' \
+'Residual = 3.516796e+00\n' \
 '\n' \
-'Resid = 4.310146e-01\n' \
-'gamma=9.9462e+00, norm=3.9567e+00\n' \
+'Resid = 3.516796e+00\n' \
+'gamma=9.7140e+00, norm=5.7271e+02\n' \
 )
 
 # test for the asymmetric, resonant tunneling model
@@ -78,7 +80,7 @@ output = process.communicate( \
 'AsymmetricResonant\n' \
 'asymmetric-resonant.dat\n' \
 'print\n' \
-'guess gammal 17. gammar 12. r 25. norm 8.' \
+'guess gammal 17. gammar 12. r 0.8 norm 44.' \
 )
 
 # make sure no errors were reported
@@ -86,16 +88,16 @@ assert(output[1] == '')
 
 # check the output string
 assert(output[0] == \
-'Iter=  0, gammaL=1.7000e+01, gammaR=1.2000e+01, r=2.5000e+01, norm=8.0000e+00\n' \
-'Iter=  1, gammaL=1.6531e+01, gammaR=1.1350e+01, r=2.5219e+01, norm=8.1379e+00\n' \
-'Iter=  2, gammaL=1.7103e+01, gammaR=1.1748e+01, r=2.3902e+01, norm=7.7229e+00\n' \
-'Iter=  3, gammaL=1.7102e+01, gammaR=1.1749e+01, r=2.3910e+01, norm=7.7203e+00\n' \
-'Iter=  4, gammaL=1.7103e+01, gammaR=1.1751e+01, r=2.3909e+01, norm=7.7142e+00\n' \
-'Iter=  5, gammaL=1.7103e+01, gammaR=1.1751e+01, r=2.3909e+01, norm=7.7141e+00\n' \
-'Residual = 5.084054e+00\n' \
+'Iter=  0, gammaL=1.7000e+01, gammaR=1.2000e+01, r=8.0000e-01, norm=4.4000e+01\n' \
+'Iter=  1, gammaL=1.7803e+01, gammaR=1.2826e+01, r=6.6801e-01, norm=4.0152e+01\n' \
+'Iter=  2, gammaL=1.7716e+01, gammaR=1.2705e+01, r=7.2670e-01, norm=4.3077e+01\n' \
+'Iter=  3, gammaL=1.7688e+01, gammaR=1.2675e+01, r=7.4131e-01, norm=4.3908e+01\n' \
+'Iter=  4, gammaL=1.7688e+01, gammaR=1.2675e+01, r=7.4177e-01, norm=4.3937e+01\n' \
+'Iter=  5, gammaL=1.7688e+01, gammaR=1.2675e+01, r=7.4176e-01, norm=4.3936e+01\n' \
+'Residual = 2.759250e+02\n' \
 '\n' \
-'Resid = 5.084054e+00\n' \
-'gammaL=1.7103e+01, gammaR=1.1751e+01, r=2.3909e+01, norm=7.7141e+00\n' \
+'Resid = 2.759250e+02\n' \
+'gammaL=1.7688e+01, gammaR=1.2675e+01, r=7.4176e-01, norm=4.3936e+01\n' \
 )
 
 ## @endcond

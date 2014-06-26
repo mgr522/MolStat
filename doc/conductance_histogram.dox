@@ -94,6 +94,9 @@ V uniform -2. 2.
 gamma normal 0.8 0.05
 epsilon normal -6. 0.05
 \endverbatim
+Additional example inputs can be found in the tests; see
+fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
+fit-symmetric-resonant.py.
 
 The lines of this input file are interpreted as follows:
 -# The model to use for calculating the transmission function and conductance.
@@ -218,10 +221,13 @@ Following is an example input file.
 SymmetricNonresonant
 1,4-dithiolbenzene.dat
 noprint
-guess c 50. d 6.
+guess c 50. d 6. norm 10.
 guess default
 bin linear
 \endverbatim
+Additional example inputs can be found in the tests; see
+fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
+fit-symmetric-resonant.py.
 
 The lines are interpreted as follows.
 -# The model to use when fitting the conductance histogram.
