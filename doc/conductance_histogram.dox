@@ -164,7 +164,7 @@ parameters (from the distributions) and calculate the appropriate conductance.
      presented there.
    - Model parameters are
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling.
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
       - `a` (\f$a\f$), the strength of the voltage dependence.
 
 - `SymmetricTwoSiteModel`
@@ -194,6 +194,19 @@ parameters (from the distributions) and calculate the appropriate conductance.
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
       - `gamma` (\f$\Gamma\f$), the site/lead coupling,
       - `beta` (\f$\beta\f$), the inter-site coupling.
+
+- `IndependentVoltageTwoSiteModel`
+   - Sum of two independent channels, where each channel is described by
+     the SymmetricVoltageOneSiteModel.
+   - Implemented by the class IndependentVoltageTwoSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon1` (\f$\varepsilon_1\f$), the site-energy for channel 1,
+      - `gamma1` (\f$\Gamma_1\f$), the site/lead coupling for channel 1,
+      - `a1` (\f$a_1\f$), the strength of the voltage dependence for channel 1,
+      - `epsilon2` (\f$\varepsilon_2\f$), the site-energy for channel 2,
+      - `gamma2` (\f$\Gamma_2\f$), the site/lead coupling for channel 2,
+      - `a2` (\f$a_2\f$), the strength of the voltage dependence for channel 2.
 
 \subsubsection subsubsec_add_conductance_model Adding Conductance Models
 Adding a conductance model is designed to be straightforward, requiring the

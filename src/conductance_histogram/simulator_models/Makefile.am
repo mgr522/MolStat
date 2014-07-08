@@ -13,4 +13,6 @@ libsimulator_models_a_SOURCES = conductance_model.h \
 	symmetric_voltage_two_site.h \
 	symmetric_voltage_two_site.cc \
 	asymmetric_one_site.h \
-	asymmetric_one_site.cc
+	asymmetric_one_site.cc \
+	independent_voltage_two_site.h \
+	independent_voltage_two_site.cc
