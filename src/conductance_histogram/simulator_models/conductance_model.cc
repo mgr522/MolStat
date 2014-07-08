@@ -17,6 +17,7 @@
 #include "symmetric_two_site.h"
 #include "asymmetric_two_site.h"
 #include "symmetric_voltage_two_site.h"
+#include "independent_voltage_two_site.h"
 
 using namespace std;
 
@@ -120,6 +121,9 @@ shared_ptr<ConductanceModel> make_model(const std::string str,
 		dist_eps2 = find_distribution("epsilon2", parameters);
 		dist_gamma2 = find_distribution("gamma2", parameters);
 		dist_a2 = find_distribution("a2", parameters);
+
+		return make_shared<IndependentVoltageTwoSiteModel>(dist_eps1,
+			dist_gamma1, dist_a1, dist_eps2, dist_gamma2, dist_a2);
 	}
 	else
 		throw invalid_argument("Unrecognized model. Options are:\n" \
