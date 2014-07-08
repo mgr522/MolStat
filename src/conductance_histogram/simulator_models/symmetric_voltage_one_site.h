@@ -7,7 +7,7 @@
  *        model for calculating conductances.
  *
  * \author Matthew G.\ Reuter
- * \date April 2014
+ * \date July 2014
  */
 
 #ifndef __symmetric_voltage_one_site_h__
@@ -26,17 +26,18 @@ using std::shared_ptr;
  * Model parameters are
  * - `epsilon` (\f$\varepsilon\f$), the site-energy,
  * - `gamma` (\f$\Gamma\f$), the site/lead coupling.
+ * - `a` (\f$a\f$), the strength of the voltage dependence.
  *
- * Starting from \f$ \hat{H} = \left[ \varepsilon + eV \right] \f$ and
+ * Starting from \f$ \hat{H} = \left[ \varepsilon + aeV \right] \f$ and
  * \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma/2 \right] \f$, the
  * transmission function is
- * \f[ T(E) = \frac{\Gamma^2}{(E-\varepsilon-eV)^2 + \Gamma^2}. \f]
+ * \f[ T(E) = \frac{\Gamma^2}{(E-\varepsilon-aeV)^2 + \Gamma^2}. \f]
  * - Differential conductance (with intermediate quantities):
- *   \f[ \frac{\partial}{\partial V}T(E) = \frac{2e\Gamma^2(E - \varepsilon-eV)}{[(E-\varepsilon-eV)^2+\Gamma^2]^2}; \f]
- *   \f[ \frac{2e}{h} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V} T(E) = \frac{2e^2}{h} T(E_\mathrm{F}+(\eta-1)eV) - \frac{2e^2}{h}T(E_\mathrm{F}+\eta eV); \f]
- *   \f[ g(V) = \frac{2e^2}{h} \left[ (\eta-1) T(E_\mathrm{F} + \eta eV) + (2-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
+ *   \f[ \frac{\partial}{\partial V}T(E) = \frac{2ea\Gamma^2(E - \varepsilon-aeV)}{[(E-\varepsilon-aeV)^2+\Gamma^2]^2}; \f]
+ *   \f[ \frac{2e}{h} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V} T(E) = \frac{2e^2a}{h} T(E_\mathrm{F}+(\eta-1)eV) - \frac{2e^2a}{h}T(E_\mathrm{F}+\eta eV); \f]
+ *   \f[ g(V) = \frac{2e^2}{h} \left[ (\eta-a) T(E_\mathrm{F} + \eta eV) + (a+1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
  * - Static conductance:
- *   \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-2) eV}{\Gamma} \right) \right]. \f]
+ *   \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-a) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1-a) eV}{\Gamma} \right) \right]. \f]
  */
 class SymmetricVoltageOneSiteModel : public ConductanceModel {
 protected:
@@ -54,6 +55,14 @@ protected:
 	 */
 	shared_ptr<const RandomDistribution> dist_gamma;
 
+	/**
+	 * \internal
+	 * \brief Random distribution for \f$a\f$, the strength of the voltage
+	 *    dependence.
+	 * \endinternal
+	 */
+	shared_ptr<const RandomDistribution> dist_a;
+
 public:
 	SymmetricVoltageOneSiteModel() = delete;
 
@@ -62,10 +71,12 @@ public:
 	 *
 	 * \param[in] eps The distribution for \f$\varepsilon\f$.
 	 * \param[in] gamma The distribution for \f$\Gamma\f$.
+	 * \param[in] a The distribution for \f$a\f$.
 	 */
 	SymmetricVoltageOneSiteModel(
 		const shared_ptr<const RandomDistribution> &eps,
-		const shared_ptr<const RandomDistribution> &gamma);
+		const shared_ptr<const RandomDistribution> &gamma,
+		const shared_ptr<const RandomDistribution> &a);
 
 	/**
 	 * \internal
@@ -117,10 +128,11 @@ public:
 	 * \param[in] V The voltage.
 	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
 	 * \param[in] gamma The channel-lead coupling, \f$\Gamma\f$.
+	 * \param[in] a The strength of the voltage-dependence, \f$a\f$.
 	 * \return The transmission.
 	 */
 	static double transmission(const double E, const double V, const double eps,
-		const double gamma);
+		const double gamma, const double a);
 
 	/**
 	 * \brief Calculates the static conductance for fixed values of the model
@@ -131,10 +143,11 @@ public:
 	 * \param[in] eta The relative voltage drops at the leads.
 	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
 	 * \param[in] gamma The channel-lead coupling, \f$\Gamma\f$.
+	 * \param[in] a The strength of the voltage-dependence, \f$a\f$.
 	 * \return The static conductance.
 	 */
 	static double static_conductance(const double EF, const double V,
-		const double eta, const double eps, const double gamma);
+		const double eta, const double eps, const double gamma, const double a);
 
 	/**
 	 * \brief Calculates the differential conductance for fixed values of the
@@ -145,10 +158,11 @@ public:
 	 * \param[in] eta The relative voltage drops at the leads.
 	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
 	 * \param[in] gamma The channel-lead coupling, \f$\Gamma\f$.
+	 * \param[in] a The strength of the voltage-dependence, \f$a\f$.
 	 * \return The differential conductance.
 	 */
 	static double diff_conductance(const double EF, const double V,
-		const double eta, const double eps, const double gamma);
+		const double eta, const double eps, const double gamma, const double a);
 };
 
 #endif

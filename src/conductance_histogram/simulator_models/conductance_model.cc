@@ -69,12 +69,14 @@ shared_ptr<ConductanceModel> make_model(const std::string str,
 			dist_gammaR);
 	}
 	else if(str == "symmetricvoltageonesitemodel") {
-		shared_ptr<RandomDistribution> dist_gamma, dist_eps;
+		shared_ptr<RandomDistribution> dist_gamma, dist_eps, dist_a;
 
 		dist_gamma = find_distribution("gamma", parameters);
 		dist_eps = find_distribution("epsilon", parameters);
+		dist_a = find_distribution("a", parameters);
 
-		return make_shared<SymmetricVoltageOneSiteModel>(dist_eps, dist_gamma);
+		return make_shared<SymmetricVoltageOneSiteModel>(dist_eps, dist_gamma,
+			dist_a);
 	}
 	else if(str == "symmetrictwositemodel") {
 		shared_ptr<RandomDistribution> dist_gamma, dist_eps, dist_beta;

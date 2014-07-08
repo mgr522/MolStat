@@ -8,7 +8,7 @@
  *    tight-binding model for calculating conductances.
  *
  * \author Matthew G.\ Reuter
- * \date April 2014
+ * \date July 2014
  * \endinternal
  */
 
@@ -23,8 +23,9 @@ using namespace std;
 
 SymmetricVoltageOneSiteModel::SymmetricVoltageOneSiteModel(
 	const shared_ptr<const RandomDistribution> &eps,
-	const shared_ptr<const RandomDistribution> &gamma)
-	: dist_eps(eps), dist_gamma(gamma) {}
+	const shared_ptr<const RandomDistribution> &gamma,
+	const shared_ptr<const RandomDistribution> &a)
+	: dist_eps(eps), dist_gamma(gamma), dist_a(a) {}
 
 double SymmetricVoltageOneSiteModel::static_conductance(
 	shared_ptr<gsl_rng> r, const double EF, const double eta,
@@ -33,9 +34,10 @@ double SymmetricVoltageOneSiteModel::static_conductance(
 	// get model parameters from the random distributions
 	double eps = dist_eps->sample(r);
 	double gamma = dist_gamma->sample(r);
+	double a = dist_a->sample(r);
 
 	return SymmetricVoltageOneSiteModel::static_conductance(EF, V, eta, eps,
-		gamma);
+		gamma, a);
 }
 
 double SymmetricVoltageOneSiteModel::diff_conductance(
@@ -45,9 +47,10 @@ double SymmetricVoltageOneSiteModel::diff_conductance(
 	// get model parameters from the random distributions
 	double eps = dist_eps->sample(r);
 	double gamma = dist_gamma->sample(r);
+	double a = dist_a->sample(r);
 
 	return SymmetricVoltageOneSiteModel::diff_conductance(EF, V, eta, eps,
-		gamma);
+		gamma, a);
 }
 
 double SymmetricVoltageOneSiteModel::zero_bias_conductance(
@@ -56,27 +59,30 @@ double SymmetricVoltageOneSiteModel::zero_bias_conductance(
 	// get model parameters from the random distributions
 	double eps = dist_eps->sample(r);
 	double gamma = dist_gamma->sample(r);
+	double a = dist_a->sample(r);
 
-	return SymmetricVoltageOneSiteModel::transmission(EF, 0., eps, gamma);
+	return SymmetricVoltageOneSiteModel::transmission(EF, 0., eps, gamma, a);
 }
 
 double SymmetricVoltageOneSiteModel::transmission(const double E,
-	const double V, const double eps, const double gamma) {
+	const double V, const double eps, const double gamma, const double a) {
 
-	return SymmetricOneSiteModel::transmission(E, eps+V, gamma);
+	return SymmetricOneSiteModel::transmission(E, eps+a*V, gamma);
 }
 
 double SymmetricVoltageOneSiteModel::static_conductance(const double EF,
-	const double V, const double eta, const double eps, const double gamma) {
+	const double V, const double eta, const double eps, const double gamma,
+	const double a) {
 
 	return SymmetricOneSiteModel::static_conductance(EF, V, eta,
-		eps+V, gamma);
+		eps+a*V, gamma);
 }
 
 double SymmetricVoltageOneSiteModel::diff_conductance(const double EF,
-	const double V, const double eta, const double eps, const double gamma) {
+	const double V, const double eta, const double eps, const double gamma,
+	const double a) {
 
-	return (eta-1.) * SymmetricVoltageOneSiteModel::transmission(EF + eta*V, V,
-		eps, gamma) + (2.-eta) * SymmetricVoltageOneSiteModel::transmission(
-		EF + (eta-1.)*V, V, eps, gamma);
+	return (eta-a) * SymmetricVoltageOneSiteModel::transmission(EF + eta*V, V,
+		eps, gamma, a) + (a+1.-eta) * SymmetricVoltageOneSiteModel::transmission(
+		EF + (eta-1.)*V, V, eps, gamma, a);
 }

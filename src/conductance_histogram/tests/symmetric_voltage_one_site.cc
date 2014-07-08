@@ -36,25 +36,32 @@ int main(int argc, char **argv) {
 
 	// check known values for several parameter sets
 	assert(abs(0.06639
-		- model::transmission(0., 1., -4., 0.8)) < thresh);
+		- model::transmission(0., 1., -4., 0.8, 1.)) < thresh);
 	assert(abs(0.0679934
-		- model::static_conductance(0., 1., 0.5, -4., 0.8)) < thresh);
+		- model::static_conductance(0., 1., 0.5, -4., 0.8, 1.)) < thresh);
 	assert(abs(0.114507
-		- model::diff_conductance(0., 1., 0.5, -4., 0.8)) < thresh);
+		- model::diff_conductance(0., 1., 0.5, -4., 0.8, 1.)) < thresh);
 
 	assert(abs(0.00147710
-		- model::transmission(1., -0.4, -9., 0.4)) < thresh);
+		- model::transmission(1., -0.4, -9., 0.4, 1.)) < thresh);
 	assert(abs(0.00151231
-		- model::static_conductance(1., -0.4, 0.8, -9., 0.4)) < thresh);
+		- model::static_conductance(1., -0.4, 0.8, -9., 0.4, 1.)) < thresh);
 	assert(abs(0.00143116
-		- model::diff_conductance(1., -0.4, 0.8, -9., 0.4)) < thresh);
+		- model::diff_conductance(1., -0.4, 0.8, -9., 0.4, 1.)) < thresh);
 
 	assert(abs(0.00129587
-		- model::transmission(3., 1.4, -17., 0.67)) < thresh);
+		- model::transmission(3., 1.4, -17., 0.67, 1.)) < thresh);
 	assert(abs(0.00137100
-		- model::static_conductance(3., 1.4, 0.14, -17., 0.67)) < thresh);
+		- model::static_conductance(3., 1.4, 0.14, -17., 0.67, 1.)) < thresh);
 	assert(abs(0.00166364
-		- model::diff_conductance(3., 1.4, 0.14, -17., 0.67)) < thresh);
+		- model::diff_conductance(3., 1.4, 0.14, -17., 0.67, 1.)) < thresh);
+
+	assert(abs(0.00111319
+		- model::transmission(3., 1.4, -17., 0.67, -0.05)) < thresh);
+	assert(abs(0.00117271
+		- model::static_conductance(3., 1.4, 0.14, -17., 0.67, -0.05)) < thresh);
+	assert(abs(0.00122774
+		- model::diff_conductance(3., 1.4, 0.14, -17., 0.67, -0.05)) < thresh);
 
 	return 0;
 }

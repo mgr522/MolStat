@@ -165,6 +165,7 @@ parameters (from the distributions) and calculate the appropriate conductance.
    - Model parameters are
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
       - `gamma` (\f$\Gamma\f$), the site/lead coupling.
+      - `a` (\f$a\f$), the strength of the voltage dependence.
 
 - `SymmetricTwoSiteModel`
    - Two-site model with symmetric site/lead couplings.
