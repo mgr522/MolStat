@@ -55,8 +55,10 @@ protected:
 	shared_ptr<const RandomDistribution> dist_gammaL;
 
 	/**
+	 * \internal
 	 * \brief Random distribution for \f$\Gamma_\mathrm{R}\f$, one channel-lead
 	 *    coupling.
+	 * \endinternal
 	 */
 	shared_ptr<const RandomDistribution> dist_gammaR;
 
