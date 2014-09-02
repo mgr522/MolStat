@@ -128,7 +128,7 @@ public:
 	 * \param[in] V The voltage.
 	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
 	 * \param[in] gamma The channel-lead coupling, \f$\Gamma\f$.
-	 * \param[in] a The strength of the voltage-dependence, \f$a\f$.
+	 * \param[in] a The strength of the voltage dependence, \f$a\f$.
 	 * \return The transmission.
 	 */
 	static double transmission(const double E, const double V, const double eps,
