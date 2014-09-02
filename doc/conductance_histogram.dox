@@ -167,6 +167,16 @@ parameters (from the distributions) and calculate the appropriate conductance.
       - `gamma` (\f$\Gamma\f$), the site/lead coupling,
       - `a` (\f$a\f$), the strength of the voltage dependence.
 
+- `AsymmetricVoltageOneSiteModel`
+   - Single-site model with asymmetric site/lead couplings and a voltage-dependent site-energy. It is very closely related to the AsymmetricOneSiteModel above.
+   - Implemented by the class AsymmetricVoltageOneSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
+      - `a` (\f$a\f$), the strength of the voltage dependence.
+
 - `SymmetricTwoSiteModel`
    - Two-site model with symmetric site/lead couplings.
    - Implemented by the class SymmetricTwoSiteModel; full details are
