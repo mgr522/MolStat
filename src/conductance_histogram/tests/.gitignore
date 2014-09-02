@@ -15,6 +15,9 @@ test_asymmetric_one_site.trs
 test_asymmetric_two_site
 test_asymmetric_two_site.log
 test_asymmetric_two_site.trs
+test_asymmetric_voltage_one_site
+test_asymmetric_voltage_one_site.log
+test_asymmetric_voltage_one_site.trs
 test_symmetric_one_site
 test_symmetric_one_site.log
 test_symmetric_one_site.trs
