@@ -14,6 +14,7 @@
 #include "symmetric_one_site.h"
 #include "asymmetric_one_site.h"
 #include "symmetric_voltage_one_site.h"
+#include "asymmetric_voltage_one_site.h"
 #include "symmetric_two_site.h"
 #include "asymmetric_two_site.h"
 #include "symmetric_voltage_two_site.h"
@@ -79,6 +80,17 @@ shared_ptr<ConductanceModel> make_model(const std::string str,
 		return make_shared<SymmetricVoltageOneSiteModel>(dist_eps, dist_gamma,
 			dist_a);
 	}
+	else if(str == "asymmetricvoltageonesitemodel") {
+		shared_ptr<RandomDistribution> dist_gammal, dist_gammar, dist_eps, dist_a;
+
+		dist_gammal = find_distribution("gammal", parameters);
+		dist_gammar = find_distribution("gammar", parameters);
+		dist_eps = find_distribution("epsilon", parameters);
+		dist_a = find_distribution("a", parameters);
+
+		return make_shared<AsymmetricVoltageOneSiteModel>(dist_eps, dist_gammal,
+			dist_gammar, dist_a);
+	}
 	else if(str == "symmetrictwositemodel") {
 		shared_ptr<RandomDistribution> dist_gamma, dist_eps, dist_beta;
 
@@ -135,6 +147,9 @@ shared_ptr<ConductanceModel> make_model(const std::string str,
 
 			"   SymmetricVoltageOneSiteModel - " \
 				"Symmetric-Coupling, Voltage-Dependent One-Site Model\n" \
+
+			"   AsymmetricVoltageOneSiteModel - " \
+				"Asymmetric-Coupling, Voltage-Dependent One-Site Model\n" \
 
 			"   SymmetricTwoSiteModel - " \
 				"Symmetric-Coupling, Two-Site Model\n" \
