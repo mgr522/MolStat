@@ -143,7 +143,7 @@ public:
 	 * \param[in] eta The relative voltage drops at the leads.
 	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
 	 * \param[in] gamma The channel-lead coupling, \f$\Gamma\f$.
-	 * \param[in] a The strength of the voltage-dependence, \f$a\f$.
+	 * \param[in] a The strength of the voltage dependence, \f$a\f$.
 	 * \return The static conductance.
 	 */
 	static double static_conductance(const double EF, const double V,
@@ -158,7 +158,7 @@ public:
 	 * \param[in] eta The relative voltage drops at the leads.
 	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
 	 * \param[in] gamma The channel-lead coupling, \f$\Gamma\f$.
-	 * \param[in] a The strength of the voltage-dependence, \f$a\f$.
+	 * \param[in] a The strength of the voltage dependence, \f$a\f$.
 	 * \return The differential conductance.
 	 */
 	static double diff_conductance(const double EF, const double V,
