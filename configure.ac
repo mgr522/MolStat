@@ -52,6 +52,7 @@ AC_CONFIG_FILES([
 				src/general/fitter_tools/Makefile
 				src/general/histogram_tools/Makefile
 				src/general/random_distributions/Makefile
+				src/general/simulator_tools/Makefile
 			src/conductance_histogram/Makefile
 				src/conductance_histogram/fitter_models/Makefile
 				src/conductance_histogram/simulator_models/Makefile

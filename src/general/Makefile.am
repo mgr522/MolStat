@@ -4,7 +4,8 @@ noinst_LIBRARIES = libmolstat_general.a
 
 SUBDIRS = random_distributions \
 	fitter_tools \
-	histogram_tools
+	histogram_tools \
+	simulator_tools
 
 libmolstat_general_a_SOURCES = string_tools.h \
 	string_tools.cc \
@@ -32,4 +33,6 @@ libmolstat_general_a_SOURCES = string_tools.h \
 	histogram_tools/histogram1d.h \
 	histogram_tools/histogram1d.cc \
 	histogram_tools/histogram2d.h \
-	histogram_tools/histogram2d.cc
+	histogram_tools/histogram2d.cc \
+	simulator_tools/simulate_model_interface.h \
+	simulator_tools/simulate_model_interface.cc

@@ -22,32 +22,6 @@
 
 using namespace std;
 
-/**
- * \brief Gets a distribution with the desired name from the map, throwing an
- *    exception if none is found.
- *
- * \throw invalid_argument if there is not a distribution with the name `name`.
- *
- * \param[in] name The name of the distribution.
- * \param[in] parameters The map of distributions.
- * \return The distribution.
- */
-static shared_ptr<RandomDistribution> find_distribution(const string name,
-	const map<string, shared_ptr<RandomDistribution>> &parameters) {
-
-	shared_ptr<RandomDistribution> ret;
-
-	try {
-		ret = parameters.at(name.c_str());
-	}
-	catch(const out_of_range &e) {
-		throw invalid_argument(("A distribution for \"" + name + "\" must be " \
-			"specified.").c_str());
-	}
-
-	return ret;
-}
-
 shared_ptr<ConductanceModel> make_model(const std::string str,
 	const std::map<std::string, shared_ptr<RandomDistribution>> &parameters) {
 
