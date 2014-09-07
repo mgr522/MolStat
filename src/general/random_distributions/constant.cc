@@ -20,3 +20,7 @@ ConstantDistribution::ConstantDistribution(const double val)
 double ConstantDistribution::sample(shared_ptr<gsl_rng> r) const {
 	return value;
 }
+
+std::string ConstantDistribution::info() const {
+	return "Constant distribution at " + std::to_string(value) + ".";
+}

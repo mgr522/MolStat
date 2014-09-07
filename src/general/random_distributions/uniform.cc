@@ -20,3 +20,8 @@ UniformDistribution::UniformDistribution(const double low, const double up)
 double UniformDistribution::sample(shared_ptr<gsl_rng> r) const {
 	return lower + (upper - lower) * gsl_rng_uniform(r.get());
 }
+
+std::string UniformDistribution::info() const {
+	return "Uniform distribution between " + std::to_string(lower) + " and " +
+		std::to_string(upper) + ".";
+}
