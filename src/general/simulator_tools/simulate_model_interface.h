@@ -45,6 +45,9 @@ public:
 	 * \brief Constructor requiring a list of available distributions and an
 	 *    ordered list of needed distributions.
 	 *
+	 * \throw runtime_error If there a required distribution is not found among
+	 *    the available distributions.
+	 *
 	 * \param[in] avail The available distributions, keyed by name,
 	 * \param[in] names The names of required distributions, in a particular
 	 *    order.
