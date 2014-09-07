@@ -10,8 +10,8 @@
  * \date June 2014
  */
 
-#ifndef __fit_model_h__
-#define __fit_model_h__
+#ifndef __fit_model_interface_h__
+#define __fit_model_interface_h__
 
 #include <memory>
 #include <vector>
