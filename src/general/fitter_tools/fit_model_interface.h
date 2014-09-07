@@ -48,7 +48,6 @@ private:
 	 * \internal
 	 * \brief The data we fit against.
 	 *
-	 *
 	 * This is a list of pairs; each pair contains the independent variables
 	 * (the array) and the observed value of the fit function.
 	 * \endinternal
