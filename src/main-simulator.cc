@@ -84,17 +84,15 @@ int main(int argc, char **argv) {
 
 	// two sets of variables for observables, depending on the dimensionality
 	// function for generating our observable
-	function<double(shared_ptr<gsl_rng>)> obs1;
-	function<array<double, 2>(shared_ptr<gsl_rng>)> obs2;
+	Observable<1> obs1;
+	Observable<2> obs2;
 	// the list of available observables:
 	// stored as a map of string (observable name) to a function that takes
 	// a SimulateModel and produces the observable function.
-	// This extra function layer is needed to typecheck the model, making sure
-	// the model/observable pair is valid.
-	map<string, function< function<double(shared_ptr<gsl_rng>)>
-		(shared_ptr<SimulateModel>)>> obs1s;
-	map<string, function< function<array<double, 2>(shared_ptr<gsl_rng>)>
-		(shared_ptr<SimulateModel>)>> obs2s;
+	// This extra function layer is needed to dynamically typecheck the model,
+	// making sure the model/observable pair is valid.
+	map<string, function< Observable<1>(shared_ptr<SimulateModel>)> > obs1s;
+	map<string, function< Observable<2>(shared_ptr<SimulateModel>)> > obs2s;
 
 	// I/O variables
 	string line, modelname, name;

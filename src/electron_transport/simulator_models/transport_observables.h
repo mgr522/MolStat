@@ -37,7 +37,7 @@ public:
 	 * \param[in] r The GSL random number generator handle.
 	 * \return The zero-bias conductance.
 	 */
-	virtual double ZeroBiasG(shared_ptr<gsl_rng> r) const = 0;
+	virtual std::array<double, 1> ZeroBiasG(shared_ptr<gsl_rng> r) const = 0;
 };
 
 /**

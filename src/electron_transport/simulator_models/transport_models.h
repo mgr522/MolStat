@@ -39,14 +39,22 @@ void load_transport_models(
  * \brief Loads the transport observables into the MolStat "database".
  *
  * Observables are stored as a map from a string (the name of the observable)
- * to a function that generates random parameters and evaluates the
- * observable. The function has signature
- * `double(shared_ptr<gsl_rng>)`
- * or
- * `array<double, 2>(shared_ptr<gsl_rng>)`,
- * depending on the dimension of the data.
+ * to a function that checks the model/observable pair and returns an
+ * Observable<N>, where N is the dimensionality of the observable.
+ * The observable function takes the GSL random number generator, simulates
+ * parameters, and calculates the observable using the specified model.
  *
- * \param[in,out] obs The map of observables in MolStat
+ * The extra function from shared_ptr<SimulateModel> -> Observable is needed
+ * to typecheck the model/observable combination.
+ *
+ * \param[in,out] obs1s The map of 1D observables in MolStat. On output, the
+ *    1D observables for transport have been added to it.
+ * \param[in,out] obs2s The map of 2D observables in MolStat. On output, the
+ *    2D observables for transport have been added to it.
  */
+void load_transport_observables(std::map<std::string,
+	std::function<Observable<1>(const shared_ptr<SimulateModel>)>> &obs1s,
+	std::map<std::string,
+	std::function<Observable<2>(const shared_ptr<SimulateModel>)>> &obs2s);
 
 #endif

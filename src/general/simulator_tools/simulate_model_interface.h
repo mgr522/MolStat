@@ -17,6 +17,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <stdexcept>
 #include <general/random_distributions/rng.h>
 
 using std::shared_ptr;
@@ -100,6 +101,31 @@ inline SimulateModelInstantiator SimulateModelInstance() {
 		-> shared_ptr<SimulateModel> {
 
 		return std::make_shared<T>(avail);
+	};
+}
+
+/**
+ * \brief Shortcut for the function signature of a observable.
+ *
+ * Observables take in a GSL random number generator handle and produce the
+ * value of the observable, as determined by the model.
+ *
+ * \tparam N The number of variables in the observable.
+ */
+template<size_t N>
+using Observable = std::function<std::array<double, N>(shared_ptr<gsl_rng>)>;
+
+template<size_t N, typename T>
+std::function<Observable<N>(const shared_ptr<SimulateModel>)> ObservableCheck(
+	std::array<double, N> (T::*memfunc)(shared_ptr<gsl_rng>) const) {
+
+	return [&] (const shared_ptr<SimulateModel> model) {
+		shared_ptr<T> cast = std::dynamic_pointer_cast<T>(model);
+
+		if(cast == nullptr)
+			throw std::runtime_error("Incompatible model and observable.");
+
+		return std::bind(memfunc, cast, std::placeholders::_1);
 	};
 }
 
