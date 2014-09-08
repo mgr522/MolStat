@@ -75,10 +75,26 @@ int main(int argc, char **argv) {
 	// list of parameters with specified distributions
 	map<string, shared_ptr<RandomDistribution>> parameters;
 
-	// the model and the list of models
+	// the model
 	shared_ptr<SimulateModel> model;
-	map<string, function<shared_ptr<SimulateModel>
-		(const map<string, shared_ptr<RandomDistribution>> &)>> models;
+	// the list of models:
+	// stored as a map of string (model name) to a function that instantiates
+	// such a model, given a map of random number distributions.
+	map<string, SimulateModelInstantiator> models;
+
+	// two sets of variables for observables, depending on the dimensionality
+	// function for generating our observable
+	function<double(shared_ptr<gsl_rng>)> obs1;
+	function<array<double, 2>(shared_ptr<gsl_rng>)> obs2;
+	// the list of available observables:
+	// stored as a map of string (observable name) to a function that takes
+	// a SimulateModel and produces the observable function.
+	// This extra function layer is needed to typecheck the model, making sure
+	// the model/observable pair is valid.
+	map<string, function< function<double(shared_ptr<gsl_rng>)>
+		(shared_ptr<SimulateModel>)>> obs1s;
+	map<string, function< function<array<double, 2>(shared_ptr<gsl_rng>)>
+		(shared_ptr<SimulateModel>)>> obs2s;
 
 	// I/O variables
 	string line, modelname, name;

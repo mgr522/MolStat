@@ -23,20 +23,30 @@
 using std::shared_ptr;
 
 /**
- * \brief Loads the transport models into the MolStat ``database''.
+ * \brief Loads the transport models into the MolStat "database".
  *
  * Models are stored as a map from a string (the name of the model) to a
- * function that creates an instance of the model. The function has signature
- * function< shared_ptr<SimulatorModel>
- *   ( map<string, shared_ptr<RandomDistribution>> ) >.
- * The argument is a map of available distributions, as required by the
- * constructors.
+ * function that creates an instance of the model (of type
+ * SimulateModelInstantiator).
  *
  * \param[in,out] models The map of models in MolStat. On output, the models
  *    for transport have been added to it.
  */
-void load_transport_models(std::map<std::string,
-	std::function<shared_ptr<SimulateModel>(
-		const std::map<std::string, shared_ptr<RandomDistribution>>&)>> &models);
+void load_transport_models(
+	std::map<std::string, SimulateModelInstantiator> &models);
+
+/**
+ * \brief Loads the transport observables into the MolStat "database".
+ *
+ * Observables are stored as a map from a string (the name of the observable)
+ * to a function that generates random parameters and evaluates the
+ * observable. The function has signature
+ * `double(shared_ptr<gsl_rng>)`
+ * or
+ * `array<double, 2>(shared_ptr<gsl_rng>)`,
+ * depending on the dimension of the data.
+ *
+ * \param[in,out] obs The map of observables in MolStat
+ */
 
 #endif

@@ -13,28 +13,9 @@
 #include "transport_models.h"
 #include "sym_one_site_simulate_model.h"
 
-using namespace std;
+void load_transport_models(
+	std::map<std::string, SimulateModelInstantiator> &models) {
 
-/**
- * \brief Creates the wrapper function for instantiating a model.
- *
- * \return The wrapper to a function for instantiating the model.
- */
-template<typename T>
-static inline function<shared_ptr<SimulateModel>
-	(const map<string, shared_ptr<RandomDistribution>> &)> model_maker() {
-
-	return [] (const map<string, shared_ptr<RandomDistribution>> &avail)
-		-> shared_ptr<SimulateModel> {
-
-		return make_shared<T>(avail);
-	};
-}
-
-void load_transport_models(std::map<std::string,
-	std::function<shared_ptr<SimulateModel>(
-		const std::map<std::string, shared_ptr<RandomDistribution>>&)>>
-	&models) {
-
-	models["symmetriconesite"] = model_maker<SymOneSiteSimulateModel>();
+	models["symmetriconesite"] =
+		SimulateModelInstance<SymOneSiteSimulateModel>();
 }

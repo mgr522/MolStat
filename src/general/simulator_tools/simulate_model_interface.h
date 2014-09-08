@@ -73,4 +73,34 @@ public:
 	void sample(shared_ptr<gsl_rng> r, std::vector<double> &vals) const;
 };
 
+/**
+ * \brief Shortcut for the function signature of an "instantiator" for a
+ *    SimulateModel in the simulator.
+ *
+ * SimulateModel objects are created by passing in a map of available
+ * RandomDistributions; the specification of a model should supply the names
+ * of required parameters. This function type produces the SimulateModel
+ * from the map of RandomDistributions.
+ */
+typedef std::function<shared_ptr<SimulateModel>
+	(const std::map<std::string, shared_ptr<RandomDistribution>> &)>
+	SimulateModelInstantiator;
+
+/**
+ * \brief Creates a SimulateModelInstantiator for a particular model.
+ *
+ * \tparam T The type of SimulateModel we wish to instantiate.
+ * \return A function for instantiating the class from a map of available
+ *    random number distributions.
+ */
+template<typename T>
+inline SimulateModelInstantiator SimulateModelInstance() {
+	return []
+		(const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
+		-> shared_ptr<SimulateModel> {
+
+		return std::make_shared<T>(avail);
+	};
+}
+
 #endif
