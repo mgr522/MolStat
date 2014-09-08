@@ -115,6 +115,24 @@ inline SimulateModelInstantiator SimulateModelInstance() {
 template<size_t N>
 using Observable = std::function<std::array<double, N>(shared_ptr<gsl_rng>)>;
 
+/**
+ * \brief Returns a function that checks compatibility of a model with an
+ *    observable.
+ *
+ * The returned function first checks that a given model is of a class that
+ * implements the desired observable. If not, it throws an exception. If it
+ * is, it then creates a wrapper to the observable's function that can be
+ * called to simulate data.
+ *
+ * \throw runtime_error If the model and observable are incompatible; that is,
+ *    the model does not implement the observable.
+ *
+ * \tparam N The dimensionality of the observable.
+ * \tparam T The class name of the observable's interface.
+ * \param[in] memfunc Pointer to the member function of the observable
+ *    interface that simulates the observable.
+ * \return The described function.
+ */
 template<size_t N, typename T>
 std::function<Observable<N>(const shared_ptr<SimulateModel>)> ObservableCheck(
 	std::array<double, N> (T::*memfunc)(shared_ptr<gsl_rng>) const) {

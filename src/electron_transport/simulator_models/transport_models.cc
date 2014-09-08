@@ -28,4 +28,10 @@ void load_transport_observables(std::map<std::string,
 
 	obs1s["zerobiasconductance"] =
 		ObservableCheck(&ZeroBiasConductance::ZeroBiasG);
+
+	obs2s["staticconductance"] =
+		ObservableCheck(&StaticConductance::StaticG);
+
+	obs2s["differentialconductance"] =
+		ObservableCheck(&DifferentialConductance::DiffG);
 }

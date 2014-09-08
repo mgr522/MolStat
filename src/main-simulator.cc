@@ -134,7 +134,6 @@ int main(int argc, char **argv) {
 	// store the model name for later (need to continue reading data before
 	// invoking the constructor.
 	modelname = tokens[0];
-	make_lower(modelname);
 
 	// Line 2: Observable
 	try {
@@ -150,7 +149,6 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	obsname = tokens[0];
-	make_lower(obsname);
 
 #if 0
 	// Line 3: number of trials
@@ -189,7 +187,6 @@ int main(int argc, char **argv) {
 			"Number of bins followed by the type of bins.\n");
 		return 0;
 	}
-
 	// first: number of bins to use
 	try {
 		nbin = stoul(tokens[0]);
@@ -247,7 +244,7 @@ int main(int argc, char **argv) {
 	// try to instantiate the model
 	try {
 		// models.at() returns a function for instantiating the model
-		model = models.at(modelname)(parameters);
+		model = models.at(to_lower(modelname))(parameters);
 	}
 	catch(const out_of_range &e) {
 		// model not found
@@ -265,7 +262,7 @@ int main(int argc, char **argv) {
 	try {
 		// obs1s.at() returns a function to check the model/observable
 		// combination; the second function actually does the check.
-		obs1 = obs1s.at(obsname)(model);
+		obs1 = obs1s.at(to_lower(obsname))(model);
 	}
 	catch(const out_of_range &e) {
 		// observable not found
@@ -274,20 +271,12 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	catch(const runtime_error &e) {
-		fprintf(stderr, "Error: %s\n", e.what());
+		fprintf(stderr, "Error: %s and %s are incompatible\n",
+			modelname.c_str(), obsname.c_str());
 		return 0;
 	}
 
 #if 0
-	// set the distributions required by the model
-	try {
-		model = make_model(modeltype, parameters);
-	}
-	catch(const invalid_argument &e) {
-		fprintf(stderr, "Error initializing the model: %s\n", e.what());
-		return 0;
-	}
-
 	// set up other variables for the simulation, including setting other
 	// distributions
 	if(ctype == CalculationType::Static ||
