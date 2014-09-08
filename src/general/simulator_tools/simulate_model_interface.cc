@@ -15,7 +15,8 @@ using namespace std;
 
 SimulateModel::SimulateModel(
 	const std::map<std::string, shared_ptr<RandomDistribution>> &avail,
-	const std::vector<std::string> &names) {
+	const std::vector<std::string> &names)
+	: dists(names.size()) {
 
 	int j, n;
 
@@ -26,8 +27,7 @@ SimulateModel::SimulateModel(
 			dists[j] = avail.at(names[j].c_str());
 		}
 		catch(const out_of_range &e) {
-			throw runtime_error(("A distribution for \"" + names[j] + "\" must " \
-				"be specified.").c_str());
+			throw runtime_error(names[j].c_str());
 		}
 	}
 }

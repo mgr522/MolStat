@@ -32,7 +32,7 @@
 #include <general/histogram_tools/histogram2d.h>
 #include <general/histogram_tools/bin_linear.h>
 #include <general/histogram_tools/bin_log.h>
-//#include "simulator_models/conductance_model.h"
+#include "electron_transport/simulator_models/transport_models.h"
 
 using namespace std;
 
@@ -72,13 +72,16 @@ int main(int argc, char **argv) {
 	// simulation variables
 	size_t ntrials, nbin, i;
 
-	// model variables
+	// list of parameters with specified distributions
 	map<string, shared_ptr<RandomDistribution>> parameters;
-	//shared_ptr<ConductanceModel> model;
-	shared_ptr<RandomDistribution> dist_V, dist_eta;
+
+	// the model and the list of models
+	shared_ptr<SimulateModel> model;
+	map<string, function<shared_ptr<SimulateModel>
+		(const map<string, shared_ptr<RandomDistribution>> &)>> models;
 
 	// I/O variables
-	string line, modeltype, name;
+	string line, modelname, name;
 	vector<string> tokens;
 
 	// histogram variables
@@ -94,7 +97,9 @@ int main(int argc, char **argv) {
 		maxs{{-numeric_limits<double>::max(), -numeric_limits<double>::max()}};
 	forward_list<array<double, 2>> gdata;
 
-#if 0
+	// load models and observables
+	load_transport_models(models);
+
 	// setup the simulation -- read in parameters from stdin
 	// Line 1: One token specifying the model to use
 	try {
@@ -113,9 +118,10 @@ int main(int argc, char **argv) {
 
 	// store the model name for later (need to continue reading data before
 	// invoking the constructor.
-	modeltype = tokens[0];
-	make_lower(modeltype);
+	modelname = tokens[0];
+	make_lower(modelname);
 
+#if 0
 	// Line 2: Observable
 	try {
 		line = getline(stdin);
@@ -237,6 +243,23 @@ int main(int argc, char **argv) {
 	}
 	catch(const runtime_error &e) {
 		// this just means we hit EOF -- stop trying to read more
+	}
+
+	// try to instantiate the model
+	try {
+		// models.at() returns a function for instantiating the model
+		model = models.at(modelname)(parameters);
+	}
+	catch(const out_of_range &e) {
+		// model not found
+		fprintf(stderr, "Error: model \"%s\" not found.\n", modelname.c_str());
+		return 0;
+	}
+	catch(const runtime_error &e) {
+		// at least one required parameter was unspecified
+		fprintf(stderr, "Error: a distribution for \"%s\" must be specified.\n",
+			e.what());
+		return 0;
 	}
 
 #if 0

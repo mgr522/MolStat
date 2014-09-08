@@ -21,7 +21,7 @@ using namespace std;
  * \return The wrapper to a function for instantiating the model.
  */
 template<typename T>
-inline function<shared_ptr<SimulateModel>
+static inline function<shared_ptr<SimulateModel>
 	(const map<string, shared_ptr<RandomDistribution>> &)> model_maker() {
 
 	return [] (const map<string, shared_ptr<RandomDistribution>> &avail)
