@@ -1,5 +1,5 @@
 SUBDIRS = general \
-	conductance_histogram
+	electron_transport
 
 bin_PROGRAMS = simulator
 

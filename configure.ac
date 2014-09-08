@@ -53,10 +53,10 @@ AC_CONFIG_FILES([
 				src/general/histogram_tools/Makefile
 				src/general/random_distributions/Makefile
 				src/general/simulator_tools/Makefile
-			src/conductance_histogram/Makefile
-				src/conductance_histogram/fitter_models/Makefile
-				src/conductance_histogram/simulator_models/Makefile
-				src/conductance_histogram/tests/Makefile
+			src/electron_transport/Makefile
+				src/electron_transport/fitter_models/Makefile
+				src/electron_transport/simulator_models/Makefile
+				src/electron_transport/tests/Makefile
 ])
 
 # finish up
