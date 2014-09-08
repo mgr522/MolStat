@@ -49,6 +49,15 @@ void make_lower(std::string &str);
 
 /**
  * \internal
+ * \brief Returns a copy of the string, in lower case.
+ *
+ * \param[in] str The string.
+ * \return The string, in lower case.
+ */
+std::string to_lower(const std::string &str);
+
+/**
+ * \internal
  * \brief Turns a string into a double.
  *
  * \exception std::invalid_argument if the string cannot be cast to a double.
