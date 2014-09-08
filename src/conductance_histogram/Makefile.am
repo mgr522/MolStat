@@ -2,12 +2,12 @@ SUBDIRS = simulator_models \
 	fitter_models \
 	tests
 
-bin_PROGRAMS = simulator fitter
+bin_PROGRAMS = fitter
 
-simulator_SOURCES = main-simulator.cc
+#simulator_SOURCES = main-simulator.cc
 
-simulator_LDADD = ../general/libmolstat_general.a \
-	simulator_models/libsimulator_models.a
+#simulator_LDADD = ../general/libmolstat_general.a \
+#	simulator_models/libsimulator_models.a
 
 fitter_SOURCES = main-fitter.cc
 
