@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 	map<string, function< Observable<2>(shared_ptr<SimulateModel>)> > obs2s;
 
 	// I/O variables
-	string line, modelname, name;
+	string line, modelname, obsname, name;
 	vector<string> tokens;
 
 	// histogram variables
@@ -113,6 +113,7 @@ int main(int argc, char **argv) {
 
 	// load models and observables
 	load_transport_models(models);
+	load_transport_observables(obs1s, obs2s);
 
 	// setup the simulation -- read in parameters from stdin
 	// Line 1: One token specifying the model to use
@@ -135,7 +136,6 @@ int main(int argc, char **argv) {
 	modelname = tokens[0];
 	make_lower(modelname);
 
-#if 0
 	// Line 2: Observable
 	try {
 		line = getline(stdin);
@@ -149,25 +149,10 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Error: conductance type expected in line 2.\n");
 		return 0;
 	}
-	make_lower(tokens[0]);
-	if(tokens[0] == "static") {
-		ctype = CalculationType::Static;
-		htype = HistogramType::TwoD;
-	}
-	else if(tokens[0] == "differential") {
-		ctype = CalculationType::Differential;
-		htype = HistogramType::TwoD;
-	}
-	else if(tokens[0] == "zerobias") {
-		ctype = CalculationType::ZeroBias;
-		htype = HistogramType::OneD;
-	}
-	else {
-		fprintf(stderr, "Error: Unrecognized conductance type in line 2.\n   " \
-			"It must be \"Static\", \"Differential\", or \"ZeroBias\".\n");
-		return 0;
-	}
+	obsname = tokens[0];
+	make_lower(obsname);
 
+#if 0
 	// Line 3: number of trials
 	try {
 		line = getline(stdin);
@@ -273,6 +258,23 @@ int main(int argc, char **argv) {
 		// at least one required parameter was unspecified
 		fprintf(stderr, "Error: a distribution for \"%s\" must be specified.\n",
 			e.what());
+		return 0;
+	}
+
+	// now verify the observable
+	try {
+		// obs1s.at() returns a function to check the model/observable
+		// combination; the second function actually does the check.
+		obs1 = obs1s.at(obsname)(model);
+	}
+	catch(const out_of_range &e) {
+		// observable not found
+		fprintf(stderr, "Error: observable \"%s\" not found.\n",
+			obsname.c_str());
+		return 0;
+	}
+	catch(const runtime_error &e) {
+		fprintf(stderr, "Error: %s\n", e.what());
 		return 0;
 	}
 

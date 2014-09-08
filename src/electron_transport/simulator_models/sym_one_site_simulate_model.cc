@@ -18,3 +18,9 @@ SymOneSiteSimulateModel::SymOneSiteSimulateModel(
 	const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
 	: SimulateModel(avail, { "ef", "v" }) {
 }
+
+std::array<double, 1> SymOneSiteSimulateModel::ZeroBiasG(shared_ptr<gsl_rng> r)
+	const {
+
+	return {0.};
+}

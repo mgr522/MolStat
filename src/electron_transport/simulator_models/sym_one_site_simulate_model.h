@@ -19,6 +19,7 @@
 #include <map>
 #include <general/random_distributions/rng.h>
 #include <general/simulator_tools/simulate_model_interface.h>
+#include "transport_observables.h"
 
 using std::shared_ptr;
 
@@ -44,7 +45,9 @@ using std::shared_ptr;
  * - Static conductance:
  *   \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-a) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1-a) eV}{\Gamma} \right) \right]. \f]
  */
-class SymOneSiteSimulateModel : public SimulateModel {
+class SymOneSiteSimulateModel : public SimulateModel,
+	public ZeroBiasConductance {
+
 public:
 	SymOneSiteSimulateModel() = delete;
 
@@ -60,12 +63,17 @@ public:
 	SymOneSiteSimulateModel(
 		const std::map<std::string, shared_ptr<RandomDistribution>> &avail);
 
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
 	virtual ~SymOneSiteSimulateModel() = default;
+
+	/**
+	 * \brief Returns the zero-bias conductance for a randomly-generated set of
+	 *    model parameters.
+	 * 
+	 * \param[in] r The GSL random number generator handle.
+	 * \return The zero-bias conductance.
+	 */
+	virtual std::array<double, 1> ZeroBiasG(shared_ptr<gsl_rng> r) const
+		override;
 };
 
 #endif
