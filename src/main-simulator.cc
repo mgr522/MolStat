@@ -128,7 +128,6 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Error: model name expected in line 1.\n");
 		return 0;
 	}
-
 	// store the model name for later (need to continue reading data before
 	// invoking the constructor.
 	modelname = tokens[0];
@@ -146,6 +145,7 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Error: conductance type expected in line 2.\n");
 		return 0;
 	}
+	// store the observable name for later.
 	obsname = tokens[0];
 
 	// Line 3: number of trials
@@ -184,7 +184,7 @@ int main(int argc, char **argv) {
 			"Number of bins followed by the type of bins.\n");
 		return 0;
 	}
-	// first: number of bins to use
+	// first token: number of bins to use
 	try {
 		nbin = stoul(tokens[0]);
 	}
@@ -272,7 +272,25 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
-	printf("%f %f\n", observable(r)[0], observable(r)[1]);
+	// Get the requested number of samples
+	for (i = 0; i < ntrials; ++i) {
+		array<double, 2> datum;
+
+		datum = observable(r);
+
+		// check the limits
+		if(datum[0] < mins[0])
+			mins[0] = datum[0];
+		if(datum[0] > maxs[0])
+			maxs[0] = datum[0];
+		if(datum[1] < mins[1])
+			mins[1] = datum[1];
+		if(datum[1] > maxs[1])
+			maxs[1] = datum[1];
+
+		// add the data to the list
+		gdata.emplace_front(datum);
+	}
 
 #if 0
 	// set up other variables for the simulation, including setting other
@@ -280,15 +298,6 @@ int main(int argc, char **argv) {
 	if(ctype == CalculationType::Static ||
 		ctype == CalculationType::Differential) {
 
-		// make sure there are distributions for V and eta
-		try {
-			dist_eta = parameters.at("eta");
-		}
-		catch(const out_of_range &e) {
-			fprintf(stderr, "Error: a distribution for \"eta\" must be " \
-				"specified.\n");
-			return 0;
-		}
 		try {
 			dist_V = parameters.at("v");
 		}
@@ -310,39 +319,6 @@ int main(int argc, char **argv) {
 		// should never be here
 		fprintf(stderr, "An unknown error has occured.\n");
 		return 0;
-	}
-
-	// Get the requested number of voltage/conductance data points
-	for (i = 0; i < ntrials; ++i) {
-		double V, GV;
-
-		if(ctype == CalculationType::Static ||
-			ctype == CalculationType::Differential) {
-
-			V = dist_V->sample(r);
-
-			if(ctype == CalculationType::Static)
-				GV = model->static_conductance(r, EF, dist_eta->sample(r), V);
-			else
-				GV = model->diff_conductance(r, EF, dist_eta->sample(r), V);
-		}
-		else if(ctype == CalculationType::ZeroBias) {
-			V = 0.;
-			GV = model->zero_bias_conductance(r, EF);
-		}
-
-		// check the limits
-		if(V < mins[0])
-			mins[0] = V;
-		if(V > maxs[0])
-			maxs[0] = V;
-		if(GV < mins[1])
-			mins[1] = GV;
-		if(GV > maxs[1])
-			maxs[1] = GV;
-
-		// add the data to the list
-		gdata.emplace_front(array<double, 2>{{V, GV}});
 	}
 
 	// set up the histogram, populate it, and print it
