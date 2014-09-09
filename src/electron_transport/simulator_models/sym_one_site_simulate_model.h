@@ -46,10 +46,33 @@ using std::shared_ptr;
  *   \f[ g(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-a) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (\eta-1-a) eV}{\Gamma} \right) \right]. \f]
  */
 class SymOneSiteSimulateModel : public SimulateModel,
-	public ZeroBiasConductance {
+	public DifferentialConductance, public StaticConductance {
+
+private:
+	/**
+	 * \brief Ordered list (vector) of the parameters needed for this model.
+	 *
+	 * If this order is changed, SymOneSiteSimulateModel::unpack_parameters
+	 * also needs to be updated.
+	 */
+	static const std::vector<std::string> parameters;
+
+	/**
+	 * \brief Unpack a set of parameters from a vector to doubles.
+	 *
+	 * \param[in] vec The vector containing a set of parameters.
+	 * \param[out] ef The Fermi energy.
+	 * \param[out] v The voltage.
+	 * \param[out] epsilon The site energy.
+	 * \param[out] gamma The site-lead coupling.
+	 * \param[out] a The voltage drop parameter.
+	 */
+	static void unpack_parameters(const std::vector<double> &vec, double &ef,
+		double &v, double &epsilon, double &gamma, double &a);
 
 public:
 	SymOneSiteSimulateModel() = delete;
+	virtual ~SymOneSiteSimulateModel() = default;
 
 	/**
 	 * \internal
@@ -63,17 +86,55 @@ public:
 	SymOneSiteSimulateModel(
 		const std::map<std::string, shared_ptr<RandomDistribution>> &avail);
 
-	virtual ~SymOneSiteSimulateModel() = default;
+	/**
+	 * \brief Returns the differential conductance for a randomly-generated set
+	 *    of model parameters.
+	 * 
+	 * \param[in] r The GSL random number generator handle.
+	 * \return The differential conductance.
+	 */
+	virtual std::array<double, 2> DiffG(shared_ptr<gsl_rng> r) const
+		override;
 
 	/**
-	 * \brief Returns the zero-bias conductance for a randomly-generated set of
+	 * \brief Returns the static conductance for a randomly-generated set of
 	 *    model parameters.
 	 * 
 	 * \param[in] r The GSL random number generator handle.
-	 * \return The zero-bias conductance.
+	 * \return The static conductance.
 	 */
-	virtual std::array<double, 1> ZeroBiasG(shared_ptr<gsl_rng> r) const
+	virtual std::array<double, 2> StaticG(shared_ptr<gsl_rng> r) const
 		override;
+
+	/**
+	 * \brief Calculates the transmission for a set of model parameters.
+	 *
+	 * \param[in] e The energy of the incident electron.
+	 * \param[in] v The applied bias.
+	 * \param[in] eps The level energy.
+	 * \param[in] gamma The level-electrode coupling.
+	 * \param[in] a The voltage drop scaling factor.
+	 * \return The transmission for this set of parameters.
+	 */
+	static double transmission(const double e, const double v, const double eps,
+		const double gamma, const double a);
+
+	/**
+	 * \brief Calculates the static conductance for a set of model parameters.
+	 *
+	 * \param[in] vec The vector of model parameters.
+	 * \return The static conductance for this set of parameters.
+	 */
+	static double static_conductance(const std::vector<double> &vec);
+
+	/**
+	 * \brief Calculates the differential conductance for a set of model
+	 *    parameters.
+	 *
+	 * \param[in] vec The vector of model parameters.
+	 * \return The differential conductance for this set of parameters.
+	 */
+	static double diff_conductance(const std::vector<double> &vec);
 };
 
 #endif

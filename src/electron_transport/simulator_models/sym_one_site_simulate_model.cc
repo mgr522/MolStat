@@ -11,16 +11,82 @@
  */
 
 #include "sym_one_site_simulate_model.h"
+#include <cmath>
 
 using namespace std;
 
-SymOneSiteSimulateModel::SymOneSiteSimulateModel(
-	const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
-	: SimulateModel(avail, { "ef", "v" }) {
+// if the order of the following list is changed, the unpack_parameters
+// function MUST also be updated
+const vector<string> SymOneSiteSimulateModel::parameters =
+	{"ef", "v", "epsilon", "gamma", "a"};
+
+void SymOneSiteSimulateModel::unpack_parameters(const std::vector<double> &vec,
+	double &ef, double &v, double &epsilon, double &gamma, double &a) {
+
+	ef = vec[0];
+	v = vec[1];
+	epsilon = vec[2];
+	gamma = vec[3];
+	a = vec[4];
 }
 
-std::array<double, 1> SymOneSiteSimulateModel::ZeroBiasG(shared_ptr<gsl_rng> r)
+SymOneSiteSimulateModel::SymOneSiteSimulateModel(
+	const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
+	: SimulateModel(avail, parameters) {
+}
+
+std::array<double, 2> SymOneSiteSimulateModel::DiffG(shared_ptr<gsl_rng> r)
 	const {
 
-	return {{1.}};
+	vector<double> params(5);
+	double ef, v, eps, gamma, a;
+
+	// generate and unpack the parameters
+	sample(r, params);
+	unpack_parameters(params, ef, v, eps, gamma, a);
+
+	return {{ v, diff_conductance(params) }};
+}
+
+std::array<double, 2> SymOneSiteSimulateModel::StaticG(shared_ptr<gsl_rng> r)
+	const {
+
+	vector<double> params(5);
+	double ef, v, eps, gamma, a;
+
+	// generate and unpack the parameters
+	sample(r, params);
+	unpack_parameters(params, ef, v, eps, gamma, a);
+
+	return {{ v, static_conductance(params) }};
+}
+
+double SymOneSiteSimulateModel::transmission(const double e, const double v,
+	const double eps, const double gamma, const double a) {
+
+	return gamma*gamma / ((e - eps - a*v)*(e - eps - a*v) + gamma*gamma);
+}
+
+double SymOneSiteSimulateModel::static_conductance(
+	const std::vector<double> &vec) {
+
+	double ef, v, eps, gamma, a;
+
+	// unpack the model parameters
+	unpack_parameters(vec, ef, v, eps, gamma, a);
+
+	return gamma / v *
+		(atan((ef-eps+(0.5-a)*v) / gamma) - atan((ef-eps-(0.5+a)*v) / gamma));
+}
+
+double SymOneSiteSimulateModel::diff_conductance(
+	const std::vector<double> &vec) {
+
+	double ef, v, eps, gamma, a;
+
+	// unpack the parameters
+	unpack_parameters(vec, ef, v, eps, gamma, a);
+
+	return (0.5 - a) * transmission(ef+0.5*v, v, eps, gamma, a) +
+		(0.5 + a) * transmission(ef-0.5*v, v, eps, gamma, a);
 }
