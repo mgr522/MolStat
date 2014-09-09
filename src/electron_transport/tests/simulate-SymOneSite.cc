@@ -2,7 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file tests/symmetric_one_site.cc
+ * \file tests/simulate-SymOneSite.cc
  * \brief Test suite for the symmetric-coupling, single-site tight-binding
  *     model.
  *
