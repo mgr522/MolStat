@@ -13,12 +13,16 @@
 #include "transport_models.h"
 #include "transport_observables.h"
 #include "sym_one_site_simulate_model.h"
+#include "asym_one_site_simulate_model.h"
 
 void load_transport_models(
 	std::map<std::string, SimulateModelInstantiator> &models) {
 
 	models["symmetriconesite"] =
 		SimulateModelInstance<SymOneSiteSimulateModel>();
+
+	models["asymmetriconesite"] =
+		SimulateModelInstance<AsymOneSiteSimulateModel>();
 }
 
 void load_transport_observables(std::map<std::string, std::function<
