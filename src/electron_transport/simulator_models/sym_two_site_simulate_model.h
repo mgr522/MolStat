@@ -52,7 +52,7 @@ private:
 	/**
 	 * \brief Ordered list (vector) of the parameters needed for this model.
 	 *
-	 * If this order is changed, SymOneSiteSimulateModel::unpack_parameters
+	 * If this order is changed, SymTwoSiteSimulateModel::unpack_parameters
 	 * also needs to be updated.
 	 */
 	static const std::vector<std::string> parameters;
