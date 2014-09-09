@@ -39,10 +39,6 @@ using namespace std;
 /**
  * \internal
  * \brief Enum for the type of histogram (1D or 2D).
- *
- * A `ZeroBias` CalculationType is always 1D. `Static` and `Differential` are
- * usually 2D, but can be 1D if the voltage's random distribution is a
- * ConstantDistribution.
  * \endinternal
  */
 enum class HistogramType {
@@ -57,6 +53,8 @@ enum class HistogramType {
  * Parses the input parameters and outputs randomly generated data
  * for the desired observable.
  *
+ * \todo Add a mechanism to specify the binning style of each axis.
+ *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status; 0 for normal.
@@ -66,8 +64,8 @@ int main(int argc, char **argv) {
 	// initialize the GSL random number generator
 	gsl_rng_env_setup();
 	shared_ptr<gsl_rng> r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
-	//gsl_rng_set(r.get(), 0xFEEDFACE); // use this line for debugging
-	gsl_rng_set(r.get(), time(nullptr));
+	gsl_rng_set(r.get(), 0xFEEDFACE); // use this line for debugging
+	//gsl_rng_set(r.get(), time(nullptr));
 
 	// simulation variables
 	size_t ntrials, nbin, i;
@@ -95,19 +93,13 @@ int main(int argc, char **argv) {
 	// I/O variables
 	string line, modelname, obsname, name;
 	vector<string> tokens;
-
-	// histogram variables
 	shared_ptr<BinStyle> bstyle;
-	//CalculationType ctype;
-	HistogramType htype;
-	shared_ptr<Histogram1D> hist1;
-	shared_ptr<Histogram2D> hist2;
 
 	// variables for setting up the histograms / storing the random data
 	array<double, 2>
 		mins{{numeric_limits<double>::max(), numeric_limits<double>::max()}},
 		maxs{{-numeric_limits<double>::max(), -numeric_limits<double>::max()}};
-	forward_list<array<double, 2>> gdata;
+	forward_list<array<double, 2>> data;
 
 	// load models and observables
 	load_transport_models(models);
@@ -277,6 +269,7 @@ int main(int argc, char **argv) {
 		array<double, 2> datum;
 
 		datum = observable(r);
+printf("%f %f\n", datum[0], datum[1]);
 
 		// check the limits
 		if(datum[0] < mins[0])
@@ -289,38 +282,43 @@ int main(int argc, char **argv) {
 			maxs[1] = datum[1];
 
 		// add the data to the list
-		gdata.emplace_front(datum);
+		data.emplace_front(datum);
+	}
+
+printf("Datum 1: %f -- %f\n", mins[0], maxs[0]);
+printf("Datum 2: %f -- %f\n", mins[1], maxs[1]);
+
+	// histogram variables
+	HistogramType htype;
+	shared_ptr<Histogram1D> hist1;
+	shared_ptr<Histogram2D> hist2;
+	function<double(const array<double, 2> &)> mask;
+
+	// setup the histogram type; what type are we making?
+	htype = HistogramType::TwoD; // base guess
+
+	// check the range of the first variable
+	if(mins[0] == maxs[0] && mins[1] == maxs[1]) {
+		fprintf(stderr, "Error: no data to bin into histograms. All simulated " \
+			"data have the value\n       {%f, %f}\n", mins[0], mins[1]);
+		return 0;
+	}
+	else if(mins[0] == maxs[0]) {
+		// process only the second variable
+		htype = HistogramType::OneD;
+		mask = [] (const array<double, 2> &a) -> double {
+			return a[1];
+		};
+	}
+	else if(mins[1] == maxs[1]) {
+		// process only the second variable
+		htype = HistogramType::OneD;
+		mask = [] (const array<double, 2> &a) -> double {
+			return a[0];
+		};
 	}
 
 #if 0
-	// set up other variables for the simulation, including setting other
-	// distributions
-	if(ctype == CalculationType::Static ||
-		ctype == CalculationType::Differential) {
-
-		try {
-			dist_V = parameters.at("v");
-		}
-		catch(const out_of_range &e) {
-			fprintf(stderr, "Error: a distribution for \"V\" must be specified." \
-				"\n");
-			return 0;
-		}
-
-		// check if V is a ConstantDistribution. If it is, this is really a 1D
-		// histogram
-		if(dynamic_pointer_cast<ConstantDistribution>(dist_V) != nullptr)
-			htype = HistogramType::OneD;
-	}
-	else if(ctype == CalculationType::ZeroBias) {
-		// nothing required
-	}
-	else {
-		// should never be here
-		fprintf(stderr, "An unknown error has occured.\n");
-		return 0;
-	}
-
 	// set up the histogram, populate it, and print it
 	if(htype == HistogramType::OneD) {
 		hist1 = make_shared<Histogram1D>(nbin, mins[1], maxs[1], bstyle);
