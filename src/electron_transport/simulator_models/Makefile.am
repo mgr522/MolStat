@@ -8,4 +8,6 @@ libtransport_simulator_models_a_SOURCES = transport_models.h \
 	asym_one_site_simulate_model.h \
 	asym_one_site_simulate_model.cc \
 	ind_two_chan_simulate_model.h \
-	ind_two_chan_simulate_model.cc
+	ind_two_chan_simulate_model.cc \
+	sym_two_site_simulate_model.h \
+	sym_two_site_simulate_model.cc
