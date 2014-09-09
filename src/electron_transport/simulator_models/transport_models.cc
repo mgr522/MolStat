@@ -21,17 +21,15 @@ void load_transport_models(
 		SimulateModelInstance<SymOneSiteSimulateModel>();
 }
 
-void load_transport_observables(std::map<std::string,
-	std::function<Observable<1>(const shared_ptr<SimulateModel>)>> &obs1s,
-	std::map<std::string,
-	std::function<Observable<2>(const shared_ptr<SimulateModel>)>> &obs2s) {
+void load_transport_observables(std::map<std::string, std::function<
+	Observable<2>(const shared_ptr<SimulateModel>)>> &observables) {
 
-	obs1s["zerobiasconductance"] =
-		ObservableCheck(&ZeroBiasConductance::ZeroBiasG);
+	observables["zerobiasconductance"] =
+		Obs2(ObservableCheck(&ZeroBiasConductance::ZeroBiasG));
 
-	obs2s["staticconductance"] =
+	observables["staticconductance"] =
 		ObservableCheck(&StaticConductance::StaticG);
 
-	obs2s["differentialconductance"] =
+	observables["differentialconductance"] =
 		ObservableCheck(&DifferentialConductance::DiffG);
 }

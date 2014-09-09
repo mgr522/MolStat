@@ -10,6 +10,7 @@
  */
 
 #include "simulate_model_interface.h"
+#include <array>
 
 using namespace std;
 
@@ -39,4 +40,16 @@ void SimulateModel::sample(shared_ptr<gsl_rng> r, vector<double> &vals) const {
 	n = dists.size();
 	for(j = 0; j < n; ++j)
 		vals[j] = dists[j]->sample(r);
+}
+
+std::function<Observable<2>(const shared_ptr<SimulateModel>)> Obs2(
+	const std::function<Observable<1>(const shared_ptr<SimulateModel>)> &f) {
+
+	return [=] (const shared_ptr<SimulateModel> model) -> Observable<2> {
+		Observable<1> obs1 = f(model);
+
+		return [=] (shared_ptr<gsl_rng> r) -> array<double, 2> {
+			return { { 0., obs1(r)[0] } };
+		};
+	};
 }

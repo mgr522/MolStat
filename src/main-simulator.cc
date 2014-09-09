@@ -82,17 +82,15 @@ int main(int argc, char **argv) {
 	// such a model, given a map of random number distributions.
 	map<string, SimulateModelInstantiator> models;
 
-	// two sets of variables for observables, depending on the dimensionality
 	// function for generating our observable
-	Observable<1> obs1;
-	Observable<2> obs2;
+	Observable<2> observable;
 	// the list of available observables:
 	// stored as a map of string (observable name) to a function that takes
 	// a SimulateModel and produces the observable function.
 	// This extra function layer is needed to dynamically typecheck the model,
 	// making sure the model/observable pair is valid.
-	map<string, function< Observable<1>(shared_ptr<SimulateModel>)> > obs1s;
-	map<string, function< Observable<2>(shared_ptr<SimulateModel>)> > obs2s;
+	map<string, function< Observable<2>(shared_ptr<SimulateModel>)> >
+		observables;
 
 	// I/O variables
 	string line, modelname, obsname, name;
@@ -113,7 +111,7 @@ int main(int argc, char **argv) {
 
 	// load models and observables
 	load_transport_models(models);
-	load_transport_observables(obs1s, obs2s);
+	load_transport_observables(observables);
 
 	// setup the simulation -- read in parameters from stdin
 	// Line 1: One token specifying the model to use
@@ -262,7 +260,7 @@ int main(int argc, char **argv) {
 	try {
 		// obs1s.at() returns a function to check the model/observable
 		// combination; the second function actually does the check.
-		obs1 = obs1s.at(to_lower(obsname))(model);
+		observable = observables.at(to_lower(obsname))(model);
 	}
 	catch(const out_of_range &e) {
 		// observable not found
@@ -271,10 +269,12 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	catch(const runtime_error &e) {
-		fprintf(stderr, "Error: %s and %s are incompatible\n",
-			modelname.c_str(), obsname.c_str());
+		fprintf(stderr, "Error: model \"%s\" and observable \"%s\" are " \
+			"incompatible.\n", modelname.c_str(), obsname.c_str());
 		return 0;
 	}
+
+	printf("%f %f\n", observable(r)[0], observable(r)[1]);
 
 #if 0
 	// set up other variables for the simulation, including setting other

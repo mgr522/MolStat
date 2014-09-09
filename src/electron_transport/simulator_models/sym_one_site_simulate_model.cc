@@ -22,5 +22,5 @@ SymOneSiteSimulateModel::SymOneSiteSimulateModel(
 std::array<double, 1> SymOneSiteSimulateModel::ZeroBiasG(shared_ptr<gsl_rng> r)
 	const {
 
-	return {0.};
+	return {{1.}};
 }
