@@ -10,14 +10,15 @@
  *     model.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date September 2014
  */
 
 #include <cstdio>
 #include <assert.h>
 #include <cmath>
+#include <vector>
 
-#include "../simulator_models/symmetric_one_site.h"
+#include "../simulator_models/sym_one_site_simulate_model.h"
 
 using namespace std;
 
@@ -32,29 +33,53 @@ using namespace std;
  */
 int main(int argc, char **argv) {
 	const double thresh = 1.0e-6;
-	typedef SymmetricOneSiteModel model;
+	typedef SymOneSiteSimulateModel model;
+	vector<double> params(5);
+
+	// params[0] = EF, [1] = V, [2] = eps, [3] = gamma, [4] = a
 
 	// check known values for several parameter sets
-	assert(abs(0.0384615
-		- model::transmission(0., -4., 0.8)) < thresh);
-	assert(abs(0.0390172
-		- model::static_conductance(0., 1., 0.5, -4., 0.8)) < thresh);
-	assert(abs(0.0401438
-		- model::diff_conductance(0., 1., 0.5, -4., 0.8)) < thresh);
+	params = {0., 1., -4., 0.8, 0.};
+	assert(abs(0.0384615 - model::transmission
+		(params[0], 0., params[2], params[3], params[4])) < thresh);
+	assert(abs(0.0390172 - model::static_conductance(params)) < thresh);
+	assert(abs(0.0401438 - model::diff_conductance(params)) < thresh);
 
-	assert(abs(0.00159744
-		- model::transmission(1., -9., 0.4)) < thresh);
-	assert(abs(0.00163709
-		- model::static_conductance(1., -0.4, 0.8, -9., 0.4)) < thresh);
-	assert(abs(0.00167814
-		- model::diff_conductance(1., -0.4, 0.8, -9., 0.4)) < thresh);
+	params = {1., -0.4, -9., 0.4, 0.};
+	assert(abs(0.00159744 - model::transmission
+		(params[0], 0., params[2], params[3], params[4])) < thresh);
+	assert(abs(0.00159808 - model::static_conductance(params)) < thresh);
+	assert(abs(0.00159936 - model::diff_conductance(params)) < thresh);
 
-	assert(abs(0.00112099
-		- model::transmission(3., -17., 0.67)) < thresh);
-	assert(abs(0.00118115
-		- model::static_conductance(3., 1.4, 0.14, -17., 0.67)) < thresh);
-	assert(abs(0.00124526
-		- model::diff_conductance(3., 1.4, 0.14, -17., 0.67)) < thresh);
+	params = {3., 1.4, -17., 0.67, 0.};
+	assert(abs(0.00112099 - model::transmission
+		(params[0], 0., params[2], params[3], params[4])) < thresh);
+	assert(abs(0.00112236 - model::static_conductance(params)) < thresh);
+	assert(abs(0.00112511 - model::diff_conductance(params)) < thresh);
+
+	params = {0., 1., -4., 0.8, -0.1};
+	assert(abs(0.0384615 - model::transmission
+		(params[0], 0., params[2], params[3], params[4])) < thresh);
+	assert(abs(0.0371825 - model::static_conductance(params)) < thresh);
+	assert(abs(0.0364382 - model::diff_conductance(params)) < thresh);
+
+	params = {1., -0.4, -9., 0.4, 1.};
+	assert(abs(0.00159744 - model::transmission
+		(params[0], 0., params[2], params[3], params[4])) < thresh);
+	assert(abs(0.00147765 - model::static_conductance(params)) < thresh);
+	assert(abs(0.00136520 - model::diff_conductance(params)) < thresh);
+
+	params = {3., 1.4, -17., 0.67, 0.24};
+	assert(abs(0.00112099 - model::transmission
+		(params[0], 0., params[2], params[3], params[4])) < thresh);
+	assert(abs(0.00116105 - model::static_conductance(params)) < thresh);
+	assert(abs(0.00120367 - model::diff_conductance(params)) < thresh);
+
+	params = {3., 1.4, -17., 0.67, -0.05};
+	assert(abs(0.00112099 - model::transmission
+		(params[0], 0., params[2], params[3], params[4])) < thresh);
+	assert(abs(0.00111455 - model::static_conductance(params)) < thresh);
+	assert(abs(0.00110948 - model::diff_conductance(params)) < thresh);
 
 	return 0;
 }
