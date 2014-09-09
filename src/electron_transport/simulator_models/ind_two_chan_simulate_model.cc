@@ -12,7 +12,6 @@
 
 #include "ind_two_chan_simulate_model.h"
 #include "sym_one_site_simulate_model.h"
-#include <cmath>
 
 using namespace std;
 
