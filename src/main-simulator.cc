@@ -269,7 +269,6 @@ int main(int argc, char **argv) {
 		array<double, 2> datum;
 
 		datum = observable(r);
-printf("%f %f\n", datum[0], datum[1]);
 
 		// check the limits
 		if(datum[0] < mins[0])
@@ -285,14 +284,12 @@ printf("%f %f\n", datum[0], datum[1]);
 		data.emplace_front(datum);
 	}
 
-printf("Datum 1: %f -- %f\n", mins[0], maxs[0]);
-printf("Datum 2: %f -- %f\n", mins[1], maxs[1]);
-
 	// histogram variables
 	HistogramType htype;
 	shared_ptr<Histogram1D> hist1;
 	shared_ptr<Histogram2D> hist2;
-	function<double(const array<double, 2> &)> mask;
+	function<double(const array<double, 2> &)> mask1;
+	array<double, 2> bounds1;
 
 	// setup the histogram type; what type are we making?
 	htype = HistogramType::TwoD; // base guess
@@ -306,26 +303,37 @@ printf("Datum 2: %f -- %f\n", mins[1], maxs[1]);
 	else if(mins[0] == maxs[0]) {
 		// process only the second variable
 		htype = HistogramType::OneD;
-		mask = [] (const array<double, 2> &a) -> double {
+		mask1 = [] (const array<double, 2> &a) -> double {
 			return a[1];
 		};
+		bounds1[0] = mins[1];
+		bounds1[1] = maxs[1];
 	}
 	else if(mins[1] == maxs[1]) {
 		// process only the second variable
 		htype = HistogramType::OneD;
-		mask = [] (const array<double, 2> &a) -> double {
+		mask1 = [] (const array<double, 2> &a) -> double {
 			return a[0];
 		};
+		bounds1[0] = mins[0];
+		bounds1[1] = maxs[0];
+	}
+	else {
+		// add a pinch to the max since the GSL histogrammer is exclusive on the
+		// upper bounds of binning ranges
+		maxs[0] += 1.e-6;
+		maxs[1] += 1.e-6;
 	}
 
-#if 0
 	// set up the histogram, populate it, and print it
 	if(htype == HistogramType::OneD) {
-		hist1 = make_shared<Histogram1D>(nbin, mins[1], maxs[1], bstyle);
+		// note the similar pinch added to bounds[1] for the above reason
+		hist1 = make_shared<Histogram1D>(nbin, bounds1[0], bounds1[1] + 1.e-6,
+			bstyle);
 
-		while(!gdata.empty()) {
-			hist1->add_data(gdata.front()[1]);
-			gdata.pop_front();
+		while(!data.empty()) {
+			hist1->add_data(mask1(data.front()));
+			data.pop_front();
 		}
 
 		for(Histogram1D::const_iterator iter = hist1->begin();
@@ -339,9 +347,9 @@ printf("Datum 2: %f -- %f\n", mins[1], maxs[1]);
 		hist2 = make_shared<Histogram2D>(array<size_t, 2>{{nbin, nbin}},
 			mins, maxs, bstyle);
 
-		while(!gdata.empty()) {
-			hist2->add_data(gdata.front());
-			gdata.pop_front();
+		while(!data.empty()) {
+			hist2->add_data(data.front());
+			data.pop_front();
 		}
 
 		for(Histogram2D::const_iterator iter = hist2->begin();
@@ -352,7 +360,6 @@ printf("Datum 2: %f -- %f\n", mins[1], maxs[1]);
 				iter.get_variable()[1], iter.get_bin_count());
 		}
 	}
-#endif
 
 	return 0;
 }
