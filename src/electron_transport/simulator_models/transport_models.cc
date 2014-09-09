@@ -24,8 +24,9 @@ void load_transport_models(
 void load_transport_observables(std::map<std::string, std::function<
 	Observable<2>(const shared_ptr<SimulateModel>)>> &observables) {
 
-	observables["zerobiasconductance"] =
-		Obs2(ObservableCheck(&ZeroBiasConductance::ZeroBiasG));
+	// load all observables here.
+	// If the observable is 1D, call Obs2(ObservableCheck(...))
+	// If the observable is 2D, call ObservableCheck(...)
 
 	observables["staticconductance"] =
 		ObservableCheck(&StaticConductance::StaticG);

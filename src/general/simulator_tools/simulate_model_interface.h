@@ -41,6 +41,7 @@ private:
 
 public:
 	SimulateModel() = delete;
+	virtual ~SimulateModel() = default;
 
 	/**
 	 * \brief Constructor requiring a list of available distributions and an
@@ -56,13 +57,6 @@ public:
 	SimulateModel(
 		const std::map<std::string, shared_ptr<RandomDistribution>> &avail,
 		const std::vector<std::string> &names);
-
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
-	virtual ~SimulateModel() = default;
 
 	/**
 	 * \brief Samples from the random distributions.

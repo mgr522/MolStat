@@ -23,24 +23,6 @@
 using std::shared_ptr;
 
 /**
- * \brief Interface for the zero-bias conductance.
- */
-class ZeroBiasConductance {
-public:
-	ZeroBiasConductance() = default;
-	virtual ~ZeroBiasConductance() = default;
-
-	/**
-	 * \brief Returns the zero-bias conductance for a randomly-generated set of
-	 *    model parameters.
-	 *
-	 * \param[in] r The GSL random number generator handle.
-	 * \return The zero-bias conductance.
-	 */
-	virtual std::array<double, 1> ZeroBiasG(shared_ptr<gsl_rng> r) const = 0;
-};
-
-/**
  * \brief Interface for the static conductance.
  */
 class StaticConductance {

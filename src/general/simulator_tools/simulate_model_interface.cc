@@ -38,6 +38,7 @@ void SimulateModel::sample(shared_ptr<gsl_rng> r, vector<double> &vals) const {
 
 	// sample each distribution, in order
 	n = dists.size();
+	vals.resize(n);
 	for(j = 0; j < n; ++j)
 		vals[j] = dists[j]->sample(r);
 }
