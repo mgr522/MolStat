@@ -148,23 +148,6 @@ std::function<Observable<N>(const shared_ptr<SimulateModel>)> ObservableCheck(
 }
 
 /**
- * \brief Modifies a function that returns array<double, N> to return
- *    array<double, 2>.
- *
- * This is intended to pad a 1D observable into a 2D by adding a zero.
- * Ultimately, this will allow a common framework for just storing observables
- * in the 2D format. The histogram tools can then decide whether to make a 1D
- * or 2D histogram.
- *
- * \tparam N The dimensionality of the observable.
- * \param[in] f The function to be wrapped.
- * \return The wrapped function.
- */
-template<size_t N>
-std::function<Observable<2>(const shared_ptr<SimulateModel>)> Obs2(
-	const std::function<Observable<N>(const shared_ptr<SimulateModel>)> &f);
-
-/**
  * \brief Retypes a function that returns array<double, 1> to return
  *    array<double, 2>.
  *
