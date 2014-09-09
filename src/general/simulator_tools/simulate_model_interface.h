@@ -137,7 +137,7 @@ template<size_t N, typename T>
 std::function<Observable<N>(const shared_ptr<SimulateModel>)> ObservableCheck(
 	std::array<double, N> (T::*memfunc)(shared_ptr<gsl_rng>) const) {
 
-	return [&] (const shared_ptr<SimulateModel> model) {
+	return [=] (const shared_ptr<SimulateModel> model) {
 		shared_ptr<T> cast = std::dynamic_pointer_cast<T>(model);
 
 		if(cast == nullptr)
