@@ -9,6 +9,6 @@ fit-symmetric-nonresonant-binlog.trs
 fit-symmetric-resonant.log
 fit-symmetric-resonant.trs
 test-suite.log
-test_symmetric_one_site
-test_symmetric_one_site.log
-test_symmetric_one_site.trs
+simulate-SymOneSite
+simulate-SymOneSite.log
+simulate-SymOneSite.trs
