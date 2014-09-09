@@ -1,4 +1,5 @@
-TESTS = simulate-SymOneSite
+TESTS = simulate-SymOneSite \
+	simulate-AsymOneSite
 
 if HAVE_PYTHON
 TESTS += fit-symmetric-resonant.py \
@@ -11,10 +12,15 @@ endif
 TEST_EXTENSIONS = .py
 PY_LOG_COMPILER = $(PYTHON_BIN)
 
-check_PROGRAMS = simulate-SymOneSite
+check_PROGRAMS = simulate-SymOneSite \
+	simulate-AsymOneSite
 
 simulate_SymOneSite_SOURCES = simulate-SymOneSite.cc
 simulate_SymOneSite_LDADD = ../../general/libmolstat_general.a \
+	../simulator_models/libtransport_simulator_models.a
+
+simulate_AsymOneSite_SOURCES = simulate-AsymOneSite.cc
+simulate_AsymOneSite_LDADD = ../../general/libmolstat_general.a \
 	../simulator_models/libtransport_simulator_models.a
 
 #test_asymmetric_one_site_SOURCES = asymmetric_one_site.cc
