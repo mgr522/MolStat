@@ -15,3 +15,6 @@ simulate-AsymOneSite.trs
 simulate-SymOneSite
 simulate-SymOneSite.log
 simulate-SymOneSite.trs
+simulate-SymTwoSite
+simulate-SymTwoSite.log
+simulate-SymTwoSite.trs
