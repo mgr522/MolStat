@@ -15,6 +15,7 @@
 #include "sym_one_site_simulate_model.h"
 #include "asym_one_site_simulate_model.h"
 #include "ind_two_chan_simulate_model.h"
+#include "sym_two_site_simulate_model.h"
 
 void load_transport_models(
 	std::map<std::string, SimulateModelInstantiator> &models) {
@@ -27,6 +28,9 @@ void load_transport_models(
 
 	models["independenttwochannel"] =
 		SimulateModelInstance<IndTwoChanSimulateModel>();
+
+	models["symmetrictwosite"] =
+		SimulateModelInstance<SymTwoSiteSimulateModel>();
 }
 
 void load_transport_observables(std::map<std::string, std::function<
