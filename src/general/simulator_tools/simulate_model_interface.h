@@ -89,7 +89,7 @@ typedef std::function<shared_ptr<SimulateModel>
  *    random number distributions.
  */
 template<typename T>
-inline SimulateModelInstantiator SimulateModelInstance() {
+inline SimulateModelInstantiator SimulateModelAdd() {
 	return []
 		(const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
 		-> shared_ptr<SimulateModel> {

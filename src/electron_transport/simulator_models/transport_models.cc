@@ -21,16 +21,16 @@ void load_transport_models(
 	std::map<std::string, SimulateModelInstantiator> &models) {
 
 	models["symmetriconesite"] =
-		SimulateModelInstance<SymOneSiteSimulateModel>();
+		SimulateModelAdd<SymOneSiteSimulateModel>();
 
 	models["asymmetriconesite"] =
-		SimulateModelInstance<AsymOneSiteSimulateModel>();
+		SimulateModelAdd<AsymOneSiteSimulateModel>();
 
 	models["independenttwochannel"] =
-		SimulateModelInstance<IndTwoChanSimulateModel>();
+		SimulateModelAdd<IndTwoChanSimulateModel>();
 
 	models["symmetrictwosite"] =
-		SimulateModelInstance<SymTwoSiteSimulateModel>();
+		SimulateModelAdd<SymTwoSiteSimulateModel>();
 }
 
 void load_transport_observables(std::map<std::string, std::function<
