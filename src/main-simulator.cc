@@ -148,7 +148,6 @@ int main(int argc, char **argv) {
 	}
 	obsname = tokens[0];
 
-#if 0
 	// Line 3: number of trials
 	try {
 		line = getline(stdin);
@@ -204,7 +203,6 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Error: unknown binning style.\n");
 		return 0;
 	}
-#endif
 
 	// all subsequent lines specify random number distributions
 	// EOF is flagged by a runtime_error in the getline function
@@ -258,7 +256,7 @@ int main(int argc, char **argv) {
 
 	// now verify the observable
 	try {
-		// obs1s.at() returns a function to check the model/observable
+		// observables.at() returns a function to check the model/observable
 		// combination; the second function actually does the check.
 		observable = observables.at(to_lower(obsname))(model);
 	}
