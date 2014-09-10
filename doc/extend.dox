@@ -31,6 +31,10 @@ Finally, add the binning style class to the ::get_bin_style function so that
 it can be referenced from the input arguments. The implemented examples should
 be sufficient to explain this procedure.
 
+\subsection subsec_add_simulate_model Adding Simulator Models
+
+\subsection subsec_add_simulate_observable Adding Simulator Observables
+
 This chapter deals with using MolStat to simulate and fit conductance
 histograms. We begin with the theory behind molecular conductance, introduce
 conductance histograms, and then detail the software interface and features.

@@ -1,0 +1,135 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
+/**
+\page page_run_molstat Running MolStat
+
+This chapter deals with using MolStat to simulate or fit single-molecule
+data. The frameworks for these two operations are discussed in turn.
+
+\section sec_molstat_simulate Simulating Single-Molecule Behavior
+
+Simulating single-molecule behavior uses a physical model and random number
+distributions to calculate the statistics of many single-molecule measurements.
+The `molstat-simulator` program reads in all of the required information from
+an input file and outputs the requested histogram.
+
+`molstat-simulator` operates under the idea of pairing models with observables.
+The input file specifies a model to use, an observable to calculate, histogram
+information, and the random number distributions around each physical
+parameter. The distinction between the model and observable facilitates code
+reuse as one physical model may work with multiple observables. Of course, the
+models and observables depend on the application. As will be described in much
+more detail in \ref subsec_add_simulate_model, simulator models are described
+by the SimulateModel class; observables (see
+\ref subsec_add_simulate_observable) are intentionally less structured.
+
+The `molstat-simulator` input file has the following structure. The line breaks
+are important, and the text is not case sensitive.
+-# The model to use.
+-# The observable to calculate.
+-# The number of samples to simulate for constructing the histogram.
+-# Binning information (see \ref sec_histograms).
+-# (One per line) Random distributions for the physical parameters required by
+   the model. Information on the random distributions can be found in
+   \ref sec_rng.
+.
+Regardless of the binning style used, the output values will be unmasked by
+the binning style. That is, the output estimates \f$P_{\hat{x}}(x)\f$ instead
+of the masked value.
+
+Following is an example input file for simulating a conductance histogram. The
+input file must be routed to standard in.
+\verbatim
+SymmetricOneSite
+DifferentialConductance
+100000
+100 log 10.
+ef constant 0.
+V uniform -2. 2.
+gamma normal 0.8 0.05
+epsilon normal -6. 0.05
+a constant 0.
+\endverbatim
+Additional example inputs can be found in the tests; see, for example,
+fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
+fit-symmetric-resonant.py.
+\todo Update the tests for the new simulator input style.
+
+Finally, the histogram is output with one bin per line. A two-dimensional
+histogram is generally output, where each line is
+\verbatim
+x y counts
+\endverbatim
+Depending on the random distributions, model, and observable, however, only
+a one-dimensional histogram may be output. In this case, each line similarly
+reads
+\verbatim
+x counts
+\endverbatim
+
+\section sec_cond_hist_fit Fitting Conductance Histograms
+\todo Change this section for a general fitting procedure.
+
+The general procedure for fitting a conductance histogram is as follows.
+Specify
+- a model line shape to fit against the conductance histogram. Each model has
+several parameters, as detailed below.
+- a file name containing the conductance histogram data.
+- additional options (if desired; none are required).
+
+From this information, the fitter reads in the conductance histogram and uses
+GSL's non-linear least-squares routines to fit the histogram to the desired
+line shape. Because non-linear least-squares fits are not guaranteed to find
+the best-fit solutions, we use multiple initial guesses and report the best
+fit across all guesses. This still doesn't guarantee the best fit, but seems to
+work well, in practice.
+
+Following is an example input file.
+\verbatim
+SymmetricNonresonant
+1,4-dithiolbenzene.dat
+noprint
+guess c 50. d 6. norm 10.
+guess default
+bin linear
+\endverbatim
+Additional example inputs can be found in the tests; see
+fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
+fit-symmetric-resonant.py.
+
+The lines are interpreted as follows.
+-# The model to use when fitting the conductance histogram.
+-# The data file containing the conductance histogram. All fitting models (so
+   far) are for 1-D histograms. The file should have two numbers per line: the
+   conductance, and the histogram counts in this bin.
+-# All following lines are optional and have the form `command options`.
+   The commands, and any options they require, are
+   - `noprint` (recommended) -- only output the best fit parameters at the end
+     of the program.
+   - `print` -- output iteration-by-iteration results for all initial guesses.
+     This can produce a large amount of output.
+   - `guess` -- specify initial guess(es) to use. Multiple `guess` commands
+     may be present.
+     - `guess default` -- load a \"default\" set of initial guesses for the
+       model. If no other initial guesses are specified, these initial guesses
+       will be automatically loaded. This command may be present with other
+       user-specified initial guesses to use both the user-specified and
+       default sets.
+     - `guess name value ...` -- add a user-specified initial guess. After the
+       `guess` command is a list of name/value pairs. Each fit parameter
+       (remember that fit parameters depend on the model) must be given an
+       initial value. All name/value pairs should appear on the same line. See
+       an example of this syntax in the above example input file. The \"norm\"
+       parameter (\f$N\f$) does not need to be specified, but it can be.
+   - `bin` -- specify the binning status of the data to be read in. If the data
+     is in `g counts` form (as is produced by the simulator), use
+     `bin linear`. If no `bin` command is issued, `linear` is the default. See
+     \ref subsec_impl_binstyle for a list of implemented binning types.
+     \note The use of non-`linear` binning styles is provided for cases where
+        the user may want to fit data that is not produced from the simulator
+        and was binned, e.g., logarithmically without converting back to
+        \f$g\f$. In this case, the histogram would estimate
+        \f$P_{\ln(\hat{g})}(\ln(g))\f$, not \f$P_{\hat{g}}(g)\f$; the fitter
+        needs to account for this disparity.
+*/

@@ -3,5 +3,5 @@
 .deps/
 config.h*
 fitter
-simulator
+molstat-simulator
 stamp-h1
