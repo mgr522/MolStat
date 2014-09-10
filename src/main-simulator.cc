@@ -100,7 +100,9 @@ int main(int argc, char **argv) {
 	forward_list<array<double, 2>> data;
 
 	// load models and observables
+	// SimulateModelAdd calls appear here
 	load_transport_models(models);
+	// ObservableCheck calls appear here
 	load_transport_observables(observables);
 
 	// setup the simulation -- read in parameters from stdin
