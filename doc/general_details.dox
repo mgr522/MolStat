@@ -179,4 +179,10 @@ FitModel class contains even more common operations. As described in
 \f[ \frac{\partial}{\partial x_k} \left( f(g_j; \{x_k\}) - p_j \right), \f]
 are required. More information on fitting can be found in the GSL
 documentation.
+
+\note Non-linear fitting is not guaranteed to find the "best" fit; it is
+      possible that the optimization routines get stuck in local minima of
+      the functional described above. Although the following doesn't rigorously
+      solve this problem, we use multiple initial guesses in the fitting
+      procedure and only output the best fit from all guesses.
 */
