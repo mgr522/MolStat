@@ -51,22 +51,21 @@ models and, also, how to add new ones.
 \section sec_install Installation
 MolStat requires
 - a C++11 compiler. Most modern `g++` and `clang++` compilers are sufficient.
-  Note for Mac users (10.8 and older): the default `libstdc++` does not support
-  C++11. When you run the `configure` script below, specify the compiler using,
-  e.g., `CXX="g++ -stdlib=libc++"`. (The configure script automatically checks
-  for `-std=c++11`.)
+  Note for Mac users (OS 10.8 and older): the default `libstdc++` does not 
+  support C++11. When you run the `configure` script below, specify the compiler
+  using,  e.g., `CXX="g++ -stdlib=libc++"`. (The configure script automatically
+  checks for `-std=c++11`.)
 - the GNU autotools suite.
 - the GNU Scientific Library (GSL), which can be obtained at
   http://www.gnu.org/software/gsl/. MolStat has been tested with version 1.16
   of GSL.
 - (optional) doxygen, if you want to produce the documentation manuals
-  directly from the code. PDF versions are included in the standard
-  distributions; see the `doc/` directory.
+  directly from the code. PDF versions for the latest release will be
+  available on the MolStat website, https://bitbucket.org/mgreuter/molstat.
 - (optional) python. Some tests use python.
 
 \subsection build Building the Package
-That you're reading this manual suggests you've already obtained and unpacked
-the tarball. An autotools configure setup is provided to make installation
+An autotools configure setup is provided to make installation
 easy (we hope). The first step is to run
 \verbatim
 autoreconf --install
@@ -100,6 +99,10 @@ make check
 \note The `fit-asymmetric-resonant.py` test can take several minutes to run.
 
 \section changelog Version Changes
+\subsection v1_1 v1.1 (September 2014)
+   - Reworked simulator code that is much more general and easier to extend.
+   - Simulator and fitter codes are no longer application specific.
+
 \subsection v1_0 v1.0 (July 2014)
    - Initial release; general package framework and layout.
    - Conductance histogram (single-molecule conductance) tools: simulator and
@@ -140,6 +143,7 @@ development of MolStat and the theories behind it.
    - Prof.\ Herre van der Zandt (Delft University of Technology)
    - Prof.\ Latha Venkataraman (Columbia University)
    - Mr.\ Patrick Williams (Oak Ridge High School)
+	- Mr.\ Gaibo Zhang (Oak Ridge High School)
    .
 I also gratefully acknowledge financial and computational support from
    -# The Wigner Fellowship program at the Oak Ridge National Laboratory,
@@ -151,5 +155,5 @@ I also gratefully acknowledge financial and computational support from
 
 Matthew G.\ Reuter \n
 mgreuter@u.northwestern.edu \n
-July 2014
+September 2014
 */
