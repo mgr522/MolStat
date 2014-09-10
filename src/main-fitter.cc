@@ -26,7 +26,7 @@
 
 #include <general/string_tools.h>
 #include <general/histogram_tools/bin_style.h>
-#include "fitter_models/cond_hist_fit_model.h"
+#include "electron_transport/fitter_models/cond_hist_fit_model.h"
 
 using namespace std;
 

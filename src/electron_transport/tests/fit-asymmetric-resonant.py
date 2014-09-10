@@ -28,7 +28,7 @@ import subprocess
 
 ## @cond
 
-process = subprocess.Popen('../fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+process = subprocess.Popen('../../molstat-fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 output = process.communicate( \
 'AsymmetricResonant\n' \
 'asymmetric-resonant.dat\n' \

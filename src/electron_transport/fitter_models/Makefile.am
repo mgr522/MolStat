@@ -1,6 +1,6 @@
-noinst_LIBRARIES = libfitter_models.a
+noinst_LIBRARIES = libtransport_fit.a
 
-libfitter_models_a_SOURCES = cond_hist_fit_model.h \
+libtransport_fit_a_SOURCES = cond_hist_fit_model.h \
 	cond_hist_fit_model.cc \
 	symmetric_resonant.h \
 	symmetric_resonant.cc \

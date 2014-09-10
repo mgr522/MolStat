@@ -26,7 +26,7 @@ import subprocess
 ## @cond
 
 # test for the symmetric, non-resonant model
-process = subprocess.Popen('../fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+process = subprocess.Popen('../../molstat-fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 output = process.communicate( \
 'SymmetricNonresonant\n' \
 'symmetric-nonresonant.dat\n' \
