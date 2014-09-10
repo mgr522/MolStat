@@ -2,7 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
-\page page_conductance_histograms Molecular Conductance: Conductance Histograms
+\page page_conductance_histograms Electron Transport: Conductance Histograms
 
 This chapter deals with using MolStat to simulate and fit conductance
 histograms. We begin with the theory behind molecular conductance, introduce
@@ -13,13 +13,12 @@ All of the tools are based on the Landauer-B&uuml;ttiker-Imry theory of
 conductance through quantum systems \cite buttiker-6207, \cite imry-s306.
 Within this theory, the zero-temperature current is given as
 \f[
-I(V) = \frac{2e}{h} \int\limits_{E_\mathrm{F} + (\eta-1)eV}^{E_\mathrm{F} + \eta eV} \mathrm{d}E T(E),
+I(V) = \frac{2e}{h} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E T(E),
 \f]
 where
    - \f$I\f$ is the current,
    - \f$V\f$ is the applied bias,
    - \f$E_\mathrm{F}\f$ is the Fermi energy of the system,
-   - \f$\eta\f$ is the relative voltage drop at the two electrodes, \f$0\le\eta\le1\f$,
    - \f$E\f$ is the incident energy of the electron,
    - \f$T(E)\f$ is the transmission function.
    .
@@ -31,9 +30,9 @@ Several types of conductance can be considered:
    -# Zero-bias conductance
       \f[ \left. \left( \frac{\partial}{\partial V} I(V) \right) \right|_{V=0} = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
    -# Differential conductance
-      \f[ \frac{\partial}{\partial V} I(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F}+(\eta-1)eV) \right] + \frac{2e}{h} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V}T(E). \f]
+      \f[ \frac{\partial}{\partial V} I(V) = \frac{2e^2}{h} \frac{1}{2} \left[ T(E_\mathrm{F} + eV/2) + T(E_\mathrm{F} - eV/2) \right] + \frac{2e}{h} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E \frac{\partial}{\partial V}T(E). \f]
 	-# Static conductance
-      \f[ \frac{I(V)}{V} = \frac{2e}{hV} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E T(E). \f]
+      \f[ \frac{I(V)}{V} = \frac{2e}{hV} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E T(E). \f]
    .
 Various models (described below) can be used to calculate \f$T(E)\f$; from this
 transmission, all of the above conductances can be calculated.
