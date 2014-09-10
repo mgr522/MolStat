@@ -4,6 +4,15 @@
 /**
 \page extend_molstat Extending MolStat
 
+This chapter describes how to extend the functionality of MolStat.
+\ref sec_add_general describes how to add, e.g.,\ random number distributions
+and histogram binning styles. \ref sec_add_simulate describes how to add
+simulator models and observables. \ref sec_add_fit describes how to add fitter
+models. The implementation and incorporation of any of these concepts into
+MolStat is designed to be straightforward.
+
+\section sec_add_general Adding General Mathematical Operations
+
 \subsection subsec_add_rnd Adding Random Number Distributions
 Random number distributions are computationally described by the
 RandomDistribution class. Adding a new random number distribution requires
@@ -14,8 +23,8 @@ number from the distribution.
 Finally, the new random number distribution needs to be added to the
 ::distribution_from_tokens function so that it is processed from input. In this
 function, the `distribution` tag for the input deck is defined and the code for
-processing `[distribution-parameters]` is implemented. The distributions
-listed above should provide sufficient examples. Note that the name of the
+processing `[distribution-parameters]` is implemented. The implemented
+distributions should provide sufficient examples. Note that the name of the
 distribution should be in lowercase.
 
 \subsection subsec_add_binstyle Adding Binning Styles
@@ -26,230 +35,59 @@ abstract functions.
 -# The inverse mask function, \f$x = f^{-1}(u)\f$, in `invmask`.
 -# The derivative of the mask function, \f$ \mathrm{d}f / \mathrm{d}x\f$, in
    `dmaskdx`.
+.
+When the new binning style is used, the set \f$\{f(x)\}\f$ is binned.
 
-Finally, add the binning style class to the ::get_bin_style function so that
+Finally, add the new binning style class to the ::get_bin_style function so that
 it can be referenced from the input arguments. The implemented examples should
-be sufficient to explain this procedure.
+be sufficient to explain this procedure. Note that the name of the binning
+style should be in lowercase.
 
-\subsection subsec_add_simulate_model Adding Simulator Models
+\section sec_add_simulate Adding Simulator Models and Observables
 
 \subsection subsec_add_simulate_observable Adding Simulator Observables
 
-This chapter deals with using MolStat to simulate and fit conductance
-histograms. We begin with the theory behind molecular conductance, introduce
-conductance histograms, and then detail the software interface and features.
-
-\section sec_landauer Landauer Theory
-All of the tools are based on the Landauer-B&uuml;ttiker-Imry theory of
-conductance through quantum systems \cite buttiker-6207, \cite imry-s306.
-Within this theory, the zero-temperature current is given as
-\f[
-I(V) = \frac{2e}{h} \int\limits_{E_\mathrm{F} + (\eta-1)eV}^{E_\mathrm{F} + \eta eV} \mathrm{d}E T(E),
-\f]
-where
-   - \f$I\f$ is the current,
-   - \f$V\f$ is the applied bias,
-   - \f$E_\mathrm{F}\f$ is the Fermi energy of the system,
-   - \f$\eta\f$ is the relative voltage drop at the two electrodes, \f$0\le\eta\le1\f$,
-   - \f$E\f$ is the incident energy of the electron,
-   - \f$T(E)\f$ is the transmission function.
-   .
-The transmission function depends on the specific model and system used, and
-gives the aggregate transmission probability for an electron with energy
-\f$E\f$ to tunnel from one electrode to the other.
-
-Several types of conductance can be considered:
-   -# Zero-bias conductance
-      \f[ \left. \left( \frac{\partial}{\partial V} I(V) \right) \right|_{V=0} = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
-   -# Differential conductance
-      \f[ \frac{\partial}{\partial V} I(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F}+(\eta-1)eV) \right] + \frac{2e}{h} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V}T(E). \f]
-	-# Static conductance
-      \f[ \frac{I(V)}{V} = \frac{2e}{hV} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E T(E). \f]
-   .
-Various models (described below) can be used to calculate \f$T(E)\f$; from this
-transmission, all of the above conductances can be calculated.
-
-\section conductance_histograms Conductance Histograms
-Conductance histograms are a common way for tabulating and analyzing
-experimental data on electric conductance through nanometer-scaled systems
-(i.e., systems where quantum mechanical effects are inherent). Introductions
-to conductance histograms can be found in \cite krans-767,
-\cite xu-1221, \cite venkataraman-458, and \cite reuter-2243. In essence, the
-conductance through the system is measured many (thousands) of times, and the
-conductance data is binned into a histogram.
-
-In MolStat, we assume that the conductance histogram reports the probability
-density function of the conductance observable \cite reuter-2243. As
-described in the introduction and in Refs.\ \cite reuter-2243 and
-\cite williams-5937, MolStat then regards the physical parameters in the
-transmission as random variables that determine the conductance's probability
-density function.
-
-The two operations supported by MolStat are
--# Simulating conductance histograms using simple model systems (see
-   \cite reuter-2243). This operation is described in
-   \ref sec_cond_hist_simulate. Note that these model systems do not rely on
-   first-principles electronic structure calculations; they are
-   phenomenological. Other studies that construct histogram from such *ab
-   initio* calculations have been reported in, for instance, \cite french-887.
--# Fit a conductance histogram (or, more accurately, a peak from a conductance
-   histogram) to a specified functional form. This process is discussed in
-   \ref sec_cond_hist_fit.
-
-\section sec_cond_hist_simulate Simulating Conductance Histograms
-The general procedure for simulating a conductance histogram is as follows.
-Specify
-- a model for calculating \f$T(E)\f$. Each model has several parameters, such
-  as channel energies, channel-electrode couplings, etc.
-- random distributions for each of these parameters. The available random
-  number distributions are descibed in \ref sec_rng.
-- how many bins to use in the histogram, as well as a binning style (see
-  \ref sec_histograms).
-- the Fermi energy and the number of conductance points to simulate.
+\subsection subsec_add_simulate_model Adding Simulator Models
+Simulator models are encapsulated by the SimulateModel class. This base class
+- stores a list of the random number distributions, as specified by the
+  derived class.
+- samples from all of the random number distributions, given a GSL random
+  number generator.
 .
-From this information, the simulator gets the requested number of conductance
-values (where each value uses random model parameters from the
-specified distributions), bins the conductance data, and, finally, outputs
-the histogram to standard out.
-
-Following is an example input file (routed to standard in). Note that the
-line breaks are important.
+The derived class for a new simulator model needs to specify the names of its
+parameters when calling the constructor for SimulateModel. The order of the
+parameters is important, the `std::vector<double>` produced by
+SimulateModel::sample will be ordered the same way. (Implemented models have
+the `unpack_parameters` function to aid in this process.) A constant, static
+member of each class usually lists the names, in order. The new class must have
+a constructor with the signature
 \verbatim
-SymmetricOneSiteModel
-Differential
-100000
-100 log 10.
-0.
-eta constant 0.5
-V uniform -2. 2.
-gamma normal 0.8 0.05
-epsilon normal -6. 0.05
+NewSimulateModel(const std::map<std::string, std::shared_ptr<RandomDistribution>> &)
 \endverbatim
-Additional example inputs can be found in the tests; see
-fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
-fit-symmetric-resonant.py.
+This function passes the list of available random distributions to the
+SimulateModel constructor, along with the list of required parameters.
 
-The lines of this input file are interpreted as follows:
--# The model to use for calculating the transmission function and conductance.
--# The type of conductance to calculate. Must be `ZeroBias`, `Static`, or
-   `Differential`.
--# The number of conductance data points to simulate.
--# The number of bins to use and the type of binning. For Static and
-   Differential conductance histograms, the specified number of bins is used
-   for both the voltage and conductance axes, and linear binning is always used
-   for the voltage. A list of implemented binning
-   styles can be found in \ref subsec_impl_binstyle. Note that the output
-   conductance values will be the unmasked values, \f$\{g\}\f$, such that the
-	output histogram estimates \f$P_{\hat{g}}(g)\f$. (That is, the histogram is
-   constructed in the masked domain, but the final output is coverted back to
-   the unmasked domain.)
--# The Fermi energy.
--# Random distributions (one per line) for the various parameters. For example,
-   `eta constant 0.5` specifies the constant distribution (0.5) for \f$\eta\f$;
-   that is, \f$\eta\f$ is always 0.5.
+Although the above steps are all that is necessary for making a simulator
+model, the resulting model would not be very useful. A simulator model should
+also inherit from one or more observable classes and implement each
+observable's function (see \ref subsec_add_simulate_observable). To this end,
+implemented simulator models usually have a static member function that
+calculates the observable for a specific set of parameters. (Recall that the
+observable's function will randomly generate data *and* subsequently calculate
+the observable.)
 
-`ZeroBias` calculations do not require any parameters other than those
-needed by the model. `Static` and `Differential` conductance calculations
-also require distributions for `V` (\f$V\f$) and `eta` (\f$\eta\f$).
-
-Finally, the histogram is output with one bin per line. For Static and
-Differential conductance histograms each line is
+Finally, the new simulator model needs to be added to to the simulator's
+`models` list. The ::SimulateModelAdd template provides a wrapper for this
+operation; using SymOneSiteSimulateModel as an example, the code would be
 \verbatim
-V g counts
+models["symmetriconesite"] = SimulateModelAdd<SymOneSiteSimulateModel>();
 \endverbatim
-For ZeroBias conductance histograms, each line similarly reads
-\verbatim
-g counts
-\endverbatim
+The name of the model (for use in the input file) is the key for `models`. This
+key should be in lowercase in the code; it is case insensitive in the input
+file.
 
-\subsection subsec_cond_hist_sim_models Models for Simulating Conductance
-Finally, we list the implemented conductance models. Note that all of these
-models are implemented by classes derived from ConductanceModel. Each of these
-classes encapsulates not only the mathematical relationships described herein,
-but also the random number distributions for the various model parameters. The
-three abstract functions in ConductanceModel --
-ConductanceModel::zero_bias_conductance, ConductanceModel::diff_conductance,
-and ConductanceModel::static_conductance -- all generate a random set of model
-parameters (from the distributions) and calculate the appropriate conductance.
+\section sec_add_fit Adding Fitter Models
 
-- `SymmetricOneSiteModel`
-   - Single-site model with symmetric site/lead couplings.
-   - Implemented by the class SymmetricOneSiteModel; full details are presented
-     there.
-   - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling.
-
-- `AsymmetricOneSiteModel`
-   - Single-site model with asymmetric site/lead couplings.
-   - Implemented by the class AsymmetricOneSiteModel; full details are
-     presented there.
-   - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
-      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode.
-
-- `SymmetricVoltageOneSiteModel`
-   - Single-site model with symmetric site/lead couplings and a voltage-dependent site-energy. It is very closely related to the SymmetricOneSiteModel above.
-   - Implemented by the class SymmetricVoltageOneSiteModel; full details are
-     presented there.
-   - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
-      - `a` (\f$a\f$), the strength of the voltage dependence.
-
-- `AsymmetricVoltageOneSiteModel`
-   - Single-site model with asymmetric site/lead couplings and a voltage-dependent site-energy. It is very closely related to the AsymmetricOneSiteModel above.
-   - Implemented by the class AsymmetricVoltageOneSiteModel; full details are
-     presented there.
-   - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
-      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
-      - `a` (\f$a\f$), the strength of the voltage dependence.
-
-- `SymmetricTwoSiteModel`
-   - Two-site model with symmetric site/lead couplings.
-   - Implemented by the class SymmetricTwoSiteModel; full details are
-     presented there.
-   - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
-      - `beta` (\f$\beta\f$), the inter-site coupling.
-
-- `AsymmetricTwoSiteModel`
-   - Two-site model with asymmetric site/lead couplings.
-   - Implemented by the class AsymmetricTwoSiteModel; full details are
-     presented there.
-   - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
-      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
-      - `beta` (\f$\beta\f$), the inter-site coupling.
-
-- `SymmetricVoltageTwoSiteModel`
-   - Two-site model with symmetric site/lead couplings and voltage-dependent site-energies.
-   - Implemented by the class SymmetricVoltageTwoSiteModel; full details are
-     presented there.
-   - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
-      - `beta` (\f$\beta\f$), the inter-site coupling.
-
-- `IndependentVoltageTwoSiteModel`
-   - Sum of two independent channels, where each channel is described by
-     the SymmetricVoltageOneSiteModel.
-   - Implemented by the class IndependentVoltageTwoSiteModel; full details are
-     presented there.
-   - Model parameters are
-      - `epsilon1` (\f$\varepsilon_1\f$), the site-energy for channel 1,
-      - `gamma1` (\f$\Gamma_1\f$), the site/lead coupling for channel 1,
-      - `a1` (\f$a_1\f$), the strength of the voltage dependence for channel 1,
-      - `epsilon2` (\f$\varepsilon_2\f$), the site-energy for channel 2,
-      - `gamma2` (\f$\Gamma_2\f$), the site/lead coupling for channel 2,
-      - `a2` (\f$a_2\f$), the strength of the voltage dependence for channel 2.
-
-\subsubsection subsubsec_add_conductance_model Adding Conductance Models
 Adding a conductance model is designed to be straightforward, requiring the
 following steps.
 -# Derive a class from ConductanceModel, implementing the ConductanceModel::static_conductance, ConductanceModel::diff_conductance, and ConductanceModel::zero_bias_conductance member functions. As a side note, these three functions may use the transmission function, or other model-specific functions, which are implemented as static member functions of the derived class (as needed).

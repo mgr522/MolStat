@@ -72,7 +72,7 @@ Information on adding models and observables can be found in the
 \ref subsec_add_simulate_model and \ref subsec_add_simulate_observable sections,
 respectively.
 
-\section sec_cond_hist_fit Fitting Conductance Histograms
+\section sec_cond_hist_fit Fitting Single-Molecule Behavior
 \todo Change this section for a general fitting procedure.
 
 The general procedure for fitting a conductance histogram is as follows.
