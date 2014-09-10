@@ -160,4 +160,23 @@ requires the mask function, \f$u=f(x)\f$; the inverse mask function
 .
 
 Details on adding binning styles are found in \ref subsec_add_binstyle.
+
+\section sec_fitting_mathematics Fitting Data to a Functional Form
+Fitting data to a functional form is generally a non-linear least-squares
+problem, which is formulated as an optimization process. Suppose our observed
+data set is \f$\{g_j, p_j\}\f$; perhaps, as is the case for 1D conductance
+histograms, \f$j\f$ is a bin, \f$g_j\f$ is the conductance of that bin, and
+\f$p_j\f$ is the bin count (an estimation of the probability density function).
+We ultimately seek to minimize the functional
+\f[ r(\{g_j, p_j\}; \{x_k\}) = \sum_j \left| f(g_j; \{x_k\}) - p_j \right|^2, \f]
+where \f$f\f$ is the fit function and \f$\{ x_k \}\f$ are the fitting
+parameters.
+
+Much of the fitting procedure is handled internally by the GSL, and the
+FitModel class contains even more common operations. As described in
+\ref sec_add_fit_model, code to evaluate the residuals
+\f$f(g_j; \{x_k\}) - p_j\f$ and elements of the Jacobian,
+\f[ \frac{\partial}{\partial x_k} \left( f(g_j; \{x_k\}) - p_j \right), \f]
+are required. More information on fitting can be found in the GSL
+documentation.
 */
