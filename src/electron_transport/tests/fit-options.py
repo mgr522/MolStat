@@ -50,7 +50,7 @@ assert(output[0] == \
 )
 
 # test for the symmetric, resonant tunneling model
-process = subprocess.Popen('../fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+process = subprocess.Popen('../../molstat-fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 output = process.communicate( \
 'SymmetricResonant\n' \
 'symmetric-resonant.dat\n' \
@@ -75,7 +75,7 @@ assert(output[0] == \
 )
 
 # test for the asymmetric, resonant tunneling model
-process = subprocess.Popen('../fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+process = subprocess.Popen('../../molstat-fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 output = process.communicate( \
 'AsymmetricResonant\n' \
 'asymmetric-resonant.dat\n' \
