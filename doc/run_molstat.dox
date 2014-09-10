@@ -68,6 +68,10 @@ reads
 x counts
 \endverbatim
 
+Information on adding models and observables can be found in the 
+\ref subsec_add_simulate_model and \ref subsec_add_simulate_observable sections,
+respectively.
+
 \section sec_cond_hist_fit Fitting Conductance Histograms
 \todo Change this section for a general fitting procedure.
 
