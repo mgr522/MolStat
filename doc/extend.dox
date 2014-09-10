@@ -1,0 +1,385 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
+/**
+\page extend_molstat Extending MolStat
+
+This chapter deals with using MolStat to simulate and fit conductance
+histograms. We begin with the theory behind molecular conductance, introduce
+conductance histograms, and then detail the software interface and features.
+
+\section sec_landauer Landauer Theory
+All of the tools are based on the Landauer-B&uuml;ttiker-Imry theory of
+conductance through quantum systems \cite buttiker-6207, \cite imry-s306.
+Within this theory, the zero-temperature current is given as
+\f[
+I(V) = \frac{2e}{h} \int\limits_{E_\mathrm{F} + (\eta-1)eV}^{E_\mathrm{F} + \eta eV} \mathrm{d}E T(E),
+\f]
+where
+   - \f$I\f$ is the current,
+   - \f$V\f$ is the applied bias,
+   - \f$E_\mathrm{F}\f$ is the Fermi energy of the system,
+   - \f$\eta\f$ is the relative voltage drop at the two electrodes, \f$0\le\eta\le1\f$,
+   - \f$E\f$ is the incident energy of the electron,
+   - \f$T(E)\f$ is the transmission function.
+   .
+The transmission function depends on the specific model and system used, and
+gives the aggregate transmission probability for an electron with energy
+\f$E\f$ to tunnel from one electrode to the other.
+
+Several types of conductance can be considered:
+   -# Zero-bias conductance
+      \f[ \left. \left( \frac{\partial}{\partial V} I(V) \right) \right|_{V=0} = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
+   -# Differential conductance
+      \f[ \frac{\partial}{\partial V} I(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F}+(\eta-1)eV) \right] + \frac{2e}{h} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E \frac{\partial}{\partial V}T(E). \f]
+	-# Static conductance
+      \f[ \frac{I(V)}{V} = \frac{2e}{hV} \int\limits_{E_\mathrm{F}+(\eta-1)eV}^{E_\mathrm{F}+\eta eV} \mathrm{d}E T(E). \f]
+   .
+Various models (described below) can be used to calculate \f$T(E)\f$; from this
+transmission, all of the above conductances can be calculated.
+
+\section conductance_histograms Conductance Histograms
+Conductance histograms are a common way for tabulating and analyzing
+experimental data on electric conductance through nanometer-scaled systems
+(i.e., systems where quantum mechanical effects are inherent). Introductions
+to conductance histograms can be found in \cite krans-767,
+\cite xu-1221, \cite venkataraman-458, and \cite reuter-2243. In essence, the
+conductance through the system is measured many (thousands) of times, and the
+conductance data is binned into a histogram.
+
+In MolStat, we assume that the conductance histogram reports the probability
+density function of the conductance observable \cite reuter-2243. As
+described in the introduction and in Refs.\ \cite reuter-2243 and
+\cite williams-5937, MolStat then regards the physical parameters in the
+transmission as random variables that determine the conductance's probability
+density function.
+
+The two operations supported by MolStat are
+-# Simulating conductance histograms using simple model systems (see
+   \cite reuter-2243). This operation is described in
+   \ref sec_cond_hist_simulate. Note that these model systems do not rely on
+   first-principles electronic structure calculations; they are
+   phenomenological. Other studies that construct histogram from such *ab
+   initio* calculations have been reported in, for instance, \cite french-887.
+-# Fit a conductance histogram (or, more accurately, a peak from a conductance
+   histogram) to a specified functional form. This process is discussed in
+   \ref sec_cond_hist_fit.
+
+\section sec_cond_hist_simulate Simulating Conductance Histograms
+The general procedure for simulating a conductance histogram is as follows.
+Specify
+- a model for calculating \f$T(E)\f$. Each model has several parameters, such
+  as channel energies, channel-electrode couplings, etc.
+- random distributions for each of these parameters. The available random
+  number distributions are descibed in \ref sec_rng.
+- how many bins to use in the histogram, as well as a binning style (see
+  \ref sec_histograms).
+- the Fermi energy and the number of conductance points to simulate.
+.
+From this information, the simulator gets the requested number of conductance
+values (where each value uses random model parameters from the
+specified distributions), bins the conductance data, and, finally, outputs
+the histogram to standard out.
+
+Following is an example input file (routed to standard in). Note that the
+line breaks are important.
+\verbatim
+SymmetricOneSiteModel
+Differential
+100000
+100 log 10.
+0.
+eta constant 0.5
+V uniform -2. 2.
+gamma normal 0.8 0.05
+epsilon normal -6. 0.05
+\endverbatim
+Additional example inputs can be found in the tests; see
+fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
+fit-symmetric-resonant.py.
+
+The lines of this input file are interpreted as follows:
+-# The model to use for calculating the transmission function and conductance.
+-# The type of conductance to calculate. Must be `ZeroBias`, `Static`, or
+   `Differential`.
+-# The number of conductance data points to simulate.
+-# The number of bins to use and the type of binning. For Static and
+   Differential conductance histograms, the specified number of bins is used
+   for both the voltage and conductance axes, and linear binning is always used
+   for the voltage. A list of implemented binning
+   styles can be found in \ref subsec_impl_binstyle. Note that the output
+   conductance values will be the unmasked values, \f$\{g\}\f$, such that the
+	output histogram estimates \f$P_{\hat{g}}(g)\f$. (That is, the histogram is
+   constructed in the masked domain, but the final output is coverted back to
+   the unmasked domain.)
+-# The Fermi energy.
+-# Random distributions (one per line) for the various parameters. For example,
+   `eta constant 0.5` specifies the constant distribution (0.5) for \f$\eta\f$;
+   that is, \f$\eta\f$ is always 0.5.
+
+`ZeroBias` calculations do not require any parameters other than those
+needed by the model. `Static` and `Differential` conductance calculations
+also require distributions for `V` (\f$V\f$) and `eta` (\f$\eta\f$).
+
+Finally, the histogram is output with one bin per line. For Static and
+Differential conductance histograms each line is
+\verbatim
+V g counts
+\endverbatim
+For ZeroBias conductance histograms, each line similarly reads
+\verbatim
+g counts
+\endverbatim
+
+\subsection subsec_cond_hist_sim_models Models for Simulating Conductance
+Finally, we list the implemented conductance models. Note that all of these
+models are implemented by classes derived from ConductanceModel. Each of these
+classes encapsulates not only the mathematical relationships described herein,
+but also the random number distributions for the various model parameters. The
+three abstract functions in ConductanceModel --
+ConductanceModel::zero_bias_conductance, ConductanceModel::diff_conductance,
+and ConductanceModel::static_conductance -- all generate a random set of model
+parameters (from the distributions) and calculate the appropriate conductance.
+
+- `SymmetricOneSiteModel`
+   - Single-site model with symmetric site/lead couplings.
+   - Implemented by the class SymmetricOneSiteModel; full details are presented
+     there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling.
+
+- `AsymmetricOneSiteModel`
+   - Single-site model with asymmetric site/lead couplings.
+   - Implemented by the class AsymmetricOneSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode.
+
+- `SymmetricVoltageOneSiteModel`
+   - Single-site model with symmetric site/lead couplings and a voltage-dependent site-energy. It is very closely related to the SymmetricOneSiteModel above.
+   - Implemented by the class SymmetricVoltageOneSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
+      - `a` (\f$a\f$), the strength of the voltage dependence.
+
+- `AsymmetricVoltageOneSiteModel`
+   - Single-site model with asymmetric site/lead couplings and a voltage-dependent site-energy. It is very closely related to the AsymmetricOneSiteModel above.
+   - Implemented by the class AsymmetricVoltageOneSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
+      - `a` (\f$a\f$), the strength of the voltage dependence.
+
+- `SymmetricTwoSiteModel`
+   - Two-site model with symmetric site/lead couplings.
+   - Implemented by the class SymmetricTwoSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
+      - `beta` (\f$\beta\f$), the inter-site coupling.
+
+- `AsymmetricTwoSiteModel`
+   - Two-site model with asymmetric site/lead couplings.
+   - Implemented by the class AsymmetricTwoSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
+      - `beta` (\f$\beta\f$), the inter-site coupling.
+
+- `SymmetricVoltageTwoSiteModel`
+   - Two-site model with symmetric site/lead couplings and voltage-dependent site-energies.
+   - Implemented by the class SymmetricVoltageTwoSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
+      - `beta` (\f$\beta\f$), the inter-site coupling.
+
+- `IndependentVoltageTwoSiteModel`
+   - Sum of two independent channels, where each channel is described by
+     the SymmetricVoltageOneSiteModel.
+   - Implemented by the class IndependentVoltageTwoSiteModel; full details are
+     presented there.
+   - Model parameters are
+      - `epsilon1` (\f$\varepsilon_1\f$), the site-energy for channel 1,
+      - `gamma1` (\f$\Gamma_1\f$), the site/lead coupling for channel 1,
+      - `a1` (\f$a_1\f$), the strength of the voltage dependence for channel 1,
+      - `epsilon2` (\f$\varepsilon_2\f$), the site-energy for channel 2,
+      - `gamma2` (\f$\Gamma_2\f$), the site/lead coupling for channel 2,
+      - `a2` (\f$a_2\f$), the strength of the voltage dependence for channel 2.
+
+\subsubsection subsubsec_add_conductance_model Adding Conductance Models
+Adding a conductance model is designed to be straightforward, requiring the
+following steps.
+-# Derive a class from ConductanceModel, implementing the ConductanceModel::static_conductance, ConductanceModel::diff_conductance, and ConductanceModel::zero_bias_conductance member functions. As a side note, these three functions may use the transmission function, or other model-specific functions, which are implemented as static member functions of the derived class (as needed).
+-# Add a case for the new model in the ::make_model function. This block of code should check that all necessary random number distributions are specified and properly route them to the ConductanceModel. Finally, the case returns a shared pointer to the ConductanceModel. The implemented cases should provide sufficient examples. Note that the name of the model should be in lowercase.
+-# Add a note to the end of the ::make_model function so that (minimal) runtime support is present.
+
+\section sec_cond_hist_fit Fitting Conductance Histograms
+The general procedure for fitting a conductance histogram is as follows.
+Specify
+- a model line shape to fit against the conductance histogram. Each model has
+several parameters, as detailed below.
+- a file name containing the conductance histogram data.
+- additional options (if desired; none are required).
+
+From this information, the fitter reads in the conductance histogram and uses
+GSL's non-linear least-squares routines to fit the histogram to the desired
+line shape. Because non-linear least-squares fits are not guaranteed to find
+the best-fit solutions, we use multiple initial guesses and report the best
+fit across all guesses. This still doesn't guarantee the best fit, but seems to
+work well, in practice.
+
+Following is an example input file.
+\verbatim
+SymmetricNonresonant
+1,4-dithiolbenzene.dat
+noprint
+guess c 50. d 6. norm 10.
+guess default
+bin linear
+\endverbatim
+Additional example inputs can be found in the tests; see
+fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
+fit-symmetric-resonant.py.
+
+The lines are interpreted as follows.
+-# The model to use when fitting the conductance histogram.
+-# The data file containing the conductance histogram. All fitting models (so
+   far) are for 1-D histograms. The file should have two numbers per line: the
+   conductance, and the histogram counts in this bin.
+-# All following lines are optional and have the form `command options`.
+   The commands, and any options they require, are
+   - `noprint` (recommended) -- only output the best fit parameters at the end
+     of the program.
+   - `print` -- output iteration-by-iteration results for all initial guesses.
+     This can produce a large amount of output.
+   - `guess` -- specify initial guess(es) to use. Multiple `guess` commands
+     may be present.
+     - `guess default` -- load a \"default\" set of initial guesses for the
+       model. If no other initial guesses are specified, these initial guesses
+       will be automatically loaded. This command may be present with other
+       user-specified initial guesses to use both the user-specified and
+       default sets.
+     - `guess name value ...` -- add a user-specified initial guess. After the
+       `guess` command is a list of name/value pairs. Each fit parameter
+       (remember that fit parameters depend on the model) must be given an
+       initial value. All name/value pairs should appear on the same line. See
+       an example of this syntax in the above example input file. The \"norm\"
+       parameter (\f$N\f$) does not need to be specified, but it can be.
+   - `bin` -- specify the binning status of the data to be read in. If the data
+     is in `g counts` form (as is produced by the simulator), use
+     `bin linear`. If no `bin` command is issued, `linear` is the default. See
+     \ref subsec_impl_binstyle for a list of implemented binning types.
+     \note The use of non-`linear` binning styles is provided for cases where
+        the user may want to fit data that is not produced from the simulator
+        and was binned, e.g., logarithmically without converting back to
+        \f$g\f$. In this case, the histogram would estimate
+        \f$P_{\ln(\hat{g})}(\ln(g))\f$, not \f$P_{\hat{g}}(g)\f$; the fitter
+        needs to account for this disparity.
+
+\subsection subsec_implemented_fits Implemented Fitting Models
+We now list the implemented models for fitting conductance histograms. Note
+that all of these models are implemented by classes derived from `FitModel`.
+`FitModel` handles most all of the interface to the GSL routines, leaving only
+the model-dependent details to the specific subclass.
+- `SymmetricNonresonantFitModel`
+   - Nonresonant tunneling through a single channel that is symmetrically
+     connected to the two leads. This model was derived with electron transport
+     through molecules in mind.
+   - Implemented by the class SymmetricNonresonantFitModel; full details are
+     presented there.
+   - Fitting parameters (dimensionless) are
+       - \f$c\f$, the average level alignment relative to the standard deviation
+         in channel-electrode coupling.
+       - \f$d\f$, the average channel-electrode coupling relative to its
+         standard deviation.
+       - \f$ N \f$, a scale parameter (since the histogram is probably
+         unnormalized).
+   - Fits may be unreliable if the conductance histogram peak occurs at
+     \f$ g \gtrsim 0.01 \f$ \f$\mathrm{G}_0\f$.
+   - Detailed in \cite williams-5937.
+
+- `SymmetricResonantFitModel`
+   - Resonant tunneling through a single channel that is symmetrically
+     connected to the two leads.
+   - Implemented by the class SymmetricResonantFitModel; full details are
+     presented there.
+   - Fitting parameters (dimensionless) are
+       - \f$ \gamma \f$, the average channel-electrode coupling relative to the
+         standard deviation in the level alignment.
+       - \f$ N \f$, a scale parameter (since the histogram is probably
+         unnormalized).
+   - Detailed in \cite williams-5937.
+
+- `AsymmetricResonantFitModel`
+   - Resonant tunneling through a single channel that is asymmetrically
+     connected to the two leads. This model was derived with electron transport
+     through point contacts in mind.
+   - Implemented by the class AsymmetricResonantFitModel; full details are
+     presented there.
+   - Fitting parameters (dimensionless) are
+       - \f$ \gamma_\mathrm{L} \f$, the average coupling to one electrode
+         relative to the standard deviation in the couplings.
+       - \f$ \gamma_\mathrm{R} \f$, the average coupling to the other
+         electrode relative to the standard deviation in the couplings.
+       - \f$ r \f$, the standard deviaton of the coupling relative to the
+         standard deviation of the level alignment.
+       - \f$ N \f$, a scale parameter (since the histogram is probably
+         unnormalized).
+   - Fits are somewhat insensitive to \f$r\f$.
+   - The order of \f$\Gamma_\mathrm{L}\f$ and \f$\Gamma_\mathrm{R}\f$ is
+     arbitrary.
+   - Detailed in \cite williams-5937.
+
+\subsection add_fit_models Adding Fitting Models
+Adding a model to fit against is designed to be straightforward. First, we
+describe the general steps of non-linear fitting and then outline how to add
+a model.
+
+Non-linear fitting a really an optimization process. Suppose our observed data
+set is \f$\{g_j, p_j\}\f$; perhaps, as is the case for 1D conductance
+histograms, \f$j\f$ is a bin, \f$g_j\f$ is the conductance of that bin, and
+\f$p_j\f$ is the bin count. We ultimately seek to minimize a functional such
+as \f[ r(\{g_j, p_j\}; \{x_k\}) = \sum_j \left| f(g_j; \{x_k\}) - p_j \right|^2, \f] where
+\f$f\f$ is the fit function and \f$\{ x_k \}\f$ are the fitting parameters.
+
+Much of the fitting procedure is handled internally by the GSL, and the
+`FitModel` class contains even more common operations. Ultimately, to implement
+a new model,
+-# Derive a class from FitModel, implementing the FitModel::resid and
+   FitModel::jacobian member functions. FitModel::resid calculates the
+   component in \f$r\f$ for a particular data point \f$g_j\f$ and \f$p_j\f$.
+   Similarly, FitModel::jacobian calculates the Jacobian at the specific data
+   point, where the Jacobian is the vector of \f$\partial f / \partial x_k\f$
+   derivatives.
+-# If the functional form and/or its Jacobian are expensive to calculate, you
+   may wish to override the FitModel::resid_j function, which evaluates the
+   residual and Jacobian together. The default provided by FitModel simply
+   calls the subclass's `resid` and `jacobian` functions.
+-# Implement the member function FitModel::append_default_guesses, which
+   populates  a vector of initial guesses to use for fitting the data. The fit
+   will be performed for each initial guess, and the best fit will be output at
+   the end. Similarly, implement the FitModel::create_initial_guess function,
+   which facilitates runtime-specified initial guesses.
+-# Implement the member function FitModel::print_fit, which prints a set of
+   fitting parameters to the specified output stream.
+-# If deemed necessary, override the FitModel::process_fit_parameters, which
+   \"cleans\" up the parameters. For instance, the \f$\gamma\f$ parameter in
+   the SymmetricResonantFitModel may be mathematically positive or negative
+   (the fit function only depends on \f$\gamma^2\f$), but physically it should
+   be positive. This function ensures that, in this example, \f$\gamma>0\f$.
+-# Add the model, using an input name, to the ::get_cond_hist_fit_model
+   function. Also consider adding a note to the error message so as to provide
+   (minimal) runtime support.
+*/
