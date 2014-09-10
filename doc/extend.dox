@@ -127,8 +127,10 @@ a new model,
    FitModel::jacobian member functions. FitModel::resid calculates the
    component in \f$r\f$ for a particular data point \f$g_j\f$ and \f$p_j\f$.
    Similarly, FitModel::jacobian calculates the Jacobian at the specific data
-   point, where the Jacobian is the vector of \f$\partial f / \partial x_k\f$
-   derivatives.
+   point, where the Jacobian is the matrix of derivatives,
+   \f[ \frac{\partial}{\partial x_k} \left( f(g_j, \{x_k\}) - p_j \right). \f]
+   \note Each row of the Jacobian for a given data point is calculated
+         independently.
 -# If the functional form and/or its Jacobian are expensive to calculate, you
    may wish to override the FitModel::resid_j function, which evaluates the
    residual and Jacobian together. The default provided by FitModel simply
@@ -145,7 +147,7 @@ a new model,
    the SymmetricResonantFitModel may be mathematically positive or negative
    (the fit function only depends on \f$\gamma^2\f$), but physically it should
    be positive. This function ensures that, in this example, \f$\gamma>0\f$.
--# Add the model, using an input name, to the ::get_cond_hist_fit_model
+-# \todo Add the model, using an input name, to the ::get_cond_hist_fit_model
    function. Also consider adding a note to the error message so as to provide
    (minimal) runtime support.
 */
