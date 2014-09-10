@@ -109,19 +109,7 @@ The implemented random distributions are
          - `b` is \f$b\f$, the scale factor.
       - Implemented by the class GammaDistribution.
 
-\subsection add_rnd_subsec Adding Random Distributions
-Random number distributions are computationally described by the
-RandomDistribution class. Adding a new random number distribution requires
-a class derived from RandomDistribution that implements the `sample` function.
-This function takes in a `gsl_rng` construct from GSL and returns a random
-number from the distribution.
-
-Finally, the new random number distribution needs to be added to the
-::distribution_from_tokens function so that it is processed from input. In this
-function, the `distribution` tag for the input deck is defined and the code for
-processing `[distribution-parameters]` is implemented. The distributions
-listed above should provide sufficient examples. Note that the name of the
-distribution should be in lowercase.
+Details on adding random distributions are found in \ref subsec_add_rnd.
 
 \section sec_histograms Histograms
 The last mathematical concept we cover in this chapter is that of histograms.
@@ -168,17 +156,8 @@ requires the mask function, \f$u=f(x)\f$; the inverse mask function
 - Logarithmic binning for some base \f$b\f$, \f$ u = f(x) = \log_b(x) \f$.
   - Can be used in input files with `log b`, where `b` is \f$b\f$.
   - Implemented in the class BinLog.
+  .
+.
 
-\subsection subsec_add_binstyle Adding Binning Styles
-Binning styles are described by the abstract BinStyle class. Adding a new
-binning style required deriving from this class and implementing the three
-abstract functions.
--# The mask function, \f$u = f(x)\f$, in `mask`.
--# The inverse mask function, \f$x = f^{-1}(u)\f$, in `invmask`.
--# The derivative of the mask function, \f$ \mathrm{d}f / \mathrm{d}x\f$, in
-   `dmaskdx`.
-
-Finally, add the binning style class to the ::get_bin_style function so that
-it can be referenced from the input arguments. The implemented examples should
-be sufficient to explain this procedure.
+Details on adding binning styles are found in \ref subsec_add_binstyle.
 */
