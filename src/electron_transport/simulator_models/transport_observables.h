@@ -2,7 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file observables.h
+ * \file transport_observables.h
  * \brief Interfaces for the various observables related to electron transport.
  *
  * Each observable should have a function that returns either double or
