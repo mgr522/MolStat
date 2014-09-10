@@ -40,10 +40,10 @@ using std::shared_ptr;
  * the transmission function is
  * \f[ T(E) = \frac{16 \Gamma^2 \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma^2\right]^2 + 16 \Gamma^2(E-\varepsilon)^2}. \f]
  * - Differential conductance:
- *   \f[ g(V) = \frac{2e^2}{h} \left[ \eta T(E_\mathrm{F} + \eta eV) + (1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
+ *   \f[ G_\mathrm{d}(V) = \frac{2e^2}{h} \frac{1}{2} \left[ T(E_\mathrm{F} + eV/2) + T(E_\mathrm{F} - eV/2) \right]. \f]
  * - Static conductance:
- *   \f{eqnarray*}{ g(V) & = & \frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+e^2V^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon + \eta eV)}{2\beta + i\Gamma} \right) \right] \\
- *   && -\frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+e^2V^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon + (\eta-1) eV)}{2\beta + i\Gamma} \right) \right]. \f}
+ *   \f{eqnarray*}{ G_\mathrm{s}(V) & = & \frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+\Gamma^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon + eV/2)}{2\beta + i\Gamma} \right) \right] \\
+ *   && -\frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+\Gamma^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon - eV/2)}{2\beta + i\Gamma} \right) \right]. \f}
  */
 class SymTwoSiteSimulateModel : public SimulateModel,
 	public DifferentialConductance, public StaticConductance {

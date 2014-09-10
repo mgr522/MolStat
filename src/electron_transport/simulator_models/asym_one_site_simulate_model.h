@@ -31,8 +31,8 @@ using std::shared_ptr;
  * - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
  * - `v` (\f$V\f$), the applied bias,
  * - `epsilon` (\f$\varepsilon\f$), the site-energy,
- * - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode.
- * - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode.
+ * - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
+ * - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
  * - `a` (\f$a\f$), the scaling factor for the voltage-dependence of \f$\varepsilon\f$.
  *
  * Starting from \f$ \hat{H} = \left[ \varepsilon-aeV \right] \f$ and
@@ -40,9 +40,9 @@ using std::shared_ptr;
  * the transmission function is
  * \f[ T(E) = \frac{4\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{4(E-\varepsilon-aeV)^2 + (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})^2}. \f]
  * - Differential conductance:
- *   \f[ g(V) = \frac{2e^2}{h} \left[ (\eta-a) T(E_\mathrm{F} + \eta eV) + (a+1-\eta) T(E_\mathrm{F} + (\eta-1)eV) \right]. \f]
+ *   \f[ G_\mathrm{d}(V) = \frac{2e^2}{h} \left[ (1/2-a) T(E_\mathrm{F} + eV/2) + (1/2+a) T(E_\mathrm{F} - eV/2) \right]. \f]
  * - Static conductance:
- *   \f[ g(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon + (\eta-a) eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon + (\eta-1-a)eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
+ *   \f[ G_\mathrm{s}(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon + (1/2-a) eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon - (1/2+a)eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
  */
 class AsymOneSiteSimulateModel : public SimulateModel,
 	public DifferentialConductance, public StaticConductance {

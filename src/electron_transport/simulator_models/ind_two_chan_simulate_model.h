@@ -30,11 +30,11 @@ using std::shared_ptr;
  * Model parameters are
  * - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
  * - `v` (\f$V\f$), the applied bias,
- * - `epsilon1` (\f$\varepsilon_1\f$), the site-energy for channel 1.
- * - `gamma1` (\f$\Gamma_1\f$), the site/lead coupling for channel 1.
- * - `a1` (\f$a_1\f$), the strength of the voltage dependence for channel 1.
- * - `epsilon2` (\f$\varepsilon_2\f$), the site-energy for channel 2.
- * - `gamma2` (\f$\Gamma_2\f$), the site/lead coupling for channel 2.
+ * - `epsilon1` (\f$\varepsilon_1\f$), the site-energy for channel 1,
+ * - `gamma1` (\f$\Gamma_1\f$), the site/lead coupling for channel 1,
+ * - `a1` (\f$a_1\f$), the strength of the voltage dependence for channel 1,
+ * - `epsilon2` (\f$\varepsilon_2\f$), the site-energy for channel 2,
+ * - `gamma2` (\f$\Gamma_2\f$), the site/lead coupling for channel 2,
  * - `a2` (\f$a_2\f$), the strength of the voltage dependence for channel 2.
  *
  * This model assumes the system has two independent channels, each of which is
