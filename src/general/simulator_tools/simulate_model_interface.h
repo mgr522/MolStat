@@ -84,6 +84,8 @@ typedef std::function<shared_ptr<SimulateModel>
 /**
  * \brief Creates a SimulateModelInstantiator for a particular model.
  *
+ * \todo Make a test for SimulateModelAdd.
+ *
  * \tparam T The type of SimulateModel we wish to instantiate.
  * \return A function for instantiating the class from a map of available
  *    random number distributions.
@@ -117,6 +119,8 @@ using Observable = std::function<std::array<double, N>(shared_ptr<gsl_rng>)>;
  * implements the desired observable. If not, it throws an exception. If it
  * is, it then creates a wrapper to the observable's function that can be
  * called to simulate data.
+ *
+ * \todo Make a test for ObservableCheck.
  *
  * \throw runtime_error If the model and observable are incompatible; that is,
  *    the model does not implement the observable.
