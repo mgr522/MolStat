@@ -46,6 +46,38 @@ style should be in lowercase.
 \section sec_add_simulate Adding Simulator Models and Observables
 
 \subsection subsec_add_simulate_observable Adding Simulator Observables
+Unlike other concepts, simulator observables do not have an abstract class from
+which they inherit. If there were such a class, each observable would have to
+implement a function with the same name; a particular model would then only be
+able to implement one observable.
+
+Instead, each observable is an abstract class (not necessarily derived from
+another class) that has a virtual function with the signature
+\verbatim
+std::array<double, N> observable_function(std::shared_ptr<gsl_rng>) const
+\endverbatim
+where `N` is the "dimensionality" of the observable (`N` = 1 or 2). (For
+example, differential conductance is a two-dimensional observable; both the
+applied bias and the conductance are returned.) A simulator model that
+calculates this observable will thus inherit from both SimulateModel (see
+\ref subsec_add_simulate_model) and the observable's class.
+
+Finally, the observable needs to be added to MolStat's list of available
+observables (the `std::map` called `observables`). The ::ObservableCheck
+template provides a wrapper for this operation. For a one-dimensional
+observable,
+\verbatim
+observables["observablename"] = Obs2(ObservableCheck(&ObservableClass::observable_function));
+\endverbatim
+and for a two-dimensional observable,
+\verbatim
+observables["observablename"] = ObservableCheck(&ObservableClass::observable_function);
+\endverbatim
+The name of the observable (for use in the input file) is the key for
+`observables`. This key should be in lowercase in the code; it is case
+insensitive in the input file. Note that the ::Obs2 function puts a wrapper
+around the one-dimensional observable so that a two-dimensional observable is
+produced (one of the two values is always `0.`).
 
 \subsection subsec_add_simulate_model Adding Simulator Models
 Simulator models are encapsulated by the SimulateModel class. This base class

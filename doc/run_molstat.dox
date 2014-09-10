@@ -34,9 +34,12 @@ are important, and the text is not case sensitive.
    the model. Information on the random distributions can be found in
    \ref sec_rng.
 .
-Regardless of the binning style used, the output values will be unmasked by
-the binning style. That is, the output estimates \f$P_{\hat{x}}(x)\f$ instead
-of the masked value.
+A few notes regarding the input lines and MolStat behavior.
+- If the specified model does not implement the desired observable, MolStat
+  will print an error message and exit without simulating data.
+- Regardless of the binning style used, the output values will be unmasked by
+  the binning style. That is, the output estimates \f$P_{\hat{x}}(x)\f$ instead
+  of the masked value.
 
 Following is an example input file for simulating a conductance histogram. The
 input file must be routed to standard in.
