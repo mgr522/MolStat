@@ -118,8 +118,6 @@ using Observable = std::function<std::array<double, N>(shared_ptr<gsl_rng>)>;
  * is, it then creates a wrapper to the observable's function that can be
  * called to simulate data.
  *
- * \todo Make a test for ObservableCheck.
- *
  * \throw runtime_error If the model and observable are incompatible; that is,
  *    the model does not implement the observable.
  *
