@@ -14,6 +14,7 @@
  * \date September 2014
  */
 
+#include <memory>
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
