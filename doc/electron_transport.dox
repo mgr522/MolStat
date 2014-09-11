@@ -163,7 +163,7 @@ Transport models are referenced in transport_models.cc.
 \section sec_fit_electron_transport Fitting Electron Transport Properties
 The following list overviews that implemented fitter models for electron
 transport.
-- `SymmetricNonresonantFitModel`
+- `%SymmetricNonresonantFitModel`
    - Nonresonant tunneling through a single channel that is symmetrically
      connected to the two leads. This model was derived with electron transport
      through molecules in mind.
@@ -180,7 +180,7 @@ transport.
      \f$ g \gtrsim 0.01 \f$ \f$\mathrm{G}_0\f$.
    - Detailed in \cite williams-5937.
 
-- `SymmetricResonantFitModel`
+- `%SymmetricResonantFitModel`
    - Resonant tunneling through a single channel that is symmetrically
      connected to the two leads.
    - Implemented by the class SymmetricResonantFitModel; full details are
@@ -192,7 +192,7 @@ transport.
          unnormalized).
    - Detailed in \cite williams-5937.
 
-- `AsymmetricResonantFitModel`
+- `%AsymmetricResonantFitModel`
    - Resonant tunneling through a single channel that is asymmetrically
      connected to the two leads. This model was derived with electron transport
      through point contacts in mind.

@@ -119,13 +119,14 @@ are important, and the text (excluding the file name) is not case sensitive.
    - `bin` -- specify the binning status of the data to be read in. If the data
      is in `g counts` form (as is produced by `molstat-simulator`), use
      `bin linear`. If no `bin` command is issued, `linear` is the default. See
-     \ref subsec_impl_binstyle for a list of implemented binning types.
-     \note The use of non-`linear` binning styles is provided for cases where
-        the user may want to fit data that is not produced from the simulator
-        and was binned, e.g., logarithmically without converting back to
-        \f$g\f$. In this case, the histogram would estimate
-        \f$P_{\ln(\hat{g})}(\ln(g))\f$, not \f$P_{\hat{g}}(g)\f$; the fitter
-        needs to account for this disparity.
+     \ref subsec_impl_binstyle for a list of implemented binning types. Note
+     that the use of non-`linear` binning styles is provided for cases where
+     the user may want to fit data that is not produced from the simulator and
+     was binned, e.g., logarithmically without converting back to \f$g\f$. In
+     this case, the histogram would estimate \f$P_{\ln(\hat{g})}(\ln(g))\f$,
+     not \f$P_{\hat{g}}(g)\f$; the fitter needs to account for this disparity.
+   .
+.
 
 Following is an example input file.
 \verbatim
@@ -139,4 +140,7 @@ bin linear
 Additional example inputs can be found in the tests; see
 fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
 fit-symmetric-resonant.py.
+\endverbatim
+
+Information on adding fitter models can be found in \ref sec_add_fit_model.
 */
