@@ -62,8 +62,8 @@ int main(int argc, char **argv) {
 	// initialize the GSL random number generator
 	gsl_rng_env_setup();
 	shared_ptr<gsl_rng> r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
-	gsl_rng_set(r.get(), 0xFEEDFACE); // use this line for debugging
-	//gsl_rng_set(r.get(), time(nullptr));
+	//gsl_rng_set(r.get(), 0xFEEDFACE); // use this line for debugging
+	gsl_rng_set(r.get(), time(nullptr));
 
 	// simulation variables
 	size_t ntrials, nbin, i;
