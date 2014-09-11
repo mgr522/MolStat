@@ -147,7 +147,12 @@ a new model,
    the SymmetricResonantFitModel may be mathematically positive or negative
    (the fit function only depends on \f$\gamma^2\f$), but physically it should
    be positive. This function ensures that, in this example, \f$\gamma>0\f$.
--# \todo Add the model, using an input name, to the ::get_cond_hist_fit_model
-   function. Also consider adding a note to the error message so as to provide
-   (minimal) runtime support.
+-# Add the model, using an input name as the key, to the fitter's `models`
+   list. The ::FitModelAdd template provides a wrapper for this operation.
+   Using SymmetricResonantFitModel as an example, the code would be
+   \verbatim
+   models["symmetricresonant"] = FitModelAdd<SymmetricResonantFitModel, 1>();
+   \endverbatim
+   The key string should be in lowercase in the code; it is case insensitive in
+   the input file.
 */
