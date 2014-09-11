@@ -84,8 +84,6 @@ typedef std::function<shared_ptr<SimulateModel>
 /**
  * \brief Creates a SimulateModelInstantiator for a particular model.
  *
- * \todo Make a test for SimulateModelAdd.
- *
  * \tparam T The type of SimulateModel we wish to instantiate.
  * \return A function for instantiating the class from a map of available
  *    random number distributions.

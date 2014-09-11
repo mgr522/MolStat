@@ -261,8 +261,6 @@ using FitModelInstantiator = std::function< shared_ptr< FitModel<N> >
 /**
  * \brief Creates a FitModelInstantiator for a particular FItModel.
  *
- * \todo Make a test for FitModelAdd.
- *
  * \tparam T The type of FitModel we wish to instantiate.
  * \tparam N The number of independent variables in the fit function.
  * \return A function for instantiating the class from a list of data points.
