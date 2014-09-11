@@ -57,7 +57,6 @@ a constant 0.
 Additional example inputs can be found in the tests; see, for example,
 fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
 fit-symmetric-resonant.py.
-\todo Update the tests for the new simulator input style.
 
 Finally, the histogram is output with one bin per line. A two-dimensional
 histogram is generally output, where each line is

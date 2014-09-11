@@ -21,7 +21,7 @@
  # to produce the data file used by this test.
  #
  # @author Matthew G.\ Reuter
- # @date May 2014
+ # @date September 2014
 
 import subprocess
 
@@ -39,7 +39,7 @@ output = process.communicate( \
 assert(output[1] == '')
 
 # check the output string
-assert(output[0] == 'Resid = 4.518405e+03\n' \
-'c=5.9138e+01, d=9.8513e+00, norm=1.0147e+04\n')
+assert(output[0] == 'Resid = 1.599844e+04\n' \
+'c=5.9267e+01, d=9.8774e+00, norm=1.0206e+05\n')
 
 ## @endcond
