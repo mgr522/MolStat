@@ -1,7 +1,7 @@
 noinst_LIBRARIES = libtransport_simulate.a
 
-libtransport_simulate_a_SOURCES = transport_models.h \
-	transport_models.cc \
+libtransport_simulate_a_SOURCES = transport_simulate_models.h \
+	transport_simulate_models.cc \
 	transport_observables.h \
 	sym_one_site_simulate_model.h \
 	sym_one_site_simulate_model.cc \

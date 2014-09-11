@@ -3,16 +3,15 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file main-fitter.cc
- * \brief Main function for fitting histogram data to the desired functional
- *        form.
+ * \brief Main function for fitting single-molecule data to the desired
+ *    functional form.
  *
- * This program fits conductance data (using one of the implemented models)
- * and outputs the best-fit parameters. Since all of these functional forms
- * are non-linear, multiple initial guesses are used, and the overall best fit
- * is output.
+ * This program fits data (using one of the implemented models) and outputs the
+ * best-fit parameters. Because all of these functional forms are non-linear,
+ * multiple initial guesses are used, and the overall best fit is output.
  *
  * \author Matthew G.\ Reuter
- * \date June 2014
+ * \date September 2014
  */
 
 #include <cstdio>
@@ -20,13 +19,15 @@
 #include <cmath>
 #include <list>
 #include <utility>
+#include <map>
+#include <string>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multifit_nlin.h>
 
 #include <general/string_tools.h>
 #include <general/histogram_tools/bin_style.h>
-#include "electron_transport/fitter_models/cond_hist_fit_model.h"
+#include "electron_transport/fitter_models/transport_fit_models.h"
 
 using namespace std;
 
@@ -53,9 +54,17 @@ int main(int argc, char **argv) {
 	double resid, bestresid;
 	int status;
 
-	// model & parameters
+	// the model we're fitting against
 	shared_ptr<FitModel<1>> model;
+	// the list of models:
+	// stored as a map of string (model name) to a function that instantiates
+	// such a model, given the list of data
+	map<string, FitModelInstantiator<1>> models;
+
+	// the data we're fitting
 	list<pair<array<double, 1>, double>> data;
+
+	// various parameters for determining the best fit
 	vector<double> bestfit;
 	list<vector<double>> initvals;
 	list<vector<double>>::const_iterator initval;
@@ -69,6 +78,10 @@ int main(int argc, char **argv) {
 	vector<string> tokens;
 
 	gsl_set_error_handler_off();
+
+	// load the models
+	// FitModelAdd calls appear here
+	load_transport_models(models);
 
 	// set up the fit -- read in parameters from stdin
 	// Line 1: One token specifying the model to use for fitting
@@ -85,11 +98,9 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Error: model name expected in line 1.\n");
 		return 0;
 	}
-
 	// store the model name for later (need to continue reading data before
-	// invoking the constructor
+	// instantiating the model)
 	modelname = tokens[0];
-	make_lower(modelname);
 
 	// Line 2: The file name of the conductance histogram data to fit
 	try {
@@ -110,7 +121,6 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Error opening %s for input.\n", tokens[0].c_str());
 		return 0;
 	}
-
 	// read all lines in the file.
 	while(fscanf(f, "%le %le", &g, &pdf) != EOF) {
 		data.emplace_back(pair<array<double, 1>, double>({{g}}, pdf));
@@ -120,11 +130,14 @@ int main(int argc, char **argv) {
 
 	// set the model
 	try {
-		model = get_cond_hist_fit_model(modelname, data);
-	} catch(const invalid_argument &e) {
-		fprintf(stderr, "Error: unknown model '%s'.\n", modelname.c_str());
+		// models.at() returns a function for instantiating the model
+		model = models.at(to_lower(modelname))(data);
+	}
+	catch(const out_of_range &e) {
+		fprintf(stderr, "Error: model \"%s\" not found.\n", modelname.c_str());
 		return 0;
 	}
+	// set the vector size for the number of fitting parameters
 	bestfit.resize(model->nfit);
 
 	// set up GSL details

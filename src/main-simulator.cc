@@ -30,7 +30,7 @@
 #include <general/random_distributions/rng.h>
 #include <general/histogram_tools/histogram1d.h>
 #include <general/histogram_tools/histogram2d.h>
-#include "electron_transport/simulator_models/transport_models.h"
+#include "electron_transport/simulator_models/transport_simulate_models.h"
 
 using namespace std;
 

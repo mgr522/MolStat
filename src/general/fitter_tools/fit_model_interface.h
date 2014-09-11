@@ -7,7 +7,7 @@
  *    fitting.
  *
  * \author Matthew G.\ Reuter
- * \date June 2014
+ * \date September 2014
  */
 
 #ifndef __fit_model_interface_h__
@@ -20,10 +20,13 @@
 #include <list>
 #include <string>
 #include <map>
+#include <functional>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_multifit_nlin.h>
 #include "../string_tools.h"
+
+using std::shared_ptr;
 
 /**
  * \brief Abstract class encapsulating models that data be fit to.
@@ -31,11 +34,11 @@
  * Throughout, the function we fit to will be denoted \f$f\f$. For
  * extensibility, this class is templated over the number of independent
  * variables of \f$f\f$ (note that this is not the number of fitting
- * parameters). In other words, \f$f:\mathbb{R}^n\to\mathbb{R}\f$. The fit
+ * parameters). In other words, \f$f:\mathbb{R}^N\to\mathbb{R}\f$. The fit
  * function has `nfit` fitting parameters.
  *
  * Derived classes do not have to deal with the GSL particulars. Rather, they
- * only need to implement functions to evaluate the fit function and/or its
+ * only need to implement functions to evaluate the fit function and its
  * Jacobian for specific values of the independent variables and fitting
  * parameters.
  *
@@ -59,7 +62,7 @@ protected:
 	 * \brief Produces an initial guess from a map of names to values.
 	 *
 	 * When specifying initial guesses, the user puts something like
-	 * "guess c c-value d d-value" etc. in the input file.
+	 * "guess c c-value d d-value" in the input file.
 	 * FitModel::append_initial_guess converts the list of names and values
 	 * into a map<string, double> object. This function, which depends on the
 	 * model, makes sure all appropriate variables are set and orders them
@@ -78,6 +81,7 @@ public:
 	const std::size_t nfit;
 
 	FitModel() = delete;
+	virtual ~FitModel() = default;
 
 	/**
 	 * \brief Constructor requiring the data that we will be fitting against.
@@ -88,13 +92,6 @@ public:
 	 */
 	FitModel(const std::size_t nfit_,
 		const std::list<std::pair<std::array<double, N>, double>> &data_);
-
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
-	virtual ~FitModel() = default;
 
 	/**
 	 * \internal
@@ -144,8 +141,8 @@ public:
 		gsl_matrix *J);
 
 	/**
-	 * \brief Evaluates the residual for this data point at a given set of
-	 *    independent variables and fitting parameters.
+	 * \brief Evaluates the residual for the specified data point at a given set
+	 *    of independent variables and fitting parameters.
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.
@@ -248,6 +245,38 @@ public:
 };
 
 // Other function prototypes
+/**
+ * \brief Shortcut for the function signature of an "instantiator" for a
+ *    FitModel object in the fitter.
+ *
+ * FitModel objects are created by passing in the list of data points. This
+ * function type produces the FitModel from the list of data points.
+ *
+ * \tparam N The number of independent variables in the fit function.
+ */
+template<std::size_t N>
+using FitModelInstantiator = std::function< shared_ptr< FitModel<N> >
+	(const std::list<std::pair<std::array<double, N>, double>> &data_) >;
+
+/**
+ * \brief Creates a FitModelInstantiator for a particular FItModel.
+ *
+ * \todo Make a test for FitModelAdd.
+ *
+ * \tparam T The type of FitModel we wish to instantiate.
+ * \tparam N The number of independent variables in the fit function.
+ * \return A function for instantiating the class from a list of data points.
+ */
+template<typename T, std::size_t N>
+inline FitModelInstantiator<N> FitModelAdd() {
+	return []
+		(const std::list<std::pair<std::array<double, N>, double>> &data)
+		-> shared_ptr<FitModel<N>> {
+
+		return std::make_shared<T>(data);
+	};
+}
+
 /**
  * \internal
  * \brief Converts a gsl_vector to a std::vector<double>.
