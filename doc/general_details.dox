@@ -7,8 +7,9 @@
 In this section we discuss general mathematical concepts underlying MolStat.
 First is information on probability density functions and elements of
 probability theory. Second is random number distributions, focusing on the
-MolStat interface for using them. Finally is a discussion on histograms,
-including some comments on binning styles.
+MolStat interface for using them. Third is a discussion on histograms,
+including some comments on binning styles. Finally is an overview of non-linear
+least-squares fitting procedures.
 
 \section sec_pdf Probability Density Functions
 Probability density functions and, more generally, the idea of a random
@@ -65,12 +66,12 @@ density function for each of these random variables. In this section we list
 the implemented random number distributions, along with how each is invoked in
 the input file.
 
-All random number distributions have a common syntax:
+All random number distributions have a common syntax in the input files:
 \verbatim
 distribution [distribution-parameters]
 \endverbatim
 where
-   - `distribution` is the name of the distribution (see below).
+   - `distribution` is the name (case insensitive) of the distribution.
    - `[distribution-parameters]` are the parameter(s) required by the specified
      distribution.
 
@@ -112,7 +113,7 @@ The implemented random distributions are
 Details on adding random distributions are found in \ref subsec_add_rnd.
 
 \section sec_histograms Histograms
-The last mathematical concept we cover in this chapter is that of histograms.
+The next mathematical concept we cover in this chapter is that of histograms.
 In an abstract sense, histograms estimate the probability density function of
 an observable by binning a set of data into ranges. The number of measurements
 in each bin is, assuming a sufficient number of measurements are included,

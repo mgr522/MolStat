@@ -5,7 +5,7 @@
 \page extend_molstat Extending MolStat
 
 This chapter describes how to extend the functionality of MolStat.
-\ref sec_add_general describes how to add, e.g.,\ random number distributions
+\ref sec_add_general describes how to add, e.g., random number distributions
 and histogram binning styles. \ref sec_add_simulate describes how to add
 simulator models and observables. \ref sec_add_fit_model describes how to add
 fitter models. The implementation and incorporation of any of these concepts
@@ -21,8 +21,8 @@ MolStat code.
    blocks around them that provide meaningful documentation. The only
    exceptions to this rule are class member functions specified with the
    `default` or `delete` keywords.
--# Try not to include files that are unnecessary. Also avoid `using namespace
-   std;` declarations in header files.
+-# Try not to include unnecessary files. Also avoid `using namespace std;`
+   declarations in header files.
 
 \section sec_add_general Adding General Mathematical Operations
 
@@ -76,9 +76,9 @@ calculates this observable will thus inherit from both SimulateModel (see
 \ref subsec_add_simulate_model) and the observable's class.
 
 Finally, the observable needs to be added to MolStat's list of available
-observables (the `std::map` called `observables`). The ::ObservableCheck
-template provides a wrapper for this operation. For a one-dimensional
-observable,
+observables (the `std::map` called `observables` in `main-simulator.cc`). The
+::ObservableCheck template provides a wrapper for this operation. For a
+one-dimensional observable,
 \verbatim
 observables["observablename"] = Obs2(ObservableCheck(&ObservableClass::observable_function));
 \endverbatim
@@ -86,8 +86,8 @@ and for a two-dimensional observable,
 \verbatim
 observables["observablename"] = ObservableCheck(&ObservableClass::observable_function);
 \endverbatim
-The name of the observable (for use in the input file) is the key for
-`observables`. This key should be in lowercase in the code; it is case
+The name of the observable (for use in the input file) is the key
+`observablename`. This key should be in lowercase in the code; it is case
 insensitive in the input file. Note that the ::Obs2 function puts a wrapper
 around the one-dimensional observable so that a two-dimensional observable is
 produced (one of the two values is always `0.`).
@@ -122,8 +122,9 @@ observable's function will randomly generate data *and* subsequently calculate
 the observable.)
 
 Finally, the new simulator model needs to be added to to the simulator's
-`models` list. The ::SimulateModelAdd template provides a wrapper for this
-operation; using SymOneSiteSimulateModel as an example, the code would be
+`models` list in `main-simulator.cc`. The ::SimulateModelAdd template provides
+a wrapper for this operation; using SymOneSiteSimulateModel as an example, the
+code would be
 \verbatim
 models["symmetriconesite"] = SimulateModelAdd<SymOneSiteSimulateModel>();
 \endverbatim
@@ -161,8 +162,9 @@ a new model,
    (the fit function only depends on \f$\gamma^2\f$), but physically it should
    be positive. This function ensures that, in this example, \f$\gamma>0\f$.
 -# Add the model, using an input name as the key, to the fitter's `models`
-   list. The ::FitModelAdd template provides a wrapper for this operation.
-   Using SymmetricResonantFitModel as an example, the code would be
+   list in `main-fitter.cc`. The ::FitModelAdd template provides a wrapper for
+   this operation. Using SymmetricResonantFitModel as an example, the code
+   would be
    \verbatim
    models["symmetricresonant"] = FitModelAdd<SymmetricResonantFitModel, 1>();
    \endverbatim

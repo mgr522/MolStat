@@ -23,7 +23,7 @@ where
    - \f$E\f$ is the incident energy of the electron,
    - \f$T(E)\f$ is the transmission function.
    .
-The transmission function depends on the specific model and system used, and
+The transmission function depends on the specific model system used, and
 gives the aggregate transmission probability for an electron with energy
 \f$E\f$ to tunnel from one electrode to the other.
 
