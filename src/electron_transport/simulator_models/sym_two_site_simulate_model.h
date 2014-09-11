@@ -91,9 +91,7 @@ public:
 
 	/**
 	 * \internal
-	 * \brief Default constructor.
-	 *
-	 * The constructor specifies the required parameters.
+	 * \brief Constructor specifying the required parameters.
 	 *
 	 * \param[in] avail The available distributions, keyed by name.
 	 * \endinternal
