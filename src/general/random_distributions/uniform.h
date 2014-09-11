@@ -57,7 +57,14 @@ public:
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	virtual double sample(shared_ptr<gsl_rng> r) const;
+	virtual double sample(shared_ptr<gsl_rng> r) const override;
+
+	/**
+	 * \brief A description of this random number distribution.
+	 *
+	 * \return A string containing the description.
+	 */
+	virtual std::string info() const override;
 };
 
 #endif

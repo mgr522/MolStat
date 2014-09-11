@@ -20,3 +20,8 @@ GammaDistribution::GammaDistribution(const double shape_, const double scale_)
 double GammaDistribution::sample(shared_ptr<gsl_rng> r) const {
 	return gsl_ran_gamma(r.get(), shape, scale);
 }
+
+std::string GammaDistribution::info() const {
+	return "Gamma distribution with shape and scale factors of " +
+		std::to_string(shape) + " and " + std::to_string(scale) + ".";
+}

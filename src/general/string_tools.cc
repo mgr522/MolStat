@@ -99,6 +99,12 @@ void make_lower(std::string &str) {
 		c = tolower(c);
 }
 
+std::string to_lower(const std::string &str) {
+	string copy(str);
+	make_lower(copy);
+	return copy;
+}
+
 double string_to_double(const std::string &str) {
 	double ret;
 

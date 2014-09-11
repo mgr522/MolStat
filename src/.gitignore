@@ -2,6 +2,6 @@
 *.a
 .deps/
 config.h*
-fitter
-simulator
+molstat-fitter
+molstat-simulator
 stamp-h1

@@ -40,6 +40,13 @@ public:
 	 * \return The random number.
 	 */
 	virtual double sample(shared_ptr<gsl_rng> r) const = 0;
+
+	/**
+	 * \brief A description of this random number distribution.
+	 *
+	 * \return A string containing the description.
+	 */
+	virtual std::string info() const = 0;
 };
 
 /**

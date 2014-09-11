@@ -1,5 +1,5 @@
 # boilerplate initialization
-AC_INIT([MolStat], [1.0], [mgreuter@u.northwestern.edu])
+AC_INIT([MolStat], [1.1], [mgreuter@u.northwestern.edu])
 AC_CONFIG_SRCDIR([configure.ac])
 
 # this is where autoconf-generated files go
@@ -52,10 +52,11 @@ AC_CONFIG_FILES([
 				src/general/fitter_tools/Makefile
 				src/general/histogram_tools/Makefile
 				src/general/random_distributions/Makefile
-			src/conductance_histogram/Makefile
-				src/conductance_histogram/fitter_models/Makefile
-				src/conductance_histogram/simulator_models/Makefile
-				src/conductance_histogram/tests/Makefile
+				src/general/simulator_tools/Makefile
+			src/electron_transport/Makefile
+				src/electron_transport/fitter_models/Makefile
+				src/electron_transport/simulator_models/Makefile
+				src/electron_transport/tests/Makefile
 ])
 
 # finish up

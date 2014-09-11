@@ -1,0 +1,214 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
+/**
+\page page_conductance_histograms Electron Transport
+
+This chapter deals with using MolStat to simulate and fit electron transport
+data; specifically conductance histograms. We begin with the theory behind
+electron transport, introduce conductance histograms, and then detail the
+implemented MolStat models.
+
+\section sec_landauer Landauer Theory
+All of the tools are based on the Landauer-B&uuml;ttiker-Imry theory of
+conductance through quantum systems \cite buttiker-6207, \cite imry-s306.
+Within this theory, the zero-temperature current is given as
+\f[
+I(V) = \frac{2e}{h} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E T(E),
+\f]
+where
+   - \f$I\f$ is the current,
+   - \f$V\f$ is the applied bias,
+   - \f$E_\mathrm{F}\f$ is the Fermi energy of the system,
+   - \f$E\f$ is the incident energy of the electron,
+   - \f$T(E)\f$ is the transmission function.
+   .
+The transmission function depends on the specific model system used, and
+gives the aggregate transmission probability for an electron with energy
+\f$E\f$ to tunnel from one electrode to the other.
+
+Several types of conductance can be considered:
+   -# Zero-bias conductance
+      \f[ \left. \left( \frac{\partial}{\partial V} I(V) \right) \right|_{V=0} = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
+   -# Differential conductance
+      \f[ \frac{\partial}{\partial V} I(V) = \frac{2e^2}{h} \frac{1}{2} \left[ T(E_\mathrm{F} + eV/2) + T(E_\mathrm{F} - eV/2) \right] + \frac{2e}{h} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E \frac{\partial}{\partial V}T(E). \f]
+	-# Static conductance
+      \f[ \frac{I(V)}{V} = \frac{2e}{hV} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E T(E). \f]
+   .
+Various models (described below) can be used to calculate \f$T(E)\f$; from this
+transmission, all of the above conductances can be calculated.
+
+\section sec_conductance_histograms Conductance Histograms
+Conductance histograms are a common way for tabulating and analyzing
+experimental data on electron transport through nanometer-scaled systems
+(i.e., systems where quantum mechanical effects are inherent). Introductions
+to conductance histograms can be found in \cite krans-767,
+\cite xu-1221, \cite venkataraman-458, and \cite reuter-2243. In essence, the
+conductance through the system is measured many (thousands) of times, and the
+conductance data is binned into a histogram.
+
+In MolStat, we assume that the conductance histogram reports the probability
+density function of the conductance observable \cite reuter-2243. As
+described in previous sections and in Refs.\ \cite reuter-2243 and
+\cite williams-5937, MolStat then regards the physical parameters in the
+transmission as random variables that determine the conductance's probability
+density function.
+
+The two operations supported by MolStat are
+-# Simulating conductance histograms using simple model systems (see
+   \cite reuter-2243). This operation is described in
+   \ref sec_simulate_electron_transport. Note that these model systems do not
+   rely on first-principles electronic structure calculations; they are
+   phenomenological. Other studies that construct histogram from such *ab
+   initio* calculations have been reported in, for instance, \cite french-887.
+-# Fit a conductance histogram (or, more accurately, a peak from a conductance
+   histogram) to a specified functional form. This process is discussed in
+   \ref sec_fit_electron_transport.
+
+\section sec_simulate_electron_transport Simulating Electron Transport Properties
+Simulating conductance histograms is accomplished using the MolStat simulator;
+see \ref sec_molstat_simulate for details. Herein we list the observables and
+models for conductance histograms. Each model facilitate calculation of
+\f$T(E)\f$ through various parameters.
+
+\subsection subsec_transport_observables Electron Transport Observables
+Transport observables are defined in transport_observables.h.
+- Differential conductance
+   - \f$ G_\mathrm{d}(V) = \frac{\partial}{\partial V} I(V). \f$
+   - Name for input files is `%DifferentialConductance`.
+   - Implemented by the class DifferentialConductance.
+- Static conductance
+   - \f$ G_\mathrm{s}(V) = \frac{I(V)}{V}. \f$
+   - Name for input files is `%StaticConductance`.
+   - Implemented by the class StaticConductance.
+- Zero-bias conductance
+   - \f$ G_\mathrm{d}(0). \f$
+   - Not implemented as its own observable. Use `%DifferentialConductance` and
+     specify `V constant 0.` as the distribution for the bias.
+
+\subsection subsec_transport_simulate_models Models for Simulating Electron Transport
+Transport models are referenced in transport_models.cc.
+
+- `SymmetricOneSite`
+   - Single-site model with symmetric site/lead couplings.
+   - Implemented by the class SymOneSiteSimulateModel; full details are
+     presented there.
+   - Compatible with the DifferentialConductance and StaticConductance
+     observables.
+   - Model parameters are
+      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
+      - `v` (\f$V\f$), the applied bias,
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead couplingr,
+      - `a` (\f$a\f$), voltage drop through the channel.
+
+- `AsymmetricOneSite`
+   - Single-site model with asymmetric site/lead couplings.
+   - Implemented by the class AsymOneSiteSimulateModel; full details are
+     presented there.
+   - Compatible with the DifferentialConductance and StaticConductance
+     observables.
+   - Model parameters are
+      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
+      - `v` (\f$V\f$), the applied bias,
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
+      - `a` (\f$a\f$), voltage drop through the channel.
+
+- `SymmetricTwoSite`
+   - Two-site model with symmetric site/lead couplings.
+   - Implemented by the class SymTwoSiteSimulateModel; full details are
+     presented there.
+   - Compatible with the DifferentialConductance and StaticConductance
+     observables.
+   - Model parameters are
+      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
+      - `v` (\f$V\f$), the applied bias,
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
+      - `beta` (\f$\beta\f$), the inter-site coupling.
+
+- `AsymmetricTwoSite`
+   - Two-site model with asymmetric site/lead couplings.
+   - Implemented by the class AsymTwoSiteSimulateModel; full details are
+     presented there.
+   - Compatible with the DifferentialConductance and StaticConductance
+     observables.
+   - Model parameters are
+      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
+      - `v` (\f$V\f$), the applied bias,
+      - `epsilon` (\f$\varepsilon\f$), the site-energy,
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
+      - `beta` (\f$\beta\f$), the inter-site coupling.
+
+- `IndependentTwoChannel`
+   - Sum of two independent channels, where each channel is described by
+     the `SymmetricOneSite` model.
+   - Implemented by the class IndTwoChanSimulateModel; full details are
+     presented there.
+   - Compatible with the DifferentialConductance and StaticConductance
+     observables.
+   - Model parameters are
+      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
+      - `v` (\f$V\f$), the applied bias,
+      - `epsilon1` (\f$\varepsilon_1\f$), the site-energy for channel 1,
+      - `gamma1` (\f$\Gamma_1\f$), the site/lead coupling for channel 1,
+      - `a1` (\f$a_1\f$), the strength of the voltage dependence for channel 1,
+      - `epsilon2` (\f$\varepsilon_2\f$), the site-energy for channel 2,
+      - `gamma2` (\f$\Gamma_2\f$), the site/lead coupling for channel 2,
+      - `a2` (\f$a_2\f$), the strength of the voltage dependence for channel 2.
+
+\section sec_fit_electron_transport Fitting Electron Transport Properties
+The following list overviews that implemented fitter models for electron
+transport.
+- `%SymmetricNonresonantFitModel`
+   - Nonresonant tunneling through a single channel that is symmetrically
+     connected to the two leads. This model was derived with electron transport
+     through molecules in mind.
+   - Implemented by the class SymmetricNonresonantFitModel; full details are
+     presented there.
+   - Fitting parameters (dimensionless) are
+       - \f$c\f$, the average level alignment relative to the standard deviation
+         in channel-electrode coupling.
+       - \f$d\f$, the average channel-electrode coupling relative to its
+         standard deviation.
+       - \f$ N \f$, a scale parameter (since the histogram is probably
+         unnormalized).
+   - Fits may be unreliable if the conductance histogram peak occurs at
+     \f$ g \gtrsim 0.01 \f$ \f$\mathrm{G}_0\f$.
+   - Detailed in \cite williams-5937.
+
+- `%SymmetricResonantFitModel`
+   - Resonant tunneling through a single channel that is symmetrically
+     connected to the two leads.
+   - Implemented by the class SymmetricResonantFitModel; full details are
+     presented there.
+   - Fitting parameters (dimensionless) are
+       - \f$ \gamma \f$, the average channel-electrode coupling relative to the
+         standard deviation in the level alignment.
+       - \f$ N \f$, a scale parameter (since the histogram is probably
+         unnormalized).
+   - Detailed in \cite williams-5937.
+
+- `%AsymmetricResonantFitModel`
+   - Resonant tunneling through a single channel that is asymmetrically
+     connected to the two leads. This model was derived with electron transport
+     through point contacts in mind.
+   - Implemented by the class AsymmetricResonantFitModel; full details are
+     presented there.
+   - Fitting parameters (dimensionless) are
+       - \f$ \gamma_\mathrm{L} \f$, the average coupling to one electrode
+         relative to the standard deviation in the couplings.
+       - \f$ \gamma_\mathrm{R} \f$, the average coupling to the other
+         electrode relative to the standard deviation in the couplings.
+       - \f$ r \f$, the standard deviaton of the coupling relative to the
+         standard deviation of the level alignment.
+       - \f$ N \f$, a scale parameter (since the histogram is probably
+         unnormalized).
+   - Fits are somewhat insensitive to \f$r\f$.
+   - The order of \f$\Gamma_\mathrm{L}\f$ and \f$\Gamma_\mathrm{R}\f$ is
+     arbitrary.
+   - Detailed in \cite williams-5937.
+*/

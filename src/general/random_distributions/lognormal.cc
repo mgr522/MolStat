@@ -21,3 +21,8 @@ LognormalDistribution::LognormalDistribution(const double zeta_,
 double LognormalDistribution::sample(shared_ptr<gsl_rng> r) const {
 	return gsl_ran_lognormal(r.get(), zeta, sigma);
 }
+
+std::string LognormalDistribution::info() const {
+	return "Lognormal distribution with mean " + std::to_string(zeta) +
+		" and standard deviation " + std::to_string(sigma) + " in log space.";
+}

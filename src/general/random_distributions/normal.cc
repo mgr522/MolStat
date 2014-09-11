@@ -20,3 +20,8 @@ NormalDistribution::NormalDistribution(const double mean_, const double stdev_)
 double NormalDistribution::sample(shared_ptr<gsl_rng> r) const {
 	return gsl_ran_gaussian(r.get(), stdev) + mean;
 }
+
+std::string NormalDistribution::info() const {
+	return "Normal distribution with mean " + std::to_string(mean) +
+		" and standard deviation " + std::to_string(stdev) + ".";
+}
