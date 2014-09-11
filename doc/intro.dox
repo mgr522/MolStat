@@ -100,8 +100,11 @@ make check
 
 \section changelog Version Changes
 \subsection v1_1 v1.1 (September 2014)
-   - Reworked simulator code that is much more general and easier to extend.
-   - Simulator and fitter codes are no longer application specific.
+   - Reworked the simulator and fitter codes so that they are more general and
+     easier to extend. The codes are no longer specifically designed for
+     electron transport applications.
+   - Expanded the discussion of how to run and extend MolStat in the
+     documentation.
 
 \subsection v1_0 v1.0 (July 2014)
    - Initial release; general package framework and layout.

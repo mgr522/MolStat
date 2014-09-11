@@ -78,7 +78,7 @@ respectively.
 \section sec_cond_hist_fit Fitting Single-Molecule Behavior
 The general procedure for fitting single-molecule data is as follows. Specify
 - a model (line shape) to fit the single-molecule data to. Each model has at
-least one parameter.
+  least one parameter.
 - the name of a file containing the conductance histogram data.
 - additional options (if desired; none are required).
 
@@ -140,7 +140,6 @@ bin linear
 Additional example inputs can be found in the tests; see
 fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
 fit-symmetric-resonant.py.
-\endverbatim
 
 Information on adding fitter models can be found in \ref sec_add_fit_model.
 */
