@@ -111,7 +111,7 @@ make check
      fit zero-bias conductance histogram peaks against three forms for
      resonant or nonresonant tunneling.
 
-\section license_sec License
+\section sec_license License
 MolStat is distributed under the Creative Commons Attribution-NonCommercial 4.0
 International Public License. A full version of the license is provided in the
 `LICENSE` file in the top-level directory, and can be found online at

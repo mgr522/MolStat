@@ -11,6 +11,19 @@ simulator models and observables. \ref sec_add_fit_model describes how to add
 fitter models. The implementation and incorporation of any of these concepts
 into MolStat is designed to be straightforward.
 
+\section sec_style_guide MolStat Style Guidelines
+Before discussing how to extend MolStat, we introduce the style guidelines for
+MolStat code.
+-# Every MolStat file should begin with a comment identifying the file as part
+   of MolStat. This comment should include reference to the \ref sec_license.
+   The copyright can be changed to reflect the authors' affiliation(s).
+-# All files, classes, typedefs, functions, etc., should have doxygen comment
+   blocks around them that provide meaningful documentation. The only
+   exceptions to this rule are class member functions specified with the
+   `default` or `delete` keywords.
+-# Try not to include files that are unnecessary. Also avoid `using namespace
+   std;` declarations in header files.
+
 \section sec_add_general Adding General Mathematical Operations
 
 \subsection subsec_add_rnd Adding Random Number Distributions
