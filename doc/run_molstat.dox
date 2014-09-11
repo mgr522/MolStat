@@ -24,7 +24,7 @@ more detail in \ref subsec_add_simulate_model, simulator models are described
 by the SimulateModel class; observables (see
 \ref subsec_add_simulate_observable) are intentionally less structured.
 
-The `molstat-simulator` input file has the following structure. The line breaks
+A `molstat-simulator` input file has the following structure. The line breaks
 are important, and the text is not case sensitive.
 -# The model to use.
 -# The observable to calculate.
@@ -76,40 +76,26 @@ Information on adding models and observables can be found in the
 respectively.
 
 \section sec_cond_hist_fit Fitting Single-Molecule Behavior
-\todo Change this section for a general fitting procedure.
-
-The general procedure for fitting a conductance histogram is as follows.
-Specify
-- a model line shape to fit against the conductance histogram. Each model has
-several parameters, as detailed below.
-- a file name containing the conductance histogram data.
+The general procedure for fitting single-molecule data is as follows. Specify
+- a model (line shape) to fit the single-molecule data to. Each model has at
+least one parameter.
+- the name of a file containing the conductance histogram data.
 - additional options (if desired; none are required).
 
 From this information, the fitter reads in the conductance histogram and uses
-GSL's non-linear least-squares routines to fit the histogram to the desired
+GSL's non-linear least-squares routines to fit the data to the desired
 line shape. Because non-linear least-squares fits are not guaranteed to find
 the best-fit solutions, we use multiple initial guesses and report the best
 fit across all guesses. This still doesn't guarantee the best fit, but seems to
 work well, in practice.
 
-Following is an example input file.
-\verbatim
-SymmetricNonresonant
-1,4-dithiolbenzene.dat
-noprint
-guess c 50. d 6. norm 10.
-guess default
-bin linear
-\endverbatim
-Additional example inputs can be found in the tests; see
-fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
-fit-symmetric-resonant.py.
-
-The lines are interpreted as follows.
--# The model to use when fitting the conductance histogram.
--# The data file containing the conductance histogram. All fitting models (so
-   far) are for 1-D histograms. The file should have two numbers per line: the
-   conductance, and the histogram counts in this bin.
+A `molstat-fitter` input file has the following structure. The line breaks
+are important, and the text (excluding the file name) is not case sensitive.
+-# The model to use when fitting the single-molecule data.
+-# The name of the file containing the data. All fitting models (so far) are
+   one-dimensional data. The file should have two numbers per line: the
+   value of the observable, and the probability density function for this
+   value.
 -# All following lines are optional and have the form `command options`.
    The commands, and any options they require, are
    - `noprint` (recommended) -- only output the best fit parameters at the end
@@ -124,13 +110,14 @@ The lines are interpreted as follows.
        user-specified initial guesses to use both the user-specified and
        default sets.
      - `guess name value ...` -- add a user-specified initial guess. After the
-       `guess` command is a list of name/value pairs. Each fit parameter
+       `guess` command is a list of `name`/`value` pairs. Each fit parameter
        (remember that fit parameters depend on the model) must be given an
-       initial value. All name/value pairs should appear on the same line. See
-       an example of this syntax in the above example input file. The \"norm\"
-       parameter (\f$N\f$) does not need to be specified, but it can be.
+       initial value, excepting the \"norm\" parameter, \f$N\f$. (\f$N\f$ can
+       be specified, though.) All name/value pairs should appear on the same
+       line. An example of this syntax is shown in the following example input
+       file.
    - `bin` -- specify the binning status of the data to be read in. If the data
-     is in `g counts` form (as is produced by the simulator), use
+     is in `g counts` form (as is produced by `molstat-simulator`), use
      `bin linear`. If no `bin` command is issued, `linear` is the default. See
      \ref subsec_impl_binstyle for a list of implemented binning types.
      \note The use of non-`linear` binning styles is provided for cases where
@@ -139,4 +126,17 @@ The lines are interpreted as follows.
         \f$g\f$. In this case, the histogram would estimate
         \f$P_{\ln(\hat{g})}(\ln(g))\f$, not \f$P_{\hat{g}}(g)\f$; the fitter
         needs to account for this disparity.
+
+Following is an example input file.
+\verbatim
+SymmetricNonresonant
+1,4-dithiolbenzene.dat
+noprint
+guess c 50. d 6. norm 10.
+guess default
+bin linear
+\endverbatim
+Additional example inputs can be found in the tests; see
+fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or
+fit-symmetric-resonant.py.
 */
