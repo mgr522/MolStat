@@ -96,7 +96,11 @@ run using
 make check
 \endverbatim
 
-\note The `fit-asymmetric-resonant.py` test can take several minutes to run.
+\note 
+- The `fit-asymmetric-resonant.py` test can take several minutes to run.
+- Some tests use python. They have been tested with version 2.7 and may not run
+  in python 3. The configure script only checks for python 2.* and should omit
+  the tests if only python 3.* is found.
 
 \section changelog Version Changes
 \subsection v1_1 v1.1 (September 2014)
