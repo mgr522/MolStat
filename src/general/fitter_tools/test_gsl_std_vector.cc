@@ -15,6 +15,7 @@
 
 #include <cstdio>
 #include <assert.h>
+#include <cmath>
 #include "fit_model_interface.h"
 
 using namespace std;
