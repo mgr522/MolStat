@@ -35,6 +35,8 @@ void load_transport_models(
 
 	models["asymmetrictwosite"] =
 		SimulateModelAdd<AsymTwoSiteSimulateModel>();
+    models["singlemoleculecv"] = 
+        SimulateModelAdd<SingleMoleculeCV>();
 }
 
 void load_transport_observables(std::map<std::string, std::function<
