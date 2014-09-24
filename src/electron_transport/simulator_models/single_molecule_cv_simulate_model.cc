@@ -10,17 +10,17 @@
  * \date September 2014
  */
 
-#include "asym_one_site_simulate_model.h"
+#include "single_molecule_cv_simulate_model.h"
 #include <cmath>
 
 using namespace std;
 
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
-const vector<string> AsymOneSiteSimulateModel::parameters =
+const vector<string> SingleMoleculeCV::parameters =
 	{"ef", "v", "epsilon", "gammal", "gammar", "a"};
 
-void AsymOneSiteSimulateModel::unpack_parameters(const std::vector<double> &vec,
+void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
 	double &ef, double &v, double &epsilon, double &gammal, double &gammar,
 	double &a) {
 
@@ -32,12 +32,12 @@ void AsymOneSiteSimulateModel::unpack_parameters(const std::vector<double> &vec,
 	a = vec[5];
 }
 
-AsymOneSiteSimulateModel::AsymOneSiteSimulateModel(
+SingleMoleculeCV::SingleMoleculeCV(
 	const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
 	: SimulateModel(avail, parameters) {
 }
 
-std::array<double, 2> AsymOneSiteSimulateModel::DiffG(shared_ptr<gsl_rng> r)
+std::array<double, 2> SingleMoleculeCV::DiffG(shared_ptr<gsl_rng> r)
 	const {
 
 	vector<double> params(6);
@@ -50,7 +50,7 @@ std::array<double, 2> AsymOneSiteSimulateModel::DiffG(shared_ptr<gsl_rng> r)
 	return {{ v, diff_conductance(params) }};
 }
 
-std::array<double, 2> AsymOneSiteSimulateModel::StaticG(shared_ptr<gsl_rng> r)
+std::array<double, 2> SingleMoleculeCV::StaticG(shared_ptr<gsl_rng> r)
 	const {
 
 	vector<double> params(6);
@@ -63,7 +63,7 @@ std::array<double, 2> AsymOneSiteSimulateModel::StaticG(shared_ptr<gsl_rng> r)
 	return {{ v, static_conductance(params) }};
 }
 
-double AsymOneSiteSimulateModel::transmission(const double e, const double v,
+double SingleMoleculeCV::transmission(const double e, const double v,
 	const double eps, const double gammal, const double gammar,
 	const double a) {
 
@@ -71,7 +71,7 @@ double AsymOneSiteSimulateModel::transmission(const double e, const double v,
 		(gammal + gammar)*(gammal + gammar));
 }
 
-double AsymOneSiteSimulateModel::static_conductance(
+double SingleMoleculeCV::static_conductance(
 	const std::vector<double> &vec) {
 
 	double ef, v, eps, gammal, gammar, a;
@@ -84,7 +84,7 @@ double AsymOneSiteSimulateModel::static_conductance(
 		- atan(2. * (ef-eps-(0.5+a)*v) / (gammal + gammar)));
 }
 
-double AsymOneSiteSimulateModel::diff_conductance(
+double SingleMoleculeCV::diff_conductance(
 	const std::vector<double> &vec) {
 
 	double ef, v, eps, gammal, gammar, a;

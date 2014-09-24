@@ -10,8 +10,8 @@
  * \date September 2014
  */
 
-#ifndef __asym_one_site_simulate_model_h__
-#define __asym_one_site_simulate_model_h__
+#ifndef __single_molecule_cv_simulate_model_h__
+#define __single_molecule_cv_simulate_model_h__
 
 #include <memory>
 #include <string>
@@ -44,9 +44,7 @@ using std::shared_ptr;
  * - Static conductance:
  *   \f[ G_\mathrm{s}(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon + (1/2-a) eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon - (1/2+a)eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
  */
-class AsymOneSiteSimulateModel : public SimulateModel,
-	public DifferentialConductance, public StaticConductance {
-
+class SingleMoleculeCV: public SimulateModel, public DifferentialConductance, public StaticConductance{
 private:
 	/**
 	 * \brief Ordered list (vector) of the parameters needed for this model.
@@ -71,8 +69,8 @@ private:
 		double &v, double &epsilon, double &gammal, double &gammar, double &a);
 
 public:
-	AsymOneSiteSimulateModel() = delete;
-	virtual ~AsymOneSiteSimulateModel() = default;
+	SingleMoleculeCV() = delete;
+	virtual ~SingleMoleculeCV() = default;
 
 	/**
 	 * \internal
@@ -81,7 +79,7 @@ public:
 	 * \param[in] avail The available distributions, keyed by name.
 	 * \endinternal
 	 */
-	AsymOneSiteSimulateModel(
+	SingleMoleculeCV(
 		const std::map<std::string, shared_ptr<RandomDistribution>> &avail);
 
 	/**
