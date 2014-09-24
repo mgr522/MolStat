@@ -17,6 +17,7 @@
 #include "ind_two_chan_simulate_model.h"
 #include "sym_two_site_simulate_model.h"
 #include "asym_two_site_simulate_model.h"
+#include "single_molecule_cv_simulate_model.h"
 
 void load_transport_models(
 	std::map<std::string, SimulateModelInstantiator> &models) {
