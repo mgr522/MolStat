@@ -12,4 +12,6 @@ libtransport_simulate_a_SOURCES = transport_simulate_models.h \
 	sym_two_site_simulate_model.h \
 	sym_two_site_simulate_model.cc \
 	asym_two_site_simulate_model.h \
-	asym_two_site_simulate_model.cc
+	asym_two_site_simulate_model.cc \
+    single_molecule_cv_simulate_model.h \
+    single_molecule_cv_simulate_model.cc
