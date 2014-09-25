@@ -60,4 +60,20 @@ public:
 	virtual std::array<double, 2> DiffG(shared_ptr<gsl_rng> r) const = 0;
 };
 
+/**
+ * \brief Interface for the single molecule cyclic voltammetry current spike
+ */
+class SingMolCVPeak{
+public:
+    SingMolCVPeak() = default;
+    virtual ~SingMolCVPeak() = default;
+
+    /**
+     * \brief Returns current peak potentials for a randomly-generated set of model parameters.
+     *
+     * \param[in] r the GSL random number generator handle.
+     * \return Array containing the current peak potential during the forward scanning (0) and the backward scanning (1).
+     */
+    virtual std::array<double, 2> PeakPotentials(shared_ptr<gsl_rng> r) const = 0;
+};
 #endif
