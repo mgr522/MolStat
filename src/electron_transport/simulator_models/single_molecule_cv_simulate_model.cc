@@ -50,7 +50,7 @@ std::array<double, 2> SingleMoleculeCV::DiffG(shared_ptr<gsl_rng> r)
 	return {{ v, diff_conductance(params) }};
 }
 
-std::array<double, 2> SingleMoleculeCV::StaticG(shared_ptr<gsl_rng> r)
+std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	const {
 
 	vector<double> params(6);

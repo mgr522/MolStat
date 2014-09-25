@@ -44,7 +44,7 @@ using std::shared_ptr;
  * - Static conductance:
  *   \f[ G_\mathrm{s}(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon + (1/2-a) eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon - (1/2+a)eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
  */
-class SingleMoleculeCV: public SimulateModel, public DifferentialConductance, public StaticConductance{
+class SingleMoleculeCV: public SimulateModel, public DifferentialConductance, public SingMolCVPeak {
 private:
 	/**
 	 * \brief Ordered list (vector) of the parameters needed for this model.
@@ -93,13 +93,13 @@ public:
 		override;
 
 	/**
-	 * \brief Returns the static conductance for a randomly-generated set of
+	 * \brief Returns current peak potentials for a randomly-generated set of model parameters.
 	 *    model parameters.
 	 * 
 	 * \param[in] r The GSL random number generator handle.
 	 * \return The static conductance.
 	 */
-	virtual std::array<double, 2> StaticG(shared_ptr<gsl_rng> r) const
+	virtual std::array<double, 2> PeakPotentials(shared_ptr<gsl_rng> r) const
 		override;
 
 	/**
