@@ -26,11 +26,11 @@
 #include <array>
 #include <limits>
 
-#include <general/string_tools.h>
-#include <general/random_distributions/rng.h>
-#include <general/histogram_tools/histogram1d.h>
-#include <general/histogram_tools/histogram2d.h>
-#include "electron_transport/simulator_models/transport_simulate_models.h"
+#include "general/string_tools.h"
+#include "general/random_distributions/rng.h"
+//#include <general/histogram_tools/histogram1d.h>
+//#include <general/histogram_tools/histogram2d.h>
+//#include "electron_transport/simulator_models/transport_simulate_models.h"
 
 using namespace std;
 
@@ -61,16 +61,19 @@ enum class HistogramType {
 int main(int argc, char **argv) {
 	// initialize the GSL random number generator
 	gsl_rng_env_setup();
-	shared_ptr<gsl_rng> r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
+	molstat::gsl_rng_ptr r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
 	//gsl_rng_set(r.get(), 0xFEEDFACE); // use this line for debugging
 	gsl_rng_set(r.get(), time(nullptr));
 
+#if 0
 	// simulation variables
 	size_t ntrials, nbin, i;
+#endif
 
 	// list of parameters with specified distributions
-	map<string, shared_ptr<RandomDistribution>> parameters;
+	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 
+#if 0
 	// the model
 	shared_ptr<SimulateModel> model;
 	// the list of models:
@@ -87,10 +90,12 @@ int main(int argc, char **argv) {
 	// making sure the model/observable pair is valid.
 	map<string, function< Observable<2>(shared_ptr<SimulateModel>)> >
 		observables;
+#endif
 
 	// I/O variables
 	string line, modelname, obsname, name;
 	vector<string> tokens;
+#if 0
 	shared_ptr<BinStyle> bstyle;
 
 	// variables for setting up the histograms / storing the random data
@@ -195,6 +200,7 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Error: unknown binning style.\n");
 		return 0;
 	}
+	#endif
 
 	// all subsequent lines specify random number distributions
 	// EOF is flagged by a runtime_error in the getline function
@@ -214,8 +220,8 @@ int main(int argc, char **argv) {
 				try {
 					// create the separate line; if distribution_from_tokens throws
 					// an exception parameters would still create an entry for name
-					shared_ptr<RandomDistribution> rd =
-						distribution_from_tokens(tokens);
+					shared_ptr<molstat::RandomDistribution> rd =
+						molstat::RandomDistributionFactory(tokens);
 					parameters[name] = rd;
 				}
 				catch(const invalid_argument &e) {
@@ -229,6 +235,7 @@ int main(int argc, char **argv) {
 		// this just means we hit EOF -- stop trying to read more
 	}
 
+#if 0
 	// try to instantiate the model
 	try {
 		// models.at() returns a function for instantiating the model
@@ -361,5 +368,6 @@ int main(int argc, char **argv) {
 		}
 	}
 
+#endif
 	return 0;
 }

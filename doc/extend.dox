@@ -4,41 +4,23 @@
 /**
 \page extend_molstat Extending MolStat
 
-This chapter describes how to extend the functionality of MolStat.
-\ref sec_add_general describes how to add, e.g., random number distributions
-and histogram binning styles. \ref sec_add_simulate describes how to add
-simulator models and observables. \ref sec_add_fit_model describes how to add
-fitter models. The implementation and incorporation of any of these concepts
-into MolStat is designed to be straightforward.
+This chapter describes how to extend the functionality of MolStat. \ref sec_add_general describes how to add, e.g., random number distributions and histogram binning styles. \ref sec_add_simulate describes how to add simulator models and observables. \ref sec_add_fit_model describes how to add fitter models. The implementation and incorporation of any of these concepts into MolStat is designed to be straightforward.
 
 \section sec_style_guide MolStat Style Guidelines
-Before discussing how to extend MolStat, we introduce the style guidelines for
-MolStat code.
--# Every MolStat file should begin with a comment identifying the file as part
-   of MolStat. This comment should include reference to the \ref sec_license.
-   The copyright can be changed to reflect the authors' affiliation(s).
--# All files, classes, typedefs, functions, etc., should have doxygen comment
-   blocks around them that provide meaningful documentation. The only
-   exceptions to this rule are class member functions specified with the
-   `default` or `delete` keywords.
--# Try not to include unnecessary files. Also avoid `using namespace std;`
-   declarations in header files.
+Before discussing how to extend MolStat, we introduce the style guidelines for MolStat code.
+
+-# Every MolStat file should begin with a comment identifying the file as part of MolStat. This comment should include reference to the \ref sec_license. The copyright can be changed to reflect the authors' affiliation(s).
+
+-# All files, classes, typedefs, functions, etc., should have doxygen comment blocks around them that provide meaningful documentation. The only exceptions to this rule are class member functions specified with the `default` or `delete` keywords. Any of these quantities that are meant for inclusion in MolStat should be placed in the `molstat` namespace.
+
+-# Try not to include unnecessary files. Also avoid `using namespace std;` declarations in header files.
 
 \section sec_add_general Adding General Mathematical Operations
 
 \subsection subsec_add_rnd Adding Random Number Distributions
-Random number distributions are computationally described by the
-RandomDistribution class. Adding a new random number distribution requires
-a class derived from RandomDistribution that implements the `sample` function.
-This function takes in a `gsl_rng` construct from GSL and returns a random
-number from the distribution.
+Random number distributions are computationally described by the RandomDistribution class. Adding a new random number distribution requires a class derived from RandomDistribution that implements the `sample` and `info` functions. `sample` takes in a `gsl_rng` construct from GSL and returns a random number from the distribution. `info` is used for debugging; it provides a string representation of the distribution.
 
-Finally, the new random number distribution needs to be added to the
-::distribution_from_tokens function so that it is processed from input. In this
-function, the `distribution` tag for the input deck is defined and the code for
-processing `[distribution-parameters]` is implemented. The implemented
-distributions should provide sufficient examples. Note that the name of the
-distribution should be in lowercase.
+Finally, the new random number distribution needs to be added to the molstat::RandomDistributionFactory function so that it is processed from input. In this function, the `distribution` tag for the input deck is defined and the code for processing `[distribution-parameters]` is implemented. The implemented distributions should provide sufficient examples. Note that the name of the distribution should be in lowercase.
 
 \subsection subsec_add_binstyle Adding Binning Styles
 Binning styles are described by the abstract BinStyle class. Adding a new
