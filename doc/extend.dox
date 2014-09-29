@@ -18,7 +18,7 @@ Before discussing how to extend MolStat, we introduce the style guidelines for M
 \section sec_add_general Adding General Mathematical Operations
 
 \subsection subsec_add_rnd Adding Random Number Distributions
-Random number distributions are computationally described by the RandomDistribution class. Adding a new random number distribution requires a class derived from RandomDistribution that implements the `sample` and `info` functions. `sample` takes in a `gsl_rng` construct from GSL and returns a random number from the distribution. `info` is used for debugging; it provides a string representation of the distribution.
+Random number distributions are computationally described by the molstat::RandomDistribution class. Adding a new random number distribution requires a class derived from RandomDistribution that implements the `sample` and `info` functions. `sample` takes in a `gsl_rng` construct from GSL and returns a random number from the distribution. `info` is used for debugging; it provides a string representation of the distribution.
 
 Finally, the new random number distribution needs to be added to the molstat::RandomDistributionFactory function so that it is processed from input. In this function, the `distribution` tag for the input deck is defined and the code for processing `[distribution-parameters]` is implemented. The implemented distributions should provide sufficient examples. Note that the name of the distribution should be in lowercase.
 
