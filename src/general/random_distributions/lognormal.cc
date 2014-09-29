@@ -18,7 +18,7 @@ LognormalDistribution::LognormalDistribution(const double zeta_,
 	const double sigma_)
 	: RandomDistribution(), zeta(zeta_), sigma(sigma_) {}
 
-double LognormalDistribution::sample(shared_ptr<gsl_rng> r) const {
+double LognormalDistribution::sample(gsl_rng_ptr &r) const {
 	return gsl_ran_lognormal(r.get(), zeta, sigma);
 }
 

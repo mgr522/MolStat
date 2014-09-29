@@ -17,7 +17,7 @@
 GammaDistribution::GammaDistribution(const double shape_, const double scale_)
 	: RandomDistribution(), shape(shape_), scale(scale_) {}
 
-double GammaDistribution::sample(shared_ptr<gsl_rng> r) const {
+double GammaDistribution::sample(gsl_rng_ptr &r) const {
 	return gsl_ran_gamma(r.get(), shape, scale);
 }
 

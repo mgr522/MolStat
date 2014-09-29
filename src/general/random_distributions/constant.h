@@ -18,8 +18,6 @@
 #include <gsl/gsl_rng.h>
 #include "rng.h"
 
-using std::shared_ptr;
-
 /**
  * \brief Constant distribution.
  *
@@ -34,6 +32,7 @@ protected:
 
 public:
 	ConstantDistribution() = delete;
+	~ConstantDistribution() = default;
 
 	/**
 	 * \brief Constructor specifying the fixed value.
@@ -43,17 +42,12 @@ public:
 	ConstantDistribution(const double val);
 
 	/**
-	 * \brief Destructor.
-	 */
-	~ConstantDistribution() = default;
-
-	/**
 	 * \brief Samples from the constant distribution (returns value).
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	virtual double sample(shared_ptr<gsl_rng> r) const override;
+	virtual double sample(gsl_rng_ptr &r) const override;
 
 	/**
 	 * \brief A description of this random number distribution.

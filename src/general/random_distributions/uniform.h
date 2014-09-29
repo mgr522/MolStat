@@ -18,8 +18,6 @@
 #include <gsl/gsl_rng.h>
 #include "rng.h"
 
-using std::shared_ptr;
-
 /**
  * \brief Uniform distribution.
  */
@@ -37,6 +35,7 @@ protected:
 
 public:
 	UniformDistribution() = delete;
+	~UniformDistribution() = default;
 
 	/**
 	 * \brief Constructor specifying the range.
@@ -47,17 +46,12 @@ public:
 	UniformDistribution(const double low, const double up);
 
 	/**
-	 * \brief Destructor.
-	 */
-	~UniformDistribution() = default;
-
-	/**
 	 * \brief Samples from the uniform distribution.
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	virtual double sample(shared_ptr<gsl_rng> r) const override;
+	virtual double sample(gsl_rng_ptr &r) const override;
 
 	/**
 	 * \brief A description of this random number distribution.

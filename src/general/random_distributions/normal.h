@@ -37,6 +37,7 @@ protected:
 
 public:
 	NormalDistribution() = delete;
+	~NormalDistribution() = default;
 
 	/**
 	 * \brief Constructor specifying the mean and standard deviation.
@@ -47,17 +48,12 @@ public:
 	NormalDistribution(const double mean_, const double stdev_);
 
 	/**
-	 * \brief Destructor.
-	 */
-	~NormalDistribution() = default;
-
-	/**
 	 * \brief Samples from the uniform distribution.
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	virtual double sample(shared_ptr<gsl_rng> r) const override;
+	virtual double sample(gsl_rng_ptr &r) const override;
 
 	/**
 	 * \brief A description of this random number distribution.

@@ -17,7 +17,13 @@
 #include <string>
 #include <gsl/gsl_rng.h>
 
-using std::shared_ptr;
+/**
+ * \brief Shortcut for a handle for GSL random number generation.
+ *
+ * Needed to specify the deleter for unique pointer
+ */
+using gsl_rng_ptr =
+	std::unique_ptr<gsl_rng, decltype(&gsl_rng_free)>;
 
 /**
  * \brief Interface for random number generation.
@@ -39,7 +45,7 @@ public:
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	virtual double sample(shared_ptr<gsl_rng> r) const = 0;
+	virtual double sample(gsl_rng_ptr &r) const = 0;
 
 	/**
 	 * \brief A description of this random number distribution.
@@ -50,8 +56,9 @@ public:
 };
 
 /**
- * \brief Gets parameters from a tokenized string and forms a
- *    RandomDistribution.
+ * \brief Factory for random number distributions.
+ *
+ * Gets parameters from a tokenized string and forms a RandomDistribution.
  *
  * The first token is the name of the distribution. The remaining tokens are
  * the parameters for the distribution.
@@ -62,7 +69,7 @@ public:
  * \param[in] tokens The tokens.
  * \return The RandomDistribution.
  */
-shared_ptr<RandomDistribution> distribution_from_tokens(
+std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 	const std::vector<std::string> &tokens);
 
 #endif

@@ -17,7 +17,7 @@
 NormalDistribution::NormalDistribution(const double mean_, const double stdev_)
 	: RandomDistribution(), mean(mean_), stdev(stdev_) {}
 
-double NormalDistribution::sample(shared_ptr<gsl_rng> r) const {
+double NormalDistribution::sample(gsl_rng_ptr &r) const {
 	return gsl_ran_gaussian(r.get(), stdev) + mean;
 }
 

@@ -17,7 +17,7 @@
 UniformDistribution::UniformDistribution(const double low, const double up)
 	: RandomDistribution(), lower(low), upper(up) {}
 
-double UniformDistribution::sample(shared_ptr<gsl_rng> r) const {
+double UniformDistribution::sample(gsl_rng_ptr &r) const {
 	return lower + (upper - lower) * gsl_rng_uniform(r.get());
 }
 

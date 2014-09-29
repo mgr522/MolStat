@@ -21,10 +21,10 @@
 
 using namespace std;
 
-shared_ptr<RandomDistribution> distribution_from_tokens(
+std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 	const std::vector<std::string> &tokens) {
 
-	shared_ptr<RandomDistribution> ret;
+	unique_ptr<RandomDistribution> ret;
 
 	if(tokens.size() < 1)
 		throw invalid_argument("Empty line.");
@@ -44,7 +44,7 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 
 		val = string_to_double(tokens[1]);
 
-		ret = make_shared<ConstantDistribution>(val);
+		ret = unique_ptr<RandomDistribution>(new ConstantDistribution(val));
 	}
 	else if(type == "uniform") {
 		double lower, upper;
@@ -63,7 +63,8 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 			throw invalid_argument("Uniform Distribution: The lower bound must " \
 				"be lower than the upper bound.");
 
-		ret = make_shared<UniformDistribution>(lower, upper);
+		ret = unique_ptr<RandomDistribution>(
+			new UniformDistribution(lower, upper));
 	}
 	else if(type == "normal" || type == "gaussian") {
 		double mean, stdev;
@@ -81,7 +82,8 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 			throw invalid_argument("Normal Distribution: The standard deviation" \
 				" must be positive.");
 
-		ret = make_shared<NormalDistribution>(mean, stdev);
+		ret = unique_ptr<RandomDistribution>(
+			new NormalDistribution(mean, stdev));
 	}
 	else if(type == "lognormal") {
 		double zeta, sigma;
@@ -99,7 +101,8 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 			throw invalid_argument("Lognormal Distribution: The standard " \
 				"deviation (sigma) must be positive.");
 
-		ret = make_shared<LognormalDistribution>(zeta, sigma);
+		ret = unique_ptr<RandomDistribution>(
+			new LognormalDistribution(zeta, sigma));
 	}
 	else if(type == "gamma") {
 		double shape, scale;
@@ -116,7 +119,8 @@ shared_ptr<RandomDistribution> distribution_from_tokens(
 			throw invalid_argument("Gamma Distribution: The shape and scale " \
 				"factors must be positive.");
 
-		ret = make_shared<GammaDistribution>(shape, scale);
+		ret = unique_ptr<RandomDistribution>(
+			new GammaDistribution(shape, scale));
 	}
 	else
 		throw invalid_argument("Unrecognized probability distribution.\n" \

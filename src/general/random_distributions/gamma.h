@@ -18,8 +18,6 @@
 #include <gsl/gsl_rng.h>
 #include "rng.h"
 
-using std::shared_ptr;
-
 /**
  * \brief Gamma distribution.
  */
@@ -37,6 +35,7 @@ protected:
 
 public:
 	GammaDistribution() = delete;
+	~GammaDistribution() = default;
 
 	/**
 	 * \brief Constructor specifying the shape and scale factors.
@@ -47,17 +46,12 @@ public:
 	GammaDistribution(const double shape_, const double scale_);
 
 	/**
-	 * \brief Destructor.
-	 */
-	~GammaDistribution() = default;
-
-	/**
 	 * \brief Samples from the lognormal distribution.
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	virtual double sample(shared_ptr<gsl_rng> r) const override;
+	virtual double sample(gsl_rng_ptr &r) const override;
 
 	/**
 	 * \brief A description of this random number distribution.

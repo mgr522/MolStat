@@ -37,6 +37,7 @@ protected:
 
 public:
 	LognormalDistribution() = delete;
+	~LognormalDistribution() = default;
 
 	/**
 	 * \brief Constructor specifying the average and standard deviation.
@@ -47,17 +48,12 @@ public:
 	LognormalDistribution(const double zeta_, const double sigma_);
 
 	/**
-	 * \brief Destructor.
-	 */
-	~LognormalDistribution() = default;
-
-	/**
 	 * \brief Samples from the lognormal distribution.
 	 *
 	 * \param[in] r The handle for GSL random number generation.
 	 * \return The random number.
 	 */
-	virtual double sample(shared_ptr<gsl_rng> r) const override;
+	virtual double sample(gsl_rng_ptr &r) const override;
 
 	/**
 	 * \brief A description of this random number distribution.

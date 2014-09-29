@@ -17,7 +17,7 @@
 ConstantDistribution::ConstantDistribution(const double val)
 	: RandomDistribution(), value(val) {}
 
-double ConstantDistribution::sample(shared_ptr<gsl_rng> r) const {
+double ConstantDistribution::sample(gsl_rng_ptr &r) const {
 	return value;
 }
 
