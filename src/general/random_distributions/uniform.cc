@@ -14,6 +14,8 @@
 #include <gsl/gsl_randist.h>
 #include "uniform.h"
 
+namespace molstat {
+
 UniformDistribution::UniformDistribution(const double low, const double up)
 	: RandomDistribution(), lower(low), upper(up) {}
 
@@ -25,3 +27,5 @@ std::string UniformDistribution::info() const {
 	return "Uniform distribution between " + std::to_string(lower) + " and " +
 		std::to_string(upper) + ".";
 }
+
+} // namespace molstat

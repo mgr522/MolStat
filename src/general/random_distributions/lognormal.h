@@ -18,7 +18,7 @@
 #include <gsl/gsl_rng.h>
 #include "rng.h"
 
-using std::shared_ptr;
+namespace molstat {
 
 /**
  * \brief Lognormal distribution.
@@ -62,5 +62,7 @@ public:
 	 */
 	virtual std::string info() const override;
 };
+
+} // namespace molstat
 
 #endif

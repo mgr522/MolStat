@@ -14,6 +14,8 @@
 #include <gsl/gsl_randist.h>
 #include "gamma.h"
 
+namespace molstat {
+
 GammaDistribution::GammaDistribution(const double shape_, const double scale_)
 	: RandomDistribution(), shape(shape_), scale(scale_) {}
 
@@ -25,3 +27,5 @@ std::string GammaDistribution::info() const {
 	return "Gamma distribution with shape and scale factors of " +
 		std::to_string(shape) + " and " + std::to_string(scale) + ".";
 }
+
+} // namespace molstat

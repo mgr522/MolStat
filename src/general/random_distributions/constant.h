@@ -18,6 +18,8 @@
 #include <gsl/gsl_rng.h>
 #include "rng.h"
 
+namespace molstat {
+
 /**
  * \brief Constant distribution.
  *
@@ -56,5 +58,7 @@ public:
 	 */
 	virtual std::string info() const override;
 };
+
+} // namespace molstat
 
 #endif

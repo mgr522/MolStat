@@ -17,10 +17,13 @@
 #include <string>
 #include <gsl/gsl_rng.h>
 
+namespace molstat {
+
 /**
  * \brief Shortcut for a handle for GSL random number generation.
  *
- * Needed to specify the deleter for unique pointer
+ * Need to specify the deleter for unique pointer; that is, the gsl_rng_free
+ * function.
  */
 using gsl_rng_ptr =
 	std::unique_ptr<gsl_rng, decltype(&gsl_rng_free)>;
@@ -71,5 +74,7 @@ public:
  */
 std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 	const std::vector<std::string> &tokens);
+
+} // namespace molstat
 
 #endif

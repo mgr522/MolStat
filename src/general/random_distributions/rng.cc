@@ -19,6 +19,8 @@
 #include "lognormal.h"
 #include "gamma.h"
 
+namespace molstat {
+
 using namespace std;
 
 std::unique_ptr<RandomDistribution> RandomDistributionFactory(
@@ -134,3 +136,5 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 
 	return ret;
 }
+
+} // namespace molstat

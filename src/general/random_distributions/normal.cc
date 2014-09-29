@@ -14,6 +14,8 @@
 #include <gsl/gsl_randist.h>
 #include "normal.h"
 
+namespace molstat {
+
 NormalDistribution::NormalDistribution(const double mean_, const double stdev_)
 	: RandomDistribution(), mean(mean_), stdev(stdev_) {}
 
@@ -25,3 +27,5 @@ std::string NormalDistribution::info() const {
 	return "Normal distribution with mean " + std::to_string(mean) +
 		" and standard deviation " + std::to_string(stdev) + ".";
 }
+
+} // namespace molstat

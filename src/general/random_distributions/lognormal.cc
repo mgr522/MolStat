@@ -14,6 +14,8 @@
 #include <gsl/gsl_randist.h>
 #include "lognormal.h"
 
+namespace molstat {
+
 LognormalDistribution::LognormalDistribution(const double zeta_,
 	const double sigma_)
 	: RandomDistribution(), zeta(zeta_), sigma(sigma_) {}
@@ -26,3 +28,5 @@ std::string LognormalDistribution::info() const {
 	return "Lognormal distribution with mean " + std::to_string(zeta) +
 		" and standard deviation " + std::to_string(sigma) + " in log space.";
 }
+
+} // namespace molstat

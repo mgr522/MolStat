@@ -14,6 +14,8 @@
 #include <gsl/gsl_randist.h>
 #include "constant.h"
 
+namespace molstat {
+
 ConstantDistribution::ConstantDistribution(const double val)
 	: RandomDistribution(), value(val) {}
 
@@ -24,3 +26,5 @@ double ConstantDistribution::sample(gsl_rng_ptr &r) const {
 std::string ConstantDistribution::info() const {
 	return "Constant distribution at " + std::to_string(value) + ".";
 }
+
+} // namespace molstat
