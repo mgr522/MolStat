@@ -206,12 +206,12 @@ int main(int argc, char **argv) {
 	// EOF is flagged by a runtime_error in the getline function
 	try {
 		while(true) {
-			line = getline(stdin);
+			line = molstat::getline(stdin);
 
-			tokenize(line, tokens);
+			molstat::tokenize(line, tokens);
 			if(tokens.size() > 0) {
 				name = tokens[0];
-				make_lower(name);
+				molstat::make_lower(name);
 
 				// need to remove the front entry for the distribution generator
 				tokens.erase(tokens.begin());

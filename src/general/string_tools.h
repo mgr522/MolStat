@@ -17,6 +17,12 @@
 #include <cstdio>
 
 /**
+ * \namespace molstat
+ * \brief Namespace for components of MolStat.
+ */
+namespace molstat {
+
+/**
  * \internal
  * \brief Gets a line from the desired stream and puts it in std::string form.
  *
@@ -54,7 +60,7 @@ void make_lower(std::string &str);
  * \param[in] str The string.
  * \return The string, in lower case.
  */
-std::string to_lower(const std::string &str);
+std::string &&to_lower(std::string str);
 
 /**
  * \internal
@@ -67,5 +73,7 @@ std::string to_lower(const std::string &str);
  * \endinternal
  */
 double string_to_double(const std::string &str);
+
+} // namespace molstat
 
 #endif
