@@ -4,33 +4,16 @@
 /**
 \page page_general_details General Mathematical Ideas
 
-In this section we discuss general mathematical concepts underlying MolStat.
-First is information on probability density functions and elements of
-probability theory. Second is random number distributions, focusing on the
-MolStat interface for using them. Third is a discussion on histograms,
-including some comments on binning styles. Finally is an overview of non-linear
-least-squares fitting procedures.
+In this section we discuss general mathematical concepts underlying MolStat. First is information on probability density functions and elements of probability theory. Second is random number distributions, focusing on the MolStat interface for using them. Third is a discussion on histograms, including some comments on binning styles. Finally is an overview of non-linear least-squares fitting procedures.
 
 \section sec_pdf Probability Density Functions
-Probability density functions and, more generally, the idea of a random
-variable, are central to MolStat. In this section we summarize some elements of
-probability theory that are used, in various forms, throughout. Standard texts
-on probability, such as \cite bk:ghahramani-2000, should be consulted for
-additional information.
+Probability density functions and, more generally, the idea of a random variable, are central to MolStat. In this section we summarize some elements of probability theory that are used, in various forms, throughout. Standard texts on probability, such as \cite bk:ghahramani-2000, should be consulted for additional information.
 
-A random variable is a quantity whose value is unknown until measured. When a
-measurement is performed, the probability density function describes the
-likelihood of measuring a particular value. For example, \f[
+A random variable is a quantity whose value is unknown until measured. When a measurement is performed, the probability density function describes the likelihood of measuring a particular value. For example, \f[
 P(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left[ - \frac{(x-\bar{x})^2}{2\sigma^2} \right]
-\f] is the probability density function for a normal random variable with
-average \f$ \bar{x} \f$ and variance \f$\sigma^2\f$. When the random variable
-\f$\hat{x}\f$ is measured, \f$P(x)\mathrm{d}x\f$ gives the probability that
-\f$\hat{x}\f$ has a value between \f$x\f$ and \f$x+\mathrm{d}x\f$. Finally,
-\f$P(x)\ge 0\f$ for all \f$x\f$ in the domain.
+\f] is the probability density function for a normal random variable with average \f$ \bar{x} \f$ and variance \f$\sigma^2\f$. When the random variable \f$\hat{x}\f$ is measured, \f$P(x)\mathrm{d}x\f$ gives the probability that \f$\hat{x}\f$ has a value between \f$x\f$ and \f$x+\mathrm{d}x\f$. Finally, \f$P(x)\ge 0\f$ for all \f$x\f$ in the domain.
 
-\note For now, we only consider continuous random variables with continuous
-probability density functions. See \cite bk:ghahramani-2000 for other
-possibilities.
+\note For now, we only consider continuous random variables with continuous probability density functions. See \cite bk:ghahramani-2000 for other possibilities.
 
 \subsection subsec_pdf_props Properties of Probability Density Functions
 We now detail a few general properties of probability density functions.
@@ -41,30 +24,20 @@ if
 \f]
 where the bounds of integration cover the domain of the random variable.
 
--# _Moments_. Let \f$\hat{x}\f$ be a random variable with probability density
-function \f$P(x)\f$. The expected value, or first moment, of \f$\hat{x}\f$ is
+-# _Moments_. Let \f$\hat{x}\f$ be a random variable with probability density function \f$P(x)\f$. The expected value, or first moment, of \f$\hat{x}\f$ is
 \f[ \left< \hat{x} \right> = \int \mathrm{d}x x P(x). \f]
 More generally, the \f$n^\mathrm{th}\f$ moment of \f$\hat{x}\f$ is
 \f[ \left< \hat{x}^n \right> = \int \mathrm{d}x x^n P(x), \f]
 and the expected value of a function of \f$\hat{x}\f$ is
 \f[ \left< f(\hat{x}) \right> = \int \mathrm{d}x f(x) P(x). \f]
 
--# _Change of variable_. As before, let \f$\hat{x}\f$ be a random variable with
-probability density function \f$P_{\hat{x}}(x)\f$. Now consider a random
-variable \f$ \hat{y} \f$ given by \f$ \hat{x} = f(\hat{y}) \f$, for some
-differentiable function \f$f\f$. The probability density function for
-\f$\hat{y}\f$ is then given by
+-# _Change of variable_. As before, let \f$\hat{x}\f$ be a random variable with probability density function \f$P_{\hat{x}}(x)\f$. Now consider a random variable \f$ \hat{y} \f$ given by \f$ \hat{x} = f(\hat{y}) \f$, for some differentiable function \f$f\f$. The probability density function for \f$\hat{y}\f$ is then given by
 \f[ P_{\hat{y}}(y) = P_{\hat{x}}(f(y)) \left| \frac{\mathrm{d}}{\mathrm{d} y} f(y) \right|. \f]
 In this way, it can be verified, using integration by parts, that
 \f[ \int \mathrm{d}x P_{\hat{x}}(x) = \int \mathrm{d}y P_{\hat{y}}(y). \f]
 
 \section sec_rng Random Number Distributions
-The theories for single-molecule behavior that underlie MolStat assume that
-the various physical parameters are random variables. When simulating
-single-molecule behavior, it is thus necessary to specify the probability
-density function for each of these random variables. In this section we list
-the implemented random number distributions, along with how each is invoked in
-the input file.
+The theories for single-molecule behavior that underlie MolStat assume that the various physical parameters are random variables. When simulating single-molecule behavior, it is thus necessary to specify the probability density function for each of these random variables. In this section we list the implemented random number distributions, along with how each is invoked in the input file.
 
 All random number distributions have a common syntax in the input files:
 \verbatim
@@ -113,41 +86,15 @@ The implemented random distributions are
 Details on adding random distributions are found in \ref subsec_add_rnd.
 
 \section sec_histograms Histograms
-The next mathematical concept we cover in this chapter is that of histograms.
-In an abstract sense, histograms estimate the probability density function of
-an observable by binning a set of data into ranges. The number of measurements
-in each bin is, assuming a sufficient number of measurements are included,
-proportional to the probability density function of the observable.
+The next mathematical concept we cover in this chapter is that of histograms. In an abstract sense, histograms estimate the probability density function of an observable by binning a set of data into ranges. The number of measurements in each bin is, assuming a sufficient number of measurements are included, proportional to the probability density function of the observable.
 
-The GSL histogram tools are used in the code to construct histograms. What we
-discuss here is the \"binning style,\" as this seemingly innocuous detail can
-have significant ramifications. Let us consider an example.
+The GSL histogram tools are used in the code to construct histograms. What we discuss here is the \"binning style,\" as this seemingly innocuous detail can have significant ramifications. Let us consider an example.
 
-Suppose we have a (sufficiently large) data set of measurements for the random
-variable \f$\hat{x}\f$. We can find the minimum and maximum values in the data
-set, divide the range into a suitable number of bins, and produce a histogram
-to estimate the probability density function \f$P_{\hat{x}}(x)\f$. Suppose,
-furthermore, that the data set spans several orders of magnitude such that many
-of the data points get lumped into the first bin (since the bins are, perhaps,
-on the largest order of magnitude). We may want to try to resolve structure in
-this low range by adding more bins (not of uniform size) or by first
-transforming the data set. One common example of the latter is to produce a
-histogram from \f$ \{ \ln(x) \} \f$ values, where \f$ \{ x \} \f$ is the
-original data set.
+Suppose we have a (sufficiently large) data set of measurements for the random variable \f$\hat{x}\f$. We can find the minimum and maximum values in the data set, divide the range into a suitable number of bins, and produce a histogram to estimate the probability density function \f$P_{\hat{x}}(x)\f$. Suppose, furthermore, that the data set spans several orders of magnitude such that many of the data points get lumped into the first bin (since the bins are, perhaps, on the largest order of magnitude). We may want to try to resolve structure in this low range by adding more bins (not of uniform size) or by first transforming the data set. One common example of the latter is to produce a histogram from \f$ \{ \ln(x) \} \f$ values, where \f$ \{ x \} \f$ is the original data set.
 
-This issue of binning in \f$x\f$ vs.\ binning in \f$\ln(x)\f$ is the crux of
-\"binning styles.\" The actual value used for binning must be accounted for
-using the change-of-variable formula described above. If not, a histogram from
-data binned in \f$x\f$ estimates \f$P_{\hat{x}}(x)\f$ whereas a histogram from
-the same data binned in \f$\ln(x)\f$ estimates \f$P_{\ln(\hat{x})}(\ln(x))\f$.
+This issue of binning in \f$x\f$ vs.\ binning in \f$\ln(x)\f$ is the crux of \"binning styles.\" The actual value used for binning must be accounted for using the change-of-variable formula described above. If not, a histogram from data binned in \f$x\f$ estimates \f$P_{\hat{x}}(x)\f$ whereas a histogram from the same data binned in \f$\ln(x)\f$ estimates \f$P_{\ln(\hat{x})}(\ln(x))\f$.
 
-Accordingly, the binning style--that is, the mask (if any) applied to data
-values before binning--must be specified when simulating or fitting histograms
-with MolStat. An interface for binning styles is provided in the BinStyle
-class, which can be inherited to implement additional binning styles. BinStyle
-requires the mask function, \f$u=f(x)\f$; the inverse mask function
-\f$ x = f^{-1}(u) \f$; and the derivative of the mask function,
-\f$ \mathrm{d}f / \mathrm{d}x \f$.
+Accordingly, the binning style--that is, the mask (if any) applied to data values before binning--must be specified when simulating or fitting histograms with MolStat. An interface for binning styles is provided in the molstat::BinStyle class, which can be inherited to implement additional binning styles. molstat::BinStyle requires the mask function, \f$u=f(x)\f$; the inverse mask function \f$ x = f^{-1}(u) \f$; and the derivative of the mask function, \f$ \mathrm{d}f / \mathrm{d}x \f$.
 
 \subsection subsec_impl_binstyle Implemented Binning Styles
 - Linear binning (this is essentially the \"identity\" binning style),
@@ -163,27 +110,13 @@ requires the mask function, \f$u=f(x)\f$; the inverse mask function
 Details on adding binning styles are found in \ref subsec_add_binstyle.
 
 \section sec_fitting_mathematics Fitting Data to a Functional Form
-Fitting data to a functional form is generally a non-linear least-squares
-problem, which is formulated as an optimization process. Suppose our observed
-data set is \f$\{g_j, p_j\}\f$; perhaps, as is the case for 1D conductance
-histograms, \f$j\f$ is a bin, \f$g_j\f$ is the conductance of that bin, and
-\f$p_j\f$ is the bin count (an estimation of the probability density function).
-We ultimately seek to minimize the functional
+Fitting data to a functional form is generally a non-linear least-squares problem, which is formulated as an optimization process. Suppose our observed data set is \f$\{g_j, p_j\}\f$; perhaps, as is the case for 1D conductance histograms, \f$j\f$ is a bin, \f$g_j\f$ is the conductance of that bin, and \f$p_j\f$ is the bin count (an estimation of the probability density function). We ultimately seek to minimize the functional
 \f[ r(\{g_j, p_j\}; \{x_k\}) = \sum_j \left| f(g_j; \{x_k\}) - p_j \right|^2, \f]
-where \f$f\f$ is the fit function and \f$\{ x_k \}\f$ are the fitting
-parameters.
+where \f$f\f$ is the fit function and \f$\{ x_k \}\f$ are the fitting parameters.
 
-Much of the fitting procedure is handled internally by the GSL, and the
-FitModel class contains even more common operations. As described in
-\ref sec_add_fit_model, code to evaluate the residuals
-\f$f(g_j; \{x_k\}) - p_j\f$ and elements of the Jacobian,
+Much of the fitting procedure is handled internally by the GSL, and the molstat::FitModel class contains even more common operations. As described in \ref sec_add_fit_model, code to evaluate the residuals \f$f(g_j; \{x_k\}) - p_j\f$ and elements of the Jacobian,
 \f[ \frac{\partial}{\partial x_k} \left( f(g_j; \{x_k\}) - p_j \right), \f]
-are required. More information on fitting can be found in the GSL
-documentation.
+are required. More information on fitting can be found in the GSL documentation.
 
-\note Non-linear fitting is not guaranteed to find the "best" fit; it is
-      possible that the optimization routines get stuck in local minima of
-      the functional described above. Although the following doesn't rigorously
-      solve this problem, we use multiple initial guesses in the fitting
-      procedure and only output the best fit from all guesses.
+\note Non-linear fitting is not guaranteed to find the \"best\" fit; it is possible that the optimization routines get stuck in local minima of the functional described above. Although the following doesn't rigorously solve this problem, we use multiple initial guesses in the fitting procedure and only output the best fit from all guesses.
 */
