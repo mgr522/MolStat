@@ -30,16 +30,17 @@ using namespace std;
  * \brief Dummy class for testing ::ObservableCheck.
  * \endinternal
  */
-class ObservableCheckClass : public SimulateModel, public StaticConductance {
+class ObservableCheckClass : public molstat::SimulateModel,
+	public molstat::StaticConductance {
 public:
 	ObservableCheckClass() = delete;
 	virtual ~ObservableCheckClass() = default;
 
 	ObservableCheckClass(
-		const map<string, shared_ptr<RandomDistribution>> &avail)
-		: SimulateModel(avail, { "a" }) {}
+		const map<string, shared_ptr<molstat::RandomDistribution>> &avail)
+		: molstat::SimulateModel(avail, { "a" }) {}
 
-	virtual array<double, 2> StaticG(shared_ptr<gsl_rng> r) const override {
+	virtual array<double, 2> StaticG(molstat::gsl_rng_ptr &r) const override {
 		throw 4;
 		return { {0., 0.} };
 	}
@@ -55,10 +56,10 @@ public:
  * \endinternal
  */
 int main(int argc, char **argv) {
-	shared_ptr<SimulateModel> model;
-	Observable<2> obs;
-	function< Observable<2>(shared_ptr<SimulateModel>) > func;
-	map<string, shared_ptr<RandomDistribution>> parameters;
+	shared_ptr<molstat::SimulateModel> model;
+	molstat::Observable<2> obs;
+	function<molstat::Observable<2>(shared_ptr<molstat::SimulateModel>) > func;
+	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 
 	try {
 		model = make_shared<ObservableCheckClass>(parameters);
@@ -70,7 +71,7 @@ int main(int argc, char **argv) {
 		// we should be here!
 	}
 
-	parameters["a"] = make_shared<ConstantDistribution>(0.);
+	parameters["a"] = make_shared<molstat::ConstantDistribution>(0.);
 
 	try {
 		// this time it should work!
@@ -82,9 +83,10 @@ int main(int argc, char **argv) {
 
 	// try to check for DifferentialConductance. This should fail.
 	try {
-		func = ObservableCheck(&DifferentialConductance::DiffG);
+		func = molstat::ObservableCheck(
+			&molstat::DifferentialConductance::DiffG);
 		func(model); // this should throw because the model doesn't have DiffG
-		assert(true);
+		assert(false);
 	}
 	catch(const runtime_error &e) {
 		// should be here
@@ -92,19 +94,21 @@ int main(int argc, char **argv) {
 
 	// now check for StaticConductance.
 	try {
-		func = ObservableCheck(&StaticConductance::StaticG);
+		func = molstat::ObservableCheck(
+			&molstat::StaticConductance::StaticG);
 		obs = func(model);
 	}
 	catch(const runtime_error &e) {
 		// this should have worked...
-		assert(true);
+		assert(false);
 	}
 
 	// verify that obs is pointing to the correct function
 	// note that this test is not conclusive...
 	try {
-		obs(nullptr); // this should throw 4
-		assert(true);
+		molstat::gsl_rng_ptr r(nullptr, &gsl_rng_free);
+		obs(r); // this should throw 4
+		assert(false);
 	}
 	catch(int i) {
 		assert(i == 4);

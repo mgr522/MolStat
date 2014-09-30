@@ -14,8 +14,10 @@
 
 using namespace std;
 
+namespace molstat {
+
 SimulateModel::SimulateModel(
-	const std::map<std::string, shared_ptr<RandomDistribution>> &avail,
+	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail,
 	const std::vector<std::string> &names)
 	: dists(names.size()) {
 
@@ -25,7 +27,7 @@ SimulateModel::SimulateModel(
 	n = names.size();
 	for(j = 0; j < n; ++j) {
 		try {
-			dists[j] = avail.at(names[j].c_str());
+			dists[j] = avail.at(names[j]);
 		}
 		catch(const out_of_range &e) {
 			throw runtime_error(names[j].c_str());
@@ -33,7 +35,7 @@ SimulateModel::SimulateModel(
 	}
 }
 
-void SimulateModel::sample(shared_ptr<gsl_rng> r, vector<double> &vals) const {
+void SimulateModel::sample(gsl_rng_ptr &r, std::vector<double> &vals) const {
 	int j, n;
 
 	// sample each distribution, in order
@@ -43,14 +45,17 @@ void SimulateModel::sample(shared_ptr<gsl_rng> r, vector<double> &vals) const {
 		vals[j] = dists[j]->sample(r);
 }
 
-std::function<Observable<2>(const shared_ptr<SimulateModel>)> Obs2(
-	const std::function<Observable<1>(const shared_ptr<SimulateModel>)> &f) {
+std::function< Observable<2>(const std::shared_ptr<SimulateModel>) >
+	Obs2(const std::function<Observable<1>
+	                        (const std::shared_ptr<SimulateModel>)> &f) {
 
-	return [=] (const shared_ptr<SimulateModel> model) -> Observable<2> {
+	return [f] (const shared_ptr<SimulateModel> model) -> Observable<2> {
 		Observable<1> obs1 = f(model);
 
-		return [=] (shared_ptr<gsl_rng> r) -> array<double, 2> {
+		return [=] (gsl_rng_ptr &r) -> array<double, 2> {
 			return { { 0., obs1(r)[0] } };
 		};
 	};
 }
+
+} // namespace molstat

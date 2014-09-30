@@ -20,7 +20,7 @@
 #include <stdexcept>
 #include <general/random_distributions/rng.h>
 
-using std::shared_ptr;
+namespace molstat {
 
 /**
  * \brief Base class encapsulating a model for simulating data to construct a
@@ -37,7 +37,7 @@ private:
 	 *    construction.
 	 * \endinternal
 	 */
-	std::vector<shared_ptr<const RandomDistribution>> dists;
+	std::vector<std::shared_ptr<const RandomDistribution>> dists;
 
 public:
 	SimulateModel() = delete;
@@ -55,7 +55,7 @@ public:
 	 *    order.
 	 */
 	SimulateModel(
-		const std::map<std::string, shared_ptr<RandomDistribution>> &avail,
+		const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail,
 		const std::vector<std::string> &names);
 
 	/**
@@ -65,36 +65,35 @@ public:
 	 * \param[out] vals The random numbers, in the order specified during
 	 *    construction.
 	 */
-	void sample(shared_ptr<gsl_rng> r, std::vector<double> &vals) const;
+	void sample(gsl_rng_ptr &r, std::vector<double> &vals) const;
 };
 
 /**
- * \brief Shortcut for the function signature of an "instantiator" for a
- *    SimulateModel in the simulator.
+ * \brief Shortcut for the factory the produces SimulateModel objects.
  *
  * SimulateModel objects are created by passing in a map of available
  * RandomDistributions; the specification of a model should supply the names
  * of required parameters. This function type produces the SimulateModel
  * from the map of RandomDistributions.
  */
-typedef std::function<shared_ptr<SimulateModel>
-	(const std::map<std::string, shared_ptr<RandomDistribution>> &)>
-	SimulateModelInstantiator;
+typedef std::function<std::shared_ptr<SimulateModel>
+	(const std::map<std::string, std::shared_ptr<RandomDistribution>> &)>
+	SimulateModelFactory;
 
 /**
- * \brief Creates a SimulateModelInstantiator for a particular model.
+ * \brief Creates a SimulateModelFactory for a particular model.
  *
  * \tparam T The type of SimulateModel we wish to instantiate.
  * \return A function for instantiating the class from a map of available
  *    random number distributions.
  */
 template<typename T>
-inline SimulateModelInstantiator SimulateModelAdd() {
+inline SimulateModelFactory SimulateModelAdd() {
 	return []
-		(const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
-		-> shared_ptr<SimulateModel> {
+		(const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
+		-> std::unique_ptr<SimulateModel> {
 
-		return std::make_shared<T>(avail);
+		return std::unique_ptr<SimulateModel>(new T(avail));
 	};
 }
 
@@ -107,7 +106,7 @@ inline SimulateModelInstantiator SimulateModelAdd() {
  * \tparam N The number of variables in the observable.
  */
 template<size_t N>
-using Observable = std::function<std::array<double, N>(shared_ptr<gsl_rng>)>;
+using Observable = std::function<std::array<double, N>(gsl_rng_ptr &)>;
 
 /**
  * \brief Returns a function that checks compatibility of a model with an
@@ -128,11 +127,11 @@ using Observable = std::function<std::array<double, N>(shared_ptr<gsl_rng>)>;
  * \return The described function.
  */
 template<size_t N, typename T>
-std::function<Observable<N>(const shared_ptr<SimulateModel>)> ObservableCheck(
-	std::array<double, N> (T::*memfunc)(shared_ptr<gsl_rng>) const) {
+std::function<Observable<N>(const std::shared_ptr<SimulateModel>)> ObservableCheck(
+	std::array<double, N> (T::*memfunc)(gsl_rng_ptr &) const) {
 
-	return [=] (const shared_ptr<SimulateModel> model) {
-		shared_ptr<T> cast = std::dynamic_pointer_cast<T>(model);
+	return [memfunc] (const std::shared_ptr<SimulateModel> model) {
+		std::shared_ptr<T> cast = std::dynamic_pointer_cast<T>(model);
 
 		if(cast == nullptr)
 			throw std::runtime_error("Incompatible model and observable.");
@@ -151,7 +150,9 @@ std::function<Observable<N>(const shared_ptr<SimulateModel>)> ObservableCheck(
  * \param[in] f The 1D observable function to be wrapped.
  * \return The wrapped function.
  */
-std::function<Observable<2>(const shared_ptr<SimulateModel>)> Obs2(
-	const std::function<Observable<1>(const shared_ptr<SimulateModel>)> &f);
+std::function<Observable<2>(const std::shared_ptr<SimulateModel>)> Obs2(
+	const std::function<Observable<1>(const std::shared_ptr<SimulateModel>)> &f);
+
+} // namespace molstat
 
 #endif
