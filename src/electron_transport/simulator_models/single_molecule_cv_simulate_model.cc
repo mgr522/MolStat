@@ -22,6 +22,10 @@
 
 using namespace std;
 
+#define Ith(v,i)    NV_Ith_S(v,i-1)
+#define IJth(A,i,j) DENSE)ELEM(A,i-1,j-1)
+
+
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
 const vector<string> SingleMoleculeCV::parameters =
