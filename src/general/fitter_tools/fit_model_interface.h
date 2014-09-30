@@ -270,7 +270,7 @@ using FitModelFactory =
  * \return A function for instantiating the class from a list of data points.
  */
 template<typename T, std::size_t N>
-inline FitModelFactory<N> FitModelAdd() {
+inline FitModelFactory<N> GetFitModelFactory() {
 	return []
 		(const std::list<std::pair<std::array<double, N>, double>> &data)
 		-> std::unique_ptr<FitModel<N>> {

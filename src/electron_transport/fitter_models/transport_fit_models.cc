@@ -27,13 +27,13 @@ void load_transport_models(
 	std::map<std::string, FitModelFactory<1>> &models) {
 
 	models["symmetricresonant"] =
-		FitModelAdd<SymmetricResonantFitModel, 1>();
+		GetFitModelFactory<SymmetricResonantFitModel, 1>();
 
 	models["symmetricnonresonant"] =
-		FitModelAdd<SymmetricNonresonantFitModel, 1>();
+		GetFitModelFactory<SymmetricNonresonantFitModel, 1>();
 
 	models["asymmetricresonant"] =
-		FitModelAdd<AsymmetricResonantFitModel, 1>();
+		GetFitModelFactory<AsymmetricResonantFitModel, 1>();
 }
 
 } // namespace molstat
