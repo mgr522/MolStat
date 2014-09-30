@@ -12,6 +12,13 @@
 
 #include "single_molecule_cv_simulate_model.h"
 #include <cmath>
+#include <gsl/gsl_const_mksa.h>
+#include <gsl/gsl_sf_exp.h>
+#include <gsl/gsl_math.h>
+#include <cvode/cvode.h>
+#include <nvector/nvector_serial.h>
+#include <cvode/cvode_dense.h>
+#include <sundials/sundials_dense.h>
 
 using namespace std;
 
