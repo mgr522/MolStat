@@ -3,9 +3,9 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file test_observablecheck.cc
- * \brief Test suite for the ::ObservableCheck template.
+ * \brief Test suite for the molstat::ObservableCheck template.
  *
- * \test Tests the ::ObservableCheck template.
+ * \test Tests the molstat::ObservableCheck template.
  *
  * \author Matthew G.\ Reuter
  * \date September 2014
@@ -27,7 +27,7 @@ using namespace std;
 
 /**
  * \internal
- * \brief Dummy class for testing ::ObservableCheck.
+ * \brief Dummy class for testing molstat::ObservableCheck.
  * \endinternal
  */
 class ObservableCheckClass : public molstat::SimulateModel,
@@ -48,7 +48,7 @@ public:
 
 /**
  * \internal
- * \brief Main function for testing the ::ObservableCheck template.
+ * \brief Main function for testing the molstat::ObservableCheck template.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.

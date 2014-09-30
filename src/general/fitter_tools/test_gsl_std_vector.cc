@@ -6,7 +6,7 @@
  * \file test_gsl_std_vector.cc
  * \brief Test suite for interconverting gsl and std vector types.
  *
- * \test Tests the molstat::gsl_to_std function for use in the FitModel class.
+ * \test Tests the molstat::gsl_to_std function for use in the molstat::FitModel class.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
@@ -22,7 +22,7 @@ using namespace std;
 
 /**
  * \internal
- * \brief Main function for testing the ::gsl_to_std function.
+ * \brief Main function for testing the molstat::gsl_to_std function.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
