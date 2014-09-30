@@ -15,6 +15,8 @@
 
 using namespace std;
 
+namespace molstat {
+
 Histogram2D::Histogram2D(const std::array<std::size_t, 2> &nbin,
 	const std::array<double, 2> &mins, const std::array<double, 2> &maxs,
 	const std::shared_ptr<const BinStyle> bstyle)
@@ -109,3 +111,5 @@ bool Histogram2D::const_iterator::operator!= (const const_iterator &rhs) const
 {
 	return !operator==(rhs);
 }
+
+} // namespace molstat

@@ -17,6 +17,8 @@
 #include "histogram_interface.h"
 #include "bin_style.h"
 
+namespace molstat {
+
 /**
  * \brief Implements 2D histograms.
  *
@@ -145,5 +147,7 @@ public:
 		friend const_iterator Histogram2D::end() const;
 	};
 };
+
+} // namespace molstat
 
 #endif

@@ -15,6 +15,8 @@
 
 using namespace std;
 
+namespace molstat {
+
 Histogram1D::Histogram1D(const std::size_t nbin, const double minval,
 	const double maxval, const std::shared_ptr<const BinStyle> bstyle)
 	: Histogram<1>(bstyle),
@@ -96,3 +98,5 @@ bool Histogram1D::const_iterator::operator!= (const const_iterator &rhs) const
 {
 	return !operator==(rhs);
 }
+
+} // namespace molstat

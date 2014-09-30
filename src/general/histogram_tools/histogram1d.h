@@ -17,6 +17,8 @@
 #include "histogram_interface.h"
 #include "bin_style.h"
 
+namespace molstat {
+
 /**
  * \brief Implements 1D histograms.
  *
@@ -151,5 +153,7 @@ public:
 		friend const_iterator Histogram1D::end() const;
 	};
 };
+
+} // namespace molstat
 
 #endif

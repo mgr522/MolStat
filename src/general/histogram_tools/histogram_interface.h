@@ -16,6 +16,8 @@
 #include <array>
 #include "bin_style.h"
 
+namespace molstat {
+
 /**
  * \internal
  * \brief Interface for making histograms using GSL.
@@ -91,6 +93,7 @@ protected:
 
 	public:
 		const_iterator() = delete;
+		virtual ~const_iterator() = default;
 
 		/**
 		 * \internal
@@ -100,13 +103,6 @@ protected:
 		 * \endinternal
 		 */
 		const_iterator(const std::shared_ptr<const BinStyle> bstyle_);
-
-		/**
-		 * \internal
-		 * \brief Default destructor.
-		 * \endinternal
-		 */
-		virtual ~const_iterator() = default;
 
 		/**
 		 * \internal
@@ -136,7 +132,8 @@ protected:
 
 public:
 	Histogram() = delete;
-
+	virtual ~Histogram() = default;
+	
 	/**
 	 * \internal
 	 * \brief Constructor that processes the binning style.
@@ -145,13 +142,6 @@ public:
 	 * \endinternal
 	 */
 	Histogram(const std::shared_ptr<const BinStyle> bstyle_);
-
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
-	virtual ~Histogram() = default;
 
 	/**
 	 * \internal
@@ -190,5 +180,7 @@ template<std::size_t N>
 double Histogram<N>::const_iterator::get_bin_count() const {
 	return bincount;
 }
+
+} // namespace molstat
 
 #endif
