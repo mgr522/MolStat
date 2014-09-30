@@ -28,9 +28,9 @@
 
 #include "general/string_tools.h"
 #include "general/random_distributions/rng.h"
-//#include <general/histogram_tools/histogram1d.h>
-//#include <general/histogram_tools/histogram2d.h>
-//#include "electron_transport/simulator_models/transport_simulate_models.h"
+#include "general/histogram_tools/histogram1d.h"
+#include "general/histogram_tools/histogram2d.h"
+#include "electron_transport/simulator_models/transport_simulate_models.h"
 
 using namespace std;
 
@@ -65,38 +65,34 @@ int main(int argc, char **argv) {
 	//gsl_rng_set(r.get(), 0xFEEDFACE); // use this line for debugging
 	gsl_rng_set(r.get(), time(nullptr));
 
-#if 0
 	// simulation variables
 	size_t ntrials, nbin, i;
-#endif
 
 	// list of parameters with specified distributions
 	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 
-#if 0
 	// the model
-	shared_ptr<SimulateModel> model;
+	shared_ptr<molstat::SimulateModel> model;
 	// the list of models:
-	// stored as a map of string (model name) to a function that instantiates
-	// such a model, given a map of random number distributions.
-	map<string, SimulateModelInstantiator> models;
+	// stored as a map of string (model name) to a factory for that model (given
+	// a map of random number distributions).
+	map<string, molstat::SimulateModelFactory> models;
 
 	// function for generating our observable
-	Observable<2> observable;
+	molstat::Observable<2> observable;
 	// the list of available observables:
 	// stored as a map of string (observable name) to a function that takes
 	// a SimulateModel and produces the observable function.
 	// This extra function layer is needed to dynamically typecheck the model,
 	// making sure the model/observable pair is valid.
-	map<string, function< Observable<2>(shared_ptr<SimulateModel>)> >
-		observables;
-#endif
+	map<string,
+	    function< molstat::Observable<2>(shared_ptr<molstat::SimulateModel>) >
+	   > observables;
 
 	// I/O variables
 	string line, modelname, obsname, name;
 	vector<string> tokens;
-#if 0
-	shared_ptr<BinStyle> bstyle;
+	shared_ptr<molstat::BinStyle> bstyle;
 
 	// variables for setting up the histograms / storing the random data
 	array<double, 2>
@@ -106,21 +102,21 @@ int main(int argc, char **argv) {
 
 	// load models and observables
 	// SimulateModelAdd calls appear here
-	load_transport_models(models);
+	molstat::load_transport_models(models);
 	// ObservableCheck calls appear here
-	load_transport_observables(observables);
+	molstat::load_transport_observables(observables);
 
 	// setup the simulation -- read in parameters from stdin
 	// Line 1: One token specifying the model to use
 	try {
-		line = getline(stdin);
+		line = molstat::getline(stdin);
 	}
 	catch(const runtime_error &e) {
 		fprintf(stderr, "Error: %s.\n", e.what());
 		return 0;
 	}
 
-	tokenize(line, tokens);
+	molstat::tokenize(line, tokens);
 	if(tokens.size() < 1) {
 		fprintf(stderr, "Error: model name expected in line 1.\n");
 		return 0;
@@ -131,13 +127,13 @@ int main(int argc, char **argv) {
 
 	// Line 2: Observable
 	try {
-		line = getline(stdin);
+		line = molstat::getline(stdin);
 	}
 	catch(const runtime_error &e) {
 		fprintf(stderr, "Error: %s.\n", e.what());
 		return 0;
 	}
-	tokenize(line, tokens);
+	molstat::tokenize(line, tokens);
 	if(tokens.size() < 1) {
 		fprintf(stderr, "Error: conductance type expected in line 2.\n");
 		return 0;
@@ -147,13 +143,13 @@ int main(int argc, char **argv) {
 
 	// Line 3: number of trials
 	try {
-		line = getline(stdin);
+		line = molstat::getline(stdin);
 	}
 	catch(const runtime_error &e) {
 		fprintf(stderr, "Error: %s.\n", e.what());
 		return 0;
 	}
-	tokenize(line, tokens);
+	molstat::tokenize(line, tokens);
 	if(tokens.size() < 1) {
 		fprintf(stderr, "Error: number of trials expected in line 3.\n");
 		return 0;
@@ -169,13 +165,13 @@ int main(int argc, char **argv) {
 
 	// Line 4: Binning information
 	try {
-		line = getline(stdin);
+		line = molstat::getline(stdin);
 	}
 	catch(const runtime_error &e) {
 		fprintf(stderr, "Error: %s.\n", e.what());
 		return 0;
 	}
-	tokenize(line, tokens);
+	molstat::tokenize(line, tokens);
 	if(tokens.size() < 2) {
 		fprintf(stderr, "Error: binning information expected in line 4.\n" \
 			"Number of bins followed by the type of bins.\n");
@@ -192,15 +188,14 @@ int main(int argc, char **argv) {
 	}
 	// remove the number of bins so we can get the binning style
 	tokens.erase(tokens.begin());
-	make_lower(tokens[0]);
+	molstat::make_lower(tokens[0]);
 	try {
-		bstyle = get_bin_style(tokens);
+		bstyle = molstat::BinStyleFactory(tokens);
 	}
 	catch(const invalid_argument &e) {
 		fprintf(stderr, "Error: unknown binning style.\n");
 		return 0;
 	}
-	#endif
 
 	// all subsequent lines specify random number distributions
 	// EOF is flagged by a runtime_error in the getline function
@@ -235,11 +230,10 @@ int main(int argc, char **argv) {
 		// this just means we hit EOF -- stop trying to read more
 	}
 
-#if 0
 	// try to instantiate the model
 	try {
 		// models.at() returns a function for instantiating the model
-		model = models.at(to_lower(modelname))(parameters);
+		model = models.at(molstat::to_lower(modelname))(parameters);
 	}
 	catch(const out_of_range &e) {
 		// model not found
@@ -257,7 +251,7 @@ int main(int argc, char **argv) {
 	try {
 		// observables.at() returns a function to check the model/observable
 		// combination; the second function actually does the check.
-		observable = observables.at(to_lower(obsname))(model);
+		observable = observables.at(molstat::to_lower(obsname))(model);
 	}
 	catch(const out_of_range &e) {
 		// observable not found
@@ -293,8 +287,8 @@ int main(int argc, char **argv) {
 
 	// histogram variables
 	HistogramType htype;
-	shared_ptr<Histogram1D> hist1;
-	shared_ptr<Histogram2D> hist2;
+	unique_ptr<molstat::Histogram1D> hist1;
+	unique_ptr<molstat::Histogram2D> hist2;
 	function<double(const array<double, 2> &)> mask1;
 	array<double, 2> bounds1;
 
@@ -335,15 +329,15 @@ int main(int argc, char **argv) {
 	// set up the histogram, populate it, and print it
 	if(htype == HistogramType::OneD) {
 		// note the similar pinch added to bounds[1] for the above reason
-		hist1 = make_shared<Histogram1D>(nbin, bounds1[0], bounds1[1] + 1.e-6,
-			bstyle);
+		hist1.reset(new molstat::Histogram1D(nbin, bounds1[0],
+			bounds1[1] + 1.e-6, bstyle));
 
 		while(!data.empty()) {
 			hist1->add_data(mask1(data.front()));
 			data.pop_front();
 		}
 
-		for(Histogram1D::const_iterator iter = hist1->begin();
+		for(molstat::Histogram1D::const_iterator iter = hist1->begin();
 			iter != hist1->end();
 			++iter) {
 
@@ -351,15 +345,15 @@ int main(int argc, char **argv) {
 		}
 	}
 	else if(htype == HistogramType::TwoD) {
-		hist2 = make_shared<Histogram2D>(array<size_t, 2>{{nbin, nbin}},
-			mins, maxs, bstyle);
+		hist2.reset(new molstat::Histogram2D(array<size_t, 2>{{nbin, nbin}},
+			mins, maxs, bstyle));
 
 		while(!data.empty()) {
 			hist2->add_data(data.front());
 			data.pop_front();
 		}
 
-		for(Histogram2D::const_iterator iter = hist2->begin();
+		for(molstat::Histogram2D::const_iterator iter = hist2->begin();
 			iter != hist2->end();
 			++iter) {
 
@@ -368,6 +362,5 @@ int main(int argc, char **argv) {
 		}
 	}
 
-#endif
 	return 0;
 }
