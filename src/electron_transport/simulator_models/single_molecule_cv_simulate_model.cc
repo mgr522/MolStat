@@ -25,6 +25,12 @@ using namespace std;
 #define Ith(v,i)    NV_Ith_S(v,i-1)
 #define IJth(A,i,j) DENSE)ELEM(A,i-1,j-1)
 
+#define NEQ 2
+#define RTOL 1.0e-5
+#define ATOL1 1.0e-8
+#define ATOL2 1.0e-8
+#define T0  0.0
+#define NOUT 1.0
 
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
