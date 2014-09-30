@@ -18,18 +18,22 @@ using namespace std;
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
 const vector<string> SingleMoleculeCV::parameters =
-	{"ef", "v", "epsilon", "gammal", "gammar", "a"};
+	{"e0", "eref", "lambda", "af", "ab", "v", "n", "poinitial", "temperature","tlimit"};
 
 void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
-	double &ef, double &v, double &epsilon, double &gammal, double &gammar,
-	double &a) {
+	double &e0, double &eref, double &lambda, double &af, double &ab,
+	double &v, double &n, double &poinitial, double &temperature, double &tlimit) {
 
-	ef = vec[0];
-	v = vec[1];
-	epsilon = vec[2];
-	gammal = vec[3];
-	gammar = vec[4];
-	a = vec[5];
+	e0 = vec[0];
+	eref = vec[1];
+	lambda = vec[2];
+	af = vec[3];
+	ab = vec[4];
+	v = vec[5];
+    n = vec[6];
+    poinitial = vec[7];
+    temperature = vec[8];
+    tlimit = vec[9];
 }
 
 SingleMoleculeCV::SingleMoleculeCV(
@@ -40,7 +44,7 @@ SingleMoleculeCV::SingleMoleculeCV(
 std::array<double, 2> SingleMoleculeCV::DiffG(shared_ptr<gsl_rng> r)
 	const {
 
-	vector<double> params(6);
+	vector<double> params(10);
 	double ef, v, eps, gammal, gammar, a;
 
 	// generate and unpack the parameters
@@ -53,24 +57,23 @@ std::array<double, 2> SingleMoleculeCV::DiffG(shared_ptr<gsl_rng> r)
 std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	const {
 
-	vector<double> params(6);
-	double ef, v, eps, gammal, gammar, a;
+	vector<double> params(10);
+	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
 
 	// generate and unpack the parameters
 	sample(r, params);
-	unpack_parameters(params, ef, v, eps, gammal, gammar, a);
+	unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-	return {{ v, static_conductance(params) }};
+	return {{ v, static_conductance(params) }};/*Modification needed later for new function.*/
 }
 
-double SingleMoleculeCV::transmission(const double e, const double v,
-	const double eps, const double gammal, const double gammar,
-	const double a) {
+double SingleMoleculeCV::kf(const std::vector<double> &vecl) {
 
-	return 4.*gammal*gammar / (4.*(e - eps - a*v)*(e - eps - a*v) +
-		(gammal + gammar)*(gammal + gammar));
+    double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
+
+    // umpack the model parameters
+    unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 }
-
 double SingleMoleculeCV::static_conductance(
 	const std::vector<double> &vec) {
 

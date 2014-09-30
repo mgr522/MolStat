@@ -52,4 +52,7 @@ void load_transport_observables(std::map<std::string, std::function<
 
 	observables["differentialconductance"] =
 		ObservableCheck(&DifferentialConductance::DiffG);
+
+    observables["singmolcvpeak"] = 
+        ObservableCheck(&SingMolCVPeak::PeakPotentials);
 }
