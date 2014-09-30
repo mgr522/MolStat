@@ -33,7 +33,7 @@ using namespace std;
  */
 int main(int argc, char **argv) {
 	const double thresh = 1.0e-6;
-	typedef AsymTwoSiteSimulateModel model;
+	typedef molstat::AsymTwoSiteSimulateModel model;
 	vector<double> params(6);
 
 	// params[0] = EF, [1] = V, [2] = eps, [3] = gammal, [4] = gammar,

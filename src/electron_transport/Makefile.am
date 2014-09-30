@@ -1,3 +1,4 @@
-SUBDIRS = simulator_models \
+SUBDIRS = \
 	fitter_models \
+	simulator_models \
 	tests
