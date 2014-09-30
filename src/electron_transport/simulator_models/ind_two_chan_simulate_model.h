@@ -21,7 +21,7 @@
 #include <general/simulator_tools/simulate_model_interface.h>
 #include "transport_observables.h"
 
-using std::shared_ptr;
+namespace molstat {
 
 /**
  * \brief Simulator model for transport through a single site that couples
@@ -96,7 +96,7 @@ public:
 	 * \endinternal
 	 */
 	IndTwoChanSimulateModel(
-		const std::map<std::string, shared_ptr<RandomDistribution>> &avail);
+		const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail);
 
 	/**
 	 * \brief Returns the differential conductance for a randomly-generated set
@@ -105,8 +105,7 @@ public:
 	 * \param[in] r The GSL random number generator handle.
 	 * \return The differential conductance.
 	 */
-	virtual std::array<double, 2> DiffG(shared_ptr<gsl_rng> r) const
-		override;
+	virtual std::array<double, 2> DiffG(gsl_rng_ptr &r) const override;
 
 	/**
 	 * \brief Returns the static conductance for a randomly-generated set of
@@ -115,8 +114,7 @@ public:
 	 * \param[in] r The GSL random number generator handle.
 	 * \return The static conductance.
 	 */
-	virtual std::array<double, 2> StaticG(shared_ptr<gsl_rng> r) const
-		override;
+	virtual std::array<double, 2> StaticG(gsl_rng_ptr &r) const override;
 
 	/**
 	 * \brief Calculates the transmission for a set of model parameters.
@@ -152,5 +150,7 @@ public:
 	 */
 	static double diff_conductance(const std::vector<double> &vec);
 };
+
+} // namespace molstat
 
 #endif

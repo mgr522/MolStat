@@ -20,7 +20,7 @@
 #include <gsl/gsl_rng.h>
 #include <general/simulator_tools/simulate_model_interface.h>
 
-using std::shared_ptr;
+namespace molstat {
 
 /**
  * \brief Interface for the static conductance.
@@ -38,7 +38,7 @@ public:
 	 * \return Array containing the applied bias (0) and the static conductance
 	 *    (1).
 	 */
-	virtual std::array<double, 2> StaticG(shared_ptr<gsl_rng> r) const = 0;
+	virtual std::array<double, 2> StaticG(gsl_rng_ptr &r) const = 0;
 };
 
 /**
@@ -57,7 +57,9 @@ public:
 	 * \return Array containing the applied bias (0) and the differential
 	 *    conductance (1).
 	 */
-	virtual std::array<double, 2> DiffG(shared_ptr<gsl_rng> r) const = 0;
+	virtual std::array<double, 2> DiffG(gsl_rng_ptr &r) const = 0;
 };
+
+} // namespace molstat
 
 #endif

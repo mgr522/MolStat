@@ -14,11 +14,11 @@
 #include <cmath>
 #include <complex>
 
-using namespace std;
+namespace molstat {
 
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
-const vector<string> SymTwoSiteSimulateModel::parameters =
+const std::vector<std::string> SymTwoSiteSimulateModel::parameters =
 	{"ef", "v", "epsilon", "gamma", "beta"};
 
 void SymTwoSiteSimulateModel::unpack_parameters(const std::vector<double> &vec,
@@ -32,14 +32,12 @@ void SymTwoSiteSimulateModel::unpack_parameters(const std::vector<double> &vec,
 }
 
 SymTwoSiteSimulateModel::SymTwoSiteSimulateModel(
-	const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
+	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
 	: SimulateModel(avail, parameters) {
 }
 
-std::array<double, 2> SymTwoSiteSimulateModel::DiffG(shared_ptr<gsl_rng> r)
-	const {
-
-	vector<double> params(5);
+std::array<double, 2> SymTwoSiteSimulateModel::DiffG(gsl_rng_ptr &r) const {
+	std::vector<double> params(5);
 	double ef, v, eps, gamma, beta;
 
 	// generate and unpack the parameters
@@ -49,10 +47,8 @@ std::array<double, 2> SymTwoSiteSimulateModel::DiffG(shared_ptr<gsl_rng> r)
 	return {{ v, diff_conductance(params) }};
 }
 
-std::array<double, 2> SymTwoSiteSimulateModel::StaticG(shared_ptr<gsl_rng> r)
-	const {
-
-	vector<double> params(5);
+std::array<double, 2> SymTwoSiteSimulateModel::StaticG(gsl_rng_ptr &r) const {
+	std::vector<double> params(5);
 	double ef, v, eps, gamma, beta;
 
 	// generate and unpack the parameters
@@ -75,8 +71,8 @@ double SymTwoSiteSimulateModel::static_c_integral(const double z,
 	const double eps, const double gamma, const double beta) {
 
 	return 2.*beta*gamma / (4.*beta*beta + gamma*gamma) *
-		real(complex<double>(gamma, 2.*beta)
-		* atanh(2.*(z-eps) / complex<double>(2.*beta, gamma)));
+		real(std::complex<double>(gamma, 2.*beta)
+		* atanh(2.*(z-eps) / std::complex<double>(2.*beta, gamma)));
 }
 
 double SymTwoSiteSimulateModel::static_conductance(
@@ -102,3 +98,5 @@ double SymTwoSiteSimulateModel::diff_conductance(
 	return 0.5*transmission(ef + 0.5*v, v, eps, gamma, beta) +
 		0.5*transmission(ef - 0.5*v, v, eps, gamma, beta);
 }
+
+} // namespace molstat

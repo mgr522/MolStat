@@ -13,11 +13,11 @@
 #include "ind_two_chan_simulate_model.h"
 #include "sym_one_site_simulate_model.h"
 
-using namespace std;
+namespace molstat {
 
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
-const vector<string> IndTwoChanSimulateModel::parameters =
+const std::vector<std::string> IndTwoChanSimulateModel::parameters =
 	{"ef", "v", "epsilon1", "gamma1", "a1", "epsilon2", "gamma2", "a2"};
 
 void IndTwoChanSimulateModel::unpack_parameters(const std::vector<double> &vec,
@@ -35,14 +35,12 @@ void IndTwoChanSimulateModel::unpack_parameters(const std::vector<double> &vec,
 }
 
 IndTwoChanSimulateModel::IndTwoChanSimulateModel(
-	const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
+	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
 	: SimulateModel(avail, parameters) {
 }
 
-std::array<double, 2> IndTwoChanSimulateModel::DiffG(shared_ptr<gsl_rng> r)
-	const {
-
-	vector<double> params(8);
+std::array<double, 2> IndTwoChanSimulateModel::DiffG(gsl_rng_ptr &r) const {
+	std::vector<double> params(8);
 	double ef, v, eps1, gamma1, a1, eps2, gamma2, a2;
 
 	// generate and unpack the parameters
@@ -52,10 +50,8 @@ std::array<double, 2> IndTwoChanSimulateModel::DiffG(shared_ptr<gsl_rng> r)
 	return {{ v, diff_conductance(params) }};
 }
 
-std::array<double, 2> IndTwoChanSimulateModel::StaticG(shared_ptr<gsl_rng> r)
-	const {
-
-	vector<double> params(8);
+std::array<double, 2> IndTwoChanSimulateModel::StaticG(gsl_rng_ptr &r) const {
+	std::vector<double> params(8);
 	double ef, v, eps1, gamma1, a1, eps2, gamma2, a2;
 
 	// generate and unpack the parameters
@@ -77,7 +73,7 @@ double IndTwoChanSimulateModel::static_conductance(
 	const std::vector<double> &vec) {
 
 	double ef, v, eps1, gamma1, a1, eps2, gamma2, a2;
-	vector<double> vec1(5), vec2(5);
+	std::vector<double> vec1(5), vec2(5);
 
 	// unpack the model parameters
 	unpack_parameters(vec, ef, v, eps1, gamma1, a1, eps2, gamma2, a2);
@@ -99,7 +95,7 @@ double IndTwoChanSimulateModel::diff_conductance(
 	const std::vector<double> &vec) {
 
 	double ef, v, eps1, gamma1, a1, eps2, gamma2, a2;
-	vector<double> vec1(5), vec2(5);
+	std::vector<double> vec1(5), vec2(5);
 
 	// unpack the parameters
 	unpack_parameters(vec, ef, v, eps1, gamma1, a1, eps2, gamma2, a2);
@@ -116,3 +112,5 @@ double IndTwoChanSimulateModel::diff_conductance(
 	return SymOneSiteSimulateModel::diff_conductance(vec1) +
 		SymOneSiteSimulateModel::diff_conductance(vec2);
 }
+
+} // namespace molstat

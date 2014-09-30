@@ -13,11 +13,11 @@
 #include "sym_one_site_simulate_model.h"
 #include <cmath>
 
-using namespace std;
+namespace molstat {
 
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
-const vector<string> SymOneSiteSimulateModel::parameters =
+const std::vector<std::string> SymOneSiteSimulateModel::parameters =
 	{"ef", "v", "epsilon", "gamma", "a"};
 
 void SymOneSiteSimulateModel::unpack_parameters(const std::vector<double> &vec,
@@ -31,14 +31,12 @@ void SymOneSiteSimulateModel::unpack_parameters(const std::vector<double> &vec,
 }
 
 SymOneSiteSimulateModel::SymOneSiteSimulateModel(
-	const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
+	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
 	: SimulateModel(avail, parameters) {
 }
 
-std::array<double, 2> SymOneSiteSimulateModel::DiffG(shared_ptr<gsl_rng> r)
-	const {
-
-	vector<double> params(5);
+std::array<double, 2> SymOneSiteSimulateModel::DiffG(gsl_rng_ptr &r) const {
+	std::vector<double> params(5);
 	double ef, v, eps, gamma, a;
 
 	// generate and unpack the parameters
@@ -48,10 +46,8 @@ std::array<double, 2> SymOneSiteSimulateModel::DiffG(shared_ptr<gsl_rng> r)
 	return {{ v, diff_conductance(params) }};
 }
 
-std::array<double, 2> SymOneSiteSimulateModel::StaticG(shared_ptr<gsl_rng> r)
-	const {
-
-	vector<double> params(5);
+std::array<double, 2> SymOneSiteSimulateModel::StaticG(gsl_rng_ptr &r) const {
+	std::vector<double> params(5);
 	double ef, v, eps, gamma, a;
 
 	// generate and unpack the parameters
@@ -90,3 +86,5 @@ double SymOneSiteSimulateModel::diff_conductance(
 	return (0.5 - a) * transmission(ef+0.5*v, v, eps, gamma, a) +
 		(0.5 + a) * transmission(ef-0.5*v, v, eps, gamma, a);
 }
+
+} // namespace molstat

@@ -14,11 +14,11 @@
 #include <cmath>
 #include <complex>
 
-using namespace std;
+namespace molstat {
 
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
-const vector<string> AsymTwoSiteSimulateModel::parameters =
+const std::vector<std::string> AsymTwoSiteSimulateModel::parameters =
 	{"ef", "v", "epsilon", "gammal", "gammar", "beta"};
 
 void AsymTwoSiteSimulateModel::unpack_parameters(
@@ -34,14 +34,12 @@ void AsymTwoSiteSimulateModel::unpack_parameters(
 }
 
 AsymTwoSiteSimulateModel::AsymTwoSiteSimulateModel(
-	const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
+	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
 	: SimulateModel(avail, parameters) {
 }
 
-std::array<double, 2> AsymTwoSiteSimulateModel::DiffG(shared_ptr<gsl_rng> r)
-	const {
-
-	vector<double> params(6);
+std::array<double, 2> AsymTwoSiteSimulateModel::DiffG(gsl_rng_ptr &r) const {
+	std::vector<double> params(6);
 	double ef, v, eps, gammal, gammar, beta;
 
 	// generate and unpack the parameters
@@ -51,10 +49,8 @@ std::array<double, 2> AsymTwoSiteSimulateModel::DiffG(shared_ptr<gsl_rng> r)
 	return {{ v, diff_conductance(params) }};
 }
 
-std::array<double, 2> AsymTwoSiteSimulateModel::StaticG(shared_ptr<gsl_rng> r)
-	const {
-
-	vector<double> params(6);
+std::array<double, 2> AsymTwoSiteSimulateModel::StaticG(gsl_rng_ptr &r) const {
+	std::vector<double> params(6);
 	double ef, v, eps, gammal, gammar, beta;
 
 	// generate and unpack the parameters
@@ -78,13 +74,13 @@ double AsymTwoSiteSimulateModel::static_c_integral(const double z,
 	const double eps, const double gammal, const double gammar,
 	const double beta) {
 
-	complex<double> bgg = sqrt(complex<double>((gammal-gammar)*(gammal-gammar)
+	std::complex<double> bgg = sqrt(std::complex<double>((gammal-gammar)*(gammal-gammar)
 		- 16.*beta*beta, 0.));
 
-	complex<double> denom1 = sqrt(-8.*beta*beta + gammal*gammal + gammar*gammar
+	std::complex<double> denom1 = sqrt(-8.*beta*beta + gammal*gammal + gammar*gammar
 		- (gammal + gammar) * bgg);
 
-	complex<double> denom2 = sqrt(-8.*beta*beta + gammal*gammal + gammar*gammar
+	std::complex<double> denom2 = sqrt(-8.*beta*beta + gammal*gammal + gammar*gammar
 		+ (gammal + gammar) * bgg);
 
 	return sqrt(128.)*gammal*gammar*beta*beta / (gammal + gammar) * real(
@@ -116,3 +112,5 @@ double AsymTwoSiteSimulateModel::diff_conductance(
 	return 0.5*transmission(ef + 0.5*v, v, eps, gammal, gammar, beta) +
 		0.5*transmission(ef - 0.5*v, v, eps, gammal, gammar, beta);
 }
+
+} // namespace molstat

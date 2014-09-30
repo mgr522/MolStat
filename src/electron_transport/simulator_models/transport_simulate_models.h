@@ -20,7 +20,7 @@
 #include <general/random_distributions/rng.h>
 #include <general/simulator_tools/simulate_model_interface.h>
 
-using std::shared_ptr;
+namespace molstat {
 
 /**
  * \brief Loads the transport models into the MolStat "database".
@@ -33,7 +33,7 @@ using std::shared_ptr;
  *    for transport have been added to it.
  */
 void load_transport_models(
-	std::map<std::string, SimulateModelInstantiator> &models);
+	std::map<std::string, SimulateModelFactory> &models);
 
 /**
  * \brief Loads the transport observables into the MolStat "database".
@@ -51,7 +51,11 @@ void load_transport_models(
  * \param[in,out] observables The map of observables in MolStat. On output, the
  *    observables for transport have been added to it.
  */
-void load_transport_observables(std::map<std::string, std::function<
-	Observable<2>(const shared_ptr<SimulateModel>)>> &observables);
+void load_transport_observables(
+	std::map<std::string,
+	         std::function<Observable<2>(const std::shared_ptr<SimulateModel>)>>
+		&observables);
+
+} // namespace molstat
 
 #endif

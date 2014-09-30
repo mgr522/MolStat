@@ -18,27 +18,31 @@
 #include "sym_two_site_simulate_model.h"
 #include "asym_two_site_simulate_model.h"
 
+namespace molstat {
+
 void load_transport_models(
-	std::map<std::string, SimulateModelInstantiator> &models) {
+	std::map<std::string, SimulateModelFactory> &models) {
 
 	models["symmetriconesite"] =
-		SimulateModelAdd<SymOneSiteSimulateModel>();
+		GetSimulateModelFactory<SymOneSiteSimulateModel>();
 
 	models["asymmetriconesite"] =
-		SimulateModelAdd<AsymOneSiteSimulateModel>();
+		GetSimulateModelFactory<AsymOneSiteSimulateModel>();
 
 	models["independenttwochannel"] =
-		SimulateModelAdd<IndTwoChanSimulateModel>();
+		GetSimulateModelFactory<IndTwoChanSimulateModel>();
 
 	models["symmetrictwosite"] =
-		SimulateModelAdd<SymTwoSiteSimulateModel>();
+		GetSimulateModelFactory<SymTwoSiteSimulateModel>();
 
 	models["asymmetrictwosite"] =
-		SimulateModelAdd<AsymTwoSiteSimulateModel>();
+		GetSimulateModelFactory<AsymTwoSiteSimulateModel>();
 }
 
-void load_transport_observables(std::map<std::string, std::function<
-	Observable<2>(const shared_ptr<SimulateModel>)>> &observables) {
+void load_transport_observables(
+	std::map<std::string,
+	         std::function<Observable<2>(const std::shared_ptr<SimulateModel>)>>
+		&observables) {
 
 	// load all observables here.
 	// If the observable is 1D, call Obs2(ObservableCheck(...))
@@ -50,3 +54,5 @@ void load_transport_observables(std::map<std::string, std::function<
 	observables["differentialconductance"] =
 		ObservableCheck(&DifferentialConductance::DiffG);
 }
+
+} // namespace molstat

@@ -69,14 +69,14 @@ public:
 };
 
 /**
- * \brief Shortcut for the factory the produces SimulateModel objects.
+ * \brief Shortcut for the factory that produces SimulateModel objects.
  *
  * SimulateModel objects are created by passing in a map of available
  * RandomDistributions; the specification of a model should supply the names
  * of required parameters. This function type produces the SimulateModel
  * from the map of RandomDistributions.
  */
-typedef std::function<std::shared_ptr<SimulateModel>
+typedef std::function<std::unique_ptr<SimulateModel>
 	(const std::map<std::string, std::shared_ptr<RandomDistribution>> &)>
 	SimulateModelFactory;
 
@@ -88,7 +88,7 @@ typedef std::function<std::shared_ptr<SimulateModel>
  *    random number distributions.
  */
 template<typename T>
-inline SimulateModelFactory SimulateModelAdd() {
+inline SimulateModelFactory GetSimulateModelFactory() {
 	return []
 		(const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
 		-> std::unique_ptr<SimulateModel> {
