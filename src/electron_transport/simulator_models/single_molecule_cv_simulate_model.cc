@@ -81,15 +81,32 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	sample(r, params);
 	unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-	return {{ v, static_conductance(params) }};/*Modification needed later for new function.*/
+	return {{ e0, kf(0, params) }};/*Modification needed later for new function.*/
 }
 
-double SingleMoleculeCV::kf(const std::vector<double> &vecl) {
+double SingleMoleculeCV::kf(double t, const std::vector<double> &vec) {
 
     double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
 
     // umpack the model parameters
-    unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
+    unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
+
+    return af * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t,vec) - eref) + lambda) 
+        / (4.0 * lambda * GSL_CONST_MKSA_BOLTZMANN * temperature));
+}
+double SingleMoleculeCV::E_applied(double t, const std::vector<double> &vec) {
+
+    double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
+
+    // umpack the model parameters
+    unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
+
+    double E;
+    if (t >= 0 && t <= tlimit)
+        E = e0 + v * t;
+    if (t > tlimit && t <= 2.0 * tlimit)
+        E = e0 + 2.0 * v * tlimit - v * t;
+    return E;
 }
 double SingleMoleculeCV::static_conductance(
 	const std::vector<double> &vec) {
