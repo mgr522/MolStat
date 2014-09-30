@@ -4,80 +4,39 @@
 /**
 \mainpage Introduction
 
-This software package provides tools for understanding and interpreting
-single-molecule behavior. Single-molecule experiments generally cannot
-determine, let alone control, the microscopic details of the system and, as
-such, are usually performed many times and interpreted statistically.
+This software package provides tools for understanding and interpreting single-molecule behavior. Single-molecule experiments generally cannot determine, let alone control, the microscopic details of the system and, as such, are usually performed many times and interpreted statistically.
 
-The key idea to understand and interpret these single-molecule measurements is
-that each measurement samples from a distribution of possible microscopic
-configurations. The observed data is thus probabilistic---not deterministic---
-and a combination of probability theory and statistical mechanics can be used
-to provide meaning to the data.
+The key idea to understand and interpret these single-molecule measurements is that each measurement samples from a distribution of possible microscopic configurations. The observed data is thus probabilistic---not deterministic---and a combination of probability theory and statistical mechanics can be used to provide meaning to the data.
 
-For a particular single-molecule process, there are several physical variables
-that determine the observed behavior. For example, \"molecular conductance\"
-experiments depend on the level alignment, the electrode-molecule couplings,
-and the applied bias. This software assumes that each of these
-parameters is a random variable from some distribution and that each
-experimental measurement samples from their collective distributions.
-The combination of conventional physical theories and probability theory then
-relates these underlying physical parameters to the observed data.
-Instead of measuring, for instance, *the* single-molecule conductance, the
-multitude of experiments collectively measures the probability density function
-of the conductance observable, which is more well-defined. The goal of this
-software package is to understand how these microscopic physical parameters
-relate to observables, in this statistical sense.
+For a particular single-molecule process, there are several physical variables that determine the observed behavior. For example, \"molecular conductance\" experiments depend on the level alignment, the electrode-molecule couplings, and the applied bias. This software assumes that each of these parameters is a random variable from some distribution and that each experimental measurement samples from their collective distributions. The combination of conventional physical theories and probability theory then relates these underlying physical parameters to the observed data. Instead of measuring, for instance, *the* single-molecule conductance, the multitude of experiments collectively measures the probability density function of the conductance observable, which is more well-defined. The goal of this software package is to understand how these microscopic physical parameters relate to observables, in this statistical sense.
 
 More information can be found throughout this manual.
 
 \section intro_general_concepts General Concepts
 There are two primary functions of this software package.
--# Simulate the probability density functions of experimental observables using
-   known distributions on the underlying physical parameters. For the
-   molecular conductance example, we put distributions around the level
-   alignments and coupling strengths, sample from these distributions, and
-   estimate the probability density function for the conductance observable.
--# Infer the statistics of the underlying physical parameters from the
-   probability density function of the observable. This amounts to an inverse
-   problem, which is, essentially, a (non-linear) fitting problem. Due to the
-   mathematical effort required to obtain functional forms to fit against, the
-   number of models is much more limited than for the simulator.
+-# Simulate the probability density functions of experimental observables using known distributions on the underlying physical parameters. For the molecular conductance example, we put distributions around the level alignments and coupling strengths, sample from these distributions, and estimate the probability density function for the conductance observable.
+-# Infer the statistics of the underlying physical parameters from the probability density function of the observable. This amounts to an inverse problem, which is, essentially, a (non-linear) fitting problem. Due to the mathematical effort required to obtain functional forms to fit against, the number of models is much more limited than for the simulator.
 
-In both cases, the code was designed to be extensible and to accomodate new
-observables, new models, or both. This guide describes how to use the existing
-models and, also, how to add new ones.
+In both cases, the code was designed to be extensible and to accomodate new observables, new models, or both. This guide describes how to use the existing models and, also, how to add new ones.
 
 \section sec_install Installation
 MolStat requires
-- a C++11 compiler. Most modern `g++` and `clang++` compilers are sufficient.
-  Note for Mac users (OS 10.8 and older): the default `libstdc++` does not 
-  support C++11. When you run the `configure` script below, specify the compiler
-  using,  e.g., `CXX="g++ -stdlib=libc++"`. (The configure script automatically
-  checks for `-std=c++11`.)
+- a C++11 compiler. Most modern `g++` and `clang++` compilers are sufficient. Note for Mac users (OS 10.8 and older): the default `libstdc++` does not support C++11. When you run the `configure` script below, specify the compiler using, e.g., `CXX="g++ -stdlib=libc++"`. (The configure script automatically checks for `-std=c++11`.)
 - the GNU autotools suite.
-- the GNU Scientific Library (GSL), which can be obtained at
-  http://www.gnu.org/software/gsl/. MolStat has been tested with version 1.16
-  of GSL.
-- (optional) doxygen, if you want to produce the documentation manuals
-  directly from the code. PDF versions for the latest release will be
-  available on the MolStat website, https://bitbucket.org/mgreuter/molstat.
+- the GNU Scientific Library (GSL), which can be obtained at http://www.gnu.org/software/gsl/. MolStat has been tested with version 1.16 of GSL.
+- (optional) doxygen, if you want to produce the documentation manuals directly from the code. PDF versions for the latest release will be available on the MolStat website, https://bitbucket.org/mgreuter/molstat.
 - (optional) python. Some tests use python.
 
 \subsection build Building the Package
-An autotools configure setup is provided to make installation
-easy (we hope). The first step is to run
+An autotools configure setup is provided to make installation easy (we hope). The first step is to run
 \verbatim
 autoreconf --install
 \endverbatim
-from the package's base directory. In addition to any of the usual options for
-configure, the `--with-gsl` option should specify the location of the GSL. For
-example, on a Mac using GSL from MacPorts, the configure script would be
+from the package's base directory. In addition to any of the usual options for configure, the `--with-gsl` option should specify the location of the GSL. For example, on a Mac using GSL from MacPorts, the configure script would be
 \verbatim
 ./configure --with-gsl=/opt/local
 \endverbatim
-The `--prefix` command may be useful if you plan to \"install\" the executables
-(see the standard options for the GNU autotools suite). Finally,
+The `--prefix` command may be useful if you plan to \"install\" the executables (see the standard options for the GNU autotools suite). Finally,
 \verbatim
 make
 \endverbatim
@@ -86,81 +45,61 @@ and, optionally,
 make install
 \endverbatim
 
-\note The full autotools build setup is included so that you can, at your
-option, extend MolStat to have new functionalities.
+\note The full autotools build setup is included so that you can, at your option, extend MolStat to have new functionalities.
 
 \subsection checkfitter Verifying the Installation
-Several tests are also provided to verify a successful compilation, and can be
-run using
+Several tests are also provided to verify a successful compilation, and can be run using
 \verbatim
 make check
 \endverbatim
 
 \note 
 - The `fit-asymmetric-resonant.py` test can take several minutes to run.
-- Some tests use python. They have been tested with version 2.7 and may not run
-  in python 3. The configure script only checks for python 2.* and should omit
-  the tests if only python 3.* is found.
+- Some tests use python. They have been tested with version 2.7 and may not run in python 3. The configure script only checks for python 2.* and should omit the tests if only python 3.* is found.
 
 \section changelog Version Changes
+\subsection v1_2 v1.2 (October 2014)
+- Added the `molstat` namespace to identify components of MolStat.
+- Reworked the simulator to allow more flexibility in input commands. Also added the idea of a \"composite\" simulator model for combining two (or more) models in the simulation.
+- Implemented models for vacuum tunneling and interference features.
+
 \subsection v1_1 v1.1 (September 2014)
-   - Reworked the simulator and fitter codes so that they are more general and
-     easier to extend. The codes are no longer specifically designed for
-     electron transport applications.
-   - Expanded the discussion of how to run and extend MolStat in the
-     documentation.
+- Reworked the simulator and fitter codes so that they are more general and easier to extend. The codes are no longer specifically designed for electron transport applications.
+- Expanded the discussion of how to run and extend MolStat in the documentation.
 
 \subsection v1_0 v1.0 (July 2014)
-   - Initial release; general package framework and layout.
-   - Conductance histogram (single-molecule conductance) tools: simulator and
-     fitter. The simulator produces zero-bias, static, or differential
-     conductance histograms for a variety of model systems. The fitter can
-     fit zero-bias conductance histogram peaks against three forms for
-     resonant or nonresonant tunneling.
+- Initial release; general package framework and layout.
+- Conductance histogram (single-molecule conductance) tools: simulator and fitter. The simulator produces zero-bias, static, or differential conductance histograms for a variety of model systems. The fitter can fit zero-bias conductance histogram peaks against three forms for resonant or nonresonant tunneling.
 
 \section sec_license License
-MolStat is distributed under the Creative Commons Attribution-NonCommercial 4.0
-International Public License. A full version of the license is provided in the
-`LICENSE` file in the top-level directory, and can be found online at
-http://creativecommons.org/licenses/by-nc/4.0/legalcode. In \"human-readable\"
-terms, this license allows you to
+MolStat is distributed under the Creative Commons Attribution-NonCommercial 4.0 International Public License. A full version of the license is provided in the `LICENSE` file in the top-level directory, and can be found online at http://creativecommons.org/licenses/by-nc/4.0/legalcode. In \"human-readable\" terms, this license allows you to
 - _Share_ -- copy and redistribute MolStat in any medium or format
 - _Adapt_ -- remix, transform, and built upon MolStat
 .
 provided you adhere to the following terms
-- _Attribution_ -- You must give *appropriate credit* (\ref reference_sec),
-  provide a link to the license, and indicate if changes were made. You may do
-  so in any reasonable manner, but not in any way that suggests the authors of
-  MolStat endorse you or your use.
+- _Attribution_ -- You must give *appropriate credit* (\ref reference_sec), provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the authors of MolStat endorse you or your use.
 - _Non-Commercial_ -- You may not use MolStat for commercial purposes.
 .
-The authors of MolStat cannot revoke these freedoms as long as you follow the
-license terms. (Adapted from http://creativecommons.org/licenses/by-nc/4.0).
+The authors of MolStat cannot revoke these freedoms as long as you follow the license terms. (Adapted from http://creativecommons.org/licenses/by-nc/4.0).
 
 MolStat (c) 2014, Northwestern University.
 
 \section reference_sec Citing this software
-You can cite this software by referencing, as appropriate, \cite reuter-2243
-and \cite williams-5937. Thanks!
+You can cite this software by referencing, as appropriate, \cite reuter-2243 and \cite williams-5937. Thanks!
 
 \section acknowledgments Acknowledgments
-I thank the following people for their help, insight, and comments in the
-development of MolStat and the theories behind it.
+I thank the following people for their help, insight, and comments in the development of MolStat and the theories behind it.
    - Prof.\ Mark Ratner (Northwestern University)
    - Prof.\ Herre van der Zandt (Delft University of Technology)
    - Prof.\ Latha Venkataraman (Columbia University)
    - Mr.\ Patrick Williams (Oak Ridge High School)
-	- Mr.\ Gaibo Zhang (Oak Ridge High School)
+	 - Mr.\ Gaibo Zhang (Oak Ridge High School)
    .
 I also gratefully acknowledge financial and computational support from
-   -# The Wigner Fellowship program at the Oak Ridge National Laboratory,
-      which is managed by UT-Batelle, LLC, for the US Department of Energy
-      under contract DE-AC05-00OR22725.
-   -# The Multidisciplinary University Research Initiative (MURI) program of
-      the U.S.\ Air Force Office of Scientific Research (AFOSR), under grant
-      FA9550-14-1-003.
+   -# The Wigner Fellowship program at the Oak Ridge National Laboratory, which is managed by UT-Batelle, LLC, for the US Department of Energy under contract DE-AC05-00OR22725. (Conception and pre-release versions of the code.)
+   -# The Multidisciplinary University Research Initiative (MURI) program of the U.S.\ Air Force Office of Scientific Research (AFOSR), under grant FA9550-14-1-003. (Versions 1.0 -- 1.2.)
 
 Matthew G.\ Reuter \n
 mgreuter@u.northwestern.edu \n
-September 2014
+October 2014
 */

@@ -13,7 +13,7 @@ Before discussing how to extend MolStat, we introduce the style guidelines for M
 
 -# All files, classes, typedefs, functions, etc., should have doxygen comment blocks around them that provide meaningful documentation. The only exceptions to this rule are class member functions specified with the `default` or `delete` keywords. Any of these quantities that are meant for inclusion in MolStat should be placed in the `molstat` namespace.
 
--# Try not to include unnecessary files. Also avoid `using namespace std;` declarations in header files.
+-# Try not to include unnecessary files. Also avoid `using` declarations in header files.
 
 \section sec_add_general Adding General Mathematical Operations
 
@@ -23,9 +23,7 @@ Random number distributions are computationally described by the molstat::Random
 Finally, the new random number distribution needs to be added to the molstat::RandomDistributionFactory function so that it is processed from input. In this function, the `distribution` tag for the input deck is defined and the code for processing `[distribution-parameters]` is implemented. The implemented distributions should provide sufficient examples. Note that the name of the distribution should be in lowercase.
 
 \subsection subsec_add_binstyle Adding Binning Styles
-Binning styles are described by the abstract BinStyle class. Adding a new
-binning style required deriving from this class and implementing the three
-abstract functions.
+Binning styles are described by the abstract molstat::BinStyle class. Adding a new binning style required deriving from this class and implementing the three abstract functions.
 -# The mask function, \f$u = f(x)\f$, in `mask`.
 -# The inverse mask function, \f$x = f^{-1}(u)\f$, in `invmask`.
 -# The derivative of the mask function, \f$ \mathrm{d}f / \mathrm{d}x\f$, in
@@ -33,34 +31,20 @@ abstract functions.
 .
 When the new binning style is used, the set \f$\{f(x)\}\f$ is binned.
 
-Finally, add the new binning style class to the ::get_bin_style function so that
-it can be referenced from the input arguments. The implemented examples should
-be sufficient to explain this procedure. Note that the name of the binning
-style should be in lowercase.
+Finally, add the new binning style class to the molstat::BinStyleFactory function so that it can be referenced from the input arguments. The implemented examples should be sufficient to explain this procedure. Note that the name of the binning style should be in lowercase.
 
 \section sec_add_simulate Adding Simulator Models and Observables
 
 \subsection subsec_add_simulate_observable Adding Simulator Observables
-Unlike other concepts, simulator observables do not have an abstract class from
-which they inherit. If there were such a class, each observable would have to
-implement a function with the same name; a particular model would then only be
-able to implement one observable.
+Unlike other concepts, simulator observables do not have an abstract class from which they inherit. If there were such a class, each observable would have to implement a function with the same name; a particular model would then only be able to implement one observable.
 
-Instead, each observable is an abstract class (not necessarily derived from
-another class) that has a virtual function with the signature
+Instead, each observable is an abstract class (not necessarily derived from another class) that has a virtual function with the signature
 \verbatim
 std::array<double, N> observable_function(std::shared_ptr<gsl_rng>) const
 \endverbatim
-where `N` is the "dimensionality" of the observable (`N` = 1 or 2). (For
-example, differential conductance is a two-dimensional observable; both the
-applied bias and the conductance are returned.) A simulator model that
-calculates this observable will thus inherit from both SimulateModel (see
-\ref subsec_add_simulate_model) and the observable's class.
+where `N` is the "dimensionality" of the observable (`N` = 1 or 2). (For example, differential conductance is a two-dimensional observable; both the applied bias and the conductance are returned.) A simulator model that calculates this observable will thus inherit from both SimulateModel (see \ref subsec_add_simulate_model) and the observable's class.
 
-Finally, the observable needs to be added to MolStat's list of available
-observables (the `std::map` called `observables` in `main-simulator.cc`). The
-::ObservableCheck template provides a wrapper for this operation. For a
-one-dimensional observable,
+Finally, the observable needs to be added to MolStat's list of available observables (the `std::map` called `observables` in `main-simulator.cc`). The molstat::ObservableCheck template provides a wrapper for this operation. For a one-dimensional observable,
 \verbatim
 observables["observablename"] = Obs2(ObservableCheck(&ObservableClass::observable_function));
 \endverbatim
@@ -68,88 +52,40 @@ and for a two-dimensional observable,
 \verbatim
 observables["observablename"] = ObservableCheck(&ObservableClass::observable_function);
 \endverbatim
-The name of the observable (for use in the input file) is the key
-`observablename`. This key should be in lowercase in the code; it is case
-insensitive in the input file. Note that the ::Obs2 function puts a wrapper
-around the one-dimensional observable so that a two-dimensional observable is
-produced (one of the two values is always `0.`).
+The name of the observable (for use in the input file) is the key `observablename`. This key should be in lowercase in the code; it is case insensitive in the input file. Note that the molstat::Obs2 function puts a wrapper around the one-dimensional observable so that a two-dimensional observable is produced (one of the two values is always `0.`).
 
 \subsection subsec_add_simulate_model Adding Simulator Models
-Simulator models are encapsulated by the SimulateModel class. This base class
-- stores a list of the random number distributions, as specified by the
-  derived class.
-- samples from all of the random number distributions, given a GSL random
-  number generator.
+Simulator models are encapsulated by the molstat::SimulateModel class. This base class
+- stores a list of the random number distributions, as specified by the derived class.
+- samples from all of the random number distributions, given a GSL random number generator.
 .
-The derived class for a new simulator model needs to specify the names of its
-parameters when calling the constructor for SimulateModel. The order of the
-parameters is important, the `std::vector<double>` produced by
-SimulateModel::sample will be ordered the same way. (Implemented models have
-the `unpack_parameters` function to aid in this process.) A constant, static
-member of each class usually lists the names, in order. The new class must have
-a constructor with the signature
+The derived class for a new simulator model needs to specify the names of its parameters when calling the constructor for molstat::SimulateModel. The order of the parameters is important, the `std::vector<double>` produced by molstat::SimulateModel::sample will be ordered the same way. (Implemented models have the `unpack_parameters` function to aid in this process.) A constant, static member of each class usually lists the names, in order. The new class must have a constructor with the signature
 \verbatim
 NewSimulateModel(const std::map<std::string, std::shared_ptr<RandomDistribution>> &)
 \endverbatim
-This function passes the list of available random distributions to the
-SimulateModel constructor, along with the list of required parameters.
+This function passes the list of available random distributions to the molstat::SimulateModel constructor, along with the list of required parameters.
 
-Although the above steps are all that is necessary for making a simulator
-model, the resulting model would not be very useful. A simulator model should
-also inherit from one or more observable classes and implement each
-observable's function (see \ref subsec_add_simulate_observable). To this end,
-implemented simulator models usually have a static member function that
-calculates the observable for a specific set of parameters. (Recall that the
-observable's function will randomly generate data *and* subsequently calculate
-the observable.)
+Although the above steps are all that is necessary for making a simulator model, the resulting model would not be very useful. A simulator model should also inherit from one or more observable classes and implement each observable's function (see \ref subsec_add_simulate_observable). To this end, implemented simulator models usually have a static member function that calculates the observable for a specific set of parameters. (Recall that the observable's function will randomly generate data *and* subsequently calculate the observable.)
 
-Finally, the new simulator model needs to be added to to the simulator's
-`models` list in `main-simulator.cc`. The ::SimulateModelAdd template provides
-a wrapper for this operation; using SymOneSiteSimulateModel as an example, the
-code would be
+Finally, the new simulator model needs to be added to to the simulator's `models` list in `main-simulator.cc`. The molstat::GetSimulateModelFactory template provides a wrapper for this operation; using molstat::SymOneSiteSimulateModel as an example, the code would be
 \verbatim
-models["symmetriconesite"] = SimulateModelAdd<SymOneSiteSimulateModel>();
+models["symmetriconesite"] = GetSimulateModelFactory<SymOneSiteSimulateModel>();
 \endverbatim
-The name of the model (for use in the input file) is the key for `models`. This
-key should be in lowercase in the code; it is case insensitive in the input
-file.
+The name of the model (for use in the input file) is the key for `models`. This key should be in lowercase in the code; it is case insensitive in the input file.
 
 \section sec_add_fit_model Adding Fitter Models
 
-Much of the fitting procedure is handled internally by the GSL, and the
-`FitModel` class contains even more common operations. Ultimately, to implement
-a new model,
--# Derive a class from FitModel, implementing the FitModel::resid and
-   FitModel::jacobian member functions. FitModel::resid calculates the
-   component in \f$r\f$ for a particular data point \f$g_j\f$ and \f$p_j\f$.
-   Similarly, FitModel::jacobian calculates the Jacobian at the specific data
-   point, where the Jacobian is the matrix of derivatives,
+Much of the fitting procedure is handled internally by the GSL, and the molstat::FitModel class contains even more common operations. Ultimately, to implement a new model,
+-# Derive a class from molstat::FitModel, implementing the molstat::FitModel::resid and molstat::FitModel::jacobian member functions. molstat::FitModel::resid calculates the component in \f$r\f$ for a particular data point \f$g_j\f$ and \f$p_j\f$. Similarly, molstat::FitModel::jacobian calculates the Jacobian at the specific data point, where the Jacobian is the matrix of derivatives,
    \f[ \frac{\partial}{\partial x_k} \left( f(g_j, \{x_k\}) - p_j \right). \f]
-   \note Each row of the Jacobian for a given data point is calculated
-         independently.
--# If the functional form and/or its Jacobian are expensive to calculate, you
-   may wish to override the FitModel::resid_j function, which evaluates the
-   residual and Jacobian together. The default provided by FitModel simply
-   calls the subclass's `resid` and `jacobian` functions.
--# Implement the member function FitModel::append_default_guesses, which
-   populates  a vector of initial guesses to use for fitting the data. The fit
-   will be performed for each initial guess, and the best fit will be output at
-   the end. Similarly, implement the FitModel::create_initial_guess function,
-   which facilitates runtime-specified initial guesses.
--# Implement the member function FitModel::print_fit, which prints a set of
-   fitting parameters to the specified output stream.
--# If deemed necessary, override the FitModel::process_fit_parameters, which
-   \"cleans\" up the parameters. For instance, the \f$\gamma\f$ parameter in
-   the SymmetricResonantFitModel may be mathematically positive or negative
-   (the fit function only depends on \f$\gamma^2\f$), but physically it should
-   be positive. This function ensures that, in this example, \f$\gamma>0\f$.
--# Add the model, using an input name as the key, to the fitter's `models`
-   list in `main-fitter.cc`. The ::FitModelAdd template provides a wrapper for
-   this operation. Using SymmetricResonantFitModel as an example, the code
-   would be
+   \note Each row of the Jacobian for a given data point is calculated independently.
+-# If the functional form and/or its Jacobian are expensive to calculate, you may wish to override the molstat::FitModel::resid_j function, which evaluates the residual and Jacobian together. The default provided by molstat::FitModel simply calls the subclass's `resid` and `jacobian` functions.
+-# Implement the member function molstat::FitModel::append_default_guesses, which populates a vector of initial guesses to use for fitting the data. The fit will be performed for each initial guess, and the best fit will be output at the end. Similarly, implement the molstat::FitModel::create_initial_guess function, which facilitates runtime-specified initial guesses.
+-# Implement the member function molstat::FitModel::print_fit, which prints a set of fitting parameters to the specified output stream.
+-# If deemed necessary, override the molstat::FitModel::process_fit_parameters, which \"cleans\" up the parameters. For instance, the \f$\gamma\f$ parameter in the molstat::SymmetricResonantFitModel may be mathematically positive or negative (the fit function only depends on \f$\gamma^2\f$), but physically it should be positive. This function ensures that, in this example, \f$\gamma>0\f$.
+-# Add the model, using an input name as the key, to the fitter's `models` list in `main-fitter.cc`. The molstat::GetFitModelFactory template provides a wrapper for this operation. Using SymmetricResonantFitModel as an example, the code would be
    \verbatim
-   models["symmetricresonant"] = FitModelAdd<SymmetricResonantFitModel, 1>();
+   models["symmetricresonant"] = GetFitModelFactory<SymmetricResonantFitModel, 1>();
    \endverbatim
-   The key string should be in lowercase in the code; it is case insensitive in
-   the input file.
+   The key string should be in lowercase in the code; it is case insensitive in the input file.
 */
