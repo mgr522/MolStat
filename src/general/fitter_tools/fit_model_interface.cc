@@ -13,6 +13,8 @@
 
 #include "fit_model_interface.h"
 
+namespace molstat {
+
 std::vector<double> gsl_to_std(const gsl_vector *gslv) {
 	std::vector<double> ret(gslv->size);
 
@@ -21,3 +23,5 @@ std::vector<double> gsl_to_std(const gsl_vector *gslv) {
 
 	return ret;
 }
+
+} // namespace molstat

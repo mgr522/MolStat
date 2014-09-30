@@ -6,7 +6,7 @@
  * \file test_gsl_std_vector.cc
  * \brief Test suite for interconverting gsl and std vector types.
  *
- * \test Tests the ::gsl_to_std function for use in the FitModel class.
+ * \test Tests the molstat::gsl_to_std function for use in the FitModel class.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 	for(i = 0; i < size; ++i)
 		gsl_vector_set(gslv, i, 1.*i);
 
-	vec = gsl_to_std(gslv);
+	vec = molstat::gsl_to_std(gslv);
 
 	for(i = 0; i < size; ++i)
 		assert(abs(vec[i] - gsl_vector_get(gslv, i)) < 1.0e-6);

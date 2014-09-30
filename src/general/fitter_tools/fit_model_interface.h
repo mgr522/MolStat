@@ -26,16 +26,16 @@
 #include <gsl/gsl_multifit_nlin.h>
 #include "../string_tools.h"
 
-using std::shared_ptr;
+namespace molstat {
 
 /**
- * \brief Abstract class encapsulating models that data be fit to.
+ * \brief Abstract class encapsulating models can fit data.
  *
  * Throughout, the function we fit to will be denoted \f$f\f$. For
  * extensibility, this class is templated over the number of independent
  * variables of \f$f\f$ (note that this is not the number of fitting
  * parameters). In other words, \f$f:\mathbb{R}^N\to\mathbb{R}\f$. The fit
- * function has `nfit` fitting parameters.
+ * function has \f$N=\f$`nfit` fitting parameters.
  *
  * Derived classes do not have to deal with the GSL particulars. Rather, they
  * only need to implement functions to evaluate the fit function and its
@@ -54,6 +54,9 @@ private:
 	 * This is a list of pairs; each pair contains the independent variables
 	 * (the array) and the observed value of the fit function.
 	 * \endinternal
+	 *
+	 * \todo Rework this class and main-fitter.cc so that the data is moved
+	 *    into this class.
 	 */
 	const std::list<std::pair<std::array<double, N>, double>> &data;
 
@@ -192,7 +195,7 @@ public:
 	 * \return The GSL nonlinear fitting handle.
 	 * \endinternal
 	 */
-	gsl_multifit_function_fdf gsl_handle() const;
+	gsl_multifit_function_fdf &&gsl_handle() const;
 
 	/**
 	 * \brief Appends default initial guesses to a list.
@@ -246,32 +249,35 @@ public:
 
 // Other function prototypes
 /**
- * \brief Shortcut for the function signature of an "instantiator" for a
- *    FitModel object in the fitter.
+ * \brief Shortcut for a factory that makes a FitModel object.
  *
  * FitModel objects are created by passing in the list of data points. This
- * function type produces the FitModel from the list of data points.
+ * factory is a function type that produces the FitModel from a list of data
+ * points.
  *
  * \tparam N The number of independent variables in the fit function.
  */
 template<std::size_t N>
-using FitModelInstantiator = std::function< shared_ptr< FitModel<N> >
-	(const std::list<std::pair<std::array<double, N>, double>> &data_) >;
+using FitModelFactory =
+	std::function< std::unique_ptr< FitModel<N> >
+		(const std::list<std::pair<std::array<double, N>, double>> &) >;
 
 /**
- * \brief Creates a FitModelInstantiator for a particular FItModel.
+ * \brief Creates a FitModelFactory for a particular FitModel.
  *
  * \tparam T The type of FitModel we wish to instantiate.
  * \tparam N The number of independent variables in the fit function.
  * \return A function for instantiating the class from a list of data points.
  */
 template<typename T, std::size_t N>
-inline FitModelInstantiator<N> FitModelAdd() {
+inline FitModelFactory<N> FitModelAdd() {
 	return []
 		(const std::list<std::pair<std::array<double, N>, double>> &data)
-		-> shared_ptr<FitModel<N>> {
+		-> std::unique_ptr<FitModel<N>> {
 
-		return std::make_shared<T>(data);
+		std::unique_ptr<FitModel<N>> ret(new T(data));
+
+		return ret;
 	};
 }
 
@@ -384,7 +390,7 @@ std::pair<double, std::vector<double>> FitModel<N>::resid_j(
 }
 
 template<std::size_t N>
-gsl_multifit_function_fdf FitModel<N>::gsl_handle() const {
+gsl_multifit_function_fdf &&FitModel<N>::gsl_handle() const {
 	gsl_multifit_function_fdf fit;
 
 	fit.f = &f;
@@ -394,7 +400,7 @@ gsl_multifit_function_fdf FitModel<N>::gsl_handle() const {
 	fit.p = nfit;
 	fit.params = (void*)this;
 
-	return fit;
+	return std::move(fit);
 }
 
 template<std::size_t N>
@@ -430,5 +436,7 @@ template<std::size_t N>
 void FitModel<N>::process_fit_parameters(std::vector<double> &fitparams)
 	const {
 }
+
+} // namespace molstat
 
 #endif
