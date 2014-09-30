@@ -21,6 +21,7 @@
 #include <general/simulator_tools/simulate_model_interface.h>
 #include "transport_observables.h"
 
+#include <sundials/sundials_type.h>
 using std::shared_ptr;
 
 /**
@@ -65,8 +66,8 @@ private:
 	 * \param[out] gammar The right site-lead coupling.
 	 * \param[out] a The voltage drop parameter.
 	 */
-	static void unpack_parameters(const std::vector<double> &vec, double &ef,
-		double &v, double &epsilon, double &gammal, double &gammar, double &a);
+	static void unpack_parameters(const std::vector<double> &vec, double &e0,
+		double &eref, double &lambda, double &af, double &ab, double &v, double &n, double &poinitial, double &temperature, double &tlimit);
 
 public:
 	SingleMoleculeCV() = delete;
@@ -83,16 +84,6 @@ public:
 		const std::map<std::string, shared_ptr<RandomDistribution>> &avail);
 
 	/**
-	 * \brief Returns the differential conductance for a randomly-generated set
-	 *    of model parameters.
-	 * 
-	 * \param[in] r The GSL random number generator handle.
-	 * \return The differential conductance.
-	 */
-	virtual std::array<double, 2> DiffG(shared_ptr<gsl_rng> r) const
-		override;
-
-	/**
 	 * \brief Returns current peak potentials for a randomly-generated set of model parameters.
 	 *    model parameters.
 	 * 
@@ -103,28 +94,6 @@ public:
 		override;
 
 	/**
-	 * \brief Calculates the transmission for a set of model parameters.
-	 *
-	 * \param[in] e The energy of the incident electron.
-	 * \param[in] v The applied bias.
-	 * \param[in] eps The level energy.
-	 * \param[in] gammal The left level-electrode coupling.
-	 * \param[in] gammar The right level-electrode coupling.
-	 * \param[in] a The voltage drop scaling factor.
-	 * \return The transmission for this set of parameters.
-	 */
-	static double transmission(const double e, const double v, const double eps,
-		const double gammal, const double gammar, const double a);
-
-	/**
-	 * \brief Calculates the static conductance for a set of model parameters.
-	 *
-	 * \param[in] vec The vector of model parameters.
-	 * \return The static conductance for this set of parameters.
-	 */
-	static double static_conductance(const std::vector<double> &vec);
-
-	/**
 	 * \brief Calculates the differential conductance for a set of model
 	 *    parameters.
 	 *
@@ -132,6 +101,37 @@ public:
 	 * \return The differential conductance for this set of parameters.
 	 */
 	static double diff_conductance(const std::vector<double> &vec);
+    /**
+     * \brief Calculate the forward half-reaction rate for a set of model parameters.
+     *
+     * \param[in] t The time
+     * \param[in] vec The vector of model parameters.
+     * \return The forward half-reaction rate for this set of model parameters.
+     */
+    static double kf(double t, std::vector<double> &vec);
+    /**
+     * \brief Calculate the backward half-reaction rate for a set of model parameters.
+     *
+     * \param[in] t The time.
+     * \param[in] vec The vector of model parameters.
+     * \return The backward half-reaction rate for this set of model parameters.
+     */
+    static double kb(double t, std::vector<double> &vec);
+    /**
+     * \brief Calculate the potential applied on the moleculei for a set of model parameters at time t.
+     * \param[in] t The time.
+     * \param[in] vec The vector of model parameters.
+     * \return The applied potential on the molecule at time t.
+     */
+    static double E_applied(double t, std::vector<double> &vec);
+    /**
+     * \brief The funtion called by the solver. Calculates the values on the right side of the equations.
+     * \param[in] t the time.
+     * \param[in] y the vector of functions that is solved.
+     */
+    static int f(double t, N_Vector y, N_Vector ydot, void *user_data);
+    static int g(double t, N_Vector y, double *gout, void *user_data);
+    static int Jac(long int N, double t, N_Vector y, N_Vector fy, DlsMat J, void *user_data, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
 };
 
 #endif
