@@ -17,17 +17,20 @@
 #include <map>
 #include <string>
 
+namespace molstat {
+
 /**
  * \brief Loads the transport models into the MolStat "database".
  *
  * Models are stored as a map from a string (the name of the model) to a
- * function that creates an instance of the model
- * (of type FitModelInstantiator).
+ * factory for the model (of type FitModelFactory).
  *
  * \param[in,out] models The map of models in MolStat. On output, the models
  *    for transport have been added to it.
  */
 void load_transport_models(
-	std::map<std::string, FitModelInstantiator<1>> &models);
+	std::map<std::string, FitModelFactory<1>> &models);
+
+} // namespace molstat
 
 #endif

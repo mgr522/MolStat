@@ -14,6 +14,8 @@
 #include "bin_log.h"
 #include <cmath>
 
+namespace molstat {
+
 BinLog::BinLog(const double b_)
 	: b(b_) {
 }
@@ -29,3 +31,5 @@ double BinLog::invmask(const double u) const {
 double BinLog::dmaskdx(const double x) const {
 	return 1. / (x * log(b));
 }
+
+} // namespace molstat

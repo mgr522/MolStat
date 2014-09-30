@@ -16,6 +16,8 @@
 
 using namespace std;
 
+namespace molstat {
+
 std::vector<double> SymmetricNonresonantFitModel::create_initial_guess(
 	const std::map<std::string, double> &values) const {
 
@@ -113,3 +115,5 @@ void SymmetricNonresonantFitModel::print_fit(FILE *f,
 	fprintf(f, "c=%.4e, d=%.4e, norm=%.4e", fitparam[C], fitparam[D],
 		fitparam[NORM]);
 }
+
+} // namespace molstat

@@ -16,6 +16,8 @@
 
 using namespace std;
 
+namespace molstat {
+
 std::vector<double> AsymmetricResonantFitModel::create_initial_guess(
 	const std::map<std::string, double> &values) const {
 
@@ -308,3 +310,5 @@ double AsymmetricResonantFitModel::int_dp_dgammaR(double x, void *params) {
 		exp(-0.5*(x*gammaL - gammaR)*(x*gammaL - gammaR) / temp2
 			-0.125*r*r*(gammaL*gammaL + gammaR*gammaR)*temp1 / (temp2 * g));
 }
+
+} // namespace molstat

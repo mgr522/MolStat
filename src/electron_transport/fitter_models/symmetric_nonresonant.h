@@ -14,6 +14,8 @@
 
 #include <general/fitter_tools/fit_model_interface.h>
 
+namespace molstat {
+
 /**
  * \brief The fit model for nonresonant tunneling through a single site with
  *    symmetric electrode/site couplings.
@@ -67,6 +69,7 @@ public:
 	const static int NORM = 2;
 
 	SymmetricNonresonantFitModel() = delete;
+	virtual ~SymmetricNonresonantFitModel() = default;
 
 	/**
 	 * \brief Constructor requiring the data that we will be fitting against.
@@ -76,13 +79,6 @@ public:
 	 */
 	SymmetricNonresonantFitModel(
 		const std::list<std::pair<std::array<double, 1>, double>> &data);
-
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
-	virtual ~SymmetricNonresonantFitModel() = default;
 
 	/**
 	 * \brief Evaluates the fit function for this model at a given set of
@@ -140,5 +136,7 @@ public:
 	/* No post-processing issues encountered. We can just use the default
 	 * function that does nothing. */
 };
+
+} // namespace molstat
 
 #endif

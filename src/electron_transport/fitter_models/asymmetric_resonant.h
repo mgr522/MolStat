@@ -15,6 +15,8 @@
 #include <general/fitter_tools/fit_model_interface.h>
 #include <gsl/gsl_integration.h>
 
+namespace molstat {
+
 /**
  * \brief The fit model for resonant tunneling through a single site with
  *    asymmetric electrode/site couplings.
@@ -50,7 +52,8 @@ protected:
 	 * \brief Integration workspace for GSL numerical integration.
 	 * \endinternal
 	 */
-	std::shared_ptr<gsl_integration_workspace> w;
+	std::unique_ptr<gsl_integration_workspace,
+	                decltype(&gsl_integration_workspace_free)> w;
 
 	/**
 	 * \brief Converts a map of names to values to an initial guess (ordered
@@ -159,6 +162,7 @@ public:
 	const static int NORM = 3;
 
 	AsymmetricResonantFitModel() = delete;
+	virtual ~AsymmetricResonantFitModel() = default;
 
 	/**
 	 * \brief Constructor requiring the data that we will be fitting against.
@@ -168,13 +172,6 @@ public:
 	 */
 	AsymmetricResonantFitModel(
 		const std::list<std::pair<std::array<double, 1>, double>> &data);
-
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
-	virtual ~AsymmetricResonantFitModel() = default;
 
 	/**
 	 * \brief Evaluates the fit function for this model at a given set of
@@ -258,5 +255,7 @@ public:
 	 */
 	virtual void process_fit_parameters(std::vector<double> &fitparams) const;
 };
+
+} // namespace molstat
 
 #endif

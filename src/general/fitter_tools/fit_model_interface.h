@@ -195,7 +195,7 @@ public:
 	 * \return The GSL nonlinear fitting handle.
 	 * \endinternal
 	 */
-	gsl_multifit_function_fdf &&gsl_handle() const;
+	gsl_multifit_function_fdf gsl_handle() const;
 
 	/**
 	 * \brief Appends default initial guesses to a list.
@@ -390,7 +390,7 @@ std::pair<double, std::vector<double>> FitModel<N>::resid_j(
 }
 
 template<std::size_t N>
-gsl_multifit_function_fdf &&FitModel<N>::gsl_handle() const {
+gsl_multifit_function_fdf FitModel<N>::gsl_handle() const {
 	gsl_multifit_function_fdf fit;
 
 	fit.f = &f;
@@ -400,7 +400,7 @@ gsl_multifit_function_fdf &&FitModel<N>::gsl_handle() const {
 	fit.p = nfit;
 	fit.params = (void*)this;
 
-	return std::move(fit);
+	return fit;
 }
 
 template<std::size_t N>

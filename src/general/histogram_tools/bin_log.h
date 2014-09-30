@@ -14,6 +14,8 @@
 
 #include "bin_style.h"
 
+namespace molstat {
+
 /**
  * \brief Logarithmic binning style.
  *
@@ -29,6 +31,7 @@ protected:
 
 public:
 	BinLog() = delete;
+	virtual ~BinLog() = default;
 
 	/**
 	 * \brief Constructor specifying the base of logarithm to use.
@@ -36,13 +39,6 @@ public:
 	 * \param[in] b_ The base.
 	 */
 	BinLog(const double b_);
-
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
-	virtual ~BinLog() = default;
 
 	/**
 	 * \brief The mask function, \f$u = f(x) = \log_b(x)\f$.
@@ -68,5 +64,7 @@ public:
 	 */
 	virtual double dmaskdx(const double x) const;
 };
+
+} // namespace molstat
 
 #endif

@@ -26,8 +26,8 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multifit_nlin.h>
 
-#include <general/string_tools.h>
-#include <general/histogram_tools/bin_style.h>
+#include "general/string_tools.h"
+#include "general/histogram_tools/bin_style.h"
 #include "electron_transport/fitter_models/transport_fit_models.h"
 
 using namespace std;
@@ -46,21 +46,24 @@ using namespace std;
  */
 int main(int argc, char **argv) {
 	// non-linear fitting tools
-	shared_ptr<gsl_multifit_fdfsolver> solver;
+	unique_ptr<gsl_multifit_fdfsolver,
+	           decltype(&gsl_multifit_fdfsolver_free)>
+		solver(nullptr, &gsl_multifit_fdfsolver_free);
 	gsl_multifit_function_fdf fdf;
 
 	// status of the fit
-	shared_ptr<gsl_vector> vec;
+	unique_ptr<gsl_vector, decltype(&gsl_vector_free)>
+		vec(nullptr, &gsl_vector_free);
 	bool hasfit, iterprint, usedefaultguess;
 	double resid, bestresid;
 	int status;
 
 	// the model we're fitting against
-	shared_ptr<FitModel<1>> model;
+	unique_ptr<molstat::FitModel<1>> model;
 	// the list of models:
-	// stored as a map of string (model name) to a function that instantiates
-	// such a model, given the list of data
-	map<string, FitModelInstantiator<1>> models;
+	// stored as a map of string (model name) to a model factory, given the
+	// list of data
+	map<string, molstat::FitModelFactory<1>> models;
 
 	// the data we're fitting
 	list<pair<array<double, 1>, double>> data;
@@ -69,7 +72,7 @@ int main(int argc, char **argv) {
 	vector<double> bestfit;
 	list<vector<double>> initvals;
 	list<vector<double>>::const_iterator initval;
-	shared_ptr<BinStyle> binstyle;
+	unique_ptr<molstat::BinStyle> binstyle;
 
 	// counters & auxiliary variables
 	size_t i, iter;
@@ -82,19 +85,19 @@ int main(int argc, char **argv) {
 
 	// load the models
 	// FitModelAdd calls appear here
-	load_transport_models(models);
+	molstat::load_transport_models(models);
 
 	// set up the fit -- read in parameters from stdin
 	// Line 1: One token specifying the model to use for fitting
 	try {
-		line = getline(stdin);
+		line = molstat::getline(stdin);
 	}
 	catch(const runtime_error &e) {
 		fprintf(stderr, "Error: %s.\n", e.what());
 		return 0;
 	}
 
-	tokenize(line, tokens);
+	molstat::tokenize(line, tokens);
 	if(tokens.size() < 1) {
 		fprintf(stderr, "Error: model name expected in line 1.\n");
 		return 0;
@@ -105,12 +108,12 @@ int main(int argc, char **argv) {
 
 	// Line 2: The file name of the conductance histogram data to fit
 	try {
-		line = getline(stdin);
+		line = molstat::getline(stdin);
 	} catch(const runtime_error &e) {
 		fprintf(stderr, "Error: %s.\n", e.what());
 		return 0;
 	}
-	tokenize(line, tokens);
+	molstat::tokenize(line, tokens);
 	if(tokens.size() < 1) {
 		fprintf(stderr, "Error: file name expected in line 2.\n");
 		return 0;
@@ -132,7 +135,7 @@ int main(int argc, char **argv) {
 	// set the model
 	try {
 		// models.at() returns a function for instantiating the model
-		model = models.at(to_lower(modelname))(data);
+		model = models.at(molstat::to_lower(modelname))(data);
 	}
 	catch(const out_of_range &e) {
 		fprintf(stderr, "Error: model \"%s\" not found.\n", modelname.c_str());
@@ -143,24 +146,24 @@ int main(int argc, char **argv) {
 
 	// set up GSL details
 	fdf = model->gsl_handle();
-	vec.reset(gsl_vector_alloc(model->nfit), &gsl_vector_free);
+	vec.reset(gsl_vector_alloc(model->nfit));
 
 	// Remaining lines: auxiliary options
 	// default options
 	iterprint = false; // don't print details at every iteration
 	initvals.clear(); // no initial guesses
 	usedefaultguess = false; // user specifies to use the default guesses
-	binstyle = get_bin_style({{"linear"}}); // default to linear bins
+	binstyle = molstat::BinStyleFactory({{"linear"}}); // default: linear bins
 
 	// process the lines and override any of the default options
 	try {
 		while(true) {
-			line = getline(stdin);
+			line = molstat::getline(stdin);
 
-			tokenize(line, tokens);
+			molstat::tokenize(line, tokens);
 			if(tokens.size() > 0) {
 				line = tokens[0];
-				make_lower(line);
+				molstat::make_lower(line);
 
 				if(line == "print")
 					iterprint = true;
@@ -175,7 +178,7 @@ int main(int argc, char **argv) {
 					}
 					else {
 						line = tokens[1];
-						make_lower(line);
+						molstat::make_lower(line);
 						if(line == "default")
 							usedefaultguess = true;
 						else {
@@ -200,10 +203,10 @@ int main(int argc, char **argv) {
 
 					// first need to remove the "bin" token
 					tokens.erase(tokens.begin());
-					make_lower(tokens[0]);
+					molstat::make_lower(tokens[0]);
 
 					try {
-						binstyle = get_bin_style(tokens);
+						binstyle = molstat::BinStyleFactory(tokens);
 					}
 					catch(const invalid_argument &e) {
 						fprintf(stderr, "Error: Unknown binning style. Skipping " \
@@ -237,8 +240,7 @@ int main(int argc, char **argv) {
 
 	solver.reset(
 		gsl_multifit_fdfsolver_alloc(gsl_multifit_fdfsolver_lmsder, nbin,
-			model->nfit),
-		&gsl_multifit_fdfsolver_free);
+			model->nfit));
 
 	// we don't have a successful fit at the start
 	hasfit = false;
@@ -248,13 +250,14 @@ int main(int argc, char **argv) {
 		// load the initial values
 		for(i = 0; i < model->nfit; ++i)
 			gsl_vector_set(vec.get(), i, (*initval)[i]);
+
 		gsl_multifit_fdfsolver_set(solver.get(), &fdf, vec.get());
 
 		// start iterating
 		iter = 0;
 		if(iterprint) {
 			fprintf(stdout, "Iter=%3zu, ", iter);
-			model->print_fit(stdout, gsl_to_std(solver->x));
+			model->print_fit(stdout, molstat::gsl_to_std(solver->x));
 			fprintf(stdout, "\n");
 		}
 
@@ -263,7 +266,7 @@ int main(int argc, char **argv) {
 			status = gsl_multifit_fdfsolver_iterate(solver.get());
 			if(iterprint) {
 				fprintf(stdout, "Iter=%3zu, ", iter);
-				model->print_fit(stdout, gsl_to_std(solver->x));
+				model->print_fit(stdout, molstat::gsl_to_std(solver->x));
 				fprintf(stdout, "\n");
 			}
 

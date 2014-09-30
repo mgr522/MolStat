@@ -16,6 +16,8 @@
 
 using namespace std;
 
+namespace molstat {
+
 std::vector<double> SymmetricResonantFitModel::create_initial_guess(
 	const std::map<std::string, double> &values) const {
 
@@ -114,3 +116,5 @@ void SymmetricResonantFitModel::process_fit_parameters(
 	if(fitparams[GAMMA] < 0.)
 		fitparams[GAMMA] = -fitparams[GAMMA];
 }
+
+} // namespace molstat

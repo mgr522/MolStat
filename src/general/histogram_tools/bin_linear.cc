@@ -13,6 +13,8 @@
 
 #include "bin_linear.h"
 
+namespace molstat {
+
 double BinLinear::mask(const double x) const {
 	return x;
 }
@@ -24,3 +26,5 @@ double BinLinear::invmask(const double u) const {
 double BinLinear::dmaskdx(const double x) const {
 	return 1.;
 }
+
+} // namespace molstat

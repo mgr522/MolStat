@@ -14,6 +14,8 @@
 
 #include "bin_style.h"
 
+namespace molstat {
+
 /**
  * \brief Linear binning style. This is the \"identity\" mask.
  *
@@ -21,18 +23,7 @@
  */
 class BinLinear : public BinStyle {
 public:
-	/**
-	 * \internal
-	 * \brief Default constructor.
-	 * \endinternal
-	 */
 	BinLinear() = default;
-
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
 	virtual ~BinLinear() = default;
 
 	/**
@@ -59,5 +50,7 @@ public:
 	 */
 	virtual double dmaskdx(const double x) const;
 };
+
+} // namespace molstat
 
 #endif

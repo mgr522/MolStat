@@ -16,6 +16,8 @@
 #include <memory>
 #include <vector>
 
+namespace molstat {
+
 /**
  * \brief Interface for an arbitrary binning style.
  *
@@ -35,18 +37,7 @@
  */
 class BinStyle {
 public:
-	/**
-	 * \internal
-	 * \brief Default constructor.
-	 * \endinternal
-	 */
 	BinStyle() = default;
-
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
 	virtual ~BinStyle() = default;
 
 	/**
@@ -86,7 +77,9 @@ public:
  * \param[in] tokens The vector of input tokens for creating a BinStyle.
  * \return The BinStyle object.
  */
-std::shared_ptr<BinStyle> get_bin_style(
+std::unique_ptr<BinStyle> BinStyleFactory(
 	const std::vector<std::string> &tokens);
+
+} // namespace molstat
 
 #endif

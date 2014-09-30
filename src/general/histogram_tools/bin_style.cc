@@ -16,10 +16,12 @@
 
 using namespace std;
 
-std::shared_ptr<BinStyle> get_bin_style(
+namespace molstat {
+
+std::unique_ptr<BinStyle> BinStyleFactory(
 	const std::vector<std::string> &tokens) {
 
-	shared_ptr<BinStyle> ret;
+	unique_ptr<BinStyle> ret;
 
 	if(tokens.size() < 1)
 		throw invalid_argument("Empty line.");
@@ -29,7 +31,7 @@ std::shared_ptr<BinStyle> get_bin_style(
 	make_lower(name);
 
 	if(name == "linear") {
-		ret = make_shared<BinLinear>();
+		ret.reset(new BinLinear());
 	}
 	else if(name == "log") {
 		// need to read the base, if available. If not, use 10.
@@ -43,7 +45,7 @@ std::shared_ptr<BinStyle> get_bin_style(
 		else
 			b = 10.;
 
-		ret = make_shared<BinLog>(b);
+		ret.reset(new BinLog(b));
 	}
 	else
 		throw invalid_argument("Unrecognized binning style.\n" \
@@ -53,3 +55,5 @@ std::shared_ptr<BinStyle> get_bin_style(
 
 	return ret;
 }
+
+} // namespace molstat

@@ -21,8 +21,10 @@
 
 using namespace std;
 
+namespace molstat {
+
 void load_transport_models(
-	std::map<std::string, FitModelInstantiator<1>> &models) {
+	std::map<std::string, FitModelFactory<1>> &models) {
 
 	models["symmetricresonant"] =
 		FitModelAdd<SymmetricResonantFitModel, 1>();
@@ -33,3 +35,5 @@ void load_transport_models(
 	models["asymmetricresonant"] =
 		FitModelAdd<AsymmetricResonantFitModel, 1>();
 }
+
+} // namespace molstat
