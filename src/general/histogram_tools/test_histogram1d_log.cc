@@ -33,8 +33,8 @@ using namespace std;
  * \endinternal
  */
 int main(int argc, char **argv) {
-	shared_ptr<BinStyle> bstyle(make_shared<BinLog>(10.));
-	Histogram1D hist(5, 1.e-5, 1., bstyle);
+	shared_ptr<molstat::BinStyle> bstyle(make_shared<molstat::BinLog>(10.));
+	molstat::Histogram1D hist(5, 1.e-5, 1., bstyle);
 	const double thresh = 1.0e-6;
 
 	// artificially populate the histogram
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 	hist.add_data(1.e-2); // 4
 
 	// check the bin contents and the iterator class
-	Histogram1D::const_iterator iter = hist.begin();
+	molstat::Histogram1D::const_iterator iter = hist.begin();
 
 	// bin 0 (#1 above)
 	// the average coordinate is 5.5e-5 and the bin count should be 4
