@@ -21,6 +21,12 @@
 #include <general/simulator_tools/simulate_model_interface.h>
 #include "transport_observables.h"
 
+#include <sundials/sundials_types.h>
+#include <sundials/sundials_dense.h>
+#include <cvode/cvode.h>
+#include <nvector/nvector_serial.h>
+#include <cvode/cvode_dense.h>
+
 using std::shared_ptr;
 
 /**
