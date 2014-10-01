@@ -18,19 +18,24 @@ using namespace std;
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
 const vector<string> SingleMoleculeCV::parameters =
-	{"ef", "v", "epsilon", "gammal", "gammar", "a", "b"};
+    {"e0", "eref", "lambda", "af", "ab", "v", "n", 
+    "poinitial", "temperature", "tlimit"};
 
 void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
-	double &ef, double &v, double &epsilon, double &gammal, double &gammar,
-	double &a, double &b) {
+    double &e0, double &eref, double &lambda, double &af,
+    double &ab, double &v, double &n, double &poinitial,
+    double &temperature, double &tlimit) {
 
-	ef = vec[0];
-	v = vec[1];
-	epsilon = vec[2];
-	gammal = vec[3];
-	gammar = vec[4];
-	a = vec[5];
-    b = vec[6];
+	e0 = vec[0];
+	eref = vec[1];
+	lambda = vec[2];
+	af = vec[3];
+	ab = vec[4];
+	v = vec[5];
+    n = vec[6];
+    poinitial = vec[7];
+    temperature = vec[8];
+    tlimit = vec[9];
 }
 
 SingleMoleculeCV::SingleMoleculeCV(
@@ -43,12 +48,12 @@ SingleMoleculeCV::SingleMoleculeCV(
 std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	const {
 
-	vector<double> params(7);
-	double ef, v, eps, gammal, gammar, a, b;
+	vector<double> params(10);
+	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
 
 	// generate and unpack the parameters
 	sample(r, params);
-	unpack_parameters(params, ef, v, eps, gammal, gammar, a, b);
+	unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
 	return {{ v, E_applied(0, params) }};
 }
@@ -58,14 +63,12 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 double SingleMoleculeCV::kf( double t,
 	const std::vector<double> &vec) {
 
-	double ef, v, eps, gammal, gammar, a, b;
+	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
 
 	// unpack the model parameters
-	unpack_parameters(vec, ef, v, eps, gammal, gammar, a, b);
+	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-	return 2.*gammal*gammar / (v*(gammal + gammar)) *
-		(atan(2. * (ef-eps+(0.5-a)*v) / (gammal + gammar))
-		- atan(2. * (ef-eps-(0.5+a)*v) / (gammal + gammar)));
+	return 2.*lambda*lambda / (v*(af + ab));
 }
 
 
@@ -73,14 +76,12 @@ double SingleMoleculeCV::kf( double t,
 double SingleMoleculeCV::E_applied(double t,
     const std::vector<double> &vec) {
 
-    double ef, v, eps, gammal, gammar, a, b;
+    double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
 
     //upack the model paramters
-    unpack_parameters(vec, ef, v, eps, gammal, gammar, a, b);
+    unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
     double E;
-    double e0 = 1.0;
-    double tlimit = 1.0;
     
     if (t >= 0 && t <= tlimit)
         E = e0 + v * t;
