@@ -30,7 +30,7 @@ void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
 	gammal = vec[3];
 	gammar = vec[4];
 	a = vec[5];
-    b = vec[6]
+    b = vec[6];
 }
 
 SingleMoleculeCV::SingleMoleculeCV(
@@ -69,3 +69,22 @@ double SingleMoleculeCV::kf( double t,
 }
 
 
+
+double SingleMoleculeCV::E_applied(double t,
+    const std::vector<double> &vec) {
+
+    double ef, v, eps, gammal, gammar, a, a;
+
+    //upack the model paramters
+    unpack_parameters(vec, ef, v, eps, gammal, gammar, a, b);
+
+    double E;
+    double e0 = 1.0;
+    double tlimit = 1.0;
+    
+    if (t >= 0 && t <= tlimit)
+        E = e0 + v * t;
+    if (t > tlimit && t <= 2.0 * tlimit)
+        E = e0 + 2.0 * v * tlimit - v * t;
+    return E;
+}
