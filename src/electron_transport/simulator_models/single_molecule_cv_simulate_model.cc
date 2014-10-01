@@ -73,7 +73,7 @@ double SingleMoleculeCV::kf( double t,
 double SingleMoleculeCV::E_applied(double t,
     const std::vector<double> &vec) {
 
-    double ef, v, eps, gammal, gammar, a, a;
+    double ef, v, eps, gammal, gammar, a, b;
 
     //upack the model paramters
     unpack_parameters(vec, ef, v, eps, gammal, gammar, a, b);
