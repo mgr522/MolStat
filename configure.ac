@@ -24,6 +24,9 @@ AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != ":"])
 # look for GSL
 ACX_WITH_GSL
 
+# look for CVODE
+ACX_WITH_CVODE
+
 # required options for building static libraries
 AC_PROG_RANLIB
 
