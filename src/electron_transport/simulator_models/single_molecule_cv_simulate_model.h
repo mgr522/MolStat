@@ -53,7 +53,7 @@ using std::shared_ptr;
  * - Static conductance:
  *   \f[ G_\mathrm{s}(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon + (1/2-a) eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon - (1/2+a)eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
  */
-class SingleMoleculeCV: public SimulateModel, public DifferentialConductance, public SingMolCVPeak {
+class SingleMoleculeCV: public SimulateModel, public SingMolCVPeak {
 private:
 	/**
 	 * \brief Ordered list (vector) of the parameters needed for this model.
@@ -91,17 +91,7 @@ public:
 	SingleMoleculeCV(
 		const std::map<std::string, shared_ptr<RandomDistribution>> &avail);
 
-	/**
-	 * \brief Returns the differential conductance for a randomly-generated set
-	 *    of model parameters.
-	 * 
-	 * \param[in] r The GSL random number generator handle.
-	 * \return The differential conductance.
-	 */
-	virtual std::array<double, 2> DiffG(shared_ptr<gsl_rng> r) const
-		override;
-
-	/**
+		/**
 	 * \brief Returns current peak potentials for a randomly-generated set of model parameters.
 	 *    model parameters.
 	 * 
@@ -133,14 +123,6 @@ public:
 	 */
 	static double static_conductance(const std::vector<double> &vec);
 
-	/**
-	 * \brief Calculates the differential conductance for a set of model
-	 *    parameters.
-	 *
-	 * \param[in] vec The vector of model parameters.
-	 * \return The differential conductance for this set of parameters.
-	 */
-	static double diff_conductance(const std::vector<double> &vec);
 };
 
 #endif
