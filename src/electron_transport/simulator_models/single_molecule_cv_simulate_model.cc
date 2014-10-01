@@ -49,18 +49,12 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	sample(r, params);
 	unpack_parameters(params, ef, v, eps, gammal, gammar, a);
 
-	return {{ v, static_conductance(params) }};
+	return {{ v, kf(0, params) }};
 }
 
-double SingleMoleculeCV::transmission(const double e, const double v,
-	const double eps, const double gammal, const double gammar,
-	const double a) {
 
-	return 4.*gammal*gammar / (4.*(e - eps - a*v)*(e - eps - a*v) +
-		(gammal + gammar)*(gammal + gammar));
-}
 
-double SingleMoleculeCV::static_conductance(
+double SingleMoleculeCV::kf( double t,
 	const std::vector<double> &vec) {
 
 	double ef, v, eps, gammal, gammar, a;
