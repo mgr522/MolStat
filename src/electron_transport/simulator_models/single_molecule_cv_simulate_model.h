@@ -101,20 +101,15 @@ public:
 	virtual std::array<double, 2> PeakPotentials(shared_ptr<gsl_rng> r) const
 		override;
 
-	/**
-	 * \brief Calculates the transmission for a set of model parameters.
-	 *
-	 * \param[in] e The energy of the incident electron.
-	 * \param[in] v The applied bias.
-	 * \param[in] eps The level energy.
-	 * \param[in] gammal The left level-electrode coupling.
-	 * \param[in] gammar The right level-electrode coupling.
-	 * \param[in] a The voltage drop scaling factor.
-	 * \return The transmission for this set of parameters.
-	 */
-	static double transmission(const double e, const double v, const double eps,
-		const double gammal, const double gammar, const double a);
-
+    /**
+     * \brief Calculate the forward half-reaction rate constant for a set of model parameters.
+     *
+     * \param[in] t time
+     * \param[in] vec The vector of model parameters.
+     * \return The forward half-reaction rate constant for this set of model parameters.
+     */
+     static double kf(double t, const std::vector<double> &vec);
+	
 	/**
 	 * \brief Calculates the static conductance for a set of model parameters.
 	 *
