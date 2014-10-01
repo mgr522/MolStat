@@ -18,7 +18,7 @@ using namespace std;
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
 const vector<string> SingleMoleculeCV::parameters =
-    {"e0", "eref", "lambda", "af", "ab", "v", "n", 
+    {"e0", "eref", "lambda", "af", "ab", "v", "n",
     "poinitial", "temperature", "tlimit"};
 
 void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
@@ -68,7 +68,8 @@ double SingleMoleculeCV::kf( double t,
 	// unpack the model parameters
 	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-	return 2.*lambda*lambda / (v*(af + ab));
+	return af * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda)
+        / (4.0 * lambda * GSL_CONST_MKSA_BOLTZMANN * temperature));
 }
 
 
@@ -82,7 +83,7 @@ double SingleMoleculeCV::E_applied(double t,
     unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
     double E;
-    
+
     if (t >= 0 && t <= tlimit)
         E = e0 + v * t;
     if (t > tlimit && t <= 2.0 * tlimit)
