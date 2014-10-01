@@ -22,6 +22,7 @@
 #include "transport_observables.h"
 
 #include <sundials/sundials_types.h>
+#include <nvector/nvector_serial.h>
 using std::shared_ptr;
 
 /**
