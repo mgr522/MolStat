@@ -54,19 +54,6 @@ SingleMoleculeCV::SingleMoleculeCV(
 	: SimulateModel(avail, parameters) {
 }
 
-std::array<double, 2> SingleMoleculeCV::DiffG(shared_ptr<gsl_rng> r)
-	const {
-
-	vector<double> params(10);
-	double ef, v, eps, gammal, gammar, a;
-
-	// generate and unpack the parameters
-	sample(r, params);
-	unpack_parameters(params, ef, v, eps, gammal, gammar, a);
-
-	return {{ v, diff_conductance(params) }};
-}
-
 std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	const {
 
@@ -104,27 +91,4 @@ double SingleMoleculeCV::E_applied(double t, const std::vector<double> &vec) {
         E = e0 + 2.0 * v * tlimit - v * t;
     return E;
 }
-double SingleMoleculeCV::static_conductance(
-	const std::vector<double> &vec) {
 
-	double ef, v, eps, gammal, gammar, a;
-
-	// unpack the model parameters
-	unpack_parameters(vec, ef, v, eps, gammal, gammar, a);
-
-	return 2.*gammal*gammar / (v*(gammal + gammar)) *
-		(atan(2. * (ef-eps+(0.5-a)*v) / (gammal + gammar))
-		- atan(2. * (ef-eps-(0.5+a)*v) / (gammal + gammar)));
-}
-
-double SingleMoleculeCV::diff_conductance(
-	const std::vector<double> &vec) {
-
-	double ef, v, eps, gammal, gammar, a;
-
-	// unpack the parameters
-	unpack_parameters(vec, ef, v, eps, gammal, gammar, a);
-
-	return (0.5 - a) * transmission(ef+0.5*v, v, eps, gammal, gammar, a) +
-		(0.5 + a) * transmission(ef-0.5*v, v, eps, gammal, gammar, a);
-}
