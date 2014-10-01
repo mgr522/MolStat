@@ -21,7 +21,7 @@
 #include <general/simulator_tools/simulate_model_interface.h>
 #include "transport_observables.h"
 
-#include <sundials/sundials_type.h>
+#include <sundials/sundials_types.h>
 using std::shared_ptr;
 
 /**
