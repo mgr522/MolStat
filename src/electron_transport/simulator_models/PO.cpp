@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <memory>
-
+#include <vector>
 /* header files of GSL */
 #include <gsl/gsl_const_mksa.h>
 #include <gsl/gsl_sf_exp.h>
@@ -174,6 +174,7 @@ int main()
     printf(" \n Single molecule cyclic voltammetry \n\n");
 
     iout = 0;  tout = T1;
+    vector<double> root(1);
     while(1) {
         flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
         PrintOutput(t, Ith(y,1), Ith(y,2));
@@ -181,6 +182,7 @@ int main()
         if (flag == CV_ROOT_RETURN) {
             flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
             PrintRootInfo(rootsfound[0]);
+            root.push_back(E_applied(t,&params));
         }
 
         if (check_flag(&flag, "CVode", 1)) break;
@@ -195,6 +197,7 @@ int main()
 
     /* Print some final statistics */
     PrintFinalStats(cvode_mem);
+    printf("v1 = %14.6e  v2 = %14.6e \n", root[1],root[2]);
 
     /* Free y and abstol vectors */
     N_VDestroy_Serial(y);
