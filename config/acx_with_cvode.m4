@@ -25,8 +25,8 @@ AC_DEFUN([ACX_WITH_CVODE],
       [AC_MSG_ERROR([Unable to find the cvode/cvode_dense.h header file.])])
     AC_CHECK_HEADER([sundials/sundials_dense.h], [],
       [AC_MSG_ERROR([Unable to find the sundials/sundials_dense.h header file.])])
-    AC_CHECK_HEADER([sundials/sundials_type.h], [],
-      [AC_MSG_ERROR([Unable to find the sundials/sundials_type.h header file.])])
+    AC_CHECK_HEADER([sundials/sundials_types.h], [],
+      [AC_MSG_ERROR([Unable to find the sundials/sundials_types.h header file.])])
 
     # Check for the CVODE libraries
     AC_CHECK_LIB([m], [cos])
