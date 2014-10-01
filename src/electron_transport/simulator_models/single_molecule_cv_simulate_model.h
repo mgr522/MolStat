@@ -109,6 +109,8 @@ public:
      * \return The forward half-reaction rate constant for this set of model parameters.
      */
     static double kf(double t, const std::vector<double> &vec);
+    
+    static double kb(double t, const std::vector<double> &vec);
 
     static double E_applied(double t, const std::vector<double> &vec);
 
