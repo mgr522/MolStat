@@ -18,11 +18,11 @@ using namespace std;
 // if the order of the following list is changed, the unpack_parameters
 // function MUST also be updated
 const vector<string> SingleMoleculeCV::parameters =
-	{"ef", "v", "epsilon", "gammal", "gammar", "a"};
+	{"ef", "v", "epsilon", "gammal", "gammar", "a", "b"};
 
 void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
 	double &ef, double &v, double &epsilon, double &gammal, double &gammar,
-	double &a) {
+	double &a, double &b) {
 
 	ef = vec[0];
 	v = vec[1];
@@ -30,6 +30,7 @@ void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
 	gammal = vec[3];
 	gammar = vec[4];
 	a = vec[5];
+    b = vec[6]
 }
 
 SingleMoleculeCV::SingleMoleculeCV(
@@ -42,12 +43,12 @@ SingleMoleculeCV::SingleMoleculeCV(
 std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	const {
 
-	vector<double> params(6);
-	double ef, v, eps, gammal, gammar, a;
+	vector<double> params(7);
+	double ef, v, eps, gammal, gammar, a, b;
 
 	// generate and unpack the parameters
 	sample(r, params);
-	unpack_parameters(params, ef, v, eps, gammal, gammar, a);
+	unpack_parameters(params, ef, v, eps, gammal, gammar, a, b);
 
 	return {{ v, kf(0, params) }};
 }
@@ -57,10 +58,10 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 double SingleMoleculeCV::kf( double t,
 	const std::vector<double> &vec) {
 
-	double ef, v, eps, gammal, gammar, a;
+	double ef, v, eps, gammal, gammar, a, b;
 
 	// unpack the model parameters
-	unpack_parameters(vec, ef, v, eps, gammal, gammar, a);
+	unpack_parameters(vec, ef, v, eps, gammal, gammar, a, b);
 
 	return 2.*gammal*gammar / (v*(gammal + gammar)) *
 		(atan(2. * (ef-eps+(0.5-a)*v) / (gammal + gammar))

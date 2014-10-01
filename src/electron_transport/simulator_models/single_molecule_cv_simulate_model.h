@@ -75,7 +75,7 @@ private:
 	 * \param[out] a The voltage drop parameter.
 	 */
 	static void unpack_parameters(const std::vector<double> &vec, double &ef,
-		double &v, double &epsilon, double &gammal, double &gammar, double &a);
+		double &v, double &epsilon, double &gammal, double &gammar, double &a, double &b);
 
 public:
 	SingleMoleculeCV() = delete;
