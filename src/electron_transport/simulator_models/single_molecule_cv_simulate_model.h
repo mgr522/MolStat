@@ -74,7 +74,7 @@ private:
 	 * \param[out] gammar The right site-lead coupling.
 	 * \param[out] a The voltage drop parameter.
 	 */
-    static void uppack_parameters(const std::vector<double> &vec, double &e0,
+    static void unpack_parameters(const std::vector<double> &vec, double &e0,
         double &eref, double &lambda, double &af, double &ab, double &v,
         double &n, double &poinitial, double &temperature, double &tlimit);
 //	static void unpack_parameters(const std::vector<double> &vec, double &ef,
