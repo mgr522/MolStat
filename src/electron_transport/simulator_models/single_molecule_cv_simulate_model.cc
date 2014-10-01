@@ -50,7 +50,7 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	sample(r, params);
 	unpack_parameters(params, ef, v, eps, gammal, gammar, a, b);
 
-	return {{ v, kf(0, params) }};
+	return {{ v, E_applied(0, params) }};
 }
 
 
