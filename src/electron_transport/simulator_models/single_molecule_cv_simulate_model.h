@@ -108,16 +108,9 @@ public:
      * \param[in] vec The vector of model parameters.
      * \return The forward half-reaction rate constant for this set of model parameters.
      */
-     static double kf(double t, const std::vector<double> &vec);
-	
-	/**
-	 * \brief Calculates the static conductance for a set of model parameters.
-	 *
-	 * \param[in] vec The vector of model parameters.
-	 * \return The static conductance for this set of parameters.
-	 */
-	static double static_conductance(const std::vector<double> &vec);
+    static double kf(double t, const std::vector<double> &vec);
 
+    static int f(double t, N_Vector y, N_Vector ydot, void *user_data);
 };
 
 #endif
