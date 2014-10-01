@@ -82,7 +82,17 @@ double SingleMoleculeCV::kf( double t,
         / (4.0 * lambda * GSL_CONST_MKSA_BOLTZMANN * temperature));
 }
 
+double SingleMoleculeCV::kb( double t,
+	const std::vector<double> &vec) {
 
+	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
+
+	// unpack the model parameters
+	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
+
+	return ab * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda)
+        / (4.0 * lambda * GSL_CONST_MKSA_BOLTZMANN * temperature));
+}
 
 double SingleMoleculeCV::E_applied(double t,
     const std::vector<double> &vec) {
