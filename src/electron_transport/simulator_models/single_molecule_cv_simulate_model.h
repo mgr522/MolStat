@@ -27,6 +27,9 @@
 #include <nvector/nvector_serial.h>
 #include <cvode/cvode_dense.h>
 
+#include <gsl/gsl_const_mksa.h>
+#include <gsl/gsl_sf_exp.h>
+#include <gsl/gsl_math.h>
 using std::shared_ptr;
 
 /**
