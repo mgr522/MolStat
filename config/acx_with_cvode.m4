@@ -31,8 +31,8 @@ AC_DEFUN([ACX_WITH_CVODE],
     # Check for the CVODE libraries
     AC_CHECK_LIB([m], [cos])
     AC_CHECK_LIB([sundials_cvode], [CVodeCreate])
-    AC_CHECK_LIB([gsl], [gsl_blas_dgemm])
+    AC_CHECK_LIB([sundials_nvecserial], [main])
   else
-    AC_MSG_ERROR([Unable to find GSL.])
+    AC_MSG_ERROR([Unable to find CVODE.])
   fi
 ])
