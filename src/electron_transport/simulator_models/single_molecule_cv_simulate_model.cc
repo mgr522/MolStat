@@ -81,6 +81,9 @@ double SingleMoleculeCV::peak_potentials(std::vector<double> &vec) {
   int flag, flagr, iout;
   int rootsfound[2];
 
+  std::vector<double> *vec_cvode;
+  vec_cvode = &vec;
+
   y = abstol = NULL;
   cvode_mem = NULL;
 
@@ -113,7 +116,7 @@ double SingleMoleculeCV::peak_potentials(std::vector<double> &vec) {
   CVodeSVtolerances(cvode_mem, reltol, abstol);
 
   // call CVodeSetUserData to pass parameters to user_data;
-  CVodeSetUserData(cvode_mem, &vec);
+  CVodeSetUserData(cvode_mem, vec_cvode);
 
   // call CVodeRootInit to specify the root function g with 1 component
   CVodeRootInit(cvode_mem, 1, g);
