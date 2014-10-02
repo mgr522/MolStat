@@ -116,7 +116,7 @@ static int SingleMoleculeCV::f(double t, N_Vector y, N_Vector ydot,
 
   double y1, y2;
   std::vector<double> *p;
-  p = (std:vector<double> *) user_data;
+  p = (std::vector<double> *) user_data;
 
   y1 = Ith(y,1);
   y2 = Ith(y,2);
