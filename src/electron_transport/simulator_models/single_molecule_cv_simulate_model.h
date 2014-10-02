@@ -113,7 +113,7 @@ public:
      */
   static double kf(double t, const std::vector<double> &vec);
     
-  static double peak_potentials(std::vector<double> &vec);
+  static double peak_potentials(const std::vector<double> &vec);
 
   static double kb(double t, const std::vector<double> &vec);
 

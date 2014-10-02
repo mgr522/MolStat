@@ -68,7 +68,7 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	return {{ v, E_applied(0, params) }};
 }
 
-double SingleMoleculeCV::peak_potentials(std::vector<double> &vec) {
+double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
 
   double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
 
@@ -81,8 +81,8 @@ double SingleMoleculeCV::peak_potentials(std::vector<double> &vec) {
   int flag, flagr, iout;
   int rootsfound[2];
 
-  std::vector<double> *vec_cvode;
-  vec_cvode = &vec;
+  std::vector<double> vec_cvode;
+  vec_cvode = vec;
 
   y = abstol = NULL;
   cvode_mem = NULL;
@@ -116,7 +116,7 @@ double SingleMoleculeCV::peak_potentials(std::vector<double> &vec) {
   CVodeSVtolerances(cvode_mem, reltol, abstol);
 
   // call CVodeSetUserData to pass parameters to user_data;
-  CVodeSetUserData(cvode_mem, vec_cvode);
+  CVodeSetUserData(cvode_mem, &vec_cvode);
 
   // call CVodeRootInit to specify the root function g with 1 component
   CVodeRootInit(cvode_mem, 1, g);
