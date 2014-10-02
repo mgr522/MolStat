@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <memory>
-#include <vector>
 /* header files of GSL */
 #include <gsl/gsl_const_mksa.h>
 #include <gsl/gsl_sf_exp.h>
@@ -60,69 +59,80 @@ using namespace std;
 
 struct function_params params = {E0_c, Eref_c, lamb_c, Af_c, Ab_c, v_c, ne_c, PO_initial, Temp_c, t1_c};
 
-double E_applied (double t, function_params* params)
-{
-    function_params *p = params;
+static void unpack_parameters(const std::vector<double> &vec,
+    double &e0, double &eref, double &lambda, double &af,
+    double &ab, double &v, double &n, double &poinitial,
+    double &temperature, double &tlimit) {
+
+	e0 = vec[0];
+	eref = vec[1];
+	lambda = vec[2];
+	af = vec[3];
+	ab = vec[4];
+	v = vec[5];
+  n = vec[6];
+  poinitial = vec[7];
+  temperature = vec[8];
+  tlimit = vec[9];
+}
+
+
+static double kf( double t,
+	const std::vector<double> &vec) {
+
+	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
+
+	// unpack the model parameters
+	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
+
+	return af * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda)
+        / (4.0 * lambda * GSL_CONST_MKSA_BOLTZMANN * temperature));
+}
+
+static double kb( double t,
+	const std::vector<double> &vec) {
+
+	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
+
+	// unpack the model parameters
+	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
+
+	return ab * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda)
+        / (4.0 * lambda * GSL_CONST_MKSA_BOLTZMANN * temperature));
+}
+
+static double E_applied(double t,
+    const std::vector<double> &vec) {
+
+    double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
+
+    //upack the model paramters
+    unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
     double E;
 
-    if (t >= 0 && t <= p->t1)
-        E = p->E0 + p->v * t;
-    if (t > p->t1 && t <= RCONST(2.0) * p->t1)
-        E = p->E0 + RCONST(2.0) * p->v * p->t1 - p->v * t;
-    if (t > RCONST(2.0) * p->t1)
-    {
-        printf("time t is out of range!\n");
-    }
+    if (t >= 0 && t <= tlimit)
+        E = e0 + v * t;
+    if (t > tlimit && t <= 2.0 * tlimit)
+        E = e0 + 2.0 * v * tlimit - v * t;
     return E;
-}
-
-double kf (double t, function_params  *params)
-{
-    function_params *p = params;
-
-//    realtype E; /* applied potential */
-//
-//    if (t >= 0 && t <= p->t1)
-//        E = p->E0 + p->v * t;
-//    if (t > p->t1 && t <= RCONST(2.0) * p->t1)
-//        E = p->E0 + RCONST(2.0) * p->v * p->t1 - p->v * t;
-//    if (t > RCONST(2.0) * p->t1)
-//    {
-//        printf("time t is out of range!\n");
-//    }
-
-    double result;
-
-    result = p->Af * gsl_sf_exp( - gsl_pow_2( p->n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, params) - p->E_ref) + p->lamb) / (4.0 * p->lamb * GSL_CONST_MKSA_BOLTZMANN * p->T));
-    return result;
-
-}
-double kb (double t, function_params *params)
-{
-    function_params *p = params;
-
-//    realtype E; /* applied potential */
-//
-//    if (t >= 0 && t <= p->t1)
-//        E = p->E0 + p->v * t;
-//    if (t > p->t1 && t <= RCONST(2.0) * p->t1)
-//        E = p->E0 + RCONST(2.0) * p->v * p->t1 - p->v * t;
-//    if (t > RCONST(2.0) * p->t1)
-//    {
-//        printf("time t is out of range!\n");
-//    }
-
-    double result;
-
-    result = p->Ab * gsl_sf_exp( - gsl_pow_2( p->n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, params) - p->E_ref) - p->lamb) / (4.0 * p->lamb * GSL_CONST_MKSA_BOLTZMANN * p->T));
-    return result;
-
 }
 
 
 int main()
 {
+    vector<double> vec(10);
+    vec[0] = E0_c;
+    vec[1] = Eref_c;
+    vec[2] = lamb_c;
+    vec[3] = Af_c;
+    vec[4] = Ab_c;
+    vec[5] = v_c;
+    vec[6] = ne_c;
+    vec[7] = PO_initial;
+    vec[8] = Temp_c;
+    vec[9] = t1_c;
+
     double reltol, t, tout;
     N_Vector y, abstol;
     void *cvode_mem;
@@ -159,6 +169,8 @@ int main()
     * and vector absolute tolerances */
     flag = CVodeSVtolerances(cvode_mem, reltol, abstol);
 
+    flag = CVodeSetUserData(cvode_mem, &vec);
+
     /* Call CVodeRootInit to specify the root function g with 2 components */
     flag = CVodeRootInit(cvode_mem, 1, g);
 
@@ -182,7 +194,7 @@ int main()
         if (flag == CV_ROOT_RETURN) {
             flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
             PrintRootInfo(rootsfound[0]);
-            root.push_back(E_applied(t,&params));
+            root.push_back(E_applied(t,vec));
         }
 
         if (check_flag(&flag, "CVode", 1)) break;
@@ -222,12 +234,14 @@ int main()
 static int f(double t, N_Vector y, N_Vector ydot, void *user_data)
 {
     double y1, y2;
+    vector<double> *p;
+
+    p = (vector<double> *) user_data;
 
     y1 = Ith(y,1); y2 = Ith(y,2);
 
-
-    Ith(ydot,1) = - kf(t, &params) * y1 + kb(t, &params) * y2;
-    Ith(ydot,2) =   kf(t, &params) * y1 - kb(t, &params) * y2;
+    Ith(ydot,1) = - kf(t, *p) * y1 + kb(t, *p) * y2;
+    Ith(ydot,2) =   kf(t, *p) * y1 - kb(t, *p) * y2;
 
     return(0);
 }
@@ -254,11 +268,14 @@ static int Jac(long int N, double t,
                N_Vector y, N_Vector fy, DlsMat J, void *user_data,
                N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
 {
+    vector<double> *p;
 
-    IJth(J,1,1) = - kf(t, &params);
-    IJth(J,1,2) =   kb(t, &params);
-    IJth(J,2,1) =   kf(t, &params);
-    IJth(J,2,2) = - kb(t, &params);
+    p = (vector<double> *) user_data;
+
+    IJth(J,1,1) = - kf(t, *p);
+    IJth(J,1,2) =   kb(t, *p);
+    IJth(J,2,1) =   kf(t, *p);
+    IJth(J,2,2) = - kb(t, *p);
 
   return(0);
 }
@@ -272,11 +289,11 @@ static int Jac(long int N, double t,
 static void PrintOutput(double t, double y1, double y2)
 {
 #if defined(SUNDIALS_EXTENDED_PRECISION)
-  printf("At t = %0.4Le  E = %8.6fV  PO = %14.6Le  PR = %14.6Le\n", t, E_applied(t, &params), y1, y2);
+  printf("At t = %0.4Le PO = %14.6Le  PR = %14.6Le\n", t, y1, y2);
 #elif defined(SUNDIALS_DOUBLE_PRECISION)
-  printf("At t = %0.4le  E = %8.6fV  PO = %14.6le  PR = %14.6le\n", t, E_applied(t, &params), y1, y2);
+  printf("At t = %0.4le PO = %14.6le  PR = %14.6le\n", t, y1, y2);
 #else
-  printf("At t = %0.4e  E = %8.6fV  PO = %14.6e  PR = %14.6e\n", t, E_applied(t, &params), y1, y2);
+  printf("At t = %0.4e  PO = %14.6e  PR = %14.6e\n", t, y1, y2);
 #endif
 
   return;
