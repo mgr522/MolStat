@@ -111,7 +111,7 @@ double SingleMoleculeCV::E_applied(double t,
   return E;
 }
 
-static int SingleMoleculeCV::f(double t, N_Vector y, N_Vector ydot, 
+int SingleMoleculeCV::f(double t, N_Vector y, N_Vector ydot, 
   void *user_data) {
 
   double y1, y2;
@@ -127,7 +127,7 @@ static int SingleMoleculeCV::f(double t, N_Vector y, N_Vector ydot,
   return(0);
 }
 
-static int SingleMoleculeCV::g(double t, N_Vector y, double *gout, 
+int SingleMoleculeCV::g(double t, N_Vector y, double *gout, 
   void *user_data) {
 
   double y1;
@@ -138,7 +138,7 @@ static int SingleMoleculeCV::g(double t, N_Vector y, double *gout,
   return(0);
 }
 
-static int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
+int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
               N_Vector fy, DlsMat J, void *user_data,
               N_Vector tmp1, N_Vector tmp2, N_Vector tmp3) {
   std::vector<double> *p;
