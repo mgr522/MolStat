@@ -107,7 +107,38 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   // user's right hand side function in y'=f(t,y), the initial time T0, and
   // the initial dependent variable vector y.
   CVodeInit(cvode_mem, f, T0, y);
-  return 1.0;
+
+  // call CVodeSVtolerances to specify the scalar relative tolerance
+  // and vector absolute  tolerance
+  CVodeSVtolerances(cvode_mem, reltol, abstol);
+
+  // call CVodeSetUserData to pass parameters to user_data;
+  CVodeSetUserData(cvode_mem, &vec);
+
+  // call CVodeRootInit to specify the root function g with 1 component
+  CVodeRootInit(cvode_mem, 1, g);
+
+  // call CVDense to specify the CVDENSE dense linear solver
+  CVDense(cvode_mem, NEQ);
+
+  // set the Jacobian routine to Jac
+  CVDlsSetDenseJacFn(cvode_mem, Jac);
+
+  // define a vector to store roots.
+  std::vector<double> root(1);
+  
+  tout = 2.0 * tlimit;
+
+  while(1) {
+    flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
+
+    if (flag == CV_ROOT_RETURN) {
+      flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
+      root.push_back( E_applied(t, vec) );
+    }
+    if (flag == CV_SUCCESS) break;
+  }
+  return root[1];
 }
 
 
