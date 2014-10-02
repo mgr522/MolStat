@@ -86,14 +86,14 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
 
   //Create serial vector of length NEG for I.C and abstol
   y = N_VNew_Serial(NEQ);
-  abstol = N_VNew_Serial)NEQ);
+  abstol = N_VNew_Serial(NEQ);
 
   // initialize y
   Ith(y,1) = poinitial;
   Ith(y,2) = 1.0 - poinitial;
 
   // set the scalar relative tolerance
-  retol = RTOL;
+  reltol = RTOL;
 
   // set the vector absolute tolerance
   Ith(abstol,1) = ATOL1;
