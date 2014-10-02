@@ -68,6 +68,48 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	return {{ v, E_applied(0, params) }};
 }
 
+double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
+
+  double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
+
+	// unpack the model parameters
+	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
+
+  double reltol, t, tout;
+  N_Vector y, abstol;
+  void *cvode_mem;
+  int flag, flagr, iout;
+  int rootsfound[2];
+
+  y = abstol = NULL;
+  cvode_mem = NULL;
+
+  //Create serial vector of length NEG for I.C and abstol
+  y = N_VNew_Serial(NEQ);
+  abstol = N_VNew_Serial)NEQ);
+
+  // initialize y
+  Ith(y,1) = poinitial;
+  Ith(y,2) = 1.0 - poinitial;
+
+  // set the scalar relative tolerance
+  retol = RTOL;
+
+  // set the vector absolute tolerance
+  Ith(abstol,1) = ATOL1;
+  Ith(abstol,2) = ATOL2;
+
+  // call CVodeCreate to create the solver memory and specify the 
+  // Backward Differentiation Formula and the use of a Newton iteration.
+  cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
+
+  // call CVodeInit to initialize the integrator memory and specify the
+  // user's right hand side function in y'=f(t,y), the initial time T0, and
+  // the initial dependent variable vector y.
+  CVodeInit(cvode_mem, f, T0, y);
+  return 1.0;
+}
+
 
 
 double SingleMoleculeCV::kf( double t,
