@@ -95,18 +95,63 @@ double SingleMoleculeCV::kb( double t,
 }
 
 double SingleMoleculeCV::E_applied(double t,
-    const std::vector<double> &vec) {
+  const std::vector<double> &vec) {
 
-    double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
+  double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit;
 
-    //upack the model paramters
-    unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
+  //upack the model paramters
+  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-    double E;
+  double E;
 
-    if (t >= 0 && t <= tlimit)
-        E = e0 + v * t;
-    if (t > tlimit && t <= 2.0 * tlimit)
-        E = e0 + 2.0 * v * tlimit - v * t;
-    return E;
+  if (t >= 0 && t <= tlimit)
+      E = e0 + v * t;
+  if (t > tlimit && t <= 2.0 * tlimit)
+      E = e0 + 2.0 * v * tlimit - v * t;
+  return E;
 }
+
+static int f(double t, N_Vector y, N_Vector ydot, 
+  void *user_data) {
+
+  double y1, y2;
+  std::vector<double> *p;
+  p = (std:vector<double> *) user_data;
+
+  y1 = Ith(y,1);
+  y2 = Ith(y,2);
+
+  Ith(ydot,1) = - kf(t, *p) * y1 + kb(t, *p) *y2;
+  Ith(ydot,2) =   kf(t, *p) * y1 - kb(t, *p) *y2;
+  
+  return(0);
+}
+
+static int g(double t, N_Vector y, double *gout, 
+  void *user_data) {
+
+  double y1;
+
+  y1 = Ith(y,1);
+  gout [0] = y1 - 0.5;
+
+  return(0);
+}
+
+static int Jac(long int N, double t, N_Vector y,
+              N_Vector fy, DlsMat J, void *user_data,
+              N_Vector tmp1, N_Vector tmp2, N_Vector tmp3) {
+  std::vector<double> *p;
+
+  p = (std::vector<double> *) user_data;
+
+  IJth(J,1,1) = - kf(t, *p);
+  IJth(J,1,2) =   kb(t, *p);
+  IJth(J,2,1) =   kf(t, *p);
+  IJth(J,2,2) = - kb(t, *p);
+
+  return(0);
+}
+
+
+
