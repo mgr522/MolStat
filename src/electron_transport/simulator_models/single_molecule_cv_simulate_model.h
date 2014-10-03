@@ -123,6 +123,7 @@ public:
   static int g(double t, N_Vector y, double *gout, void *user_data);
   static int Jac(long int N, double t, N_Vector y, N_Vector fy, DlsMat J, void *user_data, 
     N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
+  static int display_parameters(const std::vector<double> &vec);
 };
 
 #endif

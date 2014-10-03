@@ -21,7 +21,6 @@
 #define ATOL1 1.0e-8
 #define ATOL2 1.0e-8
 #define T0 0.0
-#define NOUT 1.0
 
 using namespace std;
 
@@ -71,10 +70,12 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 
 double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
 
+  display_parameters(vec);
+
   double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
 
-	// unpack the model parameters
-	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
+  // unpack the model parameters
+  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
 
   double reltol, t, tout;
   N_Vector y, abstol;
@@ -136,8 +137,8 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   while(1) {
     flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
     
-    printf("t = %14.6e\n", t);
-    printf("E = %14.6e\n", E_applied(t,vec));
+    //printf("t = %14.6e\n", t);
+    //printf("E = %14.6e\n", E_applied(t,vec));
 
     if (flag == CV_ROOT_RETURN) {
       flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
@@ -239,6 +240,32 @@ int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
 
   return(0);
 }
+int display_parameters(const std::vector<double> &vec) {
+    double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
+
+  //upack the model paramters
+  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
+  
+  printf("e0             = %14.6e\n", e0);
+  printf("eref           = %14.6e\n", eref);
+  printf("lambda         = %14.6e\n", lambda);
+  printf("af             = %14.6e\n", af);
+  printf("ab             = %14.6e\n", ab);
+  printf("v              = %14.6e\n", v);
+  printf("n              = %14.6e\n", n);
+  printf("poinitial      = %14.6e\n", poinitial);
+  printf("temperature    = %14.6e\n", temperature);
+  printf("tlimit         = %14.6e\n", tlimit);
+  printf("test           = %14.6e\n", test);
+
+  return 0;
+}
+
+
+
+
+
+
 
 
 
