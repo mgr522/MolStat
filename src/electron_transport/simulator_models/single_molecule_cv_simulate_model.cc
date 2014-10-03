@@ -66,7 +66,7 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	sample(r, params);
 	unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
 
-	return {{1.0 , kb(test, params)}};
+	return {{1.0 , peak_potentials(params)}};
 }
 
 double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
@@ -135,6 +135,9 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
 
   while(1) {
     flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
+    
+    printf("t = %14.6e\n", t);
+    printf("E = %14.6e\n", E_applied(t,vec));
 
     if (flag == CV_ROOT_RETURN) {
       flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
