@@ -37,17 +37,17 @@ void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
   double &ab, double &v, double &n, double &poinitial,
   double &temperature, double &tlimit, double &test) {
 
-	e0 = vec[0];
-	eref = vec[1];
-	lambda = vec[2];
-	af = vec[3];
-	ab = vec[4];
-	v = vec[5];
-  n = vec[6];
-  poinitial = vec[7];
-  temperature = vec[8];
-  tlimit = vec[9];
-  test = vec[10];
+    e0 = vec[0];
+    eref = vec[1];
+    lambda = vec[2];
+    af = vec[3];
+    ab = vec[4];
+    v = vec[5];
+    n = vec[6];
+    poinitial = vec[7];
+    temperature = vec[8];
+    tlimit = vec[9];
+    test = vec[10];
 }
 
 SingleMoleculeCV::SingleMoleculeCV(
@@ -72,7 +72,7 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 
 double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
 
-  display_parameters(vec);
+  //display_parameters(vec);
 
   double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
 
@@ -137,15 +137,15 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   tout = 2.0 * tlimit;
 
   while(1) {
-    printf("Before CVode solver.\n");
-    printf("t = %14.6e\n", t);
-    printf("E = %14.6e\n\n", E_applied(t,vec));
+    //printf("Before CVode solver.\n");
+    //printf("t = %14.6e\n", t);
+    //printf("E = %14.6e\n\n", E_applied(t,vec));
 
     flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
     
-    printf("After CVode Solver.\n");
-    printf("t = %14.6e\n", t);
-    printf("E = %14.6e\n\n", E_applied(t,vec));
+    //printf("After CVode Solver.\n");
+    //printf("t = %14.6e\n", t);
+    //printf("E = %14.6e\n\n", E_applied(t,vec));
 
     if (flag == CV_ROOT_RETURN) {
       flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
@@ -174,7 +174,6 @@ double SingleMoleculeCV::kf( double t,
 
 	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda * GSL_CONST_MKSA_ELECTRON_CHARGE)
         / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
-    std::cout << e << std::endl;
     if (e < -500) {
         return 0;
     }
@@ -191,7 +190,6 @@ double SingleMoleculeCV::kb( double t,
 
 	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE)
         / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
-    std::cout << e << std::endl;
     if (e < -500) {
         return 0;
     }
