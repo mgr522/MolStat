@@ -141,6 +141,14 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
     }
     if (flag == CV_SUCCESS) break;
   }
+  
+  // free y and abstol vectors
+  N_VDestroy_Serial(y);
+  N_VDestroy_Serial(abstol);
+
+  // free integrator memory
+  CVodeFree(&cvode_mem);
+
   return root[1];
 }
 
