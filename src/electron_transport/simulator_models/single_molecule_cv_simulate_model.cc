@@ -13,6 +13,8 @@
 #include "single_molecule_cv_simulate_model.h"
 #include <cmath>
 
+#include <iostream>
+
 #define Ith(v,i)    NV_Ith_S(v,i-1)
 #define IJth(A,i,j) DENSE_ELEM(A,i-1,j-1)
 
@@ -170,8 +172,13 @@ double SingleMoleculeCV::kf( double t,
 	// unpack the model parameters
 	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
 
-	return af * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda * GSL_CONST_MKSA_ELECTRON_CHARGE)
-        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature));
+	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda * GSL_CONST_MKSA_ELECTRON_CHARGE)
+        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
+    std::cout << e << std::endl;
+    if (e < -500) {
+        return 0;
+    }
+	return af * gsl_sf_exp( e );
 }
 
 double SingleMoleculeCV::kb( double t,
@@ -182,8 +189,13 @@ double SingleMoleculeCV::kb( double t,
 	// unpack the model parameters
 	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
 
-	return ab * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE)
-        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature));
+	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE)
+        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
+    std::cout << e << std::endl;
+    if (e < -500) {
+        return 0;
+    }
+	return ab * gsl_sf_exp( e );
 }
 
 double SingleMoleculeCV::E_applied(double t,
