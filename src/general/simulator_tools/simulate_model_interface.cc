@@ -3,59 +3,58 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file simulate_model_interface.cc
- * \brief Implementation of an abstract class for simulating histograms.
+ * \brief Implements aspects of abstract classes for simulating histograms.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
-
-#include "simulate_model_interface.h"
-#include <array>
-
-using namespace std;
 
 namespace molstat {
 
-SimulateModel::SimulateModel(
-	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail,
-	const std::vector<std::string> &names)
-	: dists(names.size()) {
-
-	int j, n;
+template<std::size_t MPs>
+SimulateModel<MPs>::SimulateModel(
+	const std::map<std::string,
+	               std::shared_ptr<RandomDistribution>> &avail,
+	const std::array<std::string, MPs> &names)
+	: dists{ { nullptr } } {
 
 	// go through each of the requested parameters
-	n = names.size();
-	for(j = 0; j < n; ++j) {
+	for(std::size_t j = 0; j < MPs; ++j) {
 		try {
 			dists[j] = avail.at(names[j]);
 		}
-		catch(const out_of_range &e) {
-			throw runtime_error(names[j].c_str());
+		catch(const std::out_of_range &e) {
+			throw std::runtime_error(names[j].c_str());
 		}
 	}
 }
 
-void SimulateModel::sample(gsl_rng_ptr &r, std::vector<double> &vals) const {
-	int j, n;
+template<std::size_t MPs>
+std::array<double, MPs>
+	SimulateModel<MPs>::generateParameters(gsl_rng_ptr &r) const {
 
-	// sample each distribution, in order
-	n = dists.size();
-	vals.resize(n);
-	for(j = 0; j < n; ++j)
-		vals[j] = dists[j]->sample(r);
+	std::array<double, MPs> ret;
+
+	for(std::size_t j = 0; j < MPs; ++j)
+		ret[j] = dists[j]->sample(r);
+
+	return ret;
 }
 
-std::function< Observable<2>(const std::shared_ptr<SimulateModel>) >
-	Obs2(const std::function<Observable<1>
-	                        (const std::shared_ptr<SimulateModel>)> &f) {
+template<std::size_t OBS, std::size_t MPs>
+std::array<double, OBS>
+	SimulateObservables<OBS, MPs>::simulate(gsl_rng_ptr &r) const {
 
-	return [f] (const shared_ptr<SimulateModel> model) -> Observable<2> {
-		Observable<1> obs1 = f(model);
+	std::array<double, OBS> ret;
 
-		return [=] (gsl_rng_ptr &r) -> array<double, 2> {
-			return { { 0., obs1(r)[0] } };
-		};
-	};
+	// generate the model parameters
+	const std::array<double, MPs> params = model->generateParameters(r);
+
+	// calculate each observable
+	for(std::size_t j = 0; j < OBS; ++j)
+		ret[j] = observables[j](params);
+
+	return ret;
 }
 
 } // namespace molstat

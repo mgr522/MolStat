@@ -3,41 +3,110 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file simulate_model_interface.h
- * \brief Defines an abstract class encapsulating a model for simulating
- *    histograms.
+ * \brief Defines abstract classes for simulating histograms.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
 #ifndef __simulate_model_interface_h__
 #define __simulate_model_interface_h__
 
 #include <memory>
-#include <vector>
+#include <array>
 #include <string>
 #include <map>
 #include <stdexcept>
+#include <utility>
+#include <functional>
 #include <general/random_distributions/rng.h>
 
 namespace molstat {
 
 /**
- * \brief Base class encapsulating a model for simulating data to construct a
- *    histogram.
+ * \brief Base class for simulating data.
  *
- * This base class stores the random distributions for the variables as a map
- * from variable name to distribution.
+ * This model requires the number of observables being calculated with each
+ * set of random numbers.
+ *
+ * Subclasses must implement the molstat::Simulator::simulate function
+ * to generate a set of random numbers (given a generator) and calculate the
+ * requested observables.
+ *
+ * The subsequent class molstat::SimulateObservables does most of the heavy
+ * lifting, but is also templated over the number of model parameters. This
+ * class provides an easy way to type a generic model.
+ *
+ * \tparam OBS The number of observables.
  */
+template<std::size_t OBS>
+class Simulator {
+public:
+	virtual ~Simulator() = default;
+
+	/**
+	 * \brief Calculates the desired observables using the random number
+	 *    generator.
+	 *
+	 * \param[in] r The GSL random number generator handle.
+	 * \return The simulated observables.
+	 */
+	virtual std::array<double, OBS> simulate(gsl_rng_ptr &r) const = 0;
+};
+
+/**
+ * \brief Base class for an observable.
+ *
+ * An observable must implement the operator() function (see below). As
+ * demonstrated in examples, the operator() function should immediately
+ * redirect to another function whose name can be specified by the
+ * observable. In this way, a particular model can inherit from multiple
+ * observables and implement each of their \"observable\" functions.
+ *
+ * In this sense, each molstat::Observable is essentially an interface that
+ * is meant to be inherited, along with molstat::SimulateModel.
+ *
+ * \tparam MPs The number of model parameters needed to calculate this
+ *    observable.
+ */
+template<std::size_t MPs>
+class Observable {
+public:
+	virtual ~Observable() = default;
+
+	/**
+	 * \brief Function that calculates the observable, given a set of
+	 *    model parameters.
+	 *
+	 * \param[in] params The model parameters.
+	 * \return The value of the observable for these parameters.
+	 */
+	virtual double operator()(const std::array<double, MPs> &params) const = 0;
+};
+
+/**
+ * \brief Base class for a model that using MPs model parameters for
+ *    calculating observables.
+ *
+ * This class stores all of the random number distributions for simulating
+ * data and provides a function for generating a random set of model
+ * parameters.
+ *
+ * All models for simulating data should derive from this class. Derived classes
+ * should pass in the names of parameters they require (during construction)
+ * and subsequently process given parameters to calculate an observable.
+ *
+ * \tparam MPs The number of model parameters needed to calculate an
+ *    observable.
+ */
+template<std::size_t MPs>
 class SimulateModel {
 private:
 	/**
-	 * \internal
 	 * \brief The random distributions, ordered as specified during
 	 *    construction.
-	 * \endinternal
 	 */
-	std::vector<std::shared_ptr<const RandomDistribution>> dists;
+	std::array<std::shared_ptr<const RandomDistribution>, MPs> dists;
 
 public:
 	SimulateModel() = delete;
@@ -45,114 +114,164 @@ public:
 
 	/**
 	 * \brief Constructor requiring a list of available distributions and an
-	 *    ordered list of needed distributions.
+	 *    array of required distributions.
+	 *
+	 * The order of parameters in the list `names` will be preserved when
+	 * randomly generating a set of parameters.
+	 *
+	 * \throw runtime_error If a required distribution is not found among the
+	 *    available distributions.
+	 *
+	 * \param[in] avail The available distributions, keyed by name.
+	 * \param[in] names The names of required distributions.
+	 */
+	SimulateModel(
+		const std::map<std::string,
+		               std::shared_ptr<RandomDistribution>> &avail,
+		const std::array<std::string, MPs> &names);
+
+	/**
+	 * \brief Produces a random set of parameters from the specified
+	 *    distributions.
+	 *
+	 * \param[in] r The handle for GSL random number generation.
+	 * \return The randomly-generated model parameters, in the order specified
+	 *    during construction.
+	 */
+	std::array<double, MPs> generateParameters(gsl_rng_ptr &r) const;
+};
+
+/**
+ * \brief Base class for a model that has MPs parameters and calculates OBS
+ *    observables.
+ *
+ * This class invokes the appropriate observable functions for the
+ * molstat::SimulatorInterface.
+ *
+ * \tparam OBS The number of observables.
+ * \tparam MPs The number of model parameters needed to calculate an
+ *    observable.
+ */
+template<std::size_t OBS, std::size_t MPs>
+class SimulateObservables : public Simulator<OBS> {
+public:
+	/**
+	 * \brief Shortcut for a function that calculates an observable.
+	 */
+	using ObservableFunction =
+		std::function<double(const std::array<double, MPs> &)>;
+
+private:
+	/**
+	 * \brief The model used to calculate observables.
+	 */
+	std::shared_ptr<SimulateModel<MPs>> model;
+
+	/**
+	 * \brief The Observable functions.
+	 */
+	std::array<ObservableFunction, OBS> observables;
+
+	/**
+	 * \brief Default constructor.
+	 *
+	 * Hidden so that objects must be created using the factory function.
+	 */
+	SimulateObservables() = default;
+
+public:
+	virtual ~SimulateObservables() = default;
+
+	/**
+	 * \brief Factory function for creating a molstat::SimulateObservables
+	 *    object.
+	 *
+	 * SimulateObservables objects are created by passing in a map of available
+	 * molstat::RandomDistributions; these distributions are needed for
+	 * constructing the underlying molstat::SimulateModel.
 	 *
 	 * \throw runtime_error If there a required distribution is not found among
 	 *    the available distributions.
 	 *
+	 * \tparam T The type of model (derived from molstat::SimulateModel) to use.
 	 * \param[in] avail The available distributions, keyed by name,
-	 * \param[in] names The names of required distributions, in a particular
-	 *    order.
 	 */
-	SimulateModel(
-		const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail,
-		const std::vector<std::string> &names);
+	template<typename T>
+	static std::unique_ptr<SimulateObservables<OBS, MPs>> Factory(
+		const std::map<std::string,
+		               std::shared_ptr<RandomDistribution>> &avail) {
+
+		using namespace std;
+
+		unique_ptr<SimulateObservables<OBS, MPs>> ret(
+			new SimulateObservables<OBS, MPs>());
+
+		// make the model from the specified type
+		ret->model = make_shared<T>(avail);
+
+		// initialize all observables to the zero function
+		for(std::size_t j = 0; j < OBS; ++j)
+			ret->observables[j] = ZeroObs;
+
+		return ret;
+	}
 
 	/**
-	 * \brief Samples from the random distributions.
+	 * \brief Function for a \"zero\" observable.
 	 *
-	 * \param[in] r The handle for GSL random number generation.
-	 * \param[out] vals The random numbers, in the order specified during
-	 *    construction.
+	 * \param[in] params The set of model parameters.
+	 * \return The observable; in this case, 0.
 	 */
-	void sample(gsl_rng_ptr &r, std::vector<double> &vals) const;
-};
+	constexpr static double ZeroObs(const std::array<double, MPs> &params)
+		noexcept {
 
-/**
- * \brief Shortcut for the factory that produces SimulateModel objects.
- *
- * SimulateModel objects are created by passing in a map of available
- * RandomDistributions; the specification of a model should supply the names
- * of required parameters. This function type produces the SimulateModel
- * from the map of RandomDistributions.
- */
-typedef std::function<std::unique_ptr<SimulateModel>
-	(const std::map<std::string, std::shared_ptr<RandomDistribution>> &)>
-	SimulateModelFactory;
+		return 0.;
+	}
 
-/**
- * \brief Creates a SimulateModelFactory for a particular model.
- *
- * \tparam T The type of SimulateModel we wish to instantiate.
- * \return A function for instantiating the class from a map of available
- *    random number distributions.
- */
-template<typename T>
-inline SimulateModelFactory GetSimulateModelFactory() {
-	return []
-		(const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
-		-> std::unique_ptr<SimulateModel> {
+	/**
+	 * \brief Sets the `i`th observable for the simulation.
+	 *
+	 * This function will dynamic_cast the model to make sure the specified
+	 * function is available; that is, the model implements the desired
+	 * observable. If this check is passed, the observable is set. Otherwise,
+	 * a runtime_error exception is thrown.
+	 *
+	 * \throw runtime_error If the model and observable are incompatible; that is,
+	 *    the model does not implement the observable.
+	 *
+	 * \tparam T The class (interface) for the observable.
+	 * \param[in] i The index for this observable (i = 0... OBS-1).
+	 */
+	template<template<std::size_t> class T>
+	void setObservable(std::size_t i) {
 
-		return std::unique_ptr<SimulateModel>(new T(avail));
-	};
-}
-
-/**
- * \brief Shortcut for the function signature of a observable.
- *
- * Observables take in a GSL random number generator handle and produce the
- * value of the observable, as determined by the model.
- *
- * \tparam N The number of variables in the observable.
- */
-template<size_t N>
-using Observable = std::function<std::array<double, N>(gsl_rng_ptr &)>;
-
-/**
- * \brief Returns a function that checks compatibility of a model with an
- *    observable.
- *
- * The returned function first checks that a given model is of a class that
- * implements the desired observable. If not, it throws an exception. If it
- * is, it then creates a wrapper to the observable's function that can be
- * called to simulate data.
- *
- * \throw runtime_error If the model and observable are incompatible; that is,
- *    the model does not implement the observable.
- *
- * \tparam N The dimensionality of the observable.
- * \tparam T The class name of the observable's interface.
- * \param[in] memfunc Pointer to the member function of the observable
- *    interface that simulates the observable.
- * \return The described function.
- */
-template<size_t N, typename T>
-std::function<Observable<N>(const std::shared_ptr<SimulateModel>)> ObservableCheck(
-	std::array<double, N> (T::*memfunc)(gsl_rng_ptr &) const) {
-
-	return [memfunc] (const std::shared_ptr<SimulateModel> model) {
-		std::shared_ptr<T> cast = std::dynamic_pointer_cast<T>(model);
+		std::shared_ptr<T<MPs>> cast = std::dynamic_pointer_cast<T<MPs>>(model);
 
 		if(cast == nullptr)
 			throw std::runtime_error("Incompatible model and observable.");
 
-		return std::bind(memfunc, cast, std::placeholders::_1);
-	};
-}
+		observables[i] =
+			[cast] (const std::array<double, MPs> &params)
+				-> double {
 
-/**
- * \brief Retypes a function that returns array<double, 1> to return
- *    array<double, 2>.
- *
- * This simply adds a zero to the 0th element; the 1D element becomes element
- * [1] in the 2-array.
- *
- * \param[in] f The 1D observable function to be wrapped.
- * \return The wrapped function.
- */
-std::function<Observable<2>(const std::shared_ptr<SimulateModel>)> Obs2(
-	const std::function<Observable<1>(const std::shared_ptr<SimulateModel>)> &f);
+				return (cast->operator())(params);
+			};
+	}
+
+	/**
+	 * \brief Calculates the desired observables using the random number
+	 *    generator.
+	 *
+	 * \param[in] r The GSL random number generator handle.
+	 * \return The simulated observables.
+	 */
+	virtual std::array<double, OBS>
+		simulate(gsl_rng_ptr &r) const override final;
+};
 
 } // namespace molstat
+
+// Owing to templates, include the *.cc implementation file.
+#include "simulate_model_interface.cc"
 
 #endif
