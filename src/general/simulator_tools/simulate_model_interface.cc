@@ -9,7 +9,7 @@
  * \date October 2014
  */
 
-// no includes because this file is included by simulate_model_interface.h
+// no #includes because this file is included by simulate_model_interface.h
 
 namespace molstat {
 
