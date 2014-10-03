@@ -65,7 +65,7 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	sample(r, params);
 	unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-	return {{1.0 , kf(1.0,params)}};
+	return {{1.0 , kb(1.0,params)}};
 }
 
 double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
