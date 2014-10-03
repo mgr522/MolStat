@@ -35,29 +35,27 @@
 /* Problem Constants */
 
 #define NEQ   2                /* number of equations  */
-#define PO_initial    RCONST(0.0)      /* initial y components */
-#define PR_initial    RCONST(1.0)
-#define RTOL  RCONST(1.0e-5)   /* scalar relative tolerance            */
-#define ATOL1 RCONST(1.0e-8)   /* vector absolute tolerance components */
-#define ATOL2 RCONST(1.0e-8)
-#define T0    RCONST(0.0)      /* initial time           */
-#define TMULT RCONST(10.0)     /* output time factor     */
-#define TADD  RCONST(1.0)
+#define PO_initial    0.0      /* initial y components */
+#define PR_initial    1.0
+#define RTOL  1.0e-5   /* scalar relative tolerance            */
+#define ATOL1 1.0e-8   /* vector absolute tolerance components */
+#define ATOL2 1.0e-8
+#define T0    0.0      /* initial time           */
+#define TMULT 10.0    /* output time factor     */
+#define TADD  1.0
 #define NOUT  1              /* number of output times */
 
-#define E0_c      RCONST(0.0)     /* initial applied potential */
-#define Eref_c    RCONST(1.1)     /* reference potential */
-#define lamb_c    RCONST(1.0e-19) /* reorganization energy */
-#define Af_c      RCONST(5.0)     /* prefactor for forward half-action rate constant */
-#define Ab_c      RCONST(5.0)     /* prefactor for backward half-action rate constant */
-#define v_c       RCONST(0.01)    /* Sweeping rate of the applied potential */
-#define Temp_c    RCONST(300.0)   /* Temperature */
-#define ne_c      RCONST(1.0)     /* Number of electrons involved in the reaction */
-#define t1_c      RCONST(250.0)     /* the time from which the potential start to decrease */
+#define E0_c      0.0     /* initial applied potential */
+#define Eref_c    1.1   /* reference potential */
+#define lamb_c    0.6252 /* reorganization energy */
+#define Af_c      5.0     /* prefactor for forward half-action rate constant */
+#define Ab_c      5.0     /* prefactor for backward half-action rate constant */
+#define v_c       0.01    /* Sweeping rate of the applied potential */
+#define Temp_c    300.0   /* Temperature */
+#define ne_c      1.0     /* Number of electrons involved in the reaction */
+#define t1_c      250.0     /* the time from which the potential start to decrease */
 #define T1        2.0*t1_c /* first output time      */
 using namespace std;
-
-struct function_params params = {E0_c, Eref_c, lamb_c, Af_c, Ab_c, v_c, ne_c, PO_initial, Temp_c, t1_c};
 
 static void unpack_parameters(const std::vector<double> &vec,
     double &e0, double &eref, double &lambda, double &af,
@@ -85,8 +83,8 @@ static double kf( double t,
 	// unpack the model parameters
 	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-	return af * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda)
-        / (4.0 * lambda * GSL_CONST_MKSA_BOLTZMANN * temperature));
+	return af * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda * GSL_CONST_MKSA_ELECTRON_CHARGE )
+        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature));
 }
 
 static double kb( double t,
@@ -97,8 +95,8 @@ static double kb( double t,
 	// unpack the model parameters
 	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-	return ab * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda)
-        / (4.0 * lambda * GSL_CONST_MKSA_BOLTZMANN * temperature));
+	return ab * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE )
+        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature));
 }
 
 static double E_applied(double t,
@@ -148,7 +146,7 @@ int main()
 
     /* Initialize y */
     Ith(y,1) = PO_initial;
-    Ith(y,2) = PR_initial;
+    Ith(y,2) = 1.0 - PO_initial;
 
     /* Set the scalar relative tolerance */
     reltol = RTOL;
@@ -179,7 +177,7 @@ int main()
 
     /* Set the Jacobian routine to Jac (user-supplied) */
     flag = CVDlsSetDenseJacFn(cvode_mem, Jac);
-//    CVodeSetInitStep(cvode_mem, RCONST(1.0e-4));
+//    CVodeSetInitStep(cvode_mem, 1.0e-4);
 
     /* In loop, call CVode, print results, and test for error.
      Break out of loop when NOUT preset output times have been reached.  */
@@ -198,18 +196,17 @@ int main()
         }
 
         if (check_flag(&flag, "CVode", 1)) break;
-        if (flag == CV_SUCCESS) {
-            iout++;
-            tout += TADD;
-//            tout *= TMULT;
-        }
-
-        if (iout == NOUT) break;
+        if (flag == CV_SUCCESS) break;
     }
 
     /* Print some final statistics */
     PrintFinalStats(cvode_mem);
     printf("v1 = %14.6e  v2 = %14.6e \n", root[1],root[2]);
+    printf("kf = %14.6e \n", kf(1.0, vec));
+    printf("kb = %14.6e \n", kb(1.0, vec));
+    printf("E_applied = %14.6e \n", E_applied(1.0, vec));
+
+
 
     /* Free y and abstol vectors */
     N_VDestroy_Serial(y);
@@ -256,7 +253,7 @@ static int g(double t, N_Vector y, double *gout, void *user_data)
   double y1;
 
   y1 = Ith(y,1);
-  gout [0] = y1 - RCONST(0.5);
+  gout [0] = y1 - 0.5;
 
   return(0);
 }

@@ -4,21 +4,6 @@
 #include <sundials/sundials_types.h> /* definition of type realtype */
 #include <vector>
 
-
-struct function_params
-{
-    double E0; /* initial bias*/
-    double E_ref; /* reference potential*/
-    double lamb; /* reorganization energy*/
-    double Af; /* prefactor for forward half-action rate constant */
-    double Ab; /* prefactor for backward half-action rate constant */
-    double v; /* voltage scan rate*/
-    double n; /* the number of electrons transferred in the half-action*/
-    double PO_initial; /* the initial probability of the oxidized species*/
-    double T; /* Temperature */
-    double t1; /* the time from which the potential start to decrease */
-};
-
 static void unpack_parameters(const std::vector<double> &vec, double &e0,
         double &eref, double &lambda, double &af, double &ab, double &v,
         double &n, double &poinitial, double &temperature, double &tlimit);

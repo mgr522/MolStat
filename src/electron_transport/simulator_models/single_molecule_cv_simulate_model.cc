@@ -152,8 +152,6 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   return root[1];
 }
 
-
-
 double SingleMoleculeCV::kf( double t,
 	const std::vector<double> &vec) {
 
@@ -190,7 +188,7 @@ double SingleMoleculeCV::E_applied(double t,
 
   if (t >= 0 && t <= tlimit)
       E = e0 + v * t;
-  if (t > tlimit && t <= 2.0 * tlimit)
+  if (t > tlimit )
       E = e0 + 2.0 * v * tlimit - v * t;
   return E;
 }
