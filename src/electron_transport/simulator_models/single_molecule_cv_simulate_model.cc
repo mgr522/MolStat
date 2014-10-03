@@ -190,7 +190,7 @@ double SingleMoleculeCV::E_applied(double t,
       E = e0 + v * t;
   if (t > tlimit)
       E = e0 + 2.0 * v * tlimit - v * t;
-  printf("E is %14.6e\n", E);
+  //printf("E is %14.6e\n", E);
   return E;
 }
 
