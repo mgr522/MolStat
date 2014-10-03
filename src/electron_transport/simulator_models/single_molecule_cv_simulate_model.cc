@@ -12,6 +12,7 @@
 
 #include "single_molecule_cv_simulate_model.h"
 #include <math.h>
+#include <stdio.h>
 
 #define Ith(v,i)    NV_Ith_S(v,i-1)
 #define IJth(A,i,j) DENSE_ELEM(A,i-1,j-1)
