@@ -256,7 +256,7 @@ int SingleMoleculeCV::display_parameters(const std::vector<double> &vec) {
   printf("poinitial      = %14.6e\n", poinitial);
   printf("temperature    = %14.6e\n", temperature);
   printf("tlimit         = %14.6e\n", tlimit);
-  printf("test           = %14.6e\n", test);
+  printf("test           = %14.6e\n\n\n", test);
 
   return 0;
 }
