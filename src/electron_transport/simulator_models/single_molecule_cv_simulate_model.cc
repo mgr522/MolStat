@@ -135,10 +135,15 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   tout = 2.0 * tlimit;
 
   while(1) {
+    printf("Before CVode solver.\n");
+    printf("t = %14.6e\n", t);
+    printf("E = %14.6e\n\n", E_applied(t,vec));
+
     flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
     
-    //printf("t = %14.6e\n", t);
-    //printf("E = %14.6e\n", E_applied(t,vec));
+    printf("After CVode Solver.\n");
+    printf("t = %14.6e\n", t);
+    printf("E = %14.6e\n\n", E_applied(t,vec));
 
     if (flag == CV_ROOT_RETURN) {
       flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
@@ -195,7 +200,8 @@ double SingleMoleculeCV::E_applied(double t,
       E = e0 + v * t;
   if (t > tlimit)
       E = e0 + 2.0 * v * tlimit - v * t;
-  //printf("E is %14.6e\n", E);
+  printf("Inside E_applied E is %14.6e\n", E);
+  printf("Inside E_applied t is %14.6e\n\n\n", t);
   return E;
 }
 
