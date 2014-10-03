@@ -46,7 +46,7 @@
 #define NOUT  1              /* number of output times */
 
 #define E0_c      0.0     /* initial applied potential */
-#define Eref_c    1.1   /* reference potential */
+#define Eref_c    1.119328   /* reference potential */
 #define lamb_c    0.6252 /* reorganization energy */
 #define Af_c      5.0     /* prefactor for forward half-action rate constant */
 #define Ab_c      5.0     /* prefactor for backward half-action rate constant */
@@ -130,6 +130,9 @@ int main()
     vec[7] = PO_initial;
     vec[8] = Temp_c;
     vec[9] = t1_c;
+
+    printf("kf = %14.6e \n", kf(1.158025e3, vec));
+    printf("kb = %14.6e \n", kb(1.158025e3, vec));
 
     double reltol, t, tout;
     N_Vector y, abstol;
