@@ -240,7 +240,7 @@ int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
 
   return(0);
 }
-int display_parameters(const std::vector<double> &vec) {
+int SingleMoleculeCV::display_parameters(const std::vector<double> &vec) {
     double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
 
   //upack the model paramters
@@ -260,12 +260,3 @@ int display_parameters(const std::vector<double> &vec) {
 
   return 0;
 }
-
-
-
-
-
-
-
-
-
