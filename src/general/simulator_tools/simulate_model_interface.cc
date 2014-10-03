@@ -9,6 +9,8 @@
  * \date October 2014
  */
 
+// no includes because this file is included by simulate_model_interface.h
+
 namespace molstat {
 
 template<std::size_t MPs>

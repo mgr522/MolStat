@@ -5,6 +5,8 @@
  * \file simulate_model_interface.h
  * \brief Defines abstract classes for simulating histograms.
  *
+ * \todo Write a better description of how all these models work together.
+ *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
