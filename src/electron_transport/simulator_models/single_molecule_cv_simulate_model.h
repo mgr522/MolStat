@@ -33,18 +33,20 @@
 using std::shared_ptr;
 
 /**
- * \brief Simulator model for transport through a single site that couples
- *    asymmetrically to both electrodes.
+ * \brief Simulator model for single molecule cyclic voltammogram.
  *
  * Model parameters are
- * - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
- * - `v` (\f$V\f$), the applied bias,
- * - `epsilon` (\f$\varepsilon\f$), the site-energy,
- * - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
- * - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
- * - `a` (\f$a\f$), the scaling factor for the voltage-dependence of \f$\varepsilon\f$.
+ * - `e0` (\f$E_\mathrm{0}\f$), the initial applied potential at \f$t=0\f$,
+ * - `eref` (\f$E_\mathrm{Ref}\f$), the reference potential,
+ * - `lambda` (\f$\lambda\f$), the reorganization energy,
+ * - `af` (\f$A_\mathrm{f}\f$), the prefactor for forward half-reaction rate constant,
+ * - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant,
+ * - `v` (\f$v\f$), the sweeping rate of the applied potential,
+ * - 'temperature' (\f$T\f$), the temperature,
+ * - 'n' (\f$n\f$), the number of electrons involved in the half-reaction,
+ * - 'tlimit' (\f$t_\mathrm{lim}\f$), the time instant at which the potential start to decrease.
  *
- * Starting from \f$ \hat{H} = \left[ \varepsilon-aeV \right] \f$ and
+ * The probabilities \f$P_\mathrm{O}(t)\f$ and f$P_\mathrm{R}(t)\f$ for oxidized species \f$O\f$ and reduced species \f$R\f$ in t:
  * \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma_\mathrm{L,R}/2 \right] \f$,
  * the transmission function is
  * \f[ T(E) = \frac{4\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{4(E-\varepsilon-aeV)^2 + (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})^2}. \f]
@@ -67,7 +69,7 @@ private:
 	 * \brief Unpack a set of parameters from a vector to doubles.
 	 *
 	 * \param[in] vec The vector containing a set of parameters.
-	 * \param[out] ef The Fermi energy.
+	 * \param[out] e0 The initial applied potential.
 	 * \param[out] v The voltage.
 	 * \param[out] epsilon The site energy.
 	 * \param[out] gammal The left site-lead coupling.
