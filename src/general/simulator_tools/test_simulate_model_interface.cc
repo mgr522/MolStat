@@ -2,7 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file test_observablecheck.cc
+ * \file test_simulate_model_interface.cc
  * \brief Test suite for the molstat::SimulateObservables,
  *    molstat::SimulateModel, and molstat::Observable templates.
  *

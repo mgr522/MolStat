@@ -1,4 +1,4 @@
 test-suite.log
-test_observablecheck
-test_observablecheck.log
-test_observablecheck.trs
+test_simulate_model_interface
+test_simulate_model_interface.log
+test_simulate_model_interface.trs
