@@ -115,6 +115,13 @@ public:
 	virtual ~SimulateModel() = default;
 
 	/**
+	 * \brief The number of model parameters, for reference at runtime.
+	 *
+	 * \todo Remove if not needed.
+	 */
+	constexpr static std::size_t numModelParameters = MPs;
+
+	/**
 	 * \brief Constructor requiring a list of available distributions and an
 	 *    array of required distributions.
 	 *
@@ -143,6 +150,10 @@ public:
 	std::array<double, MPs> generateParameters(gsl_rng_ptr &r) const;
 };
 
+// declaration
+template<std::size_t OBS>
+class SimulatorFactory;
+
 /**
  * \brief Base class for a model that has MPs parameters and calculates OBS
  *    observables.
@@ -156,14 +167,13 @@ public:
  */
 template<std::size_t OBS, std::size_t MPs>
 class SimulateObservables : public Simulator<OBS> {
-public:
+private:
 	/**
 	 * \brief Shortcut for a function that calculates an observable.
 	 */
 	using ObservableFunction =
 		std::function<double(const std::array<double, MPs> &)>;
 
-private:
 	/**
 	 * \brief The model used to calculate observables.
 	 */
@@ -185,40 +195,6 @@ public:
 	virtual ~SimulateObservables() = default;
 
 	/**
-	 * \brief Factory function for creating a molstat::SimulateObservables
-	 *    object.
-	 *
-	 * SimulateObservables objects are created by passing in a map of available
-	 * molstat::RandomDistributions; these distributions are needed for
-	 * constructing the underlying molstat::SimulateModel.
-	 *
-	 * \throw runtime_error If there a required distribution is not found among
-	 *    the available distributions.
-	 *
-	 * \tparam T The type of model (derived from molstat::SimulateModel) to use.
-	 * \param[in] avail The available distributions, keyed by name,
-	 */
-	template<typename T>
-	static std::unique_ptr<SimulateObservables<OBS, MPs>> Factory(
-		const std::map<std::string,
-		               std::shared_ptr<RandomDistribution>> &avail) {
-
-		using namespace std;
-
-		unique_ptr<SimulateObservables<OBS, MPs>> ret(
-			new SimulateObservables<OBS, MPs>());
-
-		// make the model from the specified type
-		ret->model = make_shared<T>(avail);
-
-		// initialize all observables to the zero function
-		for(std::size_t j = 0; j < OBS; ++j)
-			ret->observables[j] = ZeroObs;
-
-		return ret;
-	}
-
-	/**
 	 * \brief Function for a \"zero\" observable.
 	 *
 	 * \param[in] params The set of model parameters.
@@ -231,36 +207,6 @@ public:
 	}
 
 	/**
-	 * \brief Sets the `i`th observable for the simulation.
-	 *
-	 * This function will dynamic_cast the model to make sure the specified
-	 * function is available; that is, the model implements the desired
-	 * observable. If this check is passed, the observable is set. Otherwise,
-	 * a runtime_error exception is thrown.
-	 *
-	 * \throw runtime_error If the model and observable are incompatible; that is,
-	 *    the model does not implement the observable.
-	 *
-	 * \tparam T The class (interface) for the observable.
-	 * \param[in] i The index for this observable (i = 0... OBS-1).
-	 */
-	template<template<std::size_t> class T>
-	void setObservable(std::size_t i) {
-
-		std::shared_ptr<T<MPs>> cast = std::dynamic_pointer_cast<T<MPs>>(model);
-
-		if(cast == nullptr)
-			throw std::runtime_error("Incompatible model and observable.");
-
-		observables[i] =
-			[cast] (const std::array<double, MPs> &params)
-				-> double {
-
-				return (cast->operator())(params);
-			};
-	}
-
-	/**
 	 * \brief Calculates the desired observables using the random number
 	 *    generator.
 	 *
@@ -269,11 +215,87 @@ public:
 	 */
 	virtual std::array<double, OBS>
 		simulate(gsl_rng_ptr &r) const override final;
+
+	// Give the SimulatorFactory class access to the internals so that it can
+	// produce a Simulator.
+	friend class SimulatorFactory<OBS>;
+};
+
+/**
+ * \brief Class used to aid in the construction of molstat::Simulator objects
+ *    (as implemented by molstat::SimulateObservables).
+ *
+ * \tparam OBS The number of observables.
+ */
+template<std::size_t OBS>
+class SimulatorFactory {
+private:
+	/**
+	 * \brief the molstat::SimulateObservables object that we're building.
+	 */
+	std::unique_ptr<Simulator<OBS>> model;
+
+	/* I haven't figured out a way to regain the template parameter MPs from
+	 * here. (It's only needed when constructing SimulatorObservables...).
+	 * Thus, the implementation of this Factory does a hard-coded dynamic_cast
+	 * through the options up to (and including) the following value. If a
+	 * higher value is needed, it must be increased here (for error checking)
+	 * and also in the setObservable function. */
+	constexpr static std::size_t MAX_MPs = 6;
+
+public:
+	SimulatorFactory() : model(nullptr) {}
+	SimulatorFactory(SimulatorFactory<OBS> &&) = default;
+	~SimulatorFactory() = default;
+	SimulatorFactory &operator=(SimulatorFactory<OBS> &&) = default;
+
+	/**
+	 * \brief Constructs a molstat::SimulatorFactory that uses a model of type
+	 *    T.
+	 *
+	 * Construction of the SimulateModel underlying the Simulator requires a
+	 * map of available molstat::RandomDistributions; these distributions.
+	 *
+	 * \throw runtime_error If a required distribution is not found among the
+	 *    available distributions.
+	 *
+	 * \tparam T The type of model (derived from molstat::SimulateModel) to use.
+	 * \param[in] avail The available distributions, keyed by name.
+	 */
+	template<typename T>
+	static SimulatorFactory<OBS> makeFactory(
+		const std::map<std::string,
+		               std::shared_ptr<RandomDistribution>> &avail);
+
+	/**
+	 * \brief Sets the `i`th observable for the simulator.
+	 *
+	 * This function will dynamic_cast the model to make sure the specified
+	 * function is available; that is, the model implements the desired
+	 * observable. If so, the observable is set. Otherwise, a runtime_error
+	 * exception is thrown.
+	 *
+	 * \throw out_of_range If j is not in 0, ..., OBS-1.
+	 * \throw runtime_error If the model and observable are incompatible; that is,
+	 *    the model does not implement the observable.
+	 *
+	 * \tparam T The class (interface) for the observable.
+	 * \param[in] j The index for this observable (j = 0, ..., OBS-1).
+	 */
+	template<template<std::size_t> class T>
+	SimulatorFactory<OBS> &setObservable(std::size_t j);
+
+	/**
+	 * \brief Transfers the simulator being created.
+	 *
+	 * \return The simulator.
+	 */
+	std::unique_ptr<Simulator<OBS>> create();
 };
 
 } // namespace molstat
 
-// Owing to templates, include the *.cc implementation file.
+// Owing to the use of templates, include the *.cc implementation file.
 #include "simulate_model_interface.cc"
 
 #endif

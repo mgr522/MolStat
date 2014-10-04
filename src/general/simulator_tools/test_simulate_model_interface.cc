@@ -140,13 +140,14 @@ public:
  * \endinternal
  */
 int main(int argc, char **argv) {
-	unique_ptr<molstat::SimulateObservables<3, 1>> obs;
+	molstat::SimulatorFactory<3> factory;
+	shared_ptr<molstat::Simulator<3>> sim;
 	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 	molstat::gsl_rng_ptr r(nullptr, &gsl_rng_free);
 
 	try {
-		obs = molstat::SimulateObservables<3, 1>
-			::Factory<TestModel>(parameters);
+		factory = molstat::SimulatorFactory<3>
+			::makeFactory<TestModel>(parameters);
 
 		// shouldn't be here because we didn't specify the parameter "a"
 		assert(false);
@@ -159,50 +160,89 @@ int main(int argc, char **argv) {
 
 	try {
 		// this time it should work!
-		obs = molstat::SimulateObservables<3, 1>
-			::Factory<TestModel>(parameters);
+		factory = molstat::SimulatorFactory<3>
+			::makeFactory<TestModel>(parameters);
 	}
 	catch(const runtime_error &e) {
 		assert(false);
 	}
 
-	// try to set an observable for Observable4. This should fail.
+	// try to set an observable for Observable4.
+	// This should fail (TestModel doesn't implement Observable4)
 	try {
-		obs->setObservable<Observable4>(0);
+		factory.setObservable<Observable4>(0);
 		assert(false);
 	}
 	catch(const runtime_error &e) {
 		// should be here
 	}
+	catch(const out_of_range &e) {
+		assert(false);
+	}
+
+	// try to set an observable to a bad index
+	try {
+		factory.setObservable<Observable1>(3);
+		assert(false);
+	}
+	catch(const out_of_range &e) {
+		// should be here
+	}
+	catch(const runtime_error &e) {
+		assert(false);
+	}
 
 	// now set observables for Observable1 and Observable2.
 	try {
-		obs->setObservable<Observable1>(0);
-		obs->setObservable<Observable2>(2);
+		factory.setObservable<Observable1>(0);
+		factory.setObservable<Observable2>(2);
 	}
 	catch(const runtime_error &e) {
 		// this should have worked...
 		assert(false);
 	}
+	catch(const out_of_range &e) {
+		assert(false);
+	}
+
+	// cast to the simulator now that setup is complete
+	sim = factory.create();
 
 	// verify the set of observables generated...
-	array<double, 3> data = obs->simulate(r);
+	array<double, 3> data = sim->simulate(r);
 	assert(abs(data[0] - distvalue) < 1.e-6);
 	assert(abs(data[1] - 0.) < 1.e-6);
 	assert(abs(data[2] - constvalue) < 1.e-6);
 
+	// create a new simulator that uses Observable3
+	try {
+		// this time it should work!
+		factory = molstat::SimulatorFactory<3>
+			::makeFactory<TestModel>(parameters);
+	}
+	catch(const runtime_error &e) {
+		assert(false);
+	}
+
 	// now load in Observable3
 	try {
-		obs->setObservable<Observable3>(1);
+		factory.setObservable<Observable1>(0);
+		factory.setObservable<Observable3>(1);
+		factory.setObservable<Observable2>(2);
 	}
 	catch(const runtime_error &e) {
 		// the set should have worked.
 		assert(false);
 	}
+	catch(const out_of_range &e) {
+		assert(false);
+	}
+
+	sim = factory.create();
 
 	try {
 		// Observable 3 should throw and exception; make sure we catch it
-		data = obs->simulate(r);
+		data = sim->simulate(r);
 		assert(false);
 	}
 	catch(int i) {

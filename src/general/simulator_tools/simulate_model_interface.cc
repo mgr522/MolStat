@@ -59,4 +59,74 @@ std::array<double, OBS>
 	return ret;
 }
 
+template<std::size_t OBS>
+template<typename T>
+SimulatorFactory<OBS> SimulatorFactory<OBS>::makeFactory(
+	const std::map<std::string,
+	               std::shared_ptr<RandomDistribution>> &avail) {
+
+	static_assert(T::numModelParameters <= MAX_MPs,
+		"Model has more parameters than supported. Increase " \
+		"SimulatorFactory::MAX_MPs as noted in the code.");
+
+	using SimulatorType = SimulateObservables<OBS, T::numModelParameters>;
+
+	SimulatorFactory<OBS> ret;
+
+	std::unique_ptr<SimulatorType> modelObs;
+
+	// allocate the SimulateObservables object.
+	modelObs.reset(new SimulatorType());
+
+	// set the SimulateModel within the simulator
+	modelObs->model = std::make_shared<T>(avail);
+
+	// initialize all observables to the zero function
+	for(std::size_t j = 0; j < OBS; ++j)
+		modelObs->observables[j] = SimulatorType::ZeroObs;
+
+	ret.model.reset(modelObs.release());
+
+	return ret;
+}
+
+template<std::size_t OBS>
+template<template<std::size_t> class T>
+SimulatorFactory<OBS> &SimulatorFactory<OBS>::setObservable(std::size_t j) {
+	if(j >= OBS)
+		throw std::out_of_range("Observable index is too high.");
+
+	// we need to perform some dynamic casting, but this isn't allowed on
+	// unique_ptrs. So, get the raw pointer, and use it (no worries about
+	// ownership)
+	Simulator<OBS> *ptr = model.get();
+	bool cast = false;
+
+	SimulateObservables<OBS, 1> *obs =
+		dynamic_cast<SimulateObservables<OBS, 1>*>(ptr);
+	if(obs != nullptr) {
+		printf("here\n");
+		cast = true;
+
+		std::shared_ptr<T<1>> cast = std::dynamic_pointer_cast<T<1>>(obs->model);
+
+		if(cast == nullptr)
+			throw std::runtime_error("Incompatible model and observable.");
+
+		obs->observables[j] =
+			[cast] (const std::array<double, 1> &params)
+				-> double {
+
+				return (cast->operator())(params);
+			};
+	}
+
+	return *this;
+}
+
+template<std::size_t OBS>
+std::unique_ptr<Simulator<OBS>> SimulatorFactory<OBS>::create() {
+	return std::move(model);
+}
+
 } // namespace molstat
