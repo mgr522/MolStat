@@ -115,9 +115,7 @@ public:
 	virtual ~SimulateModel() = default;
 
 	/**
-	 * \brief The number of model parameters, for reference at runtime.
-	 *
-	 * \todo Remove if not needed.
+	 * \brief The number of model parameters, for reference at compile/runtime.
 	 */
 	constexpr static std::size_t numModelParameters = MPs;
 
@@ -235,13 +233,39 @@ private:
 	 */
 	std::unique_ptr<Simulator<OBS>> model;
 
-	/* I haven't figured out a way to regain the template parameter MPs from
+	/**
+	 * \brief The maximum number of model parameters a molstat::SimulateModel
+	 *    can use.
+	 *
+	 * I haven't figured out a way to regain the template parameter MPs from
 	 * here. (It's only needed when constructing SimulatorObservables...).
 	 * Thus, the implementation of this Factory does a hard-coded dynamic_cast
 	 * through the options up to (and including) the following value. If a
 	 * higher value is needed, it must be increased here (for error checking)
-	 * and also in the setObservable function. */
+	 * and also in the molstat::SimulatorFactory::setObservable function.
+	 */
 	constexpr static std::size_t MAX_MPs = 6;
+
+	/**
+	 * \brief Casts the model for the specified number of model parameters.
+	 *
+	 * This is the other part of the inelegant solution for needing access to
+	 * MPs when adding observables.
+	 *
+	 * \throw runtime_error If, once cast to a molstat::SimulateObservables,
+	 *    the model is incompatible with the specified observable.
+	 *
+	 * \tparam MPs The number of model parameters.
+	 * \tparam T The class (interface) for the observable.
+	 * \param[in,out] ptr Raw pointer to the molstat::Simulator we're creating.
+	 *    This pointer will be dynamically cast to a
+	 *    molstat::SimulateObservables; if successful, the observable will be
+	 *    added in the correct place. ptr will not be deleted.
+	 * \param[in] j The index for this observable (j = 0, ..., OBS-1).
+	 * \return True if the assignment was successful; false otherwise.
+	 */
+	template<std::size_t MPs, template<std::size_t> class T>
+	static bool setObservableMPs(Simulator<OBS> *ptr, std::size_t j);
 
 public:
 	SimulatorFactory() : model(nullptr) {}
@@ -290,7 +314,7 @@ public:
 	 *
 	 * \return The simulator.
 	 */
-	std::unique_ptr<Simulator<OBS>> create();
+	std::unique_ptr<Simulator<OBS>> create() noexcept;
 };
 
 } // namespace molstat

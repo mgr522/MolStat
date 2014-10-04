@@ -60,6 +60,34 @@ std::array<double, OBS>
 }
 
 template<std::size_t OBS>
+template<std::size_t MPs, template<std::size_t> class T>
+bool SimulatorFactory<OBS>::setObservableMPs(
+	Simulator<OBS> *ptr, std::size_t j) {
+
+	SimulateObservables<OBS, MPs> *obs =
+		dynamic_cast<SimulateObservables<OBS, MPs>*>(ptr);
+
+	if(obs != nullptr) {
+		std::shared_ptr<T<MPs>> cast =
+			std::dynamic_pointer_cast<T<MPs>>(obs->model);
+
+		if(cast == nullptr)
+			throw std::runtime_error("Incompatible model and observable.");
+
+		obs->observables[j] =
+			[cast] (const std::array<double, MPs> &params)
+				-> double {
+
+				return (cast->operator())(params);
+			};
+
+		return true;
+	}
+	else
+		return false;
+}
+
+template<std::size_t OBS>
 template<typename T>
 SimulatorFactory<OBS> SimulatorFactory<OBS>::makeFactory(
 	const std::map<std::string,
@@ -100,32 +128,28 @@ SimulatorFactory<OBS> &SimulatorFactory<OBS>::setObservable(std::size_t j) {
 	// unique_ptrs. So, get the raw pointer, and use it (no worries about
 	// ownership)
 	Simulator<OBS> *ptr = model.get();
-	bool cast = false;
+	bool cast;
 
-	SimulateObservables<OBS, 1> *obs =
-		dynamic_cast<SimulateObservables<OBS, 1>*>(ptr);
-	if(obs != nullptr) {
-		printf("here\n");
-		cast = true;
+	cast = setObservableMPs<1, T>(ptr, j);
+	if(!cast)
+		cast = setObservableMPs<2, T>(ptr, j);
+	if(!cast)
+		cast = setObservableMPs<3, T>(ptr, j);
+	if(!cast)
+		cast = setObservableMPs<4, T>(ptr, j);
+	if(!cast)
+		cast = setObservableMPs<5, T>(ptr, j);
+	if(!cast)
+		cast = setObservableMPs<6, T>(ptr, j);
 
-		std::shared_ptr<T<1>> cast = std::dynamic_pointer_cast<T<1>>(obs->model);
-
-		if(cast == nullptr)
-			throw std::runtime_error("Incompatible model and observable.");
-
-		obs->observables[j] =
-			[cast] (const std::array<double, 1> &params)
-				-> double {
-
-				return (cast->operator())(params);
-			};
-	}
+	if(!cast)
+		throw std::length_error("Should not be here.");
 
 	return *this;
 }
 
 template<std::size_t OBS>
-std::unique_ptr<Simulator<OBS>> SimulatorFactory<OBS>::create() {
+std::unique_ptr<Simulator<OBS>> SimulatorFactory<OBS>::create() noexcept {
 	return std::move(model);
 }
 

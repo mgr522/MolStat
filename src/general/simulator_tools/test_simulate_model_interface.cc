@@ -207,6 +207,7 @@ int main(int argc, char **argv) {
 
 	// cast to the simulator now that setup is complete
 	sim = factory.create();
+	assert(sim != nullptr);
 
 	// verify the set of observables generated...
 	array<double, 3> data = sim->simulate(r);
@@ -239,6 +240,7 @@ int main(int argc, char **argv) {
 	}
 
 	sim = factory.create();
+	assert(sim != nullptr);
 
 	try {
 		// Observable 3 should throw and exception; make sure we catch it
