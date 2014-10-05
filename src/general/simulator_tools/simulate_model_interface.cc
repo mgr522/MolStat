@@ -142,6 +142,8 @@ SimulatorFactory<OBS> &SimulatorFactory<OBS>::setObservable(std::size_t j) {
 	if(!cast)
 		cast = setObservableMPs<6, T>(ptr, j);
 
+	// it should be clear how to add lines here if MAX_MPs is increased.
+
 	if(!cast)
 		throw std::length_error("Should not be here.");
 

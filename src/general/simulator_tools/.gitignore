@@ -1,4 +1,4 @@
 test-suite.log
-test_simulate_model_interface
-test_simulate_model_interface.log
-test_simulate_model_interface.trs
+test_simulate_model_interface_direct
+test_simulate_model_interface_direct.log
+test_simulate_model_interface_direct.trs
