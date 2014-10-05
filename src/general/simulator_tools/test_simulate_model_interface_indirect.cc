@@ -2,13 +2,12 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file test_simulate_model_interface_direct.cc
+ * \file test_simulate_model_interface_indirect.cc
  * \brief Test suite for the molstat::SimulateObservables,
  *    molstat::SimulateModel, and molstat::Observable templates.
  *
  * \test Tests the molstat::SimulateObservables, molstat::SimulateModel,
- *    and molstat::Observable templates using direct access to the
- *    molstat::SimulatorFactory object.
+ *    and molstat::Observable templates using the access functions.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
@@ -28,16 +27,25 @@
  * \endinternal
  */
 int main(int argc, char **argv) {
+	map<string, molstat::SimulateModelFunction<3>> models;
+
 	molstat::SimulatorFactory<3> factory;
 	shared_ptr<molstat::Simulator<3>> sim;
 	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 	molstat::gsl_rng_ptr r(nullptr, &gsl_rng_free);
 
+	// add the model
+	models["test"] = molstat::GetSimulatorFactory<3, TestModel>();
+
 	try {
-		factory = molstat::SimulatorFactory<3>
-			::makeFactory<TestModel>(parameters);
+		auto functor = models.at("test");
+		factory = functor(parameters);
 
 		// shouldn't be here because we didn't specify the parameter "a"
+		assert(false);
+	}
+	catch(const out_of_range &e) {
+		// the "at" function failed for some reason...
 		assert(false);
 	}
 	catch(const runtime_error &e) {
@@ -48,8 +56,11 @@ int main(int argc, char **argv) {
 
 	try {
 		// this time it should work!
-		factory = molstat::SimulatorFactory<3>
-			::makeFactory<TestModel>(parameters);
+		auto functor = models.at("test");
+		factory = functor(parameters);
+	}
+	catch(const out_of_range &e) {
+		assert(false);
 	}
 	catch(const runtime_error &e) {
 		assert(false);
@@ -105,8 +116,11 @@ int main(int argc, char **argv) {
 
 	// create a new simulator that uses Observable3
 	try {
-		factory = molstat::SimulatorFactory<3>
-			::makeFactory<TestModel>(parameters);
+		auto functor = models.at("test");
+		factory = functor(parameters);
+	}
+	catch(const out_of_range &e) {
+		assert(false);
 	}
 	catch(const runtime_error &e) {
 		assert(false);

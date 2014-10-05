@@ -40,7 +40,7 @@ std::array<double, MPs>
 	for(std::size_t j = 0; j < MPs; ++j)
 		ret[j] = dists[j]->sample(r);
 
-	return ret;
+	return std::move(ret);
 }
 
 template<std::size_t OBS, std::size_t MPs>
@@ -56,7 +56,7 @@ std::array<double, OBS>
 	for(std::size_t j = 0; j < OBS; ++j)
 		ret[j] = observables[j](params);
 
-	return ret;
+	return std::move(ret);
 }
 
 template<std::size_t OBS>
@@ -153,6 +153,16 @@ SimulatorFactory<OBS> &SimulatorFactory<OBS>::setObservable(std::size_t j) {
 template<std::size_t OBS>
 std::unique_ptr<Simulator<OBS>> SimulatorFactory<OBS>::create() noexcept {
 	return std::move(model);
+}
+
+template<std::size_t OBS, typename T>
+SimulateModelFunction<OBS> GetSimulatorFactory() {
+	return [] (const std::map<std::string,
+		                       std::shared_ptr<RandomDistribution>> &avail)
+			-> SimulatorFactory<OBS> {
+
+		return SimulatorFactory<OBS>::template makeFactory<T>(avail);
+	};
 }
 
 } // namespace molstat

@@ -317,6 +317,28 @@ public:
 	std::unique_ptr<Simulator<OBS>> create() noexcept;
 };
 
+// Helper types for use in the simulator
+/**
+ * \brief Shortcut for a function that creates a molstat::SimulatorFactory.
+ *
+ * \tparam OBS The number of observables.
+ */
+template<std::size_t OBS>
+using SimulateModelFunction = std::function<
+	SimulatorFactory<OBS>(
+		const std::map<std::string,
+		               std::shared_ptr<RandomDistribution>> &)>;
+
+/**
+ * \brief Gets a function that creates a molstat::SimulatorFactory for the
+ *    given model and number of observables.
+ *
+ * \tparam OBS The number of observables.
+ * \tparam T The model.
+ */
+template<std::size_t OBS, typename T>
+SimulateModelFunction<OBS> GetSimulatorFactory();
+
 } // namespace molstat
 
 // Owing to the use of templates, include the *.cc implementation file.
