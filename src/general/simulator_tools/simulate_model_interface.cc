@@ -156,12 +156,21 @@ std::unique_ptr<Simulator<OBS>> SimulatorFactory<OBS>::create() noexcept {
 }
 
 template<std::size_t OBS, typename T>
-SimulateModelFunction<OBS> GetSimulatorFactory() {
+SimulateModelFunction<OBS> GetSimulateModelFunction() {
 	return [] (const std::map<std::string,
 		                       std::shared_ptr<RandomDistribution>> &avail)
 			-> SimulatorFactory<OBS> {
 
 		return SimulatorFactory<OBS>::template makeFactory<T>(avail);
+	};
+}
+
+template<std::size_t OBS, template<std::size_t> class T>
+ObservableFunction<OBS> GetObservableFunction() {
+	return [] (SimulatorFactory<OBS> &sim, std::size_t j)
+			-> void {
+
+		sim.template setObservable<T>(j);
 	};
 }
 

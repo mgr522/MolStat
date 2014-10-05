@@ -28,6 +28,7 @@
  */
 int main(int argc, char **argv) {
 	map<string, molstat::SimulateModelFunction<3>> models;
+	map<string, molstat::ObservableFunction<3>> observables;
 
 	molstat::SimulatorFactory<3> factory;
 	shared_ptr<molstat::Simulator<3>> sim;
@@ -35,7 +36,13 @@ int main(int argc, char **argv) {
 	molstat::gsl_rng_ptr r(nullptr, &gsl_rng_free);
 
 	// add the model
-	models["test"] = molstat::GetSimulatorFactory<3, TestModel>();
+	models["test"] = molstat::GetSimulateModelFunction<3, TestModel>();
+
+	// add the observables
+	observables["obs1"] = molstat::GetObservableFunction<3, Observable1>();
+	observables["obs2"] = molstat::GetObservableFunction<3, Observable2>();
+	observables["obs3"] = molstat::GetObservableFunction<3, Observable3>();
+	observables["obs4"] = molstat::GetObservableFunction<3, Observable4>();
 
 	try {
 		auto functor = models.at("test");
@@ -69,7 +76,8 @@ int main(int argc, char **argv) {
 	// try to set an observable for Observable4.
 	// This should fail (TestModel doesn't implement Observable4)
 	try {
-		factory.setObservable<Observable4>(0);
+		auto functor = observables.at("obs4");
+		functor(factory, 0);
 		assert(false);
 	}
 	catch(const runtime_error &e) {
@@ -80,12 +88,17 @@ int main(int argc, char **argv) {
 	}
 
 	// try to set an observable to a bad index
+	// need a flag to make sure we get out_of_range for the correct reason
+	bool flag = false;
 	try {
-		factory.setObservable<Observable1>(3);
+		auto functor = observables.at("obs1");
+		flag = true;
+		functor(factory, 3);
 		assert(false);
 	}
 	catch(const out_of_range &e) {
 		// should be here
+		assert(flag);
 	}
 	catch(const runtime_error &e) {
 		assert(false);
@@ -93,8 +106,10 @@ int main(int argc, char **argv) {
 
 	// now set observables for Observable1 and Observable2.
 	try {
-		factory.setObservable<Observable1>(0);
-		factory.setObservable<Observable2>(2);
+		auto functor = observables.at("obs1");
+		functor(factory, 0);
+		functor = observables.at("obs2");
+		functor(factory, 2);
 	}
 	catch(const runtime_error &e) {
 		// this should have worked...
@@ -128,9 +143,12 @@ int main(int argc, char **argv) {
 
 	// now load in Observable3
 	try {
-		factory.setObservable<Observable1>(0);
-		factory.setObservable<Observable3>(1);
-		factory.setObservable<Observable2>(2);
+		auto functor = observables.at("obs1");
+		functor(factory, 0);
+		functor = observables.at("obs3");
+		functor(factory, 1);
+		functor = observables.at("obs2");
+		functor(factory, 2);
 	}
 	catch(const runtime_error &e) {
 		// the set should have worked.

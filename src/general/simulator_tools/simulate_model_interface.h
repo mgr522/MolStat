@@ -337,7 +337,27 @@ using SimulateModelFunction = std::function<
  * \tparam T The model.
  */
 template<std::size_t OBS, typename T>
-SimulateModelFunction<OBS> GetSimulatorFactory();
+SimulateModelFunction<OBS> GetSimulateModelFunction();
+
+/**
+ * \brief Shortcut for a function that sets an observable in
+ *    molstat::SimulatorFactory.
+ *
+ * \tparam OBS The number of observables.
+ */
+template<std::size_t OBS>
+using ObservableFunction = std::function<
+	void(SimulatorFactory<OBS> &, std::size_t)>;
+
+/**
+ * \brief Gets a function that sets an observable in the
+ *    molstat::Simulator.
+ *
+ * \tparam OBS The number of observables in the molstat::Simulator.
+ * \tparam T The class (interface) of the observable.
+ */
+template<std::size_t OBS, template<std::size_t> class T>
+ObservableFunction<OBS> GetObservableFunction();
 
 } // namespace molstat
 
