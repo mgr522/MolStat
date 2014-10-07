@@ -60,34 +60,6 @@ std::array<double, OBS>
 }
 
 template<std::size_t OBS>
-template<std::size_t MPs, template<std::size_t> class T>
-bool SimulatorFactory<OBS>::setObservableMPs(
-	Simulator<OBS> *ptr, std::size_t j) {
-
-	ModelSimulator<OBS, MPs> *obs =
-		dynamic_cast<ModelSimulator<OBS, MPs>*>(ptr);
-
-	if(obs != nullptr) {
-		std::shared_ptr<T<MPs>> cast =
-			std::dynamic_pointer_cast<T<MPs>>(obs->model);
-
-		if(cast == nullptr)
-			throw std::runtime_error("Incompatible model and observable.");
-
-		obs->observables[j] =
-			[cast] (const std::array<double, MPs> &params)
-				-> double {
-
-				return (cast->operator())(params);
-			};
-
-		return true;
-	}
-	else
-		return false;
-}
-
-template<std::size_t OBS>
 template<typename T>
 SimulatorFactory<OBS> SimulatorFactory<OBS>::makeFactory(
 	const std::map<std::string,
@@ -125,26 +97,19 @@ SimulatorFactory<OBS> &SimulatorFactory<OBS>::setObservable(std::size_t j) {
 		throw std::out_of_range("Observable index is too high.");
 
 	// we need to perform some dynamic casting, but this isn't allowed on
-	// unique_ptrs. So, get the raw pointer, and use it (no worries about
+	// unique_ptrs. So, get the raw pointer and use it (no worries about
 	// ownership)
 	Simulator<OBS> *ptr = model.get();
-	bool cast;
-
-	cast = setObservableMPs<1, T>(ptr, j);
-	if(!cast)
-		cast = setObservableMPs<2, T>(ptr, j);
-	if(!cast)
-		cast = setObservableMPs<3, T>(ptr, j);
-	if(!cast)
-		cast = setObservableMPs<4, T>(ptr, j);
-	if(!cast)
-		cast = setObservableMPs<5, T>(ptr, j);
-	if(!cast)
-		cast = setObservableMPs<6, T>(ptr, j);
-
-	// it should be clear how to add lines here if MAX_MPs is increased.
-
-	if(!cast)
+	
+	// use the Factory's setObservableMPs function to find the correct number of
+	// model parameters, cast to that molstat::ModelSimulator class, and add
+	// the observable.
+	//
+	// setObservableMPs *should* return true (meaning the observable was
+	// successfully assigned), but we check for complete prudence	
+	if(!SimulatorFactoryHelper::ObservableSetter<MAX_MPs>::template
+		setObservableMPs<OBS, T>(ptr, j))
+		
 		throw std::length_error("Should not be here.");
 
 	return *this;
@@ -153,6 +118,44 @@ SimulatorFactory<OBS> &SimulatorFactory<OBS>::setObservable(std::size_t j) {
 template<std::size_t OBS>
 std::unique_ptr<Simulator<OBS>> SimulatorFactory<OBS>::create() noexcept {
 	return std::move(model);
+}
+
+template<std::size_t MPs>
+template<std::size_t OBS, template<std::size_t> class T>
+bool SimulatorFactoryHelper::ObservableSetter<MPs>::setObservableMPs(
+	Simulator<OBS> *ptr, std::size_t j) {
+
+	ModelSimulator<OBS, MPs> *obs =
+		dynamic_cast<ModelSimulator<OBS, MPs>*>(ptr);
+
+	if(obs == nullptr) {
+		// this is the wrong value of MPs; try one lower
+		return ObservableSetter<MPs-1>::template
+			setObservableMPs<OBS, T>(ptr, j);
+	}
+	else {
+		std::shared_ptr<T<MPs>> cast =
+			std::dynamic_pointer_cast<T<MPs>>(obs->model);
+
+		if(cast == nullptr)
+			throw std::runtime_error("Incompatible model and observable.");
+
+		obs->observables[j] =
+			[cast] (const std::array<double, MPs> &params)
+				-> double {
+
+				return (cast->operator())(params);
+			};
+
+		return true;
+	}
+}
+
+template<std::size_t OBS, template<std::size_t> class T>
+constexpr bool SimulatorFactoryHelper::ObservableSetter<0>::setObservableMPs(
+	Simulator<OBS> *ptr, std::size_t j) noexcept {
+
+	return false;
 }
 
 template<std::size_t OBS, typename T>

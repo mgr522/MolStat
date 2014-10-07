@@ -148,10 +148,15 @@ public:
 	std::array<double, MPs> generateParameters(gsl_rng_ptr &r) const;
 };
 
-// forward declaration of the molstat::SimulatorFactory class (it needs to be a
-// friend of molstat::ModelSimulator)
+// forward declarations of classes used to construct molstat::ModelSimulator
+// objects. They need to be friends of molstat::ModelSimulator
 template<std::size_t OBS>
 class SimulatorFactory;
+
+namespace SimulatorFactoryHelper {
+template<std::size_t MPs>
+class ObservableSetter;
+} // namespace molstat::SimulatorFactoryHelper
 
 /**
  * \brief Base class for a simulator that employs a model with MPs parameters
@@ -218,6 +223,7 @@ public:
 	// Give the SimulatorFactory class access to the internals so that it can
 	// produce a Simulator.
 	friend class SimulatorFactory<OBS>;
+	friend class SimulatorFactoryHelper::ObservableSetter<MPs>;
 };
 
 /**
@@ -245,27 +251,6 @@ private:
 	 * value. If a higher value is needed, it simply must be increased here.
 	 */
 	constexpr static std::size_t MAX_MPs = 6;
-
-	/**
-	 * \brief Casts the model for the specified number of model parameters.
-	 *
-	 * This is the other part of the inelegant solution for needing access to
-	 * MPs when adding observables.
-	 *
-	 * \throw runtime_error If, once cast to a molstat::ModelSimulator, the
-	 *    model is incompatible with the specified observable.
-	 *
-	 * \tparam MPs The number of model parameters to try.
-	 * \tparam T The class (interface) for the observable.
-	 * \param[in,out] ptr Raw pointer to the molstat::Simulator we're creating.
-	 *    This pointer will be dynamically cast to a
-	 *    molstat::ModelSimulator; if successful, the observable will be added
-	 *    in the correct place. ptr will not be deleted.
-	 * \param[in] j The index for this observable (j = 0, ..., OBS-1).
-	 * \return True if the assignment was successful; false otherwise.
-	 */
-	template<std::size_t MPs, template<std::size_t> class T>
-	static bool setObservableMPs(Simulator<OBS> *ptr, std::size_t j);
 
 public:
 	SimulatorFactory() : model(nullptr) {}
@@ -316,6 +301,76 @@ public:
 	 */
 	std::unique_ptr<Simulator<OBS>> create() noexcept;
 };
+
+namespace SimulatorFactoryHelper {
+/**
+ * \brief This auxiliary class determines (recursively) the correct number of
+ *    model parameters (MPs) for the model being constructed and, once
+ *    determined, adds the desired observable to the molstat::Simulator
+ *    object (via molstat::ModelSimulator).
+ *
+ * This is the other part of the inelegant solution for needing access to
+ * MPs when adding observables.
+ *
+ * This class is recursive in the template parameter MPs. The invoking
+ * function should call the member function with an upper bound for MPs. If
+ * this value works, the observable is assigned and we return. If not, we
+ * call the function with one less MPs and repeat. A base case (MPs=0) is
+ * provided as a partial specialization.
+ *
+ * \throw runtime_error If, once cast to a molstat::ModelSimulator, the
+ *    model is incompatible with the specified observable.
+ *
+ * \tparam MPs The number of model parameters to try.
+ */
+template<std::size_t MPs>
+class ObservableSetter {
+public:
+	/**
+	 * \brief Function that attempts to cast the molstat::Simulator object
+	 *    to a molstat::ModelSimulator object with MPs model parameters, in
+	 *    order to add an observable.
+	 *
+	 * \tparam OBS The number of observables in the molstat::Simulator.
+	 * \tparam T The class (interface) for the observable.
+	 * \param[in,out] ptr Raw pointer to the molstat::Simulator we're creating.
+	 *    This pointer will be dynamically cast to a molstat::ModelSimulator;
+	 *    if successful, the observable will be added in the correct place.
+	 *    ptr will not be deleted.
+	 * \param[in] j The index for this observable (j = 0, ..., OBS-1).
+	 * \return True if the assignment was successful (for this or any other
+	 *    value of MPs); false otherwise.
+	 */
+	template<std::size_t OBS, template<std::size_t> class T>
+	inline static bool setObservableMPs(Simulator<OBS> *ptr, std::size_t j);
+};
+
+/**
+ * \brief Partial specialization of
+ *    molstat::SimulatorFactoryHelper::ObservableSetter for the case of MPS=0.
+ */
+template<>
+class ObservableSetter<0> {
+public:
+	/**
+	 * \brief There's nothing to do at MPs=0. We shouldn't ever be here. But, if
+	 *    we are, something went wrong and the cast failed.
+	 *
+	 * \tparam OBS The number of observables in the molstat::Simulator.
+	 * \tparam T The class (interface) for the observable.
+	 * \param[in,out] ptr Raw pointer to the molstat::Simulator we're creating.
+	 *    This pointer will be dynamically cast to a molstat::ModelSimulator;
+	 *    if successful, the observable will be added in the correct place.
+	 *    ptr will not be deleted.
+	 * \param[in] j The index for this observable (j = 0, ..., OBS-1).
+	 * \return True if the assignment was successful (for this or any other
+	 *    value of MPs); false otherwise.
+	 */
+	template<std::size_t OBS, template<std::size_t> class T>
+	inline constexpr static bool setObservableMPs(Simulator<OBS> *ptr,
+		std::size_t j) noexcept;
+};
+} // namespace molstat::SimulatorFactoryHelper
 
 // Helper types for use in the simulator
 /**
