@@ -2,8 +2,8 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file asym_one_site_simulate_model.h
- * \brief Tight-binding model with one site that couples asymmetrically to
+ * \file single_molecle_cv_simulate_model.h
+ * \brief Single molecule cyclic voltammetry.
  *    both electrodes.
  *
  * \author Matthew G.\ Reuter
@@ -68,7 +68,7 @@ private:
 	/**
 	 * \brief Ordered list (vector) of the parameters needed for this model.
 	 *
-	 * If this order is changed, AsymOneSiteSimulateModel::unpack_parameters
+	 * If this order is changed, SingleMoleculeCV::unpack_parameters
 	 * also needs to be updated.
 	 */
 	static const std::vector<std::string> parameters;
@@ -91,8 +91,6 @@ private:
   static void unpack_parameters(const std::vector<double> &vec, double &e0,
       double &eref, double &lambda, double &af, double &ab, double &v,
       double &n, double &poinitial, double &temperature, double &tlimit, double &direction);
-//	static void unpack_parameters(const std::vector<double> &vec, double &ef,
-//		double &v, double &epsilon, double &gammal, double &gammar, double &a, double &b);
 
 public:
 	SingleMoleculeCV() = delete;
@@ -118,22 +116,22 @@ public:
 	virtual std::array<double, 2> PeakPotentials(shared_ptr<gsl_rng> r) const
 		override;
 
-    /**
-     * \brief Return the forward half-reaction rate constant for a set of model parameters.
-     *
-     * \param[in] t time
-     * \param[in] vec The vector of model parameters.
-     * \return The forward half-reaction rate constant for this set of model parameters.
-     */
+  /**
+   * \brief Return the forward half-reaction rate constant for a set of model parameters.
+   *
+   * \param[in] t The time
+   * \param[in] vec The vector of model parameters.
+   * \return The forward half-reaction rate constant for this set of model parameters.
+   */
   static double kf(double t, const std::vector<double> &vec);
- 
-    /**
-     * \brief Return the backward half-reaction rate constant for a set of model parameters.
-     *
-     * \param[in] t time
-     * \param[in] vec The vector of model parameters.
-     * \return The forward half-reaction rate constant for this set of model parameters.
-     */
+
+  /**
+   * \brief Return the backward half-reaction rate constant for a set of model parameters.
+   *
+   * \param[in] t The time
+   * \param[in] vec The vector of model parameters.
+   * \return The forward half-reaction rate constant for this set of model parameters.
+   */
   static double kb(double t, const std::vector<double> &vec);
 
 	/**
@@ -147,56 +145,55 @@ public:
 	/**
 	 * \brief Returns the applied potential for a set of model parameters at time \f$t\f$.
 	 * 
-     * \param[in] t The time.
-	 * \param[in] vec The vecotr of model parameter.
+   * \param[in] t The time.
+   * \param[in] vec The vecotr of model parameter.
 	 * \return The applied potential.
 	 */
   static double E_applied(double t, const std::vector<double> &vec);
 
 	/**
 	 * \brief Callable function by CVODE. Defines the right side of the differential equations \f$y'=f(t,y)\f$
-     * where \f$y=(P_\mathrm{O}(t),P_\mathrm{R}(t)\f$.
+   * where \f$y=(P_\mathrm{O}(t),P_\mathrm{R}(t)\f$.
 	 * 
-     * \param[in] t The current value of time.
+   * \param[in] t The current value of time.
 	 * \param[in] y The current value of vector \f$[P_\mathrm{O}(t),P_\mathrm{R}(t)]\f$.
-     * \param[out] ydot The output vector \f$[P'_\mathrm{O}(t),P'_\mathrm{R}(t)\]f$.
+   * \param[out] ydot The output vector \f$[P'_\mathrm{O}(t),P'_\mathrm{R}(t)\]f$.
 	 * \param[in] user_data The pointer passed to CVodeSetUserData.
-     * \return 0 if successful or a non-zero value if an error occured.
+   * \return 0 if successful or a non-zero value if an error occured.
 	 */
   static int f(double t, N_Vector y, N_Vector ydot, void *user_data);
 
-    /**
+  /**
 	 * \brief Callable function by CVODE. Defines the roots to search for.
 	 * 
-     * \param[in] t The current value of time.
+   * \param[in] t The current value of time.
 	 * \param[in] y The current value of vector \f$[P_\mathrm{O}(t),P_\mathrm{R}(t)]\f$.
-     * \param[out] gout The output vector of roots.
+   * \param[out] gout The output vector of roots.
 	 * \param[in] user_data The pointer passed to CVodeSetUserData.
-     * \return 0 if successful or a non-zero value if an error occured.
+   * \return 0 if successful or a non-zero value if an error occured.
 	 */
   static int g(double t, N_Vector y, double *gout, void *user_data);
  
-    /**
+  /**
 	 * \brief Callable function by CVODE. Computes the dense Jacobian \f$J=\partial f/\partial y\f$.
 	 *
-     * \param[in] N The number of differential equations.
-     * \param[in] t The current value of time.
+   * \param[in] N The number of differential equations.
+   * \param[in] t The current value of time.
 	 * \param[in] y The current value of vector \f$[P_\mathrm{O}(t),P_\mathrm{R}(t)]\f$.
-     * \param[in] fy The current value of vector \f$f(t,y)\f$.
-     * \param[out] Jac The dense Jacobian matrix.
+   * \param[in] fy The current value of vector \f$f(t,y)\f$.
+   * \param[out] Jac The dense Jacobian matrix.
 	 * \param[in] user_data The pointer passed to CVodeSetUserData.
-     * \return 0 if successful or a non-zero value if an error occured.
+   * \return 0 if successful or a non-zero value if an error occured.
 	 */
   static int Jac(long int N, double t, N_Vector y, N_Vector fy, DlsMat J, void *user_data, 
     N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
  
-    /**
+  /**
 	 * \brief Display all the model parameters in the current run.
 	 *
-     * \param[in] vec The vector of model parameters. 
-     * \return 0 
+   * \param[in] vec The vector of model parameters. 
+   * \return 0 
 	 */
-
   static int display_parameters(const std::vector<double> &vec);
 };
 
