@@ -78,15 +78,15 @@ private:
 	 *
 	 * \param[in] vec The vector containing a set of parameters.
 	 * \param[out] e0 The initial applied potential.
-	 * \param[out] eref The reference potential.
-	 * \param[out] lambda The reorganization energy.
+	 * \param[out] eref The reference potential(V).
+	 * \param[out] lambda The reorganization energy(eV).
 	 * \param[out] af The prefactor for forward half-reaction rate constant.
-     * \param[out] ab The prefactor for backward half-reaction rate constant.
+   * \param[out] ab The prefactor for backward half-reaction rate constant.
 	 * \param[out] v The sweeping rate of the applied potential.
 	 * \param[out] temperature The temperature of the environment.
-     * \param[out] n The number of electrons involved in the half-reaction.
-     * \param[out] tlimit The time when the applied potential inverts.
-     * \param[out] direction The switch that determine which peak will be returned.
+   * \param[out] n The number of electrons involved in the half-reaction.
+   * \param[out] tlimit The time when the applied potential inverts.
+   * \param[out] direction The switch that determine which peak will be returned.
 	 */
   static void unpack_parameters(const std::vector<double> &vec, double &e0,
       double &eref, double &lambda, double &af, double &ab, double &v,
