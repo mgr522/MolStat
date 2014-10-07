@@ -46,10 +46,10 @@
 #define NOUT  1              /* number of output times */
 
 #define E0_c      0.0     /* initial applied potential */
-#define Eref_c    1.119328   /* reference potential */
-#define lamb_c    0.6252 /* reorganization energy */
-#define Af_c      5.0     /* prefactor for forward half-action rate constant */
-#define Ab_c      5.0     /* prefactor for backward half-action rate constant */
+#define Eref_c    1.130817   /* reference potential */
+#define lamb_c    0.6959579 /* reorganization energy */
+#define Af_c      5.019018     /* prefactor for forward half-action rate constant */
+#define Ab_c      5.034298     /* prefactor for backward half-action rate constant */
 #define v_c       0.01    /* Sweeping rate of the applied potential */
 #define Temp_c    300.0   /* Temperature */
 #define ne_c      1.0     /* Number of electrons involved in the reaction */
