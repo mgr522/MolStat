@@ -12,47 +12,50 @@
 
 #include "transport_simulate_models.h"
 #include "transport_observables.h"
+ #if 0
 #include "sym_one_site_simulate_model.h"
 #include "asym_one_site_simulate_model.h"
 #include "ind_two_chan_simulate_model.h"
 #include "sym_two_site_simulate_model.h"
 #include "asym_two_site_simulate_model.h"
+#endif
 
 namespace molstat {
 
 void load_transport_models(
-	std::map<std::string, SimulateModelFactory> &models) {
+	std::map<std::string,
+	         SimulateModelFunction<2>> &models) {
 
+#if 0
 	models["symmetriconesite"] =
-		GetSimulateModelFactory<SymOneSiteSimulateModel>();
+		GetSimulateModelFunction<2, SymOneSiteSimulateModel>();
 
 	models["asymmetriconesite"] =
-		GetSimulateModelFactory<AsymOneSiteSimulateModel>();
+		GetSimulateModelFunction<2, AsymOneSiteSimulateModel>();
 
 	models["independenttwochannel"] =
-		GetSimulateModelFactory<IndTwoChanSimulateModel>();
+		GetSimulateModelFunction<2, IndTwoChanSimulateModel>();
 
 	models["symmetrictwosite"] =
-		GetSimulateModelFactory<SymTwoSiteSimulateModel>();
+		GetSimulateModelFunction<2, SymTwoSiteSimulateModel>();
 
 	models["asymmetrictwosite"] =
-		GetSimulateModelFactory<AsymTwoSiteSimulateModel>();
+		GetSimulateModelFunction<2, AsymTwoSiteSimulateModel>();
+#endif
 }
 
 void load_transport_observables(
 	std::map<std::string,
-	         std::function<Observable<2>(const std::shared_ptr<SimulateModel>)>>
-		&observables) {
+	         ObservableFunction<2>> &observables) {
 
-	// load all observables here.
-	// If the observable is 1D, call Obs2(ObservableCheck(...))
-	// If the observable is 2D, call ObservableCheck(...)
+	observables["appliedbias"] =
+		GetObservableFunction<2, AppliedBias>();
 
 	observables["staticconductance"] =
-		ObservableCheck(&StaticConductance::StaticG);
+		GetObservableFunction<2, StaticConductance>();
 
 	observables["differentialconductance"] =
-		ObservableCheck(&DifferentialConductance::DiffG);
+		GetObservableFunction<2, DifferentialConductance>();
 }
 
 } // namespace molstat

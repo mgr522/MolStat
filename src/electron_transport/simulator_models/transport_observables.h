@@ -23,41 +23,102 @@
 namespace molstat {
 
 /**
- * \brief Interface for the static conductance.
+ * \brief Observable class for the applied bias.
+ *
+ * \tparam MPs The number of model parameters used to calculates the applied
+ *    bias.
  */
-class StaticConductance {
+template<std::size_t MPs>
+class AppliedBias : public Observable<MPs> {
+public:
+	AppliedBias() = default;
+	virtual ~AppliedBias() = default;
+
+	/**
+	 * \brief Returns the applied bias for a set of model parameters.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The applied bias for the model parameters.
+	 */
+	virtual double AppBias(const std::array<double, MPs> &params) const = 0;
+
+	/**
+	 * \brief Route the operator() to AppBias.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The applied bias for the model parameters.
+	 */
+	virtual double operator()(const std::array<double, MPs> &params) const
+		override final {
+
+		return AppBias(params);
+	}
+};
+
+/**
+ * \brief Observable class for the static conductance.
+ *
+ * \tparam MPs The number of model parameters used to calculate the static
+ *    conductance.
+ */
+template<std::size_t MPs>
+class StaticConductance : public Observable<MPs> {
 public:
 	StaticConductance() = default;
 	virtual ~StaticConductance() = default;
 
 	/**
-	 * \brief Returns the applied bias and static conductance for a randomly-
-	 *    generated set of model parameters.
+	 * \brief Returns the static conductance for a set of model parameters.
 	 *
-	 * \param[in] r The GSL random number generator handle.
-	 * \return Array containing the applied bias (0) and the static conductance
-	 *    (1).
+	 * \param[in] params A set of model parameters.
+	 * \return The static conductance for the model parameters.
 	 */
-	virtual std::array<double, 2> StaticG(gsl_rng_ptr &r) const = 0;
+	virtual double StaticG(const std::array<double, MPs> &params) const = 0;
+
+	/**
+	 * \brief Route the operator() to StaticG.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The static conductance for the model parameters.
+	 */
+	virtual double operator()(const std::array<double, MPs> &params) const
+		override final {
+
+		return StaticG(params);
+	}
 };
 
 /**
- * \brief Interface for the differential conductance.
+ * \brief Observable class for the differential conductance.
+ *
+ * \tparam MPs The number of model parameters used to calculated the
+ *    differnetial conductance.
  */
-class DifferentialConductance {
+template<std::size_t MPs>
+class DifferentialConductance : public Observable<MPs> {
 public:
 	DifferentialConductance() = default;
 	virtual ~DifferentialConductance() = default;
 
 	/**
-	 * \brief Returns the applied bias and static conductance for a randomly-
-	 *    generated set of model parameters.
+	 * \brief Returns the static conductance for a set of model parameters.
 	 *
-	 * \param[in] r The GSL random number generator handle.
-	 * \return Array containing the applied bias (0) and the differential
-	 *    conductance (1).
+	 * \param[in] params A set of model parameters.
+	 * \return The differential conductance for the model parameters.
 	 */
-	virtual std::array<double, 2> DiffG(gsl_rng_ptr &r) const = 0;
+	virtual double DiffG(const std::array<double, MPs> &params) const = 0;
+
+	/**
+	 * \brief Route the operator() to DiffG.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The differential conductance for the model parameters.
+	 */
+	virtual double operator()(const std::array<double, MPs> &params) const
+		override final {
+
+		return DiffG(params);
+	}
 };
 
 } // namespace molstat

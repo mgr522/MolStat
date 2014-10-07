@@ -26,35 +26,27 @@ namespace molstat {
  * \brief Loads the transport models into the MolStat "database".
  *
  * Models are stored as a map from a string (the name of the model) to a
- * function that creates an instance of the model (of type
- * SimulateModelInstantiator).
+ * function that creates a molstat::SimulatorFactory.
  *
  * \param[in,out] models The map of models in MolStat. On output, the models
  *    for transport have been added to it.
  */
 void load_transport_models(
-	std::map<std::string, SimulateModelFactory> &models);
+	std::map<std::string,
+	         SimulateModelFunction<2>> &models);
 
 /**
  * \brief Loads the transport observables into the MolStat "database".
  *
  * Observables are stored as a map from a string (the name of the observable)
- * to a function that checks the model/observable pair and returns an
- * Observable<2>. 1D observables have a 0. padded onto them for programming
- * convenience. The observable function takes the GSL random number generator,
- * simulates parameters, and calculates the observable using the specified
- * model.
- *
- * The extra function from shared_ptr<SimulateModel> -> Observable is needed
- * to typecheck the model/observable combination.
+ * to a function that adds the observable to a molstat:SimulatorFactory.
  *
  * \param[in,out] observables The map of observables in MolStat. On output, the
  *    observables for transport have been added to it.
  */
 void load_transport_observables(
 	std::map<std::string,
-	         std::function<Observable<2>(const std::shared_ptr<SimulateModel>)>>
-		&observables);
+	         ObservableFunction<2>> &observables);
 
 } // namespace molstat
 
