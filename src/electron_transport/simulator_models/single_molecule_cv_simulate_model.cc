@@ -122,6 +122,9 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   // call CVodeSetUserData to pass parameters to user_data;
   CVodeSetUserData(cvode_mem, &vec_cvode);
 
+  // call CVodeSetMaxNumSteps to specify the maximun number of steps to be taken.
+  CVodeSetMaxNumSteps(cvode_mem, 1000);
+
   // call CVodeRootInit to specify the root function g with 1 component
   CVodeRootInit(cvode_mem, 1, g);
 
@@ -145,6 +148,7 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
       root.push_back( E_applied(t, vec) );
     }
     if (flag == CV_SUCCESS) break;
+    //if (flag == CV_TOO_MUCH_WORK) exit(-1);
   }
   
   // free y and abstol vectors
@@ -168,10 +172,11 @@ double SingleMoleculeCV::kf( double t,
 	// unpack the model parameters
 	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
 
-	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref + lambda))
-        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
-  double log_kf = e +gsl_sf_log(af);
-  if (log_kf < -600) {
+  double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda * GSL_CONST_MKSA_ELECTRON_CHARGE ) 
+      / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
+
+  double log_kf = e + gsl_sf_log(af);
+  if (log_kf < -650) {
       return 0;
   }
 	return gsl_sf_exp( log_kf );
@@ -185,10 +190,11 @@ double SingleMoleculeCV::kb( double t,
 	// unpack the model parameters
 	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
 
-	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref - lambda))
-        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
+  double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE ) 
+    / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
   double log_kb = e + gsl_sf_log(af);
-  if (log_kb < -500) {
+
+  if (log_kb < -650) {
       return 0;
   }
 	return gsl_sf_exp( log_kb );
