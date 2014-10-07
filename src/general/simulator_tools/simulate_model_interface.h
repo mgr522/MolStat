@@ -153,8 +153,8 @@ template<std::size_t OBS>
 class SimulatorFactory;
 
 /**
- * \brief Base class for a model that has MPs parameters and calculates OBS
- *    observables.
+ * \brief Base class for a simulator that employs a model with MPs parameters
+ *    to calculate OBS observables.
  *
  * This class invokes the appropriate observable functions for the
  * molstat::SimulatorInterface.
@@ -164,7 +164,7 @@ class SimulatorFactory;
  *    observable.
  */
 template<std::size_t OBS, std::size_t MPs>
-class SimulateObservables : public Simulator<OBS> {
+class ModelSimulator : public Simulator<OBS> {
 private:
 	/**
 	 * \brief Shortcut for a function that calculates an observable.
@@ -187,10 +187,10 @@ private:
 	 *
 	 * Hidden so that objects must be created using the factory function.
 	 */
-	SimulateObservables() = default;
+	ModelSimulator() = default;
 
 public:
-	virtual ~SimulateObservables() = default;
+	virtual ~ModelSimulator() = default;
 
 	/**
 	 * \brief Function for a \"zero\" observable.

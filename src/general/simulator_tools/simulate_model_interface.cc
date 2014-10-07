@@ -40,12 +40,12 @@ std::array<double, MPs>
 	for(std::size_t j = 0; j < MPs; ++j)
 		ret[j] = dists[j]->sample(r);
 
-	return std::move(ret);
+	return ret;
 }
 
 template<std::size_t OBS, std::size_t MPs>
 std::array<double, OBS>
-	SimulateObservables<OBS, MPs>::simulate(gsl_rng_ptr &r) const {
+	ModelSimulator<OBS, MPs>::simulate(gsl_rng_ptr &r) const {
 
 	std::array<double, OBS> ret;
 
@@ -56,7 +56,7 @@ std::array<double, OBS>
 	for(std::size_t j = 0; j < OBS; ++j)
 		ret[j] = observables[j](params);
 
-	return std::move(ret);
+	return ret;
 }
 
 template<std::size_t OBS>
@@ -64,8 +64,8 @@ template<std::size_t MPs, template<std::size_t> class T>
 bool SimulatorFactory<OBS>::setObservableMPs(
 	Simulator<OBS> *ptr, std::size_t j) {
 
-	SimulateObservables<OBS, MPs> *obs =
-		dynamic_cast<SimulateObservables<OBS, MPs>*>(ptr);
+	ModelSimulator<OBS, MPs> *obs =
+		dynamic_cast<ModelSimulator<OBS, MPs>*>(ptr);
 
 	if(obs != nullptr) {
 		std::shared_ptr<T<MPs>> cast =
@@ -94,10 +94,10 @@ SimulatorFactory<OBS> SimulatorFactory<OBS>::makeFactory(
 	               std::shared_ptr<RandomDistribution>> &avail) {
 
 	static_assert(T::numModelParameters <= MAX_MPs,
-		"Model has more parameters than supported. Increase " \
+		"The desired model has more parameters than supported. Increase " \
 		"SimulatorFactory::MAX_MPs as noted in the code.");
 
-	using SimulatorType = SimulateObservables<OBS, T::numModelParameters>;
+	using SimulatorType = ModelSimulator<OBS, T::numModelParameters>;
 
 	SimulatorFactory<OBS> ret;
 
