@@ -35,7 +35,7 @@ namespace molstat {
  * to generate a set of random numbers (given a generator) and calculate the
  * requested observables.
  *
- * The subsequent class molstat::SimulateObservables does most of the heavy
+ * The subsequent class molstat::ModelSimulator does most of the heavy
  * lifting, but is also templated over the number of model parameters. This
  * class provides an easy way to type a generic model.
  *
@@ -65,8 +65,8 @@ public:
  * observable. In this way, a particular model can inherit from multiple
  * observables and implement each of their \"observable\" functions.
  *
- * In this sense, each molstat::Observable is essentially an interface that
- * is meant to be inherited, along with molstat::SimulateModel.
+ * Each molstat::Observable is essentially an interface that is meant to be
+ * inherited, along with molstat::SimulateModel.
  *
  * \tparam MPs The number of model parameters needed to calculate this
  *    observable.
@@ -87,15 +87,15 @@ public:
 };
 
 /**
- * \brief Base class for a model that using MPs model parameters for
- *    calculating observables.
+ * \brief Base class for a model that uses MPs model parameters to calculate
+ *    observables.
  *
  * This class stores all of the random number distributions for simulating
  * data and provides a function for generating a random set of model
  * parameters.
  *
  * All models for simulating data should derive from this class. Derived classes
- * should pass in the names of parameters they require (during construction)
+ * should pass in the names of parameters they require during construction
  * and subsequently process given parameters to calculate an observable.
  *
  * \tparam MPs The number of model parameters needed to calculate an
@@ -148,7 +148,8 @@ public:
 	std::array<double, MPs> generateParameters(gsl_rng_ptr &r) const;
 };
 
-// declaration
+// forward declaration of the molstat::SimulatorFactory class (it needs to be a
+// friend of molstat::ModelSimulator)
 template<std::size_t OBS>
 class SimulatorFactory;
 
@@ -156,8 +157,8 @@ class SimulatorFactory;
  * \brief Base class for a simulator that employs a model with MPs parameters
  *    to calculate OBS observables.
  *
- * This class invokes the appropriate observable functions for the
- * molstat::SimulatorInterface.
+ * This class stores and, when requested, invokes the appropriate observable
+ * functions for simulating observables.
  *
  * \tparam OBS The number of observables.
  * \tparam MPs The number of model parameters needed to calculate an
@@ -178,7 +179,7 @@ private:
 	std::shared_ptr<SimulateModel<MPs>> model;
 
 	/**
-	 * \brief The Observable functions.
+	 * \brief The observable functions.
 	 */
 	std::array<ObservableFunction, OBS> observables;
 
@@ -221,7 +222,7 @@ public:
 
 /**
  * \brief Class used to aid in the construction of molstat::Simulator objects
- *    (as implemented by molstat::SimulateObservables).
+ *    (as implemented by molstat::ModelSimulator).
  *
  * \tparam OBS The number of observables.
  */
@@ -229,7 +230,7 @@ template<std::size_t OBS>
 class SimulatorFactory {
 private:
 	/**
-	 * \brief the molstat::SimulateObservables object that we're building.
+	 * \brief the molstat::ModelSimulator object that we're building.
 	 */
 	std::unique_ptr<Simulator<OBS>> model;
 
@@ -238,11 +239,10 @@ private:
 	 *    can use.
 	 *
 	 * I haven't figured out a way to regain the template parameter MPs from
-	 * here. (It's only needed when constructing SimulatorObservables...).
-	 * Thus, the implementation of this Factory does a hard-coded dynamic_cast
-	 * through the options up to (and including) the following value. If a
-	 * higher value is needed, it must be increased here (for error checking)
-	 * and also in the molstat::SimulatorFactory::setObservable function.
+	 * here. (It's only needed when constructing molstat::ModelSimulator
+	 * objects). Thus, the implementation of this Factory does a hard-coded
+	 * dynamic_cast through the options up to (and including) the following
+	 * value. If a higher value is needed, it simply must be increased here.
 	 */
 	constexpr static std::size_t MAX_MPs = 6;
 
@@ -252,15 +252,15 @@ private:
 	 * This is the other part of the inelegant solution for needing access to
 	 * MPs when adding observables.
 	 *
-	 * \throw runtime_error If, once cast to a molstat::SimulateObservables,
-	 *    the model is incompatible with the specified observable.
+	 * \throw runtime_error If, once cast to a molstat::ModelSimulator, the
+	 *    model is incompatible with the specified observable.
 	 *
-	 * \tparam MPs The number of model parameters.
+	 * \tparam MPs The number of model parameters to try.
 	 * \tparam T The class (interface) for the observable.
 	 * \param[in,out] ptr Raw pointer to the molstat::Simulator we're creating.
 	 *    This pointer will be dynamically cast to a
-	 *    molstat::SimulateObservables; if successful, the observable will be
-	 *    added in the correct place. ptr will not be deleted.
+	 *    molstat::ModelSimulator; if successful, the observable will be added
+	 *    in the correct place. ptr will not be deleted.
 	 * \param[in] j The index for this observable (j = 0, ..., OBS-1).
 	 * \return True if the assignment was successful; false otherwise.
 	 */
@@ -278,7 +278,7 @@ public:
 	 *    T.
 	 *
 	 * Construction of the SimulateModel underlying the Simulator requires a
-	 * map of available molstat::RandomDistributions; these distributions.
+	 * map of available molstat::RandomDistributions.
 	 *
 	 * \throw runtime_error If a required distribution is not found among the
 	 *    available distributions.
