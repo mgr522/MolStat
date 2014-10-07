@@ -30,6 +30,7 @@
 #include <gsl/gsl_const_mksa.h>
 #include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_sf_log.h>
 using std::shared_ptr;
 
 /**
@@ -80,15 +81,16 @@ private:
 	 * \param[out] eref The reference potential.
 	 * \param[out] lambda The reorganization energy.
 	 * \param[out] af The prefactor for forward half-reaction rate constant.
-     * \parms[out] ab The prefactor for backward half-reaction rate constant.
+     * \param[out] ab The prefactor for backward half-reaction rate constant.
 	 * \param[out] v The sweeping rate of the applied potential.
 	 * \param[out] temperature The temperature of the environment.
-     * \parms[out] n The number of electrons involved in the half-reaction.
-     * \parms[out] tlimit The time when the applied potential inverts.
+     * \param[out] n The number of electrons involved in the half-reaction.
+     * \param[out] tlimit The time when the applied potential inverts.
+     * \param[out] direction The switch that determine which peak will be returned.
 	 */
   static void unpack_parameters(const std::vector<double> &vec, double &e0,
       double &eref, double &lambda, double &af, double &ab, double &v,
-      double &n, double &poinitial, double &temperature, double &tlimit, double &test);
+      double &n, double &poinitial, double &temperature, double &tlimit, double &direction);
 //	static void unpack_parameters(const std::vector<double> &vec, double &ef,
 //		double &v, double &epsilon, double &gammal, double &gammar, double &a, double &b);
 

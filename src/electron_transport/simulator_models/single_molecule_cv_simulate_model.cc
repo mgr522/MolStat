@@ -30,12 +30,12 @@ using namespace std;
 // function MUST also be updated
 const vector<string> SingleMoleculeCV::parameters =
     {"e0", "eref", "lambda", "af", "ab", "v", "n",
-    "poinitial", "temperature", "tlimit", "test"};
+    "poinitial", "temperature", "tlimit", "direction"};
 
 void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
   double &e0, double &eref, double &lambda, double &af,
   double &ab, double &v, double &n, double &poinitial,
-  double &temperature, double &tlimit, double &test) {
+  double &temperature, double &tlimit, double &direction) {
 
     e0 = vec[0];
     eref = vec[1];
@@ -47,7 +47,7 @@ void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
     poinitial = vec[7];
     temperature = vec[8];
     tlimit = vec[9];
-    test = vec[10];
+    direction = vec[10];
 }
 
 SingleMoleculeCV::SingleMoleculeCV(
@@ -61,11 +61,11 @@ std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
 	const {
 
 	vector<double> params(11);
-	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
+	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
 
 	// generate and unpack the parameters
 	sample(r, params);
-	unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
+	unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
 
 	return {{1.0 , peak_potentials(params)}};
 }
@@ -74,10 +74,10 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
 
   //display_parameters(vec);
 
-  double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
+  double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
 
   // unpack the model parameters
-  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
+  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
 
   double reltol, t, tout;
   N_Vector y, abstol;
@@ -137,15 +137,8 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   tout = 2.0 * tlimit;
 
   while(1) {
-    //printf("Before CVode solver.\n");
-    //printf("t = %14.6e\n", t);
-    //printf("E = %14.6e\n\n", E_applied(t,vec));
 
     flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
-    
-    //printf("After CVode Solver.\n");
-    //printf("t = %14.6e\n", t);
-    //printf("E = %14.6e\n\n", E_applied(t,vec));
 
     if (flag == CV_ROOT_RETURN) {
       flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
@@ -161,48 +154,53 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   // free integrator memory
   CVodeFree(&cvode_mem);
 
-  return root[1];
+  if (direction == 1.0) return root[1];
+  if (direction == 2.0) return root[2];
+
+  return 0;
 }
 
 double SingleMoleculeCV::kf( double t,
 	const std::vector<double> &vec) {
 
-	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
+	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
 
 	// unpack the model parameters
-	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
+	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
 
-	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda * GSL_CONST_MKSA_ELECTRON_CHARGE)
+	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref + lambda))
         / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
-    if (e < -500) {
-        return 0;
-    }
-	return af * gsl_sf_exp( e );
+  double log_kf = e +gsl_sf_log(af);
+  if (log_kf < -600) {
+      return 0;
+  }
+	return gsl_sf_exp( log_kf );
 }
 
 double SingleMoleculeCV::kb( double t,
 	const std::vector<double> &vec) {
 
-	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
+	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
 
 	// unpack the model parameters
-	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
+	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
 
-	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE)
+	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref - lambda))
         / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
-    if (e < -500) {
-        return 0;
-    }
-	return ab * gsl_sf_exp( e );
+  double log_kb = e + gsl_sf_log(af);
+  if (log_kb < -500) {
+      return 0;
+  }
+	return gsl_sf_exp( log_kb );
 }
 
 double SingleMoleculeCV::E_applied(double t,
   const std::vector<double> &vec) {
 
-  double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
+  double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
 
   //upack the model paramters
-  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
+  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
 
   double E;
 
@@ -257,10 +255,10 @@ int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
   return(0);
 }
 int SingleMoleculeCV::display_parameters(const std::vector<double> &vec) {
-    double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test;
+    double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
 
   //upack the model paramters
-  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, test);
+  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
   
   printf("e0             = %14.6e\n", e0);
   printf("eref           = %14.6e\n", eref);
@@ -272,7 +270,7 @@ int SingleMoleculeCV::display_parameters(const std::vector<double> &vec) {
   printf("poinitial      = %14.6e\n", poinitial);
   printf("temperature    = %14.6e\n", temperature);
   printf("tlimit         = %14.6e\n", tlimit);
-  printf("test           = %14.6e\n\n\n", test);
+  printf("direction           = %14.6e\n\n\n", direction);
 
   return 0;
 }
