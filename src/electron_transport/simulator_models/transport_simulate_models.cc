@@ -12,8 +12,8 @@
 
 #include "transport_simulate_models.h"
 #include "transport_observables.h"
- #if 0
 #include "sym_one_site_simulate_model.h"
+#if 0
 #include "asym_one_site_simulate_model.h"
 #include "ind_two_chan_simulate_model.h"
 #include "sym_two_site_simulate_model.h"
@@ -26,10 +26,10 @@ void load_transport_models(
 	std::map<std::string,
 	         SimulateModelFunction<2>> &models) {
 
-#if 0
 	models["symmetriconesite"] =
 		GetSimulateModelFunction<2, SymOneSiteSimulateModel>();
 
+#if 0
 	models["asymmetriconesite"] =
 		GetSimulateModelFunction<2, AsymOneSiteSimulateModel>();
 

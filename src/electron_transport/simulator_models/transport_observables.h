@@ -15,9 +15,7 @@
 #ifndef __observables_h__
 #define __observables_h__
 
-#include <memory>
 #include <array>
-#include <gsl/gsl_rng.h>
 #include <general/simulator_tools/simulate_model_interface.h>
 
 namespace molstat {

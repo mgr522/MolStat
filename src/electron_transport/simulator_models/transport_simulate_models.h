@@ -13,11 +13,8 @@
 #ifndef __transport_simulate_models_h__
 #define __transport_simulate_models_h__
 
-#include <memory>
 #include <string>
 #include <map>
-#include <functional>
-#include <general/random_distributions/rng.h>
 #include <general/simulator_tools/simulate_model_interface.h>
 
 namespace molstat {

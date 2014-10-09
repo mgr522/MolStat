@@ -110,6 +110,20 @@ private:
 	 */
 	std::array<std::shared_ptr<const RandomDistribution>, MPs> dists;
 
+protected:
+	/**
+	 * \brief Converts a map laying out the desired order of parameters to
+	 *    an array with the parameters so ordered.
+	 *
+	 * \throw out_of_range If a name for one of the indices O, 1, ..., MPs-1
+	 *    is missing.
+	 *
+	 * \param[in] param_order Map that orders the parameter names.
+	 * \return An array with the names in order.
+	 */
+	std::array<std::string, MPs> order_from_map(
+		const std::map<std::size_t, std::string> &param_order);
+
 public:
 	SimulateModel() = delete;
 	virtual ~SimulateModel() = default;
