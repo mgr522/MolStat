@@ -13,6 +13,72 @@
 
 namespace molstat {
 
+template<std::size_t OBS>
+template<typename T>
+std::unique_ptr<Simulator<OBS>> Simulator<OBS>::Factory(
+	const std::map<std::string,
+	               std::shared_ptr<RandomDistribution>> &avail) {
+
+	static_assert(T::numModelParameters <= MAX_MPs,
+		"The desired model has more parameters than supported. Increase " \
+		"Simulator::MAX_MPs and recompile.");
+
+	using SimulatorType = ModelSimulator<OBS, T::numModelParameters>;
+
+	// allocate the ModelSimulator
+	std::unique_ptr<SimulatorType> modelObs(new SimulatorType());
+
+	// set the SimulateModel within the simulator
+	modelObs->model = std::make_shared<T>(avail);
+
+	// initialize all observables to the zero function
+	for(std::size_t j = 0; j < OBS; ++j)
+		modelObs->observables[j] = SimulatorType::ZeroObs;
+
+	std::unique_ptr<Simulator<OBS>> ret(modelObs.release());
+
+	return ret;
+}
+
+template<std::size_t OBS>
+template<template<std::size_t> class T>
+void Simulator<OBS>::setObservable(std::size_t j) {
+	if(j >= OBS)
+		throw std::out_of_range("Observable index is too high.");
+	
+	// use the SimulatorFactoryHelper's setObservableMPs function to find the
+	// correct number of model parameters, cast to that molstat::ModelSimulator
+	// class, and add the observable.
+	//
+	// raw pointers are used; nothing is deleted. we're modifying *this
+	//
+	// setObservableMPs *should* return true (meaning the observable was
+	// successfully assigned), but we check for complete prudence	
+	if(!SimulatorFactoryHelper::ObservableSetterHelper<MAX_MPs>::template
+		setObservableMPs<OBS, T>(this, j))
+		
+		throw std::length_error("Should not be here.");
+}
+
+template<std::size_t MPs>
+std::array<std::string, MPs> SimulateModel<MPs>::order_from_map(
+		const std::map<std::size_t, std::string> &param_order) {
+
+	std::array<std::string, MPs> ret;
+
+	for(std::size_t j = 0; j < MPs; ++j) {
+		try{
+			std::string str = param_order.at(j);
+			ret[j] = std::move(str);
+		}
+		catch(std::out_of_range &e) {
+			throw std::out_of_range("Required index missing.");
+		}
+	}
+
+	return ret;
+}
+
 template<std::size_t MPs>
 SimulateModel<MPs>::SimulateModel(
 	const std::map<std::string,
@@ -59,70 +125,9 @@ std::array<double, OBS>
 	return ret;
 }
 
-template<std::size_t OBS>
-template<typename T>
-SimulatorFactory<OBS> SimulatorFactory<OBS>::makeFactory(
-	const std::map<std::string,
-	               std::shared_ptr<RandomDistribution>> &avail) {
-
-	static_assert(T::numModelParameters <= MAX_MPs,
-		"The desired model has more parameters than supported. Increase " \
-		"SimulatorFactory::MAX_MPs as noted in the code.");
-
-	using SimulatorType = ModelSimulator<OBS, T::numModelParameters>;
-
-	SimulatorFactory<OBS> ret;
-
-	std::unique_ptr<SimulatorType> modelObs;
-
-	// allocate the SimulateObservables object.
-	modelObs.reset(new SimulatorType());
-
-	// set the SimulateModel within the simulator
-	modelObs->model = std::make_shared<T>(avail);
-
-	// initialize all observables to the zero function
-	for(std::size_t j = 0; j < OBS; ++j)
-		modelObs->observables[j] = SimulatorType::ZeroObs;
-
-	ret.model.reset(modelObs.release());
-
-	return ret;
-}
-
-template<std::size_t OBS>
-template<template<std::size_t> class T>
-SimulatorFactory<OBS> &SimulatorFactory<OBS>::setObservable(std::size_t j) {
-	if(j >= OBS)
-		throw std::out_of_range("Observable index is too high.");
-
-	// we need to perform some dynamic casting, but this isn't allowed on
-	// unique_ptrs. So, get the raw pointer and use it (no worries about
-	// ownership)
-	Simulator<OBS> *ptr = model.get();
-	
-	// use the Factory's setObservableMPs function to find the correct number of
-	// model parameters, cast to that molstat::ModelSimulator class, and add
-	// the observable.
-	//
-	// setObservableMPs *should* return true (meaning the observable was
-	// successfully assigned), but we check for complete prudence	
-	if(!SimulatorFactoryHelper::ObservableSetter<MAX_MPs>::template
-		setObservableMPs<OBS, T>(ptr, j))
-		
-		throw std::length_error("Should not be here.");
-
-	return *this;
-}
-
-template<std::size_t OBS>
-std::unique_ptr<Simulator<OBS>> SimulatorFactory<OBS>::create() noexcept {
-	return std::move(model);
-}
-
 template<std::size_t MPs>
 template<std::size_t OBS, template<std::size_t> class T>
-bool SimulatorFactoryHelper::ObservableSetter<MPs>::setObservableMPs(
+bool SimulatorFactoryHelper::ObservableSetterHelper<MPs>::setObservableMPs(
 	Simulator<OBS> *ptr, std::size_t j) {
 
 	ModelSimulator<OBS, MPs> *obs =
@@ -130,7 +135,7 @@ bool SimulatorFactoryHelper::ObservableSetter<MPs>::setObservableMPs(
 
 	if(obs == nullptr) {
 		// this is the wrong value of MPs; try one lower
-		return ObservableSetter<MPs-1>::template
+		return ObservableSetterHelper<MPs-1>::template
 			setObservableMPs<OBS, T>(ptr, j);
 	}
 	else {
@@ -152,28 +157,28 @@ bool SimulatorFactoryHelper::ObservableSetter<MPs>::setObservableMPs(
 }
 
 template<std::size_t OBS, template<std::size_t> class T>
-constexpr bool SimulatorFactoryHelper::ObservableSetter<0>::setObservableMPs(
-	Simulator<OBS> *ptr, std::size_t j) noexcept {
+constexpr bool SimulatorFactoryHelper::ObservableSetterHelper<0>
+	::setObservableMPs(Simulator<OBS> *ptr, std::size_t j) noexcept {
 
 	return false;
 }
 
 template<std::size_t OBS, typename T>
-SimulateModelFunction<OBS> GetSimulateModelFunction() {
+SimulatorFactory<OBS> GetSimulatorFactory() {
 	return [] (const std::map<std::string,
 		                       std::shared_ptr<RandomDistribution>> &avail)
-			-> SimulatorFactory<OBS> {
+			-> std::unique_ptr<Simulator<OBS>> {
 
-		return SimulatorFactory<OBS>::template makeFactory<T>(avail);
+		return Simulator<OBS>::template Factory<T>(avail);
 	};
 }
 
 template<std::size_t OBS, template<std::size_t> class T>
-ObservableFunction<OBS> GetObservableFunction() {
-	return [] (SimulatorFactory<OBS> &sim, std::size_t j)
+ObservableSetter<OBS> GetObservableSetter() {
+	return [] (Simulator<OBS> *sim, std::size_t j)
 			-> void {
 
-		sim.template setObservable<T>(j);
+		sim->template setObservable<T>(j);
 	};
 }
 

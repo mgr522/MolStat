@@ -27,26 +27,24 @@
  * \endinternal
  */
 int main(int argc, char **argv) {
-	map<string, molstat::SimulateModelFunction<3>> models;
-	map<string, molstat::ObservableFunction<3>> observables;
+	map<string, molstat::SimulatorFactory<3>> models;
+	map<string, molstat::ObservableSetter<3>> observables;
 
-	molstat::SimulatorFactory<3> factory;
 	shared_ptr<molstat::Simulator<3>> sim;
 	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 	molstat::gsl_rng_ptr r(nullptr, &gsl_rng_free);
 
 	// add the model
-	models["test"] = molstat::GetSimulateModelFunction<3, TestModel>();
+	models["test"] = molstat::GetSimulatorFactory<3, TestModel>();
 
 	// add the observables
-	observables["obs1"] = molstat::GetObservableFunction<3, Observable1>();
-	observables["obs2"] = molstat::GetObservableFunction<3, Observable2>();
-	observables["obs3"] = molstat::GetObservableFunction<3, Observable3>();
-	observables["obs4"] = molstat::GetObservableFunction<3, Observable4>();
+	observables["obs1"] = molstat::GetObservableSetter<3, Observable1>();
+	observables["obs2"] = molstat::GetObservableSetter<3, Observable2>();
+	observables["obs3"] = molstat::GetObservableSetter<3, Observable3>();
+	observables["obs4"] = molstat::GetObservableSetter<3, Observable4>();
 
 	try {
-		auto functor = models.at("test");
-		factory = functor(parameters);
+		sim = models.at("test")(parameters);
 
 		// shouldn't be here because we didn't specify the parameter "a"
 		assert(false);
@@ -63,8 +61,7 @@ int main(int argc, char **argv) {
 
 	try {
 		// this time it should work!
-		auto functor = models.at("test");
-		factory = functor(parameters);
+		sim = models.at("test")(parameters);
 	}
 	catch(const out_of_range &e) {
 		assert(false);
@@ -76,8 +73,7 @@ int main(int argc, char **argv) {
 	// try to set an observable for Observable4.
 	// This should fail (TestModel doesn't implement Observable4)
 	try {
-		auto functor = observables.at("obs4");
-		functor(factory, 0);
+		observables.at("obs4")(sim.get(), 0);
 		assert(false);
 	}
 	catch(const runtime_error &e) {
@@ -93,7 +89,7 @@ int main(int argc, char **argv) {
 	try {
 		auto functor = observables.at("obs1");
 		flag = true;
-		functor(factory, 3);
+		functor(sim.get(), 3);
 		assert(false);
 	}
 	catch(const out_of_range &e) {
@@ -106,10 +102,8 @@ int main(int argc, char **argv) {
 
 	// now set observables for Observable1 and Observable2.
 	try {
-		auto functor = observables.at("obs1");
-		functor(factory, 0);
-		functor = observables.at("obs2");
-		functor(factory, 2);
+		observables.at("obs1")(sim.get(), 0);
+		observables.at("obs2")(sim.get(), 2);
 	}
 	catch(const runtime_error &e) {
 		// this should have worked...
@@ -119,36 +113,15 @@ int main(int argc, char **argv) {
 		assert(false);
 	}
 
-	// cast to the simulator now that setup is complete
-	sim = factory.create();
-	assert(sim != nullptr);
-
 	// verify the set of observables generated...
 	array<double, 3> data = sim->simulate(r);
 	assert(abs(data[0] - distvalue) < 1.e-6);
 	assert(abs(data[1] - 0.) < 1.e-6);
 	assert(abs(data[2] - constvalue) < 1.e-6);
 
-	// create a new simulator that uses Observable3
-	try {
-		auto functor = models.at("test");
-		factory = functor(parameters);
-	}
-	catch(const out_of_range &e) {
-		assert(false);
-	}
-	catch(const runtime_error &e) {
-		assert(false);
-	}
-
 	// now load in Observable3
 	try {
-		auto functor = observables.at("obs1");
-		functor(factory, 0);
-		functor = observables.at("obs3");
-		functor(factory, 1);
-		functor = observables.at("obs2");
-		functor(factory, 2);
+		observables.at("obs3")(sim.get(), 1);
 	}
 	catch(const runtime_error &e) {
 		// the set should have worked.
@@ -157,9 +130,6 @@ int main(int argc, char **argv) {
 	catch(const out_of_range &e) {
 		assert(false);
 	}
-
-	sim = factory.create();
-	assert(sim != nullptr);
 
 	try {
 		// Observable 3 should throw and exception; make sure we catch it
