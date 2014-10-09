@@ -24,10 +24,10 @@ namespace molstat {
 
 void load_transport_models(
 	std::map<std::string,
-	         SimulateModelFunction<2>> &models) {
+	         SimulatorFactory<2>> &models) {
 
 	models["symmetriconesite"] =
-		GetSimulateModelFunction<2, SymOneSiteSimulateModel>();
+		GetSimulatorFactory<2, SymOneSiteSimulateModel>();
 
 #if 0
 	models["asymmetriconesite"] =
@@ -46,16 +46,16 @@ void load_transport_models(
 
 void load_transport_observables(
 	std::map<std::string,
-	         ObservableFunction<2>> &observables) {
+	         ObservableSetter<2>> &observables) {
 
 	observables["appliedbias"] =
-		GetObservableFunction<2, AppliedBias>();
+		GetObservableSetter<2, AppliedBias>();
 
 	observables["staticconductance"] =
-		GetObservableFunction<2, StaticConductance>();
+		GetObservableSetter<2, StaticConductance>();
 
 	observables["differentialconductance"] =
-		GetObservableFunction<2, DifferentialConductance>();
+		GetObservableSetter<2, DifferentialConductance>();
 }
 
 } // namespace molstat
