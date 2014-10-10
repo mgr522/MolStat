@@ -1,0 +1,110 @@
+/* This file is a part of MolStat, which is distributed under the Creative
+   Commons Attribution-NonCommercial 4.0 International Public License.
+   MolStat (c) 2014, Northwestern University. */
+/**
+\page page_single_molecule_cv Single Molecule Cyclic Voltammetry
+
+This chapter deals with using MolStat to simulate and fit single molecule Cyclic Voltammetry(CV)
+data; specifically the peak potential histograms. We begin with modeling the single molecule CV,
+introduce the peak potential histogram, and then detail the implemented MolStat model.
+
+\section sec_cv_marcus Modeling Single Molecule CV
+We assume the single molecule is immobilized on the suface in this model. Since concentrations do not 
+make sense in a single molecule event, the probability that the molecule in the reduced or oxidized state 
+takes the place of it. In our electrochemical half-reaction
+\f[
+O+ne^-\rightleftharpoons R,
+\f]
+the evolution of the probabilities \f$P_\mathrm{O}(t)\f$ for the oxidized species \f$O\f$ and \f$P_\mathrm{R}(t)\f$ for the 
+reduced species \f$R\f$ is described by the following master equations,
+\f[
+P_\mathrm{O}'(t)=-k_\mathrm{f}(t)P_\mathrm{O}(t)+k_\mathrm{b}(t)P_\mathrm{R}(t),
+\f]
+\f[
+P_\mathrm{R}'(t)= k_\mathrm{f}(t)P_\mathrm{O}(t)-k_\mathrm{b}(t)P_\mathrm{R}(t),
+\f]
+where the rate constant of the forward (reduction) reaction \f$k_\mathrm{f}\f$ and the rate constant of the backward (oxidation) 
+reaction \f$k_\mathrm{b}\f$ are described using Marcus theory as 
+\f[
+k_\mathrm{f}(t)=A_\mathrm{f}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})+\lambda]^2}{4\lambda k_\mathrm{B}T}\right],
+\f]
+\f[
+k_\mathrm{b}(t)=A_\mathrm{b}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})-\lambda]^2}{4\lambda k_\mathrm{B}T}\right].
+\f]
+The initial condition {\f$P_\mathrm{O}(0)=1,P_\mathrm{R}(0)=0\f$} or \f$P_\mathrm{O}(0)=0,P_\mathrm{R}(0)=1\f$ is 
+also assumed. The parameters in this model are
+   - \f$E_\mathrm{Ref}\f$, the reference potential,
+   - \f$\lambda\f$, the reorganization energy,
+   - \f$A_\mathrm{f}/A_\mathrm{b}\f$, the prefactor(s) for the forward/backward redox half-reaction,
+   - \f$E(t)\f$, the voltage waveform which is \f$E_0+vt\f$ if \f$0\leq t\leq t_\mathrm{lim}\f$ and 
+        \f$E_0+2vt_\mathrm{lim}-vt\f$ if \f$t_{lim}\leq t\leq 2t_\mathrm{lim}\f$, where \f$E_0\f$ is the initial bias and 
+        \f$v\f$ is the scan speed.
+
+The ideal single molecule CV is supposed to be two delta-function-like peaks on forward and backward voltage scanning, i.e. the 
+current is only non-zero when the electrochemical reaction happens. We assume that the electrochemical reaction happens at the time 
+when \f$P_\mathrm{O}(t)=P_\mathrm{R}(t)=0.5\f$ and look for the corresponding potentials by numerically solving the two master 
+equations. 
+Although the master equations for single molecule model looks similar to traditional model for immobilized molecule, the single 
+molecule model is stochastic, which may lead to differential peak potentials as the single molecule electrochemical reaction 
+repeats. As a result, the expected data from a single molecule electrochemistry experiment is peak pontentials Histograms collected from 
+many single molecule CV event.
+
+\section sec_cv_histogram Peak Potentials Histogram
+Like Conductance histograms, we calculate the peak potentials by randomizing the physical parameters with normal distribution.
+In essence, the single molecule CV is measured in a solution with ultra low concentration of the molecule, the molecules react 
+at different potentials with diffrernt probability, and the peak potential data is binned into a histogram.
+
+In MolStat, we assume that the single molecule CV histogram reports the probability
+density function of the peak potential observable \cite reuter-2243. As
+described in previous sections and in Refs.\ \cite reuter-2243 and
+\cite williams-5937, MolStat then regards the physical parameters in the
+rate constant as random variables that determine the peak potential's probability
+density function.
+
+The two operations supported by MolStat are
+-# Simulating conductance histograms using simple model systems (see
+   \cite reuter-2243). This operation is described in
+   \ref sec_simulate_electron_transport. Note that these model systems do not
+   rely on first-principles electronic structure calculations; they are
+   phenomenological. Other studies that construct histogram from such *ab
+   initio* calculations have been reported in, for instance, \cite french-887.
+-# Fit a conductance histogram (or, more accurately, a peak from a conductance
+   histogram) to a specified functional form. This process is discussed in
+   \ref sec_fit_electron_transport.
+
+\section sec_simulate_single_molecule_cv Simulating Single Molecule CV
+Simulating conductance histograms is accomplished using the MolStat simulator;
+see \ref sec_molstat_simulate for details. Herein we list the observable and
+model for single molecule CV histogram. This model facilitates calculation of
+peak potentials through various parameters.
+
+\subsection subsec_single_molecule_cv_observables Single Molecule CV Observable
+Single Molecule CV observable is defined in transport_observables.h.
+- Peak Potentials
+   - \f$ E_\mathrm{P}=E(t_\mathrm{P})\f$, where \f$P_\mathrm{O}(t_\mathrm{P})=0.5\f$.
+   - Name for input files is `%PeakPotentials`.
+   - Implemented by the class SingMolCVPeak.
+
+\subsection subsec_single_molecule_cv_simulate_models Model for Simulating Single Molecule CV
+This model is referenced in transport_models.cc.
+
+- `SingleMoleculeCV`
+   - Single Moleucle CV model with the molecule immobilized on the surface.
+   - Implemented by the class SingleMoleculeCV; full details are
+     presented there.
+   - Compatible with the PeakPotentials observable.
+   - Model parameters are
+      - `e0` (\f$E_\mathrm{0}\f$), the initial applied potential at \f$t=0\f$,
+      - `eref` (\f$E_\mathrm{Ref}\f$), the reference potential,
+      - `lambda` (\f$\lambda\f$), the reorganization energy,
+      - `af` (\f$A_\mathrm{f}\f$), the prefactor for forward half-reaction rate constant,
+      - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant,
+      - `v` (\f$v\f$), the sweeping rate of the applied potential,
+      - `temperature` (\f$T\f$), the temperature,
+      - `n` (\f$n\f$), the number of electrons involved in the half-reaction,
+      - `tlimit` (\f$t_\mathrm{lim}\f$), the potential switching time,
+      - `direction` a parameter used to determine which peak will be returned(1.0 for the 
+           peak on forward process and 2.0 the peak on reversal).
+\section sec_fit_electron_transport Fitting Single Molecule Cyclic Voltammetry
+This part will completed later
+*/
