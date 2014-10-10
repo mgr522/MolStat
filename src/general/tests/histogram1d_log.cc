@@ -3,7 +3,7 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \internal
- * \file test_histogram1d_log.cc
+ * \file histogram1d_log.cc
  * \brief Test suite for the Histogram1D class, logarithmic binning.
  *
  * \test Tests the Histogram1D class with logarithmic binning (BinLog).
@@ -17,8 +17,8 @@
 #include <assert.h>
 #include <cmath>
 
-#include "histogram1d.h"
-#include "bin_log.h"
+#include <general/histogram_tools/histogram1d.h>
+#include <general/histogram_tools/bin_log.h>
 
 using namespace std;
 

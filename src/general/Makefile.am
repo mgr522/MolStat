@@ -5,7 +5,8 @@ noinst_LIBRARIES = libmolstat_general.a
 SUBDIRS = random_distributions \
 	fitter_tools \
 	histogram_tools \
-	simulator_tools
+	simulator_tools \
+	tests
 
 libmolstat_general_a_SOURCES = string_tools.h \
 	string_tools.cc \

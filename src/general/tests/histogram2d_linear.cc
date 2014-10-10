@@ -3,7 +3,7 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \internal
- * \file test_histogram2d_linear.cc
+ * \file histogram2d_linear.cc
  * \brief Test suite for the Histogram2D class (linear binning)
  *
  * \test Tests the Histogram2D class with linear binning (BinLinear).
@@ -17,8 +17,8 @@
 #include <assert.h>
 #include <cmath>
 
-#include "histogram2d.h"
-#include "bin_linear.h"
+#include <general/histogram_tools/histogram2d.h>
+#include <general/histogram_tools/bin_linear.h>
 
 using namespace std;
 

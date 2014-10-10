@@ -2,19 +2,18 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file test_simulate_model_interface_direct.cc
+ * \file simulate_model_interface_indirect.cc
  * \brief Test suite for the molstat::SimulateObservables,
  *    molstat::SimulateModel, and molstat::Observable templates.
  *
  * \test Tests the molstat::SimulateObservables, molstat::SimulateModel,
- *    and molstat::Observable templates using direct access to the
- *    molstat::SimulatorFactory object.
+ *    and molstat::Observable templates using the access functions.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
 
-#include "test_simulate_model_interface_classes.h"
+#include "simulate_model_interface_classes.h"
 #include <general/random_distributions/constant.h>
 
 /**
@@ -28,14 +27,30 @@
  * \endinternal
  */
 int main(int argc, char **argv) {
+	map<string, molstat::SimulatorFactory<3>> models;
+	map<string, molstat::ObservableSetter<3>> observables;
+
 	shared_ptr<molstat::Simulator<3>> sim;
 	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 	molstat::gsl_rng_ptr r(nullptr, &gsl_rng_free);
 
+	// add the model
+	models["test"] = molstat::GetSimulatorFactory<3, TestModel>();
+
+	// add the observables
+	observables["obs1"] = molstat::GetObservableSetter<3, Observable1>();
+	observables["obs2"] = molstat::GetObservableSetter<3, Observable2>();
+	observables["obs3"] = molstat::GetObservableSetter<3, Observable3>();
+	observables["obs4"] = molstat::GetObservableSetter<3, Observable4>();
+
 	try {
-		sim = molstat::Simulator<3>::Factory<TestModel>(parameters);
+		sim = models.at("test")(parameters);
 
 		// shouldn't be here because we didn't specify the parameter "a"
+		assert(false);
+	}
+	catch(const out_of_range &e) {
+		// the "at" function failed for some reason...
 		assert(false);
 	}
 	catch(const runtime_error &e) {
@@ -46,7 +61,10 @@ int main(int argc, char **argv) {
 
 	try {
 		// this time it should work!
-		sim = molstat::Simulator<3>::Factory<TestModel>(parameters);
+		sim = models.at("test")(parameters);
+	}
+	catch(const out_of_range &e) {
+		assert(false);
 	}
 	catch(const runtime_error &e) {
 		assert(false);
@@ -55,7 +73,7 @@ int main(int argc, char **argv) {
 	// try to set an observable for Observable4.
 	// This should fail (TestModel doesn't implement Observable4)
 	try {
-		sim->setObservable<Observable4>(0);
+		observables.at("obs4")(sim.get(), 0);
 		assert(false);
 	}
 	catch(const runtime_error &e) {
@@ -66,12 +84,17 @@ int main(int argc, char **argv) {
 	}
 
 	// try to set an observable to a bad index
+	// need a flag to make sure we get out_of_range for the correct reason
+	bool flag = false;
 	try {
-		sim->setObservable<Observable1>(3);
+		auto functor = observables.at("obs1");
+		flag = true;
+		functor(sim.get(), 3);
 		assert(false);
 	}
 	catch(const out_of_range &e) {
 		// should be here
+		assert(flag);
 	}
 	catch(const runtime_error &e) {
 		assert(false);
@@ -79,8 +102,8 @@ int main(int argc, char **argv) {
 
 	// now set observables for Observable1 and Observable2.
 	try {
-		sim->setObservable<Observable1>(0);
-		sim->setObservable<Observable2>(2);
+		observables.at("obs1")(sim.get(), 0);
+		observables.at("obs2")(sim.get(), 2);
 	}
 	catch(const runtime_error &e) {
 		// this should have worked...
@@ -98,7 +121,7 @@ int main(int argc, char **argv) {
 
 	// now load in Observable3
 	try {
-		sim->setObservable<Observable3>(1);
+		observables.at("obs3")(sim.get(), 1);
 	}
 	catch(const runtime_error &e) {
 		// the set should have worked.

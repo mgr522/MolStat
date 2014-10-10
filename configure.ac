@@ -53,6 +53,7 @@ AC_CONFIG_FILES([
 				src/general/histogram_tools/Makefile
 				src/general/random_distributions/Makefile
 				src/general/simulator_tools/Makefile
+				src/general/tests/Makefile
 			src/electron_transport/Makefile
 				src/electron_transport/fitter_models/Makefile
 				src/electron_transport/simulator_models/Makefile

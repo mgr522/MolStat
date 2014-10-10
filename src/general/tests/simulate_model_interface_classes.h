@@ -2,7 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file test_simulate_model_interface_classes.h
+ * \file simulate_model_interface_classes.h
  * \brief Test classes for testing the molstat::SimulateObservables,
  *    molstat::SimulateModel, and molstat::Observable templates.
  *
@@ -24,7 +24,7 @@
 #include <array>
 #include <assert.h>
 
-#include "simulate_model_interface.h"
+#include <general/simulator_tools/simulate_model_interface.h>
 
 using namespace std;
 

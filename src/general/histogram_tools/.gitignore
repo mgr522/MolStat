@@ -1,14 +1,1 @@
 .dirstamp
-test-suite.log
-test_histogram1d_linear
-test_histogram1d_linear.log
-test_histogram1d_linear.trs
-test_histogram1d_log
-test_histogram1d_log.log
-test_histogram1d_log.trs
-test_histogram2d_linear
-test_histogram2d_linear.log
-test_histogram2d_linear.trs
-test_histogram2d_log
-test_histogram2d_log.log
-test_histogram2d_log.trs

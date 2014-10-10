@@ -3,7 +3,7 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \internal
- * \file test_gsl_std_vector.cc
+ * \file gsl_std_vector.cc
  * \brief Test suite for interconverting gsl and std vector types.
  *
  * \test Tests the molstat::gsl_to_std function for use in the molstat::FitModel class.
@@ -16,7 +16,7 @@
 #include <cstdio>
 #include <assert.h>
 #include <cmath>
-#include "fit_model_interface.h"
+#include <general/fitter_tools/fit_model_interface.h>
 
 using namespace std;
 
