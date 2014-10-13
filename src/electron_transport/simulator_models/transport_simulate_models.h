@@ -18,6 +18,7 @@
 #include <general/simulator_tools/simulate_model_interface.h>
 
 namespace molstat {
+namespace transport {
 
 /**
  * \brief Loads the transport models into the MolStat "database".
@@ -28,7 +29,7 @@ namespace molstat {
  * \param[in,out] models The map of models in MolStat. On output, the models
  *    for transport have been added to it.
  */
-void load_transport_models(
+void load_models(
 	std::map<std::string,
 	         SimulatorFactory<2>> &models);
 
@@ -41,10 +42,11 @@ void load_transport_models(
  * \param[in,out] observables The map of observables in MolStat. On output, the
  *    observables for transport have been added to it.
  */
-void load_transport_observables(
+void load_observables(
 	std::map<std::string,
 	         ObservableSetter<2>> &observables);
 
+} // namespace molstat::transport
 } // namespace molstat
 
 #endif

@@ -21,8 +21,9 @@
 #endif
 
 namespace molstat {
+namespace transport {
 
-void load_transport_models(
+void load_models(
 	std::map<std::string,
 	         SimulatorFactory<2>> &models) {
 
@@ -44,7 +45,7 @@ void load_transport_models(
 #endif
 }
 
-void load_transport_observables(
+void load_observables(
 	std::map<std::string,
 	         ObservableSetter<2>> &observables) {
 
@@ -58,4 +59,5 @@ void load_transport_observables(
 		GetObservableSetter<2, DifferentialConductance>();
 }
 
+} // namespace molstat::transport
 } // namespace molstat

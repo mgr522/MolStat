@@ -22,6 +22,7 @@
 #include "transport_observables.h"
 
 namespace molstat {
+namespace transport {
 
 /**
  * \brief Simulator model for transport through a single site that couples
@@ -77,11 +78,6 @@ private:
 	static constexpr std::size_t Index_a = 4;
 
 	/**
-	 * \brief Map of model parameter index to its name (used in I/O).
-	 */
-	static const std::map<std::size_t, std::string> param_order;
-
-	/**
 	 * \brief Calculates the transmission for a set of model parameters.
 	 *
 	 * \param[in] e The energy of the incident electron.
@@ -132,6 +128,7 @@ public:
 	virtual double StaticG(const std::array<double, 5> &params) const override;
 };
 
+} // namespace molstat::transport
 } // namespace molstat
 
 #endif

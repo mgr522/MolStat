@@ -14,15 +14,16 @@
 #include <cmath>
 
 namespace molstat {
-
-// set up the ordering of parameters
-const std::map<std::size_t, std::string> SymOneSiteSimulateModel::param_order =
-	{{Index_EF, "ef"}, {Index_V, "v"}, {Index_epsilon, "epsilon"},
-	 {Index_gamma, "gamma"}, {Index_a, "a"}};
+namespace transport {
 
 SymOneSiteSimulateModel::SymOneSiteSimulateModel(
 	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
-	: SimulateModel(avail, order_from_map(param_order)) {
+	: SimulateModel(avail,
+	                order_from_map({{Index_EF, "ef"},
+	                                {Index_V, "v"},
+	                                {Index_epsilon, "epsilon"},
+	                                {Index_gamma, "gamma"},
+	                                {Index_a, "a"}})) {
 }
 
 double SymOneSiteSimulateModel::transmission(const double e, const double v,
@@ -65,4 +66,5 @@ double SymOneSiteSimulateModel::StaticG(const std::array<double, 5> &params)
 		(atan((ef-eps+(0.5-a)*V) / gamma) - atan((ef-eps-(0.5+a)*V) / gamma));
 }
 
+} // namespace molstat::transport
 } // namespace molstat
