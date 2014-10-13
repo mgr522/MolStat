@@ -7,21 +7,21 @@
  *    both electrodes.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
 #ifndef __asym_one_site_simulate_model_h__
 #define __asym_one_site_simulate_model_h__
 
+#include <array>
 #include <memory>
 #include <string>
-#include <vector>
 #include <map>
-#include <general/random_distributions/rng.h>
 #include <general/simulator_tools/simulate_model_interface.h>
 #include "transport_observables.h"
 
 namespace molstat {
+namespace transport {
 
 /**
  * \brief Simulator model for transport through a single site that couples
@@ -44,63 +44,52 @@ namespace molstat {
  * - Static conductance:
  *   \f[ G_\mathrm{s}(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon + (1/2-a) eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon - (1/2+a)eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
  */
-class AsymOneSiteSimulateModel : public SimulateModel,
-	public DifferentialConductance, public StaticConductance {
-
-private:
-	/**
-	 * \brief Ordered list (vector) of the parameters needed for this model.
-	 *
-	 * If this order is changed, AsymOneSiteSimulateModel::unpack_parameters
-	 * also needs to be updated.
-	 */
-	static const std::vector<std::string> parameters;
-
-	/**
-	 * \brief Unpack a set of parameters from a vector to doubles.
-	 *
-	 * \param[in] vec The vector containing a set of parameters.
-	 * \param[out] ef The Fermi energy.
-	 * \param[out] v The voltage.
-	 * \param[out] epsilon The site energy.
-	 * \param[out] gammal The left site-lead coupling.
-	 * \param[out] gammar The right site-lead coupling.
-	 * \param[out] a The voltage drop parameter.
-	 */
-	static void unpack_parameters(const std::vector<double> &vec, double &ef,
-		double &v, double &epsilon, double &gammal, double &gammar, double &a);
+class AsymOneSiteSimulateModel : public SimulateModel<6>,
+	public AppliedBias<6>,
+	public DifferentialConductance<6>,
+	public StaticConductance<6> {
 
 public:
+	/**
+	 * \brief Container index for the Fermi energy.
+	 */
+	static const std::size_t Index_EF;
+
+	/**
+	 * \brief Container index for the applied bias.
+	 */
+	static const std::size_t Index_V;
+	
+	/**
+	 * \brief Container index for the site energy.
+	 */
+	static const std::size_t Index_epsilon;
+	
+	/**
+	 * \brief Container index for the left site-lead coupling.
+	 */
+	static const std::size_t Index_gammaL;
+	
+	/**
+	 * \brief Container index for the right site-lead coupling.
+	 */
+	static const std::size_t Index_gammaR;
+	
+	/**
+	 * \brief Container index for the bias drop scaling factor.
+	 */
+	static const std::size_t Index_a;
+
 	AsymOneSiteSimulateModel() = delete;
 	virtual ~AsymOneSiteSimulateModel() = default;
 
 	/**
-	 * \internal
 	 * \brief Constructor specifying the required parameters.
 	 *
 	 * \param[in] avail The available distributions, keyed by name.
-	 * \endinternal
 	 */
 	AsymOneSiteSimulateModel(
 		const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail);
-
-	/**
-	 * \brief Returns the differential conductance for a randomly-generated set
-	 *    of model parameters.
-	 * 
-	 * \param[in] r The GSL random number generator handle.
-	 * \return The differential conductance.
-	 */
-	virtual std::array<double, 2> DiffG(gsl_rng_ptr &r) const override;
-
-	/**
-	 * \brief Returns the static conductance for a randomly-generated set of
-	 *    model parameters.
-	 * 
-	 * \param[in] r The GSL random number generator handle.
-	 * \return The static conductance.
-	 */
-	virtual std::array<double, 2> StaticG(gsl_rng_ptr &r) const override;
 
 	/**
 	 * \brief Calculates the transmission for a set of model parameters.
@@ -117,23 +106,32 @@ public:
 		const double gammal, const double gammar, const double a);
 
 	/**
-	 * \brief Calculates the static conductance for a set of model parameters.
-	 *
-	 * \param[in] vec The vector of model parameters.
-	 * \return The static conductance for this set of parameters.
+	 * \brief Returns the applied bias for a set of model parameters.
+	 * 
+	 * \param[in] params A set of model parameters.
+	 * \return The applied bias.
 	 */
-	static double static_conductance(const std::vector<double> &vec);
+	virtual double AppBias(const std::array<double, 6> &params) const override;
 
 	/**
-	 * \brief Calculates the differential conductance for a set of model
+	 * \brief Returns the differential conductance for a set of model
 	 *    parameters.
-	 *
-	 * \param[in] vec The vector of model parameters.
-	 * \return The differential conductance for this set of parameters.
+	 * 
+	 * \param[in] params A set of model parameters.
+	 * \return The differential conductance.
 	 */
-	static double diff_conductance(const std::vector<double> &vec);
+	virtual double DiffG(const std::array<double, 6> &params) const override;
+
+	/**
+	 * \brief Returns the static conductance for a set of model parameters.
+	 * 
+	 * \param[in] params A set of model parameters.
+	 * \return The static conductance.
+	 */
+	virtual double StaticG(const std::array<double, 6> &params) const override;
 };
 
+} // namespace molstat::transport
 } // namespace molstat
 
 #endif

@@ -13,8 +13,8 @@
 #include "transport_simulate_models.h"
 #include "transport_observables.h"
 #include "sym_one_site_simulate_model.h"
-#if 0
 #include "asym_one_site_simulate_model.h"
+ #if 0
 #include "ind_two_chan_simulate_model.h"
 #include "sym_two_site_simulate_model.h"
 #include "asym_two_site_simulate_model.h"
@@ -30,10 +30,10 @@ void load_models(
 	models["symmetriconesite"] =
 		GetSimulatorFactory<2, SymOneSiteSimulateModel>();
 
-#if 0
 	models["asymmetriconesite"] =
-		GetSimulateModelFunction<2, AsymOneSiteSimulateModel>();
+		GetSimulatorFactory<2, AsymOneSiteSimulateModel>();
 
+#if 0
 	models["independenttwochannel"] =
 		GetSimulateModelFunction<2, IndTwoChanSimulateModel>();
 

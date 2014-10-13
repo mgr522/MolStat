@@ -16,7 +16,6 @@
 #include <array>
 #include <memory>
 #include <string>
-#include <vector>
 #include <map>
 #include <general/simulator_tools/simulate_model_interface.h>
 #include "transport_observables.h"
@@ -77,19 +76,6 @@ public:
 	 */
 	static const std::size_t Index_a;
 
-	/**
-	 * \brief Calculates the transmission for a set of model parameters.
-	 *
-	 * \param[in] e The energy of the incident electron.
-	 * \param[in] V The applied bias.
-	 * \param[in] eps The level energy.
-	 * \param[in] gamma The level-electrode coupling.
-	 * \param[in] a The voltage drop scaling factor.
-	 * \return The transmission for this set of parameters.
-	 */
-	static double transmission(const double e, const double V, const double eps,
-		const double gamma, const double a);
-
 	SymOneSiteSimulateModel() = delete;
 	virtual ~SymOneSiteSimulateModel() = default;
 
@@ -109,6 +95,19 @@ public:
 	 */
 	virtual double AppBias(const std::array<double, 5> &params) const override;
 
+	/**
+	 * \brief Calculates the transmission for a set of model parameters.
+	 *
+	 * \param[in] e The energy of the incident electron.
+	 * \param[in] V The applied bias.
+	 * \param[in] eps The level energy.
+	 * \param[in] gamma The level-electrode coupling.
+	 * \param[in] a The voltage drop scaling factor.
+	 * \return The transmission for this set of parameters.
+	 */
+	static double transmission(const double e, const double V, const double eps,
+		const double gamma, const double a);
+	
 	/**
 	 * \brief Returns the differential conductance for a set of model
 	 *    parameters.
