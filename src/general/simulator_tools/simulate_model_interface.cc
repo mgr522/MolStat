@@ -90,9 +90,15 @@ SimulateModel<MPs>::SimulateModel(
 	for(std::size_t j = 0; j < MPs; ++j) {
 		try {
 			dists[j] = avail.at(names[j]);
+
+			// make sure this is a real distribution
+			if(dists[j] == nullptr)
+				throw std::runtime_error("Null distribution encountered for " +
+					names[j] + ".");
 		}
 		catch(const std::out_of_range &e) {
-			throw std::runtime_error(names[j].c_str());
+			throw std::out_of_range("Distribution for " + names[j]
+				+ " not found.");
 		}
 	}
 }

@@ -38,19 +38,26 @@ int main(int argc, char **argv) {
 		// shouldn't be here because we didn't specify the parameter "a"
 		assert(false);
 	}
-	catch(const runtime_error &e) {
+	catch(const out_of_range &e) {
 		// we should be here!
+	}
+
+	// this creates an entry, but it doesn't amount to anything.
+	parameters["a"];
+	try {
+		sim = molstat::Simulator<3>::Factory<TestModel>(parameters);
+
+		// this time we should throw a runtime_error because "a" is nullptr
+		assert(false);
+	}
+	catch(const runtime_error &e) {
+		// should be here
 	}
 
 	parameters["a"] = make_shared<molstat::ConstantDistribution>(distvalue);
 
-	try {
-		// this time it should work!
-		sim = molstat::Simulator<3>::Factory<TestModel>(parameters);
-	}
-	catch(const runtime_error &e) {
-		assert(false);
-	}
+	// this time it should work!
+	sim = molstat::Simulator<3>::Factory<TestModel>(parameters);
 
 	// try to set an observable for Observable4.
 	// This should fail (TestModel doesn't implement Observable4)
@@ -61,9 +68,6 @@ int main(int argc, char **argv) {
 	catch(const runtime_error &e) {
 		// should be here
 	}
-	catch(const out_of_range &e) {
-		assert(false);
-	}
 
 	// try to set an observable to a bad index
 	try {
@@ -73,22 +77,10 @@ int main(int argc, char **argv) {
 	catch(const out_of_range &e) {
 		// should be here
 	}
-	catch(const runtime_error &e) {
-		assert(false);
-	}
 
 	// now set observables for Observable1 and Observable2.
-	try {
-		sim->setObservable<Observable1>(0);
-		sim->setObservable<Observable2>(2);
-	}
-	catch(const runtime_error &e) {
-		// this should have worked...
-		assert(false);
-	}
-	catch(const out_of_range &e) {
-		assert(false);
-	}
+	sim->setObservable<Observable1>(0);
+	sim->setObservable<Observable2>(2);
 
 	// verify the set of observables generated...
 	array<double, 3> data = sim->simulate(r);
@@ -97,16 +89,7 @@ int main(int argc, char **argv) {
 	assert(abs(data[2] - constvalue) < 1.e-6);
 
 	// now load in Observable3
-	try {
-		sim->setObservable<Observable3>(1);
-	}
-	catch(const runtime_error &e) {
-		// the set should have worked.
-		assert(false);
-	}
-	catch(const out_of_range &e) {
-		assert(false);
-	}
+	sim->setObservable<Observable3>(1);
 
 	try {
 		// Observable 3 should throw and exception; make sure we catch it
@@ -131,21 +114,13 @@ int main(int argc, char **argv) {
 	catch(const out_of_range &e) {
 		// should be here
 	}
-	catch(const runtime_error &e) {
-		assert(false);
-	}
 
-	try {
-		unique_ptr<GoodMapModel> model{ new GoodMapModel(parameters) };
+	unique_ptr<GoodMapModel> model{ new GoodMapModel(parameters) };
 
-		// make sure the correct distributions are in the correct places
-		assert(model->order[0] == "a");
-		assert(model->order[1] == "c");
-		assert(model->order[2] == "a");
-	}
-	catch(...) {
-		assert(false);
-	}
+	// make sure the correct distributions are in the correct places
+	assert(model->order[0] == "a");
+	assert(model->order[1] == "c");
+	assert(model->order[2] == "a");
 
 	return 0;
 }

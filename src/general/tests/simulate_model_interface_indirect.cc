@@ -33,6 +33,7 @@ int main(int argc, char **argv) {
 	shared_ptr<molstat::Simulator<3>> sim;
 	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 	molstat::gsl_rng_ptr r(nullptr, &gsl_rng_free);
+	bool flag;
 
 	// add the model
 	models["test"] = molstat::GetSimulatorFactory<3, TestModel>();
@@ -44,31 +45,37 @@ int main(int argc, char **argv) {
 	observables["obs4"] = molstat::GetObservableSetter<3, Observable4>();
 
 	try {
-		sim = models.at("test")(parameters);
+		// use a flag to make sure out_of_range is thrown at the correct spot
+		flag = false;
+		auto factory = models.at("test");
+		flag = true;
+		sim = factory(parameters);
 
 		// shouldn't be here because we didn't specify the parameter "a"
 		assert(false);
 	}
 	catch(const out_of_range &e) {
-		// the "at" function failed for some reason...
+		// we should be here, but from the factory(parameters) call
+		assert(flag);
+	}
+
+	// create an entry in parameters["a"], but leave it set to nullptr
+	parameters["a"];
+	try {
+		auto factory = models.at("test");
+		sim = factory(parameters);
+
+		// should throw because "a" associates with nullptr
 		assert(false);
 	}
 	catch(const runtime_error &e) {
-		// we should be here!
+		// should be here
 	}
 
 	parameters["a"] = make_shared<molstat::ConstantDistribution>(distvalue);
 
-	try {
-		// this time it should work!
-		sim = models.at("test")(parameters);
-	}
-	catch(const out_of_range &e) {
-		assert(false);
-	}
-	catch(const runtime_error &e) {
-		assert(false);
-	}
+	// this time it should work!
+	sim = models.at("test")(parameters);
 
 	// try to set an observable for Observable4.
 	// This should fail (TestModel doesn't implement Observable4)
@@ -79,14 +86,11 @@ int main(int argc, char **argv) {
 	catch(const runtime_error &e) {
 		// should be here
 	}
-	catch(const out_of_range &e) {
-		assert(false);
-	}
-
+	
 	// try to set an observable to a bad index
 	// need a flag to make sure we get out_of_range for the correct reason
-	bool flag = false;
 	try {
+		flag = false;
 		auto functor = observables.at("obs1");
 		flag = true;
 		functor(sim.get(), 3);
@@ -96,22 +100,10 @@ int main(int argc, char **argv) {
 		// should be here
 		assert(flag);
 	}
-	catch(const runtime_error &e) {
-		assert(false);
-	}
 
 	// now set observables for Observable1 and Observable2.
-	try {
-		observables.at("obs1")(sim.get(), 0);
-		observables.at("obs2")(sim.get(), 2);
-	}
-	catch(const runtime_error &e) {
-		// this should have worked...
-		assert(false);
-	}
-	catch(const out_of_range &e) {
-		assert(false);
-	}
+	observables.at("obs1")(sim.get(), 0);
+	observables.at("obs2")(sim.get(), 2);
 
 	// verify the set of observables generated...
 	array<double, 3> data = sim->simulate(r);
@@ -120,16 +112,7 @@ int main(int argc, char **argv) {
 	assert(abs(data[2] - constvalue) < 1.e-6);
 
 	// now load in Observable3
-	try {
-		observables.at("obs3")(sim.get(), 1);
-	}
-	catch(const runtime_error &e) {
-		// the set should have worked.
-		assert(false);
-	}
-	catch(const out_of_range &e) {
-		assert(false);
-	}
+	observables.at("obs3")(sim.get(), 1);
 
 	try {
 		// Observable 3 should throw and exception; make sure we catch it
