@@ -19,6 +19,7 @@
 #include <general/simulator_tools/simulate_model_interface.h>
 
 namespace molstat {
+namespace transport {
 
 /**
  * \brief Observable class for the applied bias.
@@ -119,6 +120,7 @@ public:
 	}
 };
 
+} // namespace molstat::transport
 } // namespace molstat
 
 #endif
