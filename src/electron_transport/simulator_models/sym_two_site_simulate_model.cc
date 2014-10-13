@@ -7,7 +7,7 @@
  *    both electrodes.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
 #include "sym_two_site_simulate_model.h"
@@ -15,56 +15,37 @@
 #include <complex>
 
 namespace molstat {
+namespace transport {
 
-// if the order of the following list is changed, the unpack_parameters
-// function MUST also be updated
-const std::vector<std::string> SymTwoSiteSimulateModel::parameters =
-	{"ef", "v", "epsilon", "gamma", "beta"};
-
-void SymTwoSiteSimulateModel::unpack_parameters(const std::vector<double> &vec,
-	double &ef, double &v, double &epsilon, double &gamma, double &beta) {
-
-	ef = vec[0];
-	v = vec[1];
-	epsilon = vec[2];
-	gamma = vec[3];
-	beta = vec[4];
-}
+const std::size_t SymTwoSiteSimulateModel::Index_EF = 0;
+const std::size_t SymTwoSiteSimulateModel::Index_V = 1;
+const std::size_t SymTwoSiteSimulateModel::Index_epsilon = 2;
+const std::size_t SymTwoSiteSimulateModel::Index_gamma = 3;
+const std::size_t SymTwoSiteSimulateModel::Index_beta = 4;
 
 SymTwoSiteSimulateModel::SymTwoSiteSimulateModel(
 	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
-	: SimulateModel(avail, parameters) {
+	: SimulateModel(avail,
+	                order_from_map({{Index_EF, "ef"},
+	                                {Index_V, "v"},
+	                                {Index_epsilon, "epsilon"},
+	                                {Index_gamma, "gamma"},
+	                                {Index_beta, "beta"}})) {
 }
 
-std::array<double, 2> SymTwoSiteSimulateModel::DiffG(gsl_rng_ptr &r) const {
-	std::vector<double> params(5);
-	double ef, v, eps, gamma, beta;
-
-	// generate and unpack the parameters
-	sample(r, params);
-	unpack_parameters(params, ef, v, eps, gamma, beta);
-
-	return {{ v, diff_conductance(params) }};
-}
-
-std::array<double, 2> SymTwoSiteSimulateModel::StaticG(gsl_rng_ptr &r) const {
-	std::vector<double> params(5);
-	double ef, v, eps, gamma, beta;
-
-	// generate and unpack the parameters
-	sample(r, params);
-	unpack_parameters(params, ef, v, eps, gamma, beta);
-
-	return {{ v, static_conductance(params) }};
-}
-
-double SymTwoSiteSimulateModel::transmission(const double e, const double v,
+double SymTwoSiteSimulateModel::transmission(const double e, const double V,
 	const double eps, const double gamma, const double beta) {
 
 	double temp = 4.*(e-eps)*(e-eps) - 4.*beta*beta - gamma*gamma;
 
 	return 16.*gamma*gamma*beta*beta /
 		(temp*temp + 16.*gamma*gamma*(e-eps)*(e-eps));
+}
+
+double SymTwoSiteSimulateModel::AppBias(const std::array<double, 5> &params)
+	const {
+
+	return params[Index_V];
 }
 
 double SymTwoSiteSimulateModel::static_c_integral(const double z,
@@ -75,28 +56,33 @@ double SymTwoSiteSimulateModel::static_c_integral(const double z,
 		* atanh(2.*(z-eps) / std::complex<double>(2.*beta, gamma)));
 }
 
-double SymTwoSiteSimulateModel::static_conductance(
-	const std::vector<double> &vec) {
-
-	double ef, v, eps, gamma, beta;
-
-	// unpack the model parameters
-	unpack_parameters(vec, ef, v, eps, gamma, beta);
-
-	return (static_c_integral(ef + 0.5*v, eps, gamma, beta) -
-		static_c_integral(ef - 0.5*v, eps, gamma, beta)) / v;
-}
-
-double SymTwoSiteSimulateModel::diff_conductance(
-	const std::vector<double> &vec) {
-
-	double ef, v, eps, gamma, beta;
+double SymTwoSiteSimulateModel::StaticG(const std::array<double, 5> &params)
+	const {
 
 	// unpack the parameters
-	unpack_parameters(vec, ef, v, eps, gamma, beta);
-
-	return 0.5*transmission(ef + 0.5*v, v, eps, gamma, beta) +
-		0.5*transmission(ef - 0.5*v, v, eps, gamma, beta);
+	const double &ef = params[Index_EF];
+	const double &V = params[Index_V];
+	const double &eps = params[Index_epsilon];
+	const double &gamma = params[Index_gamma];
+	const double &beta = params[Index_beta];
+	
+	return (static_c_integral(ef + 0.5*V, eps, gamma, beta) -
+		static_c_integral(ef - 0.5*V, eps, gamma, beta)) / V;
 }
 
+double SymTwoSiteSimulateModel::DiffG(const std::array<double, 5> &params)
+	const {
+
+	// unpack the parameters
+	const double &ef = params[Index_EF];
+	const double &V = params[Index_V];
+	const double &eps = params[Index_epsilon];
+	const double &gamma = params[Index_gamma];
+	const double &beta = params[Index_beta];
+	
+	return 0.5*transmission(ef + 0.5*V, V, eps, gamma, beta) +
+		0.5*transmission(ef - 0.5*V, V, eps, gamma, beta);
+}
+
+} // namespace molstat::transport
 } // namespace molstat

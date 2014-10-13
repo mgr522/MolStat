@@ -7,21 +7,21 @@
  *    both electrodes. The chain does not drop voltage.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
 #ifndef __sym_two_site_simulate_model_h__
 #define __sym_two_site_simulate_model_h__
 
+#include <array>
 #include <memory>
 #include <string>
-#include <vector>
 #include <map>
-#include <general/random_distributions/rng.h>
 #include <general/simulator_tools/simulate_model_interface.h>
 #include "transport_observables.h"
 
 namespace molstat {
+namespace transport {
 
 /**
  * \brief Simulator model for transport through a two-site site that couples
@@ -45,31 +45,12 @@ namespace molstat {
  *   \f{eqnarray*}{ G_\mathrm{s}(V) & = & \frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+\Gamma^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon + eV/2)}{2\beta + i\Gamma} \right) \right] \\
  *   && -\frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+\Gamma^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon - eV/2)}{2\beta + i\Gamma} \right) \right]. \f}
  */
-class SymTwoSiteSimulateModel : public SimulateModel,
-	public DifferentialConductance, public StaticConductance {
+class SymTwoSiteSimulateModel : public SimulateModel<5>,
+	public AppliedBias<5>,
+	public DifferentialConductance<5>,
+	public StaticConductance<5> {
 
 private:
-	/**
-	 * \brief Ordered list (vector) of the parameters needed for this model.
-	 *
-	 * If this order is changed, SymTwoSiteSimulateModel::unpack_parameters
-	 * also needs to be updated.
-	 */
-	static const std::vector<std::string> parameters;
-
-	/**
-	 * \brief Unpack a set of parameters from a vector to doubles.
-	 *
-	 * \param[in] vec The vector containing a set of parameters.
-	 * \param[out] ef The Fermi energy.
-	 * \param[out] v The voltage.
-	 * \param[out] epsilon The site energy.
-	 * \param[out] gamma The site-lead coupling.
-	 * \param[out] beta The site-site coupling.
-	 */
-	static void unpack_parameters(const std::vector<double> &vec, double &ef,
-		double &v, double &epsilon, double &gamma, double &beta);
-
 	/**
 	 * \internal
 	 * \brief Calculates the antiderivative needed for the static
@@ -86,36 +67,49 @@ private:
 		const double gamma, const double beta);
 
 public:
+	/**
+	 * \brief Container index for the Fermi energy.
+	 */
+	static const std::size_t Index_EF;
+
+	/**
+	 * \brief Container index for the applied bias.
+	 */
+	static const std::size_t Index_V;
+
+	/**
+	 * \brief Container index for the site energy.
+	 */
+	static const std::size_t Index_epsilon;
+
+	/**
+	 * \brief Container index for the site-lead coupling.
+	 */
+	static const std::size_t Index_gamma;
+
+	/**
+	 * \brief Container index for the inter-site coupling.
+	 */
+	static const std::size_t Index_beta;
+
 	SymTwoSiteSimulateModel() = delete;
 	virtual ~SymTwoSiteSimulateModel() = default;
 
 	/**
-	 * \internal
 	 * \brief Constructor specifying the required parameters.
 	 *
 	 * \param[in] avail The available distributions, keyed by name.
-	 * \endinternal
 	 */
 	SymTwoSiteSimulateModel(
 		const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail);
 
 	/**
-	 * \brief Returns the differential conductance for a randomly-generated set
-	 *    of model parameters.
-	 * 
-	 * \param[in] r The GSL random number generator handle.
-	 * \return The differential conductance.
+	 * \brief Returns the applied bias for a set of model parameters.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The applied bias.
 	 */
-	virtual std::array<double, 2> DiffG(gsl_rng_ptr &r) const override;
-
-	/**
-	 * \brief Returns the static conductance for a randomly-generated set of
-	 *    model parameters.
-	 * 
-	 * \param[in] r The GSL random number generator handle.
-	 * \return The static conductance.
-	 */
-	virtual std::array<double, 2> StaticG(gsl_rng_ptr &r) const override;
+	virtual double AppBias(const std::array<double, 5> &params) const override;
 
 	/**
 	 * \brief Calculates the transmission for a set of model parameters.
@@ -131,23 +125,24 @@ public:
 		const double gamma, const double beta);
 
 	/**
-	 * \brief Calculates the static conductance for a set of model parameters.
-	 *
-	 * \param[in] vec The vector of model parameters.
-	 * \return The static conductance for this set of parameters.
+	 * \brief Returns the differential conductance for a set of model
+	 *    parameters.
+	 * 
+	 * \param[in] params A set of model parameters.
+	 * \return The differential conductance.
 	 */
-	static double static_conductance(const std::vector<double> &vec);
+	virtual double DiffG(const std::array<double, 5> &params) const override;
 
 	/**
-	 * \brief Calculates the differential conductance for a set of model
-	 *    parameters.
-	 *
-	 * \param[in] vec The vector of model parameters.
-	 * \return The differential conductance for this set of parameters.
+	 * \brief Returns the static conductance for a set of model parameters.
+	 * 
+	 * \param[in] params A set of model parameters.
+	 * \return The static conductance.
 	 */
-	static double diff_conductance(const std::vector<double> &vec);
+	virtual double StaticG(const std::array<double, 5> &params) const override;
 };
 
+} // namespace molstat::transport
 } // namespace molstat
 
 #endif

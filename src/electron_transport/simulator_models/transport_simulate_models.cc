@@ -16,7 +16,9 @@
 #include "asym_one_site_simulate_model.h"
  #if 0
 #include "ind_two_chan_simulate_model.h"
+#endif
 #include "sym_two_site_simulate_model.h"
+ #if 0
 #include "asym_two_site_simulate_model.h"
 #endif
 
@@ -36,10 +38,12 @@ void load_models(
 #if 0
 	models["independenttwochannel"] =
 		GetSimulateModelFunction<2, IndTwoChanSimulateModel>();
+#endif
 
 	models["symmetrictwosite"] =
-		GetSimulateModelFunction<2, SymTwoSiteSimulateModel>();
+		GetSimulatorFactory<2, SymTwoSiteSimulateModel>();
 
+#if 0
 	models["asymmetrictwosite"] =
 		GetSimulateModelFunction<2, AsymTwoSiteSimulateModel>();
 #endif

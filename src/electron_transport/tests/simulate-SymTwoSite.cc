@@ -10,17 +10,21 @@
  *     model.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
 #include <cstdio>
-#include <assert.h>
+#include <cassert>
 #include <cmath>
-#include <vector>
+#include <array>
+#include <map>
 
-#include "../simulator_models/sym_two_site_simulate_model.h"
+#include <general/random_distributions/constant.h>
+#include <electron_transport/simulator_models/sym_two_site_simulate_model.h>
 
 using namespace std;
+using Model = molstat::transport::SymTwoSiteSimulateModel;
+constexpr size_t MPs{ 5 };
 
 /**
  * \internal
@@ -32,30 +36,56 @@ using namespace std;
  * \endinternal
  */
 int main(int argc, char **argv) {
-	const double thresh = 1.0e-6;
-	typedef molstat::SymTwoSiteSimulateModel model;
-	vector<double> params(5);
+	const double thresh{ 1.e-6 };
+	array<double, MPs> params;
+	map<string, shared_ptr<molstat::RandomDistribution>> avail;
 
-	// params[0] = EF, [1] = V, [2] = eps, [3] = gamma, [4] = beta
+	// rig up some distributions for the constructor
+	avail["ef"] = make_shared<molstat::ConstantDistribution>(0.);
+	avail["v"] = make_shared<molstat::ConstantDistribution>(0.);
+	avail["epsilon"] = make_shared<molstat::ConstantDistribution>(0.);
+	avail["gamma"] = make_shared<molstat::ConstantDistribution>(0.);
+	avail["beta"] = make_shared<molstat::ConstantDistribution>(0.);
+
+	// create a model
+	Model model{ avail };
 
 	// check known values for several parameter sets
-	params = {0., 1., -4., 0.8, -3.};
-	assert(abs(0.101007 - model::transmission
-		(params[0], 0., params[2], params[3], params[4])) < thresh);
-	assert(abs(0.127042 - model::static_conductance(params)) < thresh);
-	assert(abs(0.186815 - model::diff_conductance(params)) < thresh);
+	params[Model::Index_EF] = 0.;
+	params[Model::Index_V] = 1.;
+	params[Model::Index_epsilon] = -4.;
+	params[Model::Index_gamma] = 0.8;
+	params[Model::Index_beta] = -3.;
+	assert(abs(0.101007 - model.transmission
+		(params[Model::Index_EF], 0., params[Model::Index_epsilon],
+		 params[Model::Index_gamma], params[Model::Index_beta])) < thresh);
+	assert(abs(0.127042 - model.StaticG(params)) < thresh);
+	assert(abs(0.186815 - model.DiffG(params)) < thresh);
+	assert(abs(params[Model::Index_V] - model.AppBias(params)) < thresh);
 
-	params = {1., -0.4, -3., 0.4, -0.8};
-	assert(abs(0.000431590 - model::transmission
-		(params[0], 0., params[2], params[3], params[4])) < thresh);
-	assert(abs(0.000435520 - model::static_conductance(params)) < thresh);
-	assert(abs(0.000443426 - model::diff_conductance(params)) < thresh);
+	params[Model::Index_EF] = 1.;
+	params[Model::Index_V] = -0.4;
+	params[Model::Index_epsilon] = -3.;
+	params[Model::Index_gamma] = 0.4;
+	params[Model::Index_beta] = -0.8;
+	assert(abs(0.000431590 - model.transmission
+		(params[Model::Index_EF], 0., params[Model::Index_epsilon],
+		 params[Model::Index_gamma], params[Model::Index_beta])) < thresh);
+	assert(abs(0.000435520 - model.StaticG(params)) < thresh);
+	assert(abs(0.000443426 - model.DiffG(params)) < thresh);
+	assert(abs(params[Model::Index_V] - model.AppBias(params)) < thresh);
 
-	params = {3., 1.4, 1.1, 0.67, -1.6};
-	assert(abs(0.459683 - model::transmission
-		(params[0], 0., params[2], params[3], params[4])) < thresh);
-	assert(abs(0.480791 - model::static_conductance(params)) < thresh);
-	assert(abs(0.294527 - model::diff_conductance(params)) < thresh);
+	params[Model::Index_EF] = 3.;
+	params[Model::Index_V] = 1.4;
+	params[Model::Index_epsilon] = 1.1;
+	params[Model::Index_gamma] = 0.67;
+	params[Model::Index_beta] = -1.6;
+	assert(abs(0.459683 - model.transmission
+		(params[Model::Index_EF], 0., params[Model::Index_epsilon],
+		 params[Model::Index_gamma], params[Model::Index_beta])) < thresh);
+	assert(abs(0.480791 - model.StaticG(params)) < thresh);
+	assert(abs(0.294527 - model.DiffG(params)) < thresh);
+	assert(abs(params[Model::Index_V] - model.AppBias(params)) < thresh);
 
 	return 0;
 }
