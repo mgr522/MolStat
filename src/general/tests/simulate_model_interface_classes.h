@@ -131,4 +131,54 @@ public:
 	}
 };
 
+/**
+ * \internal
+ * \brief Dummy class for testing the order of parameters and the
+ *    order_from_map function.
+ * \endinternal
+ */
+class FailedMapModel : public molstat::SimulateModel<3> {
+public:
+	FailedMapModel(
+		const map<string, shared_ptr<molstat::RandomDistribution>> &avail)
+		: SimulateModel<3>(avail,
+		                   order_from_map({{0, "a"}, {1, "b"}, {3, "c"}})) {
+
+	}
+};
+
+/**
+ * \internal
+ * \brief Dummy class for testing the order of parameters and the
+ *    order_from_map function.
+ * \endinternal
+ */
+class GoodMapModel : public molstat::SimulateModel<3> {
+private:
+	/**
+	 * \internal
+	 * \brief Map of indices to names of distributions.
+	 * \endinternal
+	 */
+	const static map<size_t, string> map_of_order;
+
+public:
+	/**
+	 * \internal
+	 * \brief Order of the names of distributions.
+	 * \endinternal
+	 */
+	const array<string, 3> order;
+
+	GoodMapModel(
+		const map<string, shared_ptr<molstat::RandomDistribution>> &avail)
+		: SimulateModel<3>(avail,
+		                   order_from_map(map_of_order)),
+		  order(order_from_map(map_of_order)) {
+	}
+};
+
+const map<size_t, string> GoodMapModel::map_of_order{{1, "c"}, {0, "a"},
+	                                                  {2, "a"}, {3, "b"}};
+
 #endif

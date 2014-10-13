@@ -68,11 +68,11 @@ std::array<std::string, MPs> SimulateModel<MPs>::order_from_map(
 
 	for(std::size_t j = 0; j < MPs; ++j) {
 		try{
-			std::string str = param_order.at(j);
-			ret[j] = std::move(str);
+			ret[j] = param_order.at(j);
 		}
 		catch(std::out_of_range &e) {
-			throw std::out_of_range("Required index missing.");
+			throw std::out_of_range("Required index ("
+				+ std::to_string(j) + ") missing.");
 		}
 	}
 

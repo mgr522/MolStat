@@ -5,7 +5,7 @@
  * \file simulate_model_interface.h
  * \brief Defines abstract classes for simulating histograms.
  *
- * \todo Write a better description of how all these models work together.
+ * \todo Write a better description of how all these classes work together.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
@@ -115,7 +115,7 @@ public:
  * observable. In this way, a particular model can inherit from multiple
  * observables and implement each of their \"observable\" functions.
  *
- * Each molstat::Observable is essentially an interface that is meant to be
+ * molstat::Observable is essentially an interface that is meant to be
  * inherited, along with molstat::SimulateModel.
  *
  * \tparam MPs The number of model parameters needed to calculate this

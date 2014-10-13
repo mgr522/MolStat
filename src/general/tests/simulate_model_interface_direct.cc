@@ -28,7 +28,7 @@
  * \endinternal
  */
 int main(int argc, char **argv) {
-	shared_ptr<molstat::Simulator<3>> sim;
+	unique_ptr<molstat::Simulator<3>> sim;
 	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 	molstat::gsl_rng_ptr r(nullptr, &gsl_rng_free);
 
@@ -115,6 +115,36 @@ int main(int argc, char **argv) {
 	}
 	catch(int i) {
 		assert(i == exceptvalue);
+	}
+
+	// check the ordering of distributions within a model
+	parameters["b"] = make_shared<molstat::ConstantDistribution>(distvalue+1.);
+	parameters["c"] = make_shared<molstat::ConstantDistribution>(distvalue-1.);
+
+	try {
+		// attempt to create the simulator; this should fail because item 2 is
+		// missing in the construction of a FailedMapModel
+		sim = molstat::Simulator<3>::Factory<FailedMapModel>(parameters);
+
+		assert(false);
+	}
+	catch(const out_of_range &e) {
+		// should be here
+	}
+	catch(const runtime_error &e) {
+		assert(false);
+	}
+
+	try {
+		unique_ptr<GoodMapModel> model{ new GoodMapModel(parameters) };
+
+		// make sure the correct distributions are in the correct places
+		assert(model->order[0] == "a");
+		assert(model->order[1] == "c");
+		assert(model->order[2] == "a");
+	}
+	catch(...) {
+		assert(false);
 	}
 
 	return 0;
