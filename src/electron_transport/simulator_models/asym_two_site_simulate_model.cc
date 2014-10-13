@@ -7,7 +7,7 @@
  *    to both electrodes.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
 #include "asym_two_site_simulate_model.h"
@@ -15,52 +15,27 @@
 #include <complex>
 
 namespace molstat {
+namespace transport {
 
-// if the order of the following list is changed, the unpack_parameters
-// function MUST also be updated
-const std::vector<std::string> AsymTwoSiteSimulateModel::parameters =
-	{"ef", "v", "epsilon", "gammal", "gammar", "beta"};
-
-void AsymTwoSiteSimulateModel::unpack_parameters(
-	const std::vector<double> &vec, double &ef, double &v, double &epsilon,
-	double &gammal, double &gammar, double &beta) {
-
-	ef = vec[0];
-	v = vec[1];
-	epsilon = vec[2];
-	gammal = vec[3];
-	gammar = vec[4];
-	beta = vec[5];
-}
+const std::size_t AsymTwoSiteSimulateModel::Index_EF = 0;
+const std::size_t AsymTwoSiteSimulateModel::Index_V = 1;
+const std::size_t AsymTwoSiteSimulateModel::Index_epsilon = 2;
+const std::size_t AsymTwoSiteSimulateModel::Index_gammaL = 3;
+const std::size_t AsymTwoSiteSimulateModel::Index_gammaR = 4;
+const std::size_t AsymTwoSiteSimulateModel::Index_beta = 5;
 
 AsymTwoSiteSimulateModel::AsymTwoSiteSimulateModel(
 	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
-	: SimulateModel(avail, parameters) {
+	: SimulateModel(avail,
+	                order_from_map({{Index_EF, "ef"},
+	                                {Index_V, "v"},
+	                                {Index_epsilon, "epsilon"},
+	                                {Index_gammaL, "gammal"},
+	                                {Index_gammaR, "gammar"},
+	                                {Index_beta, "beta"}})) {
 }
 
-std::array<double, 2> AsymTwoSiteSimulateModel::DiffG(gsl_rng_ptr &r) const {
-	std::vector<double> params(6);
-	double ef, v, eps, gammal, gammar, beta;
-
-	// generate and unpack the parameters
-	sample(r, params);
-	unpack_parameters(params, ef, v, eps, gammal, gammar, beta);
-
-	return {{ v, diff_conductance(params) }};
-}
-
-std::array<double, 2> AsymTwoSiteSimulateModel::StaticG(gsl_rng_ptr &r) const {
-	std::vector<double> params(6);
-	double ef, v, eps, gammal, gammar, beta;
-
-	// generate and unpack the parameters
-	sample(r, params);
-	unpack_parameters(params, ef, v, eps, gammal, gammar, beta);
-
-	return {{ v, static_conductance(params) }};
-}
-
-double AsymTwoSiteSimulateModel::transmission(const double e, const double v,
+double AsymTwoSiteSimulateModel::transmission(const double e, const double V,
 	const double eps, const double gammal, const double gammar,
 	const double beta) {
 
@@ -68,6 +43,12 @@ double AsymTwoSiteSimulateModel::transmission(const double e, const double v,
 
 	return 16.*gammal*gammar*beta*beta /
 		(temp*temp + 4.*(gammal+gammar)*(gammal+gammar)*(e-eps)*(e-eps));
+}
+
+double AsymTwoSiteSimulateModel::AppBias(const std::array<double, 6> &params)
+	const {
+
+	return params[Index_V];
 }
 
 double AsymTwoSiteSimulateModel::static_c_integral(const double z,
@@ -89,28 +70,35 @@ double AsymTwoSiteSimulateModel::static_c_integral(const double z,
 		);
 }
 
-double AsymTwoSiteSimulateModel::static_conductance(
-	const std::vector<double> &vec) {
-
-	double ef, v, eps, gammal, gammar, beta;
-
-	// unpack the model parameters
-	unpack_parameters(vec, ef, v, eps, gammal, gammar, beta);
-
-	return (static_c_integral(ef + 0.5*v, eps, gammal, gammar, beta) -
-		static_c_integral(ef - 0.5*v, eps, gammal, gammar, beta)) / v;
-}
-
-double AsymTwoSiteSimulateModel::diff_conductance(
-	const std::vector<double> &vec) {
-
-	double ef, v, eps, gammal, gammar, beta;
+double AsymTwoSiteSimulateModel::StaticG(const std::array<double, 6> &params)
+	const {
 
 	// unpack the parameters
-	unpack_parameters(vec, ef, v, eps, gammal, gammar, beta);
+	const double &ef = params[Index_EF];
+	const double &V = params[Index_V];
+	const double &eps = params[Index_epsilon];
+	const double &gammal = params[Index_gammaL];
+	const double &gammar = params[Index_gammaR];
+	const double &beta = params[Index_beta];
 
-	return 0.5*transmission(ef + 0.5*v, v, eps, gammal, gammar, beta) +
-		0.5*transmission(ef - 0.5*v, v, eps, gammal, gammar, beta);
+	return (static_c_integral(ef + 0.5*V, eps, gammal, gammar, beta) -
+		static_c_integral(ef - 0.5*V, eps, gammal, gammar, beta)) / V;
 }
 
+double AsymTwoSiteSimulateModel::DiffG(const std::array<double, 6> &params)
+	const {
+
+	// unpack the parameters
+	const double &ef = params[Index_EF];
+	const double &V = params[Index_V];
+	const double &eps = params[Index_epsilon];
+	const double &gammal = params[Index_gammaL];
+	const double &gammar = params[Index_gammaR];
+	const double &beta = params[Index_beta];
+
+	return 0.5*transmission(ef + 0.5*V, V, eps, gammal, gammar, beta) +
+		0.5*transmission(ef - 0.5*V, V, eps, gammal, gammar, beta);
+}
+
+} // namespace molstat::transport
 } // namespace molstat

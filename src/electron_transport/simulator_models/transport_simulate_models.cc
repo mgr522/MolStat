@@ -7,7 +7,7 @@
  *    MolStat.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
 #include "transport_simulate_models.h"
@@ -18,9 +18,7 @@
 #include "ind_two_chan_simulate_model.h"
 #endif
 #include "sym_two_site_simulate_model.h"
- #if 0
 #include "asym_two_site_simulate_model.h"
-#endif
 
 namespace molstat {
 namespace transport {
@@ -43,10 +41,8 @@ void load_models(
 	models["symmetrictwosite"] =
 		GetSimulatorFactory<2, SymTwoSiteSimulateModel>();
 
-#if 0
 	models["asymmetrictwosite"] =
-		GetSimulateModelFunction<2, AsymTwoSiteSimulateModel>();
-#endif
+		GetSimulatorFactory<2, AsymTwoSiteSimulateModel>();
 }
 
 void load_observables(
