@@ -51,46 +51,45 @@ class SymOneSiteSimulateModel : public SimulateModel<5>,
 	public DifferentialConductance<5>,
 	public StaticConductance<5> {
 
-private:
+public:
 	/**
 	 * \brief Container index for the Fermi energy.
 	 */
-	static constexpr std::size_t Index_EF = 0;
+	static const std::size_t Index_EF;
 
 	/**
 	 * \brief Container index for the applied bias.
 	 */
-	static constexpr std::size_t Index_V = 1;
+	static const std::size_t Index_V;
 
 	/**
 	 * \brief Container index for the site energy.
 	 */
-	static constexpr std::size_t Index_epsilon = 2;
+	static const std::size_t Index_epsilon;
 
 	/**
 	 * \brief Container index for the site-lead coupling.
 	 */
-	static constexpr std::size_t Index_gamma = 3;
+	static const std::size_t Index_gamma;
 
 	/**
 	 * \brief Container index for the bias drop scaling factor.
 	 */
-	static constexpr std::size_t Index_a = 4;
+	static const std::size_t Index_a;
 
 	/**
 	 * \brief Calculates the transmission for a set of model parameters.
 	 *
 	 * \param[in] e The energy of the incident electron.
-	 * \param[in] v The applied bias.
+	 * \param[in] V The applied bias.
 	 * \param[in] eps The level energy.
 	 * \param[in] gamma The level-electrode coupling.
 	 * \param[in] a The voltage drop scaling factor.
 	 * \return The transmission for this set of parameters.
 	 */
-	static double transmission(const double e, const double v, const double eps,
+	static double transmission(const double e, const double V, const double eps,
 		const double gamma, const double a);
 
-public:
 	SymOneSiteSimulateModel() = delete;
 	virtual ~SymOneSiteSimulateModel() = default;
 

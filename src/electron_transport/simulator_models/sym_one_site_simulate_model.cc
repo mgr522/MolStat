@@ -16,6 +16,12 @@
 namespace molstat {
 namespace transport {
 
+const std::size_t SymOneSiteSimulateModel::Index_EF = 0;
+const std::size_t SymOneSiteSimulateModel::Index_V = 1;
+const std::size_t SymOneSiteSimulateModel::Index_epsilon = 2;
+const std::size_t SymOneSiteSimulateModel::Index_gamma = 3;
+const std::size_t SymOneSiteSimulateModel::Index_a = 4;
+
 SymOneSiteSimulateModel::SymOneSiteSimulateModel(
 	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
 	: SimulateModel(avail,
@@ -26,10 +32,10 @@ SymOneSiteSimulateModel::SymOneSiteSimulateModel(
 	                                {Index_a, "a"}})) {
 }
 
-double SymOneSiteSimulateModel::transmission(const double e, const double v,
+double SymOneSiteSimulateModel::transmission(const double e, const double V,
 	const double eps, const double gamma, const double a) {
 
-	return gamma*gamma / ((e - eps - a*v)*(e - eps - a*v) + gamma*gamma);
+	return gamma*gamma / ((e - eps - a*V)*(e - eps - a*V) + gamma*gamma);
 }
 
 double SymOneSiteSimulateModel::AppBias(const std::array<double, 5> &params)
