@@ -34,17 +34,17 @@ void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
   double &ab, double &v, double &n, double &poinitial,
   double &temperature, double &tlimit, double &direction) {
 
-    e0 = vec[0];
-    eref = vec[1];
-    lambda = vec[2];
-    af = vec[3];
-    ab = vec[4];
-    v = vec[5];
-    n = vec[6];
-    poinitial = vec[7];
-    temperature = vec[8];
-    tlimit = vec[9];
-    direction = vec[10];
+  e0 = vec[0];
+  eref = vec[1];
+  lambda = vec[2];
+  af = vec[3];
+  ab = vec[4];
+  v = vec[5];
+  n = vec[6];
+  poinitial = vec[7];
+  temperature = vec[8];
+  tlimit = vec[9];
+  direction = vec[10];
 }
 
 SingleMoleculeCV::SingleMoleculeCV(
@@ -120,7 +120,7 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   CVodeSetUserData(cvode_mem, &vec_cvode);
 
   // call CVodeSetMaxNumSteps to specify the maximun number of steps to be taken.
-  CVodeSetMaxNumSteps(cvode_mem, 1000);
+//  CVodeSetMaxNumSteps(cvode_mem, 1000);
 
   // call CVodeRootInit to specify the root function g with 1 component
   CVodeRootInit(cvode_mem, 1, g);
@@ -139,6 +139,7 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   while(1) {
 
     flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
+    //PrintOutput(t, Ith(y,1), Ith(y,2));
 
     if (flag == CV_ROOT_RETURN) {
       flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
@@ -154,6 +155,8 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
 
   // free integrator memory
   CVodeFree(&cvode_mem);
+
+  printf("the size of the vector is %4d\n", root.size());
 
   if (direction == 1.0) return root[1];
   if (direction == 2.0) return root[2];
@@ -189,7 +192,7 @@ double SingleMoleculeCV::kb( double t,
 
   double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE ) 
     / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
-  double log_kb = e + gsl_sf_log(af);
+  double log_kb = e + gsl_sf_log(ab);
 
   if (log_kb < -650) {
       return 0;
@@ -209,10 +212,10 @@ double SingleMoleculeCV::E_applied(double t,
 
   if (t >= 0 && t <= tlimit)
       E = e0 + v * t;
-  if (t > tlimit)
+  if (t > tlimit && t <= 2.0 * tlimit)
       E = e0 + 2.0 * v * tlimit - v * t;
-  //printf("Inside E_applied E is %14.6e\n", E);
-  //printf("Inside E_applied t is %14.6e\n\n\n", t);
+  if (t > 2.0 * tlimit)
+      E = 2000;
   return E;
 }
 
@@ -228,8 +231,10 @@ int SingleMoleculeCV::f(double t, N_Vector y, N_Vector ydot,
 
   Ith(ydot,1) = - kf(t, *p) * y1 + kb(t, *p) *y2;
   Ith(ydot,2) =   kf(t, *p) * y1 - kb(t, *p) *y2;
+
+  //PrintOutput(t, y1,y2);
   
-  return(0);
+  return 0;
 }
 
 int SingleMoleculeCV::g(double t, N_Vector y, double *gout, 
@@ -240,7 +245,7 @@ int SingleMoleculeCV::g(double t, N_Vector y, double *gout,
   y1 = Ith(y,1);
   gout [0] = y1 - 0.5;
 
-  return(0);
+  return 0;
 }
 
 int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
@@ -255,7 +260,7 @@ int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
   IJth(J,2,1) =   kf(t, *p);
   IJth(J,2,2) = - kb(t, *p);
 
-  return(0);
+  return 0;
 }
 int SingleMoleculeCV::display_parameters(const std::vector<double> &vec) {
     double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
@@ -273,7 +278,14 @@ int SingleMoleculeCV::display_parameters(const std::vector<double> &vec) {
   printf("poinitial      = %14.6e\n", poinitial);
   printf("temperature    = %14.6e\n", temperature);
   printf("tlimit         = %14.6e\n", tlimit);
-  printf("direction           = %14.6e\n\n\n", direction);
+  printf("direction      = %14.6e\n", direction);
+
+  return 0;
+}
+
+int SingleMoleculeCV::PrintOutput(double t, double y1, double y2)
+{
+  printf("At t = %0.4e   PO = %14.6e  PR = %14.6e\n", t, y1, y2);
 
   return 0;
 }
