@@ -9,9 +9,9 @@ data; specifically the peak potential histograms. We begin with modeling the sin
 introduce the peak potential histogram, and then detail the implemented MolStat model.
 
 \section sec_cv_marcus Modeling Single Molecule CV
-We assume the single molecule is immobilized on the suface in this model. Since concentrations do not 
+We assume that the single molecule is immobilized on the suface in this model. Since concentrations do not 
 make sense in a single molecule event, the probability that the molecule in the reduced or oxidized state 
-takes the place of it. In our electrochemical half-reaction
+will take the place of it. In our electrochemical half-reaction
 \f[
 O+ne^-\rightleftharpoons R,
 \f]
@@ -32,7 +32,7 @@ k_\mathrm{f}(t)=A_\mathrm{f}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})+\lambda]^2
 k_\mathrm{b}(t)=A_\mathrm{b}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})-\lambda]^2}{4\lambda k_\mathrm{B}T}\right].
 \f]
 The initial condition {\f$P_\mathrm{O}(0)=1,P_\mathrm{R}(0)=0\f$} or \f$P_\mathrm{O}(0)=0,P_\mathrm{R}(0)=1\f$ is 
-also assumed. The parameters in this model are
+also assumed. The physical parameters involved in this model are
    - \f$E_\mathrm{Ref}\f$, the reference potential,
    - \f$\lambda\f$, the reorganization energy,
    - \f$A_\mathrm{f}/A_\mathrm{b}\f$, the prefactor(s) for the forward/backward redox half-reaction,
@@ -40,14 +40,14 @@ also assumed. The parameters in this model are
         \f$E_0+2vt_\mathrm{lim}-vt\f$ if \f$t_{lim}\leq t\leq 2t_\mathrm{lim}\f$, where \f$E_0\f$ is the initial bias and 
         \f$v\f$ is the scan speed.
 
-The ideal single molecule CV is supposed to be two delta-function-like peaks on forward and backward voltage scanning, i.e. the 
+The ideal single molecule CV is supposed to be two delta-function-like peaks with different signs on forward and backward voltage scanning, i.e. the 
 current is only non-zero when the electrochemical reaction happens. We assume that the electrochemical reaction happens at the time 
 when \f$P_\mathrm{O}(t)=P_\mathrm{R}(t)=0.5\f$ and look for the corresponding potentials by numerically solving the two master 
 equations. 
-Although the master equations for single molecule model looks similar to traditional model for immobilized molecule, the single 
-molecule model is stochastic, which may lead to differential peak potentials as the single molecule electrochemical reaction 
+Although the master equations for single molecule model looks similar to traditional model for immobilized molecules, the single 
+molecule model is stochastic, which will result in different peak potentials as the single molecule electrochemical reaction 
 repeats. As a result, the expected data from a single molecule electrochemistry experiment is peak pontentials Histograms collected from 
-many single molecule CV event.
+many single molecule CV events.
 
 \section sec_cv_histogram Peak Potentials Histogram
 Like Conductance histograms, we calculate the peak potentials by randomizing the physical parameters with normal distribution.
@@ -62,18 +62,15 @@ rate constant as random variables that determine the peak potential's probabilit
 density function.
 
 The two operations supported by MolStat are
--# Simulating conductance histograms using simple model systems (see
-   \cite reuter-2243). This operation is described in
-   \ref sec_simulate_electron_transport. Note that these model systems do not
+-# Simulating single molecule CV histograms using simple model system. This operation 
+    is described in
+   \ref sec_simulate_single_molecule_cv. Note that this model system does not
    rely on first-principles electronic structure calculations; they are
-   phenomenological. Other studies that construct histogram from such *ab
-   initio* calculations have been reported in, for instance, \cite french-887.
--# Fit a conductance histogram (or, more accurately, a peak from a conductance
-   histogram) to a specified functional form. This process is discussed in
-   \ref sec_fit_electron_transport.
+   phenomenological. 
+-# Fit a conductance histogram. We are going to consider this part later.
 
 \section sec_simulate_single_molecule_cv Simulating Single Molecule CV
-Simulating conductance histograms is accomplished using the MolStat simulator;
+Simulating single molecule CV histogram is accomplished using the MolStat simulator;
 see \ref sec_molstat_simulate for details. Herein we list the observable and
 model for single molecule CV histogram. This model facilitates calculation of
 peak potentials through various parameters.
