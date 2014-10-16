@@ -5,7 +5,7 @@
 \page page_single_molecule_cv Single Molecule Cyclic Voltammetry
 
 This chapter deals with using MolStat to simulate and fit single molecule Cyclic Voltammetry(CV)
-data; specifically the peak potential histograms. We begin with modeling the single molecule CV,
+data; specifically the peak potential histogram. We begin with modeling the single molecule CV,
 introduce the peak potential histogram, and then detail the implemented MolStat model.
 
 \section sec_cv_marcus Modeling Single Molecule CV
@@ -31,7 +31,7 @@ k_\mathrm{f}(t)=A_\mathrm{f}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})+\lambda]^2
 \f[
 k_\mathrm{b}(t)=A_\mathrm{b}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})-\lambda]^2}{4\lambda k_\mathrm{B}T}\right].
 \f]
-The initial condition {\f$P_\mathrm{O}(0)=1,P_\mathrm{R}(0)=0\f$} or \f$P_\mathrm{O}(0)=0,P_\mathrm{R}(0)=1\f$ is 
+The initial condition \f$\left{P_\mathrm{O}(0)=1,P_\mathrm{R}(0)=0\right}\f$ or \f$\left{P_\mathrm{O}(0)=0,P_\mathrm{R}(0)=1\right}\f$ is 
 also assumed. The physical parameters involved in this model are
    - \f$E_\mathrm{Ref}\f$, the reference potential,
    - \f$\lambda\f$, the reorganization energy,
@@ -103,5 +103,5 @@ This model is referenced in transport_models.cc.
       - `direction` a parameter used to determine which peak will be returned(1.0 for the 
            peak on forward process and 2.0 the peak on reversal).
 \section sec_fit_electron_transport Fitting Single Molecule Cyclic Voltammetry
-This part will completed later
+This part will completed later.
 */
