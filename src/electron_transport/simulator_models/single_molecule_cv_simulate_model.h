@@ -195,6 +195,8 @@ public:
    * \return 0 
 	 */
   static int display_parameters(const std::vector<double> &vec);
+
+  static int PrintOutput(double t, double y1, double y2);
 };
 
 #endif
