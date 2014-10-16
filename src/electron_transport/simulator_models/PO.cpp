@@ -46,11 +46,12 @@
 #define TADD  1.0
 #define NOUT  1              /* number of output times */
 
+
 #define E0_c      0.0     /* initial applied potential */
-#define Eref_c    1.091960e+00   /* reference potential */
-#define lamb_c    5.824198e-01  /* reorganization energy */
-#define Af_c      5.028611e+00    /* prefactor for forward half-action rate constant */
-#define Ab_c      5.007653e+00   /* prefactor for backward half-action rate constant */
+#define Eref_c    1.121980444e+00   /* reference potential */
+#define lamb_c    6.606460389e-01  /* reorganization energy */
+#define Af_c      5.002291059e+00    /* prefactor for forward half-action rate constant */
+#define Ab_c      4.968692776e+00   /* prefactor for backward half-action rate constant */
 #define v_c       0.01    /* Sweeping rate of the applied potential */
 #define Temp_c    300.0   /* Temperature */
 #define ne_c      1.0     /* Number of electrons involved in the reaction */
@@ -153,6 +154,9 @@ int main()
     void *cvode_mem;
     int flag, flagr, iout;
     int rootsfound[2];
+    
+    int mxsteps = 1000;
+    double hmax = 2.0 * t1_c / mxsteps; 
 
     y = abstol = NULL;
     cvode_mem = NULL;
@@ -194,7 +198,10 @@ int main()
 
     /* Set the Jacobian routine to Jac (user-supplied) */
     flag = CVDlsSetDenseJacFn(cvode_mem, Jac);
-//    CVodeSetInitStep(cvode_mem, 1.0e-4);
+
+    flag = CVodeSetMaxNumSteps(cvode_mem, mxsteps);
+
+    flag = CVodeSetMaxStep(cvode_mem, hmax);
 
     /* In loop, call CVode, print results, and test for error.
      Break out of loop when NOUT preset output times have been reached.  */
