@@ -82,6 +82,12 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   int flag, flagr, iout;
   int rootsfound[2];
 
+  //set the maximum steps for ODE solver
+  int mxsteps = 1000;
+
+  //set the maximum step size
+  double hmax = 4.0 * tlimit / mxsteps;
+
   std::vector<double> vec_cvode;
   vec_cvode = vec;
 
@@ -120,7 +126,10 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   CVodeSetUserData(cvode_mem, &vec_cvode);
 
   // call CVodeSetMaxNumSteps to specify the maximun number of steps to be taken.
-//  CVodeSetMaxNumSteps(cvode_mem, 1000);
+  CVodeSetMaxNumSteps(cvode_mem, mxsteps);
+
+  // call CVodeSetMaxStep to specify the maximum step size.
+  CVodeSetMaxStep(cvode_mem, hmax);
 
   // call CVodeRootInit to specify the root function g with 1 component
   CVodeRootInit(cvode_mem, 1, g);
@@ -156,7 +165,9 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   // free integrator memory
   CVodeFree(&cvode_mem);
 
-  printf("the size of the vector is %4d\n", root.size());
+  //printf("the size of the vector is %4d\n", root.size());
+  //printf("the first root is %14.8e\n", root[1]);
+  //printf("the second root is %14.8e\n", root[2]);
 
   if (direction == 1.0) return root[1];
   if (direction == 2.0) return root[2];
@@ -268,17 +279,17 @@ int SingleMoleculeCV::display_parameters(const std::vector<double> &vec) {
   //upack the model paramters
   unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
   
-  printf("e0             = %14.6e\n", e0);
-  printf("eref           = %14.6e\n", eref);
-  printf("lambda         = %14.6e\n", lambda);
-  printf("af             = %14.6e\n", af);
-  printf("ab             = %14.6e\n", ab);
-  printf("v              = %14.6e\n", v);
-  printf("n              = %14.6e\n", n);
-  printf("poinitial      = %14.6e\n", poinitial);
-  printf("temperature    = %14.6e\n", temperature);
-  printf("tlimit         = %14.6e\n", tlimit);
-  printf("direction      = %14.6e\n", direction);
+  printf("e0             = %14.9e\n", e0);
+  printf("eref           = %14.9e\n", eref);
+  printf("lambda         = %14.9e\n", lambda);
+  printf("af             = %14.9e\n", af);
+  printf("ab             = %14.9e\n", ab);
+  printf("v              = %14.9e\n", v);
+  printf("n              = %14.9e\n", n);
+  printf("poinitial      = %14.9e\n", poinitial);
+  printf("temperature    = %14.9e\n", temperature);
+  printf("tlimit         = %14.9e\n", tlimit);
+  printf("direction      = %14.9e\n", direction);
 
   return 0;
 }
