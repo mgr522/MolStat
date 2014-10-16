@@ -1,10 +1,11 @@
 #include <stdio.h>
-#include <math.h>
+#include <cmath>
 #include <memory>
 /* header files of GSL */
 #include <gsl/gsl_const_mksa.h>
 #include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_sf_log.h>
 
 /* header files of CVODE */
 #include <cvode/cvode.h>             /* prototypes for CVODE fcts., consts. */
@@ -46,10 +47,10 @@
 #define NOUT  1              /* number of output times */
 
 #define E0_c      0.0     /* initial applied potential */
-#define Eref_c    1.130817   /* reference potential */
-#define lamb_c    0.6959579 /* reorganization energy */
-#define Af_c      5.019018     /* prefactor for forward half-action rate constant */
-#define Ab_c      5.034298     /* prefactor for backward half-action rate constant */
+#define Eref_c    1.091960e+00   /* reference potential */
+#define lamb_c    5.824198e-01  /* reorganization energy */
+#define Af_c      5.028611e+00    /* prefactor for forward half-action rate constant */
+#define Ab_c      5.007653e+00   /* prefactor for backward half-action rate constant */
 #define v_c       0.01    /* Sweeping rate of the applied potential */
 #define Temp_c    300.0   /* Temperature */
 #define ne_c      1.0     /* Number of electrons involved in the reaction */
@@ -83,8 +84,13 @@ static double kf( double t,
 	// unpack the model parameters
 	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-	return af * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda * GSL_CONST_MKSA_ELECTRON_CHARGE )
-        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature));
+	double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda * GSL_CONST_MKSA_ELECTRON_CHARGE )
+        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
+    double log_kf = e + gsl_sf_log(af);
+    if (log_kf < -650){
+        return 0;
+    }
+    return gsl_sf_exp(log_kf);
 }
 
 static double kb( double t,
@@ -95,8 +101,14 @@ static double kb( double t,
 	// unpack the model parameters
 	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit);
 
-	return ab * gsl_sf_exp( - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE )
-        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature));
+	double e =  - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE )
+        / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
+    double log_kb = e + gsl_sf_log(ab);
+    if (log_kb < -650)
+    {
+        return 0;
+    }
+    return gsl_sf_exp(log_kb);
 }
 
 static double E_applied(double t,
@@ -113,6 +125,8 @@ static double E_applied(double t,
         E = e0 + v * t;
     if (t > tlimit && t <= 2.0 * tlimit)
         E = e0 + 2.0 * v * tlimit - v * t;
+    if (t > 2.0 * tlimit)
+        E = 1000;
     return E;
 }
 
@@ -198,7 +212,7 @@ int main()
             root.push_back(E_applied(t,vec));
         }
 
-        if (check_flag(&flag, "CVode", 1)) break;
+        //if (check_flag(&flag, "CVode", 1)) break;
         if (flag == CV_SUCCESS) break;
     }
 
@@ -242,6 +256,8 @@ static int f(double t, N_Vector y, N_Vector ydot, void *user_data)
 
     Ith(ydot,1) = - kf(t, *p) * y1 + kb(t, *p) * y2;
     Ith(ydot,2) =   kf(t, *p) * y1 - kb(t, *p) * y2;
+    PrintOutput(t, Ith(y,1), Ith(y,2));
+
 
 
     return(0);
