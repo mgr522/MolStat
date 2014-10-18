@@ -17,6 +17,7 @@
 #include <typeinfo>
 #include <typeindex>
 #include "simulate_model.h"
+#include "simulator_exceptions.h"
 
 namespace molstat {
 
@@ -46,8 +47,8 @@ public:
 			throw IncompatibleObservable();
 
 		// add the function to the list of compatible observables
-		compatible_observables[std::typeindex(typeid(T))] =
-			[cast] (const std::valarray<double> &params) -> double {
+		compatible_observables[std::type_index(typeid(T))] =
+			[cast, obsfunc] (const std::valarray<double> &params) -> double {
 				return cast->*obsfunc(params);
 			};
 	}

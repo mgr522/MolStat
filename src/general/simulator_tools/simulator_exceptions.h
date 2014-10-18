@@ -42,6 +42,10 @@ public:
  *    the model used to simulate data.
  */
 class IncompatibleObservable : public std::logic_error {
+public:
+	IncompatibleObservable() :
+		std::logic_error("Incompatible observable.") {
+	}
 };
 
 } // namespace molstat
