@@ -3,24 +3,26 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file simulate_model_interface_direct.cc
- * \brief Test suite for the molstat::SimulateObservables,
- *    molstat::SimulateModel, and molstat::Observable templates.
+ * \brief Test suite for the various MolStat classes for simulating data.
  *
- * \test Tests the molstat::SimulateObservables, molstat::SimulateModel,
- *    and molstat::Observable templates using direct access to the
- *    molstat::SimulatorFactory object.
+ * \test Test suite for the various MolStat classes for simulating data.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
 
+#include <cassert>
+#include <typeinfo>
+#include <typeindex>
 #include "simulate_model_interface_classes.h"
+#include <general/random_distributions/rng.h>
 #include <general/random_distributions/constant.h>
+#include <general/simulator_tools/simulator.h>
 
 /**
  * \internal
- * \brief Main function for testing the molstat::SimulateObservables,
- *    molstat::SimulateModel, and molstat::Observable templates.
+ * \brief Main function for testing the various MolStat classes for
+ *    simulating data.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
@@ -28,99 +30,99 @@
  * \endinternal
  */
 int main(int argc, char **argv) {
-	unique_ptr<molstat::Simulator<3>> sim;
-	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
-	molstat::gsl_rng_ptr r(nullptr, &gsl_rng_free);
+	molstat::gsl_rng_ptr r{ nullptr, &gsl_rng_free }; // dummy rng
+	shared_ptr<molstat::SimulateModel> model { make_shared<TestModel>() };
 
+	// wrap the model into our simulator
+	molstat::Simulator sim { model };
+
+	// try to simulate data. this should fail because we haven't set any
+	// observables or distributions yet.
 	try {
-		sim = molstat::Simulator<3>::Factory<TestModel>(parameters);
+		sim.simulate(r);
 
-		// shouldn't be here because we didn't specify the parameter "a"
 		assert(false);
 	}
-	catch(const out_of_range &e) {
-		// we should be here!
+	catch(const molstat::NoObservables &e) {
+		// we should be here
 	}
 
-	// this creates an entry, but it doesn't amount to anything.
-	parameters["a"];
+	// try to set an observable with a bad index.
 	try {
-		sim = molstat::Simulator<3>::Factory<TestModel>(parameters);
+		// only 0 is available right now...
+		sim.setObservable(1, type_index{ typeid(Observable1) });
 
-		// this time we should throw a runtime_error because "a" is nullptr
-		assert(false);
-	}
-	catch(const runtime_error &e) {
-		// should be here
-	}
-
-	parameters["a"] = make_shared<molstat::ConstantDistribution>(distvalue);
-
-	// this time it should work!
-	sim = molstat::Simulator<3>::Factory<TestModel>(parameters);
-
-	// try to set an observable for Observable4.
-	// This should fail (TestModel doesn't implement Observable4)
-	try {
-		sim->setObservable<Observable4>(0);
-		assert(false);
-	}
-	catch(const runtime_error &e) {
-		// should be here
-	}
-
-	// try to set an observable to a bad index
-	try {
-		sim->setObservable<Observable1>(3);
 		assert(false);
 	}
 	catch(const out_of_range &e) {
 		// should be here
 	}
 
-	// now set observables for Observable1 and Observable2.
-	sim->setObservable<Observable1>(0);
-	sim->setObservable<Observable2>(2);
+	// try to set Observable4
+	// this should fail because TestModel doesn't implement Observable4
+	try {
+		sim.setObservable(0, type_index{ typeid(Observable4) });
+
+		assert(false);
+	}
+	catch(const molstat::IncompatibleObservable &e) {
+		// should be here
+	}
+
+	// now, let's actually set an observable
+	sim.setObservable(0, type_index{ typeid(Observable1) });
+
+	// try to simulate data. this should now fail because we haven't specified
+	// a distribution for the parameter "a"
+	try{
+		sim.simulate(r);
+
+		assert(false);
+	}
+	catch(const molstat::MissingDistribution &e) {
+		// should be here
+	}
+
+	// set the distribution
+	// make sure the setDistribution function is case-insensitive
+	model->setDistribution("A",
+		make_shared<molstat::ConstantDistribution>(distvalue));
+
+	// verify the set
+	valarray<double> data = sim.simulate(r);
+	assert(abs(data[0] - distvalue) < 1.e-6);
+
+	model->setDistribution("a",
+		make_shared<molstat::ConstantDistribution>(distvalue));
+
+	data = sim.simulate(r);
+	assert(abs(data[0] - distvalue) < 1.e-6);
+
+	// set another observable
+	sim.setObservable(1, type_index{ typeid(Observable2) });
 
 	// verify the set of observables generated...
-	array<double, 3> data = sim->simulate(r);
+	data = sim.simulate(r);
 	assert(abs(data[0] - distvalue) < 1.e-6);
-	assert(abs(data[1] - 0.) < 1.e-6);
-	assert(abs(data[2] - constvalue) < 1.e-6);
+	assert(abs(data[1] - constvalue) < 1.e-6);
+
+	// change an observable and recheck
+	sim.setObservable(0, type_index{ typeid(Observable2) });
+	data = sim.simulate(r);
+	assert(abs(data[0] - constvalue) < 1.e-6);
+	assert(abs(data[1] - constvalue) < 1.e-6);
 
 	// now load in Observable3
-	sim->setObservable<Observable3>(1);
+	sim.setObservable(1, type_index{ typeid(Observable3) });
 
 	try {
 		// Observable 3 should throw and exception; make sure we catch it
-		data = sim->simulate(r);
+		sim.simulate(r);
 		assert(false);
 	}
 	catch(int i) {
 		assert(i == exceptvalue);
 	}
-
-	// check the ordering of distributions within a model
-	parameters["b"] = make_shared<molstat::ConstantDistribution>(distvalue+1.);
-	parameters["c"] = make_shared<molstat::ConstantDistribution>(distvalue-1.);
-
-	try {
-		// attempt to create the simulator; this should fail because item 2 is
-		// missing in the construction of a FailedMapModel
-		sim = molstat::Simulator<3>::Factory<FailedMapModel>(parameters);
-
-		assert(false);
-	}
-	catch(const out_of_range &e) {
-		// should be here
-	}
-
-	unique_ptr<GoodMapModel> model{ new GoodMapModel(parameters) };
-
-	// make sure the correct distributions are in the correct places
-	assert(model->order[0] == "a");
-	assert(model->order[1] == "c");
-	assert(model->order[2] == "a");
 
 	return 0;
 }
