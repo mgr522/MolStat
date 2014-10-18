@@ -22,6 +22,7 @@ ObservableFunction SimulateModel::getObservableFunction(
 	ObservableFunction obsfunc;
 
 	try {
+		// get the observable's factory and then bind it to this
 		obsfunc = (compatible_observables.at(obs))(shared_from_this());
 	}
 	catch(const std::out_of_range &e) {

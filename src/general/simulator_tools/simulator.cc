@@ -11,6 +11,7 @@
 
 #include "simulator.h"
 #include "simulate_model.h"
+#include "simulator_exceptions.h"
 
 namespace molstat {
 
@@ -20,6 +21,10 @@ Simulator::Simulator(std::shared_ptr<SimulateModel> &model_)
 
 std::valarray<double> Simulator::simulate(gsl_rng_ptr &r) const {
 	std::size_t num_obs{ obs_functions.size() };
+
+	if(num_obs == 0)
+		throw molstat::NoObservables();
+
 	std::valarray<double> ret( num_obs );
 
 	// get some parameters

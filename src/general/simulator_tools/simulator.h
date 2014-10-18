@@ -57,6 +57,10 @@ public:
 	 * \brief Calculates the desired observables using the random number
 	 *    generator.
 	 *
+	 * \throw molstat::NoObservables if no observables have been set.
+	 * \throw molstat::MissingDistribution if any of the model's required
+	 *    distributions is unspecified.
+	 *
 	 * \param[in] r Handle to the GSL random number generator.
 	 * \return The simulated observables.
 	 */

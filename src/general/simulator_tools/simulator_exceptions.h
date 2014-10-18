@@ -48,6 +48,16 @@ public:
 	}
 };
 
+/**
+ * \brief Exception thrown when no observables have been requested.
+ */
+class NoObservables : public std::logic_error {
+public:
+	NoObservables() :
+		std::logic_error("No observables specified.") {
+	}
+};
+
 } // namespace molstat
 
 #endif
