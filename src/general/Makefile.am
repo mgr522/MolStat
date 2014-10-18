@@ -35,4 +35,7 @@ libmolstat_general_a_SOURCES = string_tools.h \
 	histogram_tools/histogram1d.cc \
 	histogram_tools/histogram2d.h \
 	histogram_tools/histogram2d.cc \
-	simulator_tools/simulate_model_interface.h
+	simulator_tools/simulator_exceptions.h \
+	simulator_tools/simulator.h \
+	simulator_tools/simulator.cc \
+	simulator_tools/simulate_model.h
