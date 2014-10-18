@@ -49,7 +49,7 @@ public:
 		// add the function to the list of compatible observables
 		compatible_observables[std::type_index(typeid(T))] =
 			[cast, obsfunc] (const std::valarray<double> &params) -> double {
-				return cast->*obsfunc(params);
+				return (cast.get()->*obsfunc)(params);
 			};
 	}
 };

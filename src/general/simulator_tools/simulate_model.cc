@@ -40,7 +40,7 @@ std::valarray<double> SimulateModel::generateParameters(gsl_rng_ptr &r) const {
 		for(std::size_t j = 0; j < length; ++j) {
 			try {
 				if(dists.at(j) == nullptr)
-					throw std::out_of_range; // enter the exception handler
+					throw std::out_of_range(""); // enter the exception handler
 			}
 			catch(const std::out_of_range &e) {
 				throw MissingDistribution(names[j]);
@@ -83,7 +83,8 @@ void SimulateModel::setDistribution(const std::string &name,
 	// update the distributions_specified flag
 	distributions_specified = true;
 	for(pos = 0; pos < length; ++pos)
-		distribution_specified &&= (dists[pos] != nullptr);
+		distributions_specified =
+			distributions_specified && (dists[pos] != nullptr);
 }
 
 } // namespace molstat
