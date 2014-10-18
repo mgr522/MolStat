@@ -45,7 +45,7 @@ public:
 		using namespace std;
 
 		// add the function to the list of compatible observables
-		compatible_observables[std::type_index(typeid(T))] =
+		compatible_observables[GetObservableIndex<T>()] =
 			[obsfunc] (shared_ptr<const SimulateModel> model)
 				-> ObservableFunction {
 

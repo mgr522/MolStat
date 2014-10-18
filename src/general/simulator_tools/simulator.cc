@@ -37,7 +37,7 @@ std::valarray<double> Simulator::simulate(gsl_rng_ptr &r) const {
 	return ret;
 }
 
-void Simulator::setObservable(std::size_t j, const std::type_index &obs) {
+void Simulator::setObservable(std::size_t j, const ObservableIndex &obs) {
 	std::size_t length { obs_functions.size() };
 
 	if(j > length)

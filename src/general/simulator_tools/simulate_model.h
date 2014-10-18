@@ -42,6 +42,12 @@ using ObservableFactory =
 	std::function<ObservableFunction(std::shared_ptr<const SimulateModel>)>;
 
 /**
+ * \brief Shortcut for the index type (alias for std::type_index) of an
+ *    Observable.
+ */
+using ObservableIndex = std::type_index;
+
+/**
  * \brief Base class for a model that uses model parameters to calculate
  *    observables.
  *
@@ -57,9 +63,10 @@ protected:
 	 * \brief Factories that produce an observable's function, assuming the
 	 *    observable and model are compatible.
 	 *
-	 * The map is keyed by the type_index of the class for the observable.
+	 * The map is keyed by the molstat::ObservableIndex for the observable's
+	 * class.
 	 */
-	std::map<std::type_index, ObservableFactory> compatible_observables;
+	std::map<ObservableIndex, ObservableFactory> compatible_observables;
 
 	/**
 	 * \brief Ordered vector of random number distributions for the various
@@ -107,7 +114,7 @@ public:
 	 * \return A function that calculates the observable.
 	 */
 	virtual ObservableFunction getObservableFunction(
-		const std::type_index &obs) const;
+		const ObservableIndex &obs) const;
 
 	/**
 	 * \brief Generates a set of model parameters using the specified random
@@ -127,6 +134,30 @@ public:
 	void setDistribution(const std::string &name,
 		std::shared_ptr<const RandomDistribution> dist);
 };
+
+/**
+ * \brief Shortcut for a function that constructs a molstat::SimulateModel.
+ */
+using SimulateModelFactory =
+	std::function<std::shared_ptr<SimulateModel>()>;
+
+/**
+ * \brief Gets a molstat::SimulateModelFactory for the given model type.
+ *
+ * \tparam T The type of molstat::SimulateModel to construct.
+ * \return A function that creates the model when invoked.
+ */
+template<typename T>
+inline SimulateModelFactory GetSimulateModelFactory() {
+	return [] () -> std::shared_ptr<SimulateModel> {
+		return std::make_shared<T>();
+	};
+}
+
+template<typename T>
+inline ObservableIndex GetObservableIndex() {
+	return std::type_index{ typeid(T) };
+}
 
 } // namespace molstat
 

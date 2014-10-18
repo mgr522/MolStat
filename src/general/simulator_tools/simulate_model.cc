@@ -17,7 +17,7 @@
 namespace molstat {
 
 ObservableFunction SimulateModel::getObservableFunction(
-		const std::type_index &obs) const {
+		const ObservableIndex &obs) const {
 
 	ObservableFunction obsfunc;
 

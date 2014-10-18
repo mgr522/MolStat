@@ -78,10 +78,10 @@ public:
 	 * \throw out_of_range If `j` is out of range (not between 0 and
 	 *    obs_functions.size()).
 	 *
-	 * \param[in] j The index for this observable.
-	 * \param[in] obs The observable, represented through its typeid.
+	 * \param[in] j The output index for this observable.
+	 * \param[in] obs The identifier of the observable.
 	 */
-	void setObservable(std::size_t j, const std::type_index &obs);
+	void setObservable(std::size_t j, const ObservableIndex &obs);
 
 	/**
 	 * \brief Function for a \"zero\" observable.
