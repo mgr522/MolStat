@@ -22,7 +22,7 @@ ObservableFunction SimulateModel::getObservableFunction(
 	ObservableFunction obsfunc;
 
 	try {
-		obsfunc = compatible_observables.at(obs);
+		obsfunc = (compatible_observables.at(obs))(shared_from_this());
 	}
 	catch(const std::out_of_range &e) {
 		throw IncompatibleObservable();

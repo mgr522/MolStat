@@ -22,11 +22,24 @@
 
 namespace molstat {
 
+// forward declaration
+class SimulateModel;
+
 /**
  * \brief The signature of a function that calculates an observable.
  */
 using ObservableFunction =
 	std::function<double(const std::valarray<double> &)>;
+
+/**
+ * \brief The signature of a function that produces an ObservableFunction,
+ *    given the model.
+ *
+ * \throw molstat::IncompatibleObservable may be thrown if the observable
+ *    and model are incompatible.
+ */
+using ObservableFactory =
+	std::function<ObservableFunction(std::shared_ptr<const SimulateModel>)>;
 
 /**
  * \brief Base class for a model that uses model parameters to calculate
@@ -41,10 +54,12 @@ using ObservableFunction =
 class SimulateModel : public std::enable_shared_from_this<SimulateModel> {
 protected:
 	/**
-	 * \brief Set of observables compatible with this model, keyed by
-	 *    the type_index of the class for the observable.
+	 * \brief Factories that produce an observable's function, assuming the
+	 *    observable and model are compatible.
+	 *
+	 * The map is keyed by the type_index of the class for the observable.
 	 */
-	std::map<std::type_index, ObservableFunction> compatible_observables;
+	std::map<std::type_index, ObservableFactory> compatible_observables;
 
 	/**
 	 * \brief Ordered vector of random number distributions for the various
@@ -82,7 +97,7 @@ public:
 	 *    model parameters.
 	 *
 	 * This default function verifies that the model and observable are
-	 * compatible and then returns a function that casts *this to the
+	 * compatible and then returns a function that casts `this` to the
 	 * observable type and calls the proper function.
 	 *
 	 * \throw molstat::IncompatibleObservable if the desired observable is

@@ -30,30 +30,43 @@ public:
 	/**
 	 * \brief Constructor that processes observable information.
 	 *
-	 * Adds the type information and a function for calculating the observable
-	 * to the model.
+	 * Adds the type information and a factory for the observable to the model
+	 * information.
 	 *
-	 * \throw molstat::IncompatibleObservable if the dynamic cast fails. This
-	 *    should not happen if the Observable class is used as intended.
+	 * The factory function needs a molstat::SimulateModel to produce the
+	 * actual molstat::ObservableFunction. It should presumably be `*this`,
+	 * but shared_from_this() can't be invoked in the constructor. The
+	 * factory defers use of `shared_from_this()` to later, and the function
+	 * it returns binds `*this` to the observable function.
 	 *
 	 * \param[in] obsfunc Member pointer to the observable function.
 	 */
 	Observable(double (T::*obsfunc)(const std::valarray<double> &) const) {
-		// cast this to the inherited class
-		std::shared_ptr<const T> cast
-			= std::dynamic_pointer_cast<const T>(shared_from_this());
-
-		if(cast == nullptr)
-			throw IncompatibleObservable();
+		using namespace std;
 
 		// add the function to the list of compatible observables
 		compatible_observables[std::type_index(typeid(T))] =
-			[cast, obsfunc] (const std::valarray<double> &params) -> double {
-				return (cast.get()->*obsfunc)(params);
+			[obsfunc] (shared_ptr<const SimulateModel> model)
+				-> ObservableFunction {
+
+				// cast this to the observable (derived) class
+				std::shared_ptr<const T> cast
+					= std::dynamic_pointer_cast<const T>(model);
+
+				// make sure the observable is compatible
+				if(cast == nullptr)
+					throw IncompatibleObservable();
+
+				// make the actual Observable function
+				return [cast, obsfunc] (const std::valarray<double> &params)
+					-> double {
+
+					return (cast.get()->*obsfunc)(params);
+				};
 			};
 	}
 };
 
-} // namespace MolStat
+} // namespace molstat
 
 #endif
