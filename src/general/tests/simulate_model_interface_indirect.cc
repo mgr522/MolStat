@@ -17,11 +17,12 @@
 #include <general/random_distributions/rng.h>
 #include <general/random_distributions/constant.h>
 #include <general/simulator_tools/simulator.h>
+#include <general/simulator_tools/simulate_model.h>
 
 /**
  * \internal
- * \brief Main function for testing the molstat::SimulateObservables,
- *    molstat::SimulateModel, and molstat::Observable templates.
+ * \brief Main function for testing the various MolStat classes for
+ *    simulating data. This test uses the indirect access functions.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
@@ -29,7 +30,7 @@
  * \endinternal
  */
 int main(int argc, char **argv) {
-	map<string, molstat::SimulateModelFactory> models;
+	map<string, molstat::SimulateModelFactoryFactory> models;
 	map<string, molstat::ObservableIndex> observables;
 
 	molstat::gsl_rng_ptr r{ nullptr, &gsl_rng_free };
@@ -51,11 +52,27 @@ int main(int argc, char **argv) {
 	models.emplace(make_pair("test",
 		molstat::GetSimulateModelFactory<TestModel>() ));
 
-	// make our model using the functor
-	shared_ptr<molstat::SimulateModel> model { models.at("test")() };
+	// get our factory
+	molstat::SimulateModelFactory factory{ models.at("test")() };
+
+	// try to get the model. this should fail because we haven't specified
+	// a distribution for the parameter "a"
+	try{
+		factory.getModel();
+
+		assert(false);
+	}
+	catch(const molstat::MissingDistribution &e) {
+		// should be here
+	}
+
+	// set the distribution
+	// make sure the setDistribution function is case-insensitive
+	factory.setDistribution("A",
+		make_shared<molstat::ConstantDistribution>(distvalue));
 
 	// wrap the model into our simulator
-	molstat::Simulator sim { model };
+	molstat::Simulator sim( factory.getModel() );
 
 	// try to simulate data. this should fail because we haven't set any
 	// observables or distributions yet.
@@ -93,30 +110,7 @@ int main(int argc, char **argv) {
 	// now, let's actually set an observable
 	sim.setObservable(0, observables.at("obs1"));
 
-	// try to simulate data. this should now fail because we haven't specified
-	// a distribution for the parameter "a"
-	try {
-		sim.simulate(r);
-
-		assert(false);
-	}
-	catch(const molstat::MissingDistribution &e) {
-		// should be here
-	}
-
-	// set the distribution
-	// make sure the setDistribution function is case-insensitive
-	model->setDistribution("A",
-		make_shared<molstat::ConstantDistribution>(distvalue));
-
-	// verify the set
 	valarray<double> data = sim.simulate(r);
-	assert(abs(data[0] - distvalue) < 1.e-6);
-
-	model->setDistribution("a",
-		make_shared<molstat::ConstantDistribution>(distvalue));
-
-	data = sim.simulate(r);
 	assert(abs(data[0] - distvalue) < 1.e-6);
 
 	// set another observable

@@ -18,7 +18,7 @@
 #include <general/random_distributions/rng.h>
 #include <general/random_distributions/constant.h>
 #include <general/simulator_tools/simulator.h>
-#include <general/simulator_tools/simulate_model_factory.h>
+#include <general/simulator_tools/simulate_model.h>
 
 /**
  * \internal
@@ -36,12 +36,10 @@ int main(int argc, char **argv) {
 
 	molstat::gsl_rng_ptr r{ nullptr, &gsl_rng_free }; // dummy rng
 
-	shared_ptr<molstat::SimulateModel> model;
-
 	// try to get the model. this should fail because we haven't specified
 	// a distribution for the parameter "a"
 	try{
-		model = factory.getModel();
+		factory.getModel();
 
 		assert(false);
 	}
