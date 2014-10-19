@@ -38,10 +38,14 @@ int main(int argc, char **argv) {
 	// add the observables
 	// must use emplace to avoid calling the allocator for type_index
 	// (no default constructor)
-	observables.emplace(make_pair("obs1", type_index{ typeid(Observable1) }));
-	observables.emplace(make_pair("obs2", type_index{ typeid(Observable2) }));
-	observables.emplace(make_pair("obs3", type_index{ typeid(Observable3) }));
-	observables.emplace(make_pair("obs4", type_index{ typeid(Observable4) }));
+	observables.emplace(make_pair("obs1",
+		molstat::GetObservableIndex<Observable1>()) );
+	observables.emplace(make_pair("obs2",
+		molstat::GetObservableIndex<Observable2>()) );
+	observables.emplace(make_pair("obs3",
+		molstat::GetObservableIndex<Observable3>()) );
+	observables.emplace(make_pair("obs4",
+		molstat::GetObservableIndex<Observable4>()) );
 
 	// add the model
 	// use emplace for consistency
