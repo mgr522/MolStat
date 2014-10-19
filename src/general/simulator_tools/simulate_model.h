@@ -17,6 +17,7 @@
 #include <string>
 #include <map>
 #include <valarray>
+#include <typeinfo>
 #include <typeindex>
 #include <general/random_distributions/rng.h>
 
