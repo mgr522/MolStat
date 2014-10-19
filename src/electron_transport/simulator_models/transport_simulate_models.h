@@ -7,7 +7,7 @@
  *    MolStat.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
 #ifndef __transport_simulate_models_h__
@@ -15,7 +15,7 @@
 
 #include <string>
 #include <map>
-#include <general/simulator_tools/simulate_model_interface.h>
+#include <general/simulator_tools/simulate_model.h>
 
 namespace molstat {
 namespace transport {
@@ -24,27 +24,27 @@ namespace transport {
  * \brief Loads the transport models into the MolStat "database".
  *
  * Models are stored as a map from a string (the name of the model) to a
- * factory for molstat::Simulator.
+ * factory for molstat::SimulateModel.
  *
  * \param[in,out] models The map of models in MolStat. On output, the models
  *    for transport have been added to it.
  */
 void load_models(
 	std::map<std::string,
-	         SimulatorFactory<2>> &models);
+	         SimulateModelFactory> &models);
 
 /**
  * \brief Loads the transport observables into the MolStat "database".
  *
  * Observables are stored as a map from a string (the name of the observable)
- * to a function that adds the observable to a molstat:Simulator.
+ * to an index that can be used to add the observable to a molstat:Simulator.
  *
  * \param[in,out] observables The map of observables in MolStat. On output, the
  *    observables for transport have been added to it.
  */
 void load_observables(
 	std::map<std::string,
-	         ObservableSetter<2>> &observables);
+	         ObservableIndex> &observables);
 
 } // namespace molstat::transport
 } // namespace molstat

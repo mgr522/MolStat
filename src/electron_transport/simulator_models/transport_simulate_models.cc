@@ -10,22 +10,27 @@
  * \date October 2014
  */
 
+#include <general/string_tools.h>
 #include "transport_simulate_models.h"
 #include "transport_observables.h"
+#if 0
 #include "sym_one_site_simulate_model.h"
 #include "asym_one_site_simulate_model.h"
- #if 0
 #include "ind_two_chan_simulate_model.h"
-#endif
 #include "sym_two_site_simulate_model.h"
 #include "asym_two_site_simulate_model.h"
+#endif
 
 namespace molstat {
 namespace transport {
 
 void load_models(
 	std::map<std::string,
-	         SimulatorFactory<2>> &models) {
+	         SimulateModelFactory> &models) {
+
+#if 0
+	models.emplace(make_pair(to_lower("SymmetricOneSite"),
+		GetSimulateModelFactory<SymOneSiteSimulateModel>() ));
 
 	models["symmetriconesite"] =
 		GetSimulatorFactory<2, SymOneSiteSimulateModel>();
@@ -33,30 +38,29 @@ void load_models(
 	models["asymmetriconesite"] =
 		GetSimulatorFactory<2, AsymOneSiteSimulateModel>();
 
-#if 0
 	models["independenttwochannel"] =
 		GetSimulateModelFunction<2, IndTwoChanSimulateModel>();
-#endif
 
 	models["symmetrictwosite"] =
 		GetSimulatorFactory<2, SymTwoSiteSimulateModel>();
 
 	models["asymmetrictwosite"] =
 		GetSimulatorFactory<2, AsymTwoSiteSimulateModel>();
+#endif
 }
 
 void load_observables(
 	std::map<std::string,
-	         ObservableSetter<2>> &observables) {
+	         ObservableIndex> &observables) {
 
-	observables["appliedbias"] =
-		GetObservableSetter<2, AppliedBias>();
+	observables.emplace(make_pair(to_lower("AppliedBias"),
+		GetObservableIndex<AppliedBias>()) );
 
-	observables["staticconductance"] =
-		GetObservableSetter<2, StaticConductance>();
+	observables.emplace(make_pair(to_lower("StaticConductance"),
+		GetObservableIndex<StaticConductance>()) );
 
-	observables["differentialconductance"] =
-		GetObservableSetter<2, DifferentialConductance>();
+	observables.emplace(make_pair(to_lower("DifferentialConductance"),
+		GetObservableIndex<DifferentialConductance>()) );
 }
 
 } // namespace molstat::transport

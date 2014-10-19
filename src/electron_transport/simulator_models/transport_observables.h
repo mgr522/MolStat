@@ -9,28 +9,26 @@
  * std::array<double, N> after taking in a GSL rng handle and a vector<double>.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
-#ifndef __observables_h__
-#define __observables_h__
+#ifndef __transport_observables_h__
+#define __transport_observables_h__
 
-#include <array>
-#include <general/simulator_tools/simulate_model_interface.h>
+#include <valarray>
+#include <general/simulator_tools/observable.h>
 
 namespace molstat {
 namespace transport {
 
 /**
  * \brief Observable class for the applied bias.
- *
- * \tparam MPs The number of model parameters used to calculates the applied
- *    bias.
  */
-template<std::size_t MPs>
-class AppliedBias : public Observable<MPs> {
+class AppliedBias : public Observable<AppliedBias> {
 public:
-	AppliedBias() = default;
+	AppliedBias()
+		: Observable<AppliedBias>(&AppliedBias::AppBias) {}
+
 	virtual ~AppliedBias() = default;
 
 	/**
@@ -39,31 +37,17 @@ public:
 	 * \param[in] params A set of model parameters.
 	 * \return The applied bias for the model parameters.
 	 */
-	virtual double AppBias(const std::array<double, MPs> &params) const = 0;
-
-	/**
-	 * \brief Route the operator() to AppBias.
-	 *
-	 * \param[in] params A set of model parameters.
-	 * \return The applied bias for the model parameters.
-	 */
-	virtual double operator()(const std::array<double, MPs> &params) const
-		override final {
-
-		return AppBias(params);
-	}
+	virtual double AppBias(const std::valarray<double> &params) const = 0;
 };
 
 /**
  * \brief Observable class for the static conductance.
- *
- * \tparam MPs The number of model parameters used to calculate the static
- *    conductance.
  */
-template<std::size_t MPs>
-class StaticConductance : public Observable<MPs> {
+class StaticConductance : public Observable<StaticConductance> {
 public:
-	StaticConductance() = default;
+	StaticConductance()
+		: Observable<StaticConductance>(&StaticConductance::StaticG) {}
+
 	virtual ~StaticConductance() = default;
 
 	/**
@@ -72,31 +56,17 @@ public:
 	 * \param[in] params A set of model parameters.
 	 * \return The static conductance for the model parameters.
 	 */
-	virtual double StaticG(const std::array<double, MPs> &params) const = 0;
-
-	/**
-	 * \brief Route the operator() to StaticG.
-	 *
-	 * \param[in] params A set of model parameters.
-	 * \return The static conductance for the model parameters.
-	 */
-	virtual double operator()(const std::array<double, MPs> &params) const
-		override final {
-
-		return StaticG(params);
-	}
+	virtual double StaticG(const std::valarray<double> &params) const = 0;
 };
 
 /**
  * \brief Observable class for the differential conductance.
- *
- * \tparam MPs The number of model parameters used to calculated the
- *    differnetial conductance.
  */
-template<std::size_t MPs>
-class DifferentialConductance : public Observable<MPs> {
+class DifferentialConductance : public Observable<DifferentialConductance> {
 public:
-	DifferentialConductance() = default;
+	DifferentialConductance()
+		: Observable<DifferentialConductance>(&DifferentialConductance::DiffG) {}
+
 	virtual ~DifferentialConductance() = default;
 
 	/**
@@ -105,19 +75,7 @@ public:
 	 * \param[in] params A set of model parameters.
 	 * \return The differential conductance for the model parameters.
 	 */
-	virtual double DiffG(const std::array<double, MPs> &params) const = 0;
-
-	/**
-	 * \brief Route the operator() to DiffG.
-	 *
-	 * \param[in] params A set of model parameters.
-	 * \return The differential conductance for the model parameters.
-	 */
-	virtual double operator()(const std::array<double, MPs> &params) const
-		override final {
-
-		return DiffG(params);
-	}
+	virtual double DiffG(const std::valarray<double> &params) const = 0;
 };
 
 } // namespace molstat::transport
