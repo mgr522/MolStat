@@ -28,8 +28,9 @@
 
 namespace molstat {
 
-// forward declaration
+// forward declarations
 class SimulateModel;
+class RandomDistribution;
 
 /**
  * \brief The signature of a function that calculates an observable.
@@ -134,9 +135,12 @@ public:
 	friend class SimulateModelFactory;
 };
 
-// forward declarations ... we only need pointers in this header file
-class RandomDistribution;
-
+/**
+ * \brief Factory class for creating molstat::SimulateModels at runtime.
+ *
+ * This class instantiates models at runtime, making sure the model is in a
+ * valid state before giving the user access to it.
+ */
 class SimulateModelFactory {
 private:
 	SimulateModelFactory() = default;
