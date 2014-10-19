@@ -10,7 +10,7 @@
  * \date October 2014
  */
 
-#include "simulate_model_factory.h"
+#include "simulate_model.h"
 #include "simulator_exceptions.h"
 
 namespace molstat {

@@ -3,7 +3,9 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file simulate_model.h
- * \brief Defines the molstat::SimulateModel class for simulating histograms.
+ * \brief Defines the molstat::SimulateModel class for simulating histograms,
+ *    the molstat::SimulateModelFactory class for creating models at runtime,
+ *    and other auxiliary types/aliases for the simulator interface.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
@@ -13,13 +15,16 @@
 #define __simulate_model_h__
 
 #include <memory>
+#include <functional>
+#include <valarray>
 #include <vector>
 #include <string>
 #include <map>
-#include <valarray>
+#include <set>
 #include <typeinfo>
 #include <typeindex>
 #include <general/random_distributions/rng.h>
+#include <general/string_tools.h>
 
 namespace molstat {
 
@@ -129,30 +134,120 @@ public:
 	friend class SimulateModelFactory;
 };
 
-#if 0
-/**
- * \brief Shortcut for a function that constructs a molstat::SimulateModel.
- */
-using SimulateModelFactory =
-	std::function<std::shared_ptr<SimulateModel>()>;
+// forward declarations ... we only need pointers in this header file
+class RandomDistribution;
+
+class SimulateModelFactory {
+private:
+	SimulateModelFactory() = default;
+
+	/**
+	 * \brief Pointer to the model being constructed.
+	 */
+	std::shared_ptr<SimulateModel> model;
+
+	/**
+	 * \brief The set of distribution names for the model that still need to
+	 *    be specified.
+	 */
+	std::set<std::string> remaining_names;
+
+	/**
+	 * \brief Cache of the names of distributions required by the model.
+	 */
+	std::vector<std::string> model_names;
+
+public:
+	SimulateModelFactory(SimulateModelFactory &&) = default;
+	SimulateModelFactory &operator=(SimulateModelFactory &&) = default;
+
+	/**
+	 * \brief Creates a molstat::SimulateModelFactory with the underlying model
+	 *    of type T.
+	 *
+	 * \tparam T The type of molstat::SimulateModel to build with this factory.
+	 * \return The factory.
+	 */
+	template<typename T>
+	static SimulateModelFactory makeFactory();
+
+	/**
+	 * \brief Adds a random distribution to the model.
+	 *
+	 * \param[in] name The name of the distribution being added.
+	 * \param[in] dist The distribution being added.
+	 * \return The factory.
+	 */
+	 SimulateModelFactory &setDistribution(std::string name,
+	 	std::shared_ptr<const RandomDistribution> dist);
+
+	 /**
+	  * \brief Returns the constructed model.
+	  *
+	  * Some runtime error checking, such as making sure all distributions are
+	  * specified is performed here.
+	  *
+	  * \throw molstat::MissingDistribution if one of the required distributions
+	  *    has not been specified.
+	  *
+	  * \return Pointer to the constructed model.
+	  */
+	 std::shared_ptr<SimulateModel> getModel();
+};
 
 /**
- * \brief Gets a molstat::SimulateModelFactory for the given model type.
+ * \brief Gets a function that produces a molstat::ObservableIndex for the
+ *    given observable type.
+ *
+ * \tparam T The type of molstat::Observable to use.
+ * \return A function that gives the observable's molstat::ObservableIndex.
+ */
+template<typename T>
+inline ObservableIndex GetObservableIndex() {
+	return std::type_index{ typeid(T) };
+}
+
+/**
+ * \brief Shortcut for a function that constructs a
+ *    molstat::SimulateModelFactory.
+ */
+using SimulateModelFactoryFactory =
+	std::function<SimulateModelFactory()>;
+
+/**
+ * \brief Gets a function that produces a molstat::SimulateModelFactory
+ *    for the given model type.
  *
  * \tparam T The type of molstat::SimulateModel to construct.
  * \return A function that creates the model when invoked.
  */
 template<typename T>
-inline SimulateModelFactory GetSimulateModelFactory() {
-	return [] () -> std::shared_ptr<SimulateModel> {
-		return std::make_shared<T>();
+inline SimulateModelFactoryFactory GetSimulateModelFactory() {
+	return [] () -> SimulateModelFactory {
+		return SimulateModelFactory::makeFactory<T>();
 	};
 }
-#endif
 
+// templated definitions
 template<typename T>
-inline ObservableIndex GetObservableIndex() {
-	return std::type_index{ typeid(T) };
+SimulateModelFactory SimulateModelFactory::makeFactory() {
+	using namespace std;
+
+	SimulateModelFactory factory;
+
+	factory.model = make_shared<T>();
+
+	// get the names of required distributions
+	factory.model_names = factory.model->get_names();
+
+	// convert the ordered vector to just a set
+	for(const std::string &iter : factory.model_names)
+		factory.remaining_names.emplace(to_lower(iter));
+
+	// set the size of the model's vector of distributions
+	factory.model->dists.resize(factory.model->get_num_parameters());
+
+	return factory;
 }
 
 } // namespace molstat

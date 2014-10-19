@@ -23,6 +23,9 @@
 
 namespace molstat {
 
+// forward declaration
+class SimulateModel;
+
 /**
  * \brief Class for simulating data.
  *
