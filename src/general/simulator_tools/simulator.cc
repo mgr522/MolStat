@@ -15,7 +15,7 @@
 
 namespace molstat {
 
-Simulator::Simulator(std::shared_ptr<SimulateModel> &model_)
+Simulator::Simulator(std::shared_ptr<SimulateModel> model_)
 	: model(model_), obs_functions() {
 }
 

@@ -57,6 +57,10 @@ using ObservableIndex = std::type_index;
  * needed, as well as a name for each parameter. Derived classes should also
  * probably derive from molstat::Observable so that the MolStat simulator knows
  * that this model is compatible with that observable.
+ *
+ * Construction via the molstat::SimulateModelFactory interface ensures that
+ * all required random number distributions are specified before using the
+ * model to simulate data.
  */
 class SimulateModel : public std::enable_shared_from_this<SimulateModel> {
 protected:
@@ -76,20 +80,15 @@ protected:
 	std::vector<std::shared_ptr<const RandomDistribution>> dists;
 
 	/**
-	 * \brief Tells whether or not all required distributions have been
-	 *    supplied.
-	 */
-	bool distributions_specified = false;
-
-	/**
 	 * \brief Gets a map of parameter name to index.
 	 *
 	 * \return The ordered list of names of distributions.
 	 */
 	virtual std::vector<std::string> get_names() const = 0;
 
-public:
 	SimulateModel() = default;
+
+public:
 	virtual ~SimulateModel() = default;
 
 	/**
@@ -126,16 +125,11 @@ public:
 	 */
 	virtual std::valarray<double> generateParameters(gsl_rng_ptr &r) const;
 
-	/**
-	 * \brief Sets the distribution for the specified parameter.
-	 *
-	 * \param[in] name The name of the parameter.
-	 * \param[in] dist The distribution.
-	 */
-	void setDistribution(const std::string &name,
-		std::shared_ptr<const RandomDistribution> dist);
+	// the factory needs to get at the internal details
+	friend class SimulateModelFactory;
 };
 
+#if 0
 /**
  * \brief Shortcut for a function that constructs a molstat::SimulateModel.
  */
@@ -154,6 +148,7 @@ inline SimulateModelFactory GetSimulateModelFactory() {
 		return std::make_shared<T>();
 	};
 }
+#endif
 
 template<typename T>
 inline ObservableIndex GetObservableIndex() {

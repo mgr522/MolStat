@@ -39,4 +39,6 @@ libmolstat_general_a_SOURCES = string_tools.h \
 	simulator_tools/simulator.h \
 	simulator_tools/simulator.cc \
 	simulator_tools/simulate_model.h \
-	simulator_tools/simulate_model.cc
+	simulator_tools/simulate_model.cc \
+	simulator_tools/simulate_model_factory.h \
+	simulator_tools/simulate_model_factory.cc

@@ -51,7 +51,7 @@ public:
 	 *
 	 * \param[in] model_ The model to be used.
 	 */
-	Simulator(std::shared_ptr<SimulateModel> &model_);
+	Simulator(std::shared_ptr<SimulateModel> model_);
 
 	/**
 	 * \brief Calculates the desired observables using the random number
@@ -82,20 +82,6 @@ public:
 	 * \param[in] obs The identifier of the observable.
 	 */
 	void setObservable(std::size_t j, const ObservableIndex &obs);
-
-	/**
-	 * \brief Function for a \"zero\" observable.
-	 *
-	 * \todo Delete this function if not needed.
-	 *
-	 * \param[in] params A set of model parameters.
-	 * \return The observable; in this case, 0.
-	 */
-	constexpr static double ZeroObs(const std::valarray<double> &params)
-		noexcept {
-
-		return 0.;
-	}
 };
 
 } // namespace MolStat
