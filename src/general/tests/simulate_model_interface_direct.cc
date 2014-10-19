@@ -18,6 +18,7 @@
 #include <general/random_distributions/rng.h>
 #include <general/random_distributions/constant.h>
 #include <general/simulator_tools/simulator.h>
+#include <general/simulator_tools/simulate_model_factory.h>
 
 /**
  * \internal
@@ -30,11 +31,31 @@
  * \endinternal
  */
 int main(int argc, char **argv) {
+	molstat::SimulateModelFactory factory 
+		{ molstat::SimulateModelFactory::makeFactory<TestModel>() };
+
 	molstat::gsl_rng_ptr r{ nullptr, &gsl_rng_free }; // dummy rng
-	shared_ptr<molstat::SimulateModel> model { make_shared<TestModel>() };
+
+	shared_ptr<molstat::SimulateModel> model;
+
+	// try to get the model. this should fail because we haven't specified
+	// a distribution for the parameter "a"
+	try{
+		model = factory.getModel();
+
+		assert(false);
+	}
+	catch(const molstat::MissingDistribution &e) {
+		// should be here
+	}
+
+	// set the distribution
+	// make sure the setDistribution function is case-insensitive
+	factory.setDistribution("A",
+		make_shared<molstat::ConstantDistribution>(distvalue));
 
 	// wrap the model into our simulator
-	molstat::Simulator sim { model };
+	molstat::Simulator sim( factory.getModel() );
 
 	// try to simulate data. this should fail because we haven't set any
 	// observables or distributions yet.
@@ -72,30 +93,7 @@ int main(int argc, char **argv) {
 	// now, let's actually set an observable
 	sim.setObservable(0, type_index{ typeid(Observable1) });
 
-	// try to simulate data. this should now fail because we haven't specified
-	// a distribution for the parameter "a"
-	try{
-		sim.simulate(r);
-
-		assert(false);
-	}
-	catch(const molstat::MissingDistribution &e) {
-		// should be here
-	}
-
-	// set the distribution
-	// make sure the setDistribution function is case-insensitive
-	model->setDistribution("A",
-		make_shared<molstat::ConstantDistribution>(distvalue));
-
-	// verify the set
 	valarray<double> data = sim.simulate(r);
-	assert(abs(data[0] - distvalue) < 1.e-6);
-
-	model->setDistribution("a",
-		make_shared<molstat::ConstantDistribution>(distvalue));
-
-	data = sim.simulate(r);
 	assert(abs(data[0] - distvalue) < 1.e-6);
 
 	// set another observable
