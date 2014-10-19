@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
 	sim.setObservable(1, type_index{ typeid(Observable3) });
 
 	try {
-		// Observable 3 should throw and exception; make sure we catch it
+		// Observable3 should throw an exception; make sure we catch it
 		sim.simulate(r);
 		assert(false);
 	}
