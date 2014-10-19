@@ -3,11 +3,10 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file simulate_model_interface_indirect.cc
- * \brief Test suite for the molstat::SimulateObservables,
- *    molstat::SimulateModel, and molstat::Observable templates.
+ * \brief Test suite for the various MolStat classes that simulate data.
  *
- * \test Tests the molstat::SimulateObservables, molstat::SimulateModel,
- *    and molstat::Observable templates using the access functions.
+ * \test Test suite for the various MolStat classes that simulate data. This
+ *    test uses the indirect access functions.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014

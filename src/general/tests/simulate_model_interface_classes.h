@@ -6,9 +6,6 @@
  * \brief Test classes for testing the various MolStat classes for simulating
  *    data.
  *
- * \test Test classes for testing the various MolStat classes for simulating
- *    data.
- *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
