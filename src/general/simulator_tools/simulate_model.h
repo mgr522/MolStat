@@ -4,6 +4,7 @@
 /**
  * \file simulate_model.h
  * \brief Defines the molstat::SimulateModel class for simulating histograms,
+ *    the molstat::CompositeSimulateModel class for more complicated models,
  *    the molstat::SimulateModelFactory class for creating models at runtime,
  *    and other auxiliary types/aliases for the simulator interface.
  *
@@ -21,6 +22,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include <list>
 #include <typeinfo>
 #include <typeindex>
 #include <general/random_distributions/rng.h>
@@ -49,10 +51,20 @@ using ObservableFactory =
 	std::function<ObservableFunction(std::shared_ptr<const SimulateModel>)>;
 
 /**
- * \brief Shortcut for the index type (alias for std::type_index) of an
+ * \brief Alias for the index type (alias for std::type_index) of an
  *    Observable.
  */
 using ObservableIndex = std::type_index;
+
+/**
+ * \brief Alias for the model type.
+ *
+ * Full models should return the type_index of molstat::SimulateModel. When
+ * a more complicated model is needed, perhaps one derived from
+ * molstat::CompositeModel, the underlying models may need to be a specific
+ * type, and this allows runtime checking of the issue.
+ */
+using SimulateModelType = std::type_index;
 
 /**
  * \brief Base class for a model that uses model parameters to calculate
@@ -86,6 +98,16 @@ protected:
 	std::vector<std::shared_ptr<const RandomDistribution>> dists;
 
 	/**
+	 * \brief Gets the type of this model.
+	 *
+	 * By default, all models are complete, and the type is
+	 * molstat::SimulateModel. It may sometimes be necessary, however, to
+	 * restrict the types of models we want to consider, and this function
+	 * should be overriden.
+	 */
+	virtual SimulateModelType getModelType() const;
+
+	/**
 	 * \brief Gets a map of parameter name to index.
 	 *
 	 * \return The ordered list of names of distributions.
@@ -109,9 +131,8 @@ public:
 	 * \brief Gets a function that calculates an observable, given a set of
 	 *    model parameters.
 	 *
-	 * This default function verifies that the model and observable are
-	 * compatible and then returns a function that casts `this` to the
-	 * observable type and calls the proper function.
+	 * Verifies that the model and observable are compatible and then returns
+	 * a function that calculates the observable using `this`.
 	 *
 	 * \throw molstat::IncompatibleObservable if the desired observable is
 	 *    incompatible with this model.
@@ -119,8 +140,7 @@ public:
 	 * \param[in] obs The type_index of the class for the observable.
 	 * \return A function that calculates the observable.
 	 */
-	virtual ObservableFunction getObservableFunction(
-		const ObservableIndex &obs) const;
+	ObservableFunction getObservableFunction(const ObservableIndex &obs) const;
 
 	/**
 	 * \brief Generates a set of model parameters using the specified random
@@ -130,6 +150,57 @@ public:
 	 * \return A set of model parameters.
 	 */
 	virtual std::valarray<double> generateParameters(gsl_rng_ptr &r) const;
+
+	// the factory needs to get at the internal details
+	friend class SimulateModelFactory;
+};
+
+/**
+ * \brief Base class for a composite model that uses both model parameters
+ *    and other independent models to calculate observables.
+ *
+ * This class allows other submodels to be used together to calculate
+ * observables. Composite models that require a specific type of submodel
+ * should override the getModelType function to return the submodel type.
+ */
+class CompositeSimulateModel : public virtual SimulateModel {
+protected:
+	CompositeSimulateModel() = default;
+
+	/**
+	 * \brief List of the underlying submodels.
+	 */
+	std::list<std::shared_ptr<SimulateModel>> submodels;
+
+public:
+	virtual ~CompositeSimulateModel() = default;
+
+	/**
+	 * \brief Gets the number of model parameters needed directly by the
+	 *    composite model.
+	 */
+	virtual std::size_t get_composite_parameters() const = 0;
+
+	/**
+	 * \brief Gets the number of model parameters for this model.
+	 *
+	 * \return The number of parameters used by the model for calculating
+	 *    observables.
+	 */
+	virtual std::size_t get_num_parameters() const override;
+
+	/**
+	 * \brief Generates a set of model parameters using the specified random
+	 *    distributions.
+	 *
+	 * This override samples from the distributions required by the composite
+	 * model, as well as all distributions for the submodels.
+	 *
+	 * \param[in] r Handle to the GSL random number generator.
+	 * \return A set of model parameters.
+	 */
+	virtual std::valarray<double> generateParameters(gsl_rng_ptr &r) const
+		override;
 
 	// the factory needs to get at the internal details
 	friend class SimulateModelFactory;
@@ -149,6 +220,13 @@ private:
 	 * \brief Pointer to the model being constructed.
 	 */
 	std::shared_ptr<SimulateModel> model;
+
+	/**
+	 * \brief Pointer to the model, cast as a molstat::CompositeSimulateModel.
+	 *
+	 * If the model is not a composite model, this will be `nullptr`.
+	 */
+	std::shared_ptr<CompositeSimulateModel> comp_model;
 
 	/**
 	 * \brief The set of distribution names for the model that still need to
@@ -215,7 +293,7 @@ inline ObservableIndex GetObservableIndex() {
  * \brief Shortcut for a function that constructs a
  *    molstat::SimulateModelFactory.
  */
-using SimulateModelFactoryFactory =
+using SimulateModelFactoryFunction =
 	std::function<SimulateModelFactory()>;
 
 /**
@@ -226,7 +304,7 @@ using SimulateModelFactoryFactory =
  * \return A function that creates the model when invoked.
  */
 template<typename T>
-inline SimulateModelFactoryFactory GetSimulateModelFactory() {
+inline SimulateModelFactoryFunction GetSimulateModelFactory() {
 	return [] () -> SimulateModelFactory {
 		return SimulateModelFactory::makeFactory<T>();
 	};
@@ -240,6 +318,10 @@ SimulateModelFactory SimulateModelFactory::makeFactory() {
 	SimulateModelFactory factory;
 
 	factory.model = make_shared<T>();
+
+	// attempt to cast to a composite model
+	factory.comp_model =
+		dynamic_pointer_cast<CompositeSimulateModel>(factory.model);
 
 	// get the names of required distributions
 	factory.model_names = factory.model->get_names();

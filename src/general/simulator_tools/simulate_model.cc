@@ -12,12 +12,15 @@
 
 #include "simulate_model.h"
 #include "simulator_exceptions.h"
-#include <general/string_tools.h>
 
 namespace molstat {
 
+SimulateModelType SimulateModel::getModelType() const {
+	return std::type_index{ typeid(SimulateModel) };
+}
+
 ObservableFunction SimulateModel::getObservableFunction(
-		const ObservableIndex &obs) const {
+	const ObservableIndex &obs) const {
 
 	ObservableFunction obsfunc;
 

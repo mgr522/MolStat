@@ -58,6 +58,17 @@ public:
 	}
 };
 
+/**
+ * \brief Exception thrown when a molstat::CompositeObservable is requested
+ *    by a model that is not a molstat::CompositeSimulateModel.
+ */
+class NotCompositeSimulateModel : public std::logic_error {
+public:
+	NotCompositeSimulateModel() :
+		std::logic_error("Not a composite model.") {
+	}
+};
+
 } // namespace molstat
 
 #endif

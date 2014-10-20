@@ -30,7 +30,7 @@
  * \endinternal
  */
 int main(int argc, char **argv) {
-	map<string, molstat::SimulateModelFactoryFactory> models;
+	map<string, molstat::SimulateModelFactoryFunction> models;
 	map<string, molstat::ObservableIndex> observables;
 
 	molstat::gsl_rng_ptr r{ nullptr, &gsl_rng_free };
