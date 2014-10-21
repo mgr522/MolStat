@@ -30,11 +30,13 @@ histogram2d_log_SOURCES = histogram2d_log.cc
 histogram2d_log_LDADD = ../libmolstat_general.a
 
 simulate_model_interface_direct_SOURCES = \
-	simulate_model_interface_classes.h \
+	simulate_model_interface_observables.h \
+	simulate_model_interface_models.h \
 	simulate_model_interface_direct.cc
 simulate_model_interface_direct_LDADD = ../libmolstat_general.a
 
 simulate_model_interface_indirect_SOURCES = \
-	simulate_model_interface_classes.h \
+	simulate_model_interface_observables.h \
+	simulate_model_interface_models.h \
 	simulate_model_interface_indirect.cc
 simulate_model_interface_indirect_LDADD = ../libmolstat_general.a

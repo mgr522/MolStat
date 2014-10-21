@@ -245,7 +245,7 @@ std::list<std::pair<std::valarray<std::size_t>, ObservableFunction>>
 
 	// construct the information (parameters indices and observable function)
 	// for each submodel
-	list<ObservableFunction> ret;
+	std::list<std::pair<std::valarray<std::size_t>, ObservableFunction>> ret;
 	for(const auto submodel : cmodel->submodels) {
 		const std::size_t submodel_nparam{ submodel->get_num_parameters() };
 

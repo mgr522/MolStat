@@ -13,7 +13,8 @@
  */
 
 #include <cassert>
-#include "simulate_model_interface_classes.h"
+#include "simulate_model_interface_observables.h"
+#include "simulate_model_interface_models.h"
 #include <general/random_distributions/rng.h>
 #include <general/random_distributions/constant.h>
 #include <general/simulator_tools/simulator.h>
