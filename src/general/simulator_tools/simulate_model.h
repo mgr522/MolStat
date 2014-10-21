@@ -172,6 +172,13 @@ protected:
 	 */
 	std::list<std::shared_ptr<SimulateModel>> submodels;
 
+	/**
+	 * \brief Returns the type of submodels for this composite model.
+	 *
+	 * \return The molstat::SimulateModelType.
+	 */
+	virtual SimulateModelType getSubmodelType() const = 0;
+
 public:
 	virtual ~CompositeSimulateModel() = default;
 
@@ -262,6 +269,20 @@ public:
 	 */
 	 SimulateModelFactory &setDistribution(std::string name,
 	 	std::shared_ptr<const RandomDistribution> dist);
+
+	 /**
+	  * \brief Adds a submodel to the composite model being constructed.
+	  *
+	  * \throw molstat::NotCompositeSimulateModel if the model being constructed
+	  *    is not a composite model.
+	  * \throw molstat::IncompatibleSubmodel if the submodel being added is not
+	  *    the type of model expected by the composite model.
+	  *
+	  * \param[in] submodel_add The model to be added.
+	  * \return The factory.
+	  */
+	 SimulateModelFactory &addSubmodel(
+	 	std::shared_ptr<SimulateModel> submodel_add);
 
 	 /**
 	  * \brief Returns the constructed model.

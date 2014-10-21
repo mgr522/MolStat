@@ -69,6 +69,17 @@ public:
 	}
 };
 
+/**
+ * \brief Exception thrown when a molstat::SimulateModel is not the correct type
+ *    to be used with the specified molstat::CompositeSimulateModel.
+ */
+class IncompatibleSubmodel : public std::logic_error {
+public:
+	IncompatibleSubmodel() :
+		std::logic_error("Incompatible submodel.") {
+	}
+};
+
 } // namespace molstat
 
 #endif

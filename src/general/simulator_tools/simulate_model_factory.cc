@@ -38,6 +38,23 @@ SimulateModelFactory &SimulateModelFactory::setDistribution(std::string name,
 	return *this;
 }
 
+SimulateModelFactory &SimulateModelFactory::addSubmodel(
+	std::shared_ptr<SimulateModel> submodel_add) {
+
+	// make sure this is a composite model
+	if(comp_model == nullptr)
+		throw NotCompositeSimulateModel();
+
+	// make sure the submodel is of the correct type
+	if(submodel_add->getModelType() != comp_model->getSubmodelType())
+		throw IncompatibleSubmodel();
+
+	// add the model
+	comp_model->submodels.emplace_back(submodel_add);
+
+	return *this;
+}
+
 std::shared_ptr<SimulateModel> SimulateModelFactory::getModel() {
 	// make sure all distributions have been specified
 	if(remaining_names.size() > 0)
