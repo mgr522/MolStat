@@ -21,7 +21,7 @@
  * \brief Dummy model class.
  * \endinternal
  */
-class BasicTestModel : public virtual molstat::SimulateModel,
+class BasicTestModel :
 	public BasicObs1,
 	public BasicObs2,
 	public BasicObs3 {
@@ -73,7 +73,7 @@ protected:
  * operation used to combine observables from the submodels.
  * \endinternal
  */
-class CompositeTestModel : public virtual molstat::CompositeSimulateModel,
+class CompositeTestModel :
 	public BasicObs4,
 	public molstat::CompositeObservable<BasicObs1> {
 
