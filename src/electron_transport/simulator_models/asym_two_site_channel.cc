@@ -2,40 +2,41 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file asym_two_site_simulate_model.cc
- * \brief Tight-binding model of a two-site chain that couples asymmetrically
- *    to both electrodes.
+ * \file asym_two_site_channel.cc
+ * \brief Tight-binding channel with a two-site chain that couples
+ *    asymmetrically to both electrodes.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
 
-#include "asym_two_site_simulate_model.h"
+#include "asym_two_site_channel.h"
 #include <cmath>
 #include <complex>
 
 namespace molstat {
 namespace transport {
 
-const std::size_t AsymTwoSiteSimulateModel::Index_EF = 0;
-const std::size_t AsymTwoSiteSimulateModel::Index_V = 1;
-const std::size_t AsymTwoSiteSimulateModel::Index_epsilon = 2;
-const std::size_t AsymTwoSiteSimulateModel::Index_gammaL = 3;
-const std::size_t AsymTwoSiteSimulateModel::Index_gammaR = 4;
-const std::size_t AsymTwoSiteSimulateModel::Index_beta = 5;
+const std::size_t AsymTwoSiteChannel::Index_EF = TransportJunction::Index_EF;
+const std::size_t AsymTwoSiteChannel::Index_V = TransportJunction::Index_V;
+const std::size_t AsymTwoSiteChannel::Index_epsilon = 2;
+const std::size_t AsymTwoSiteChannel::Index_gammaL = 3;
+const std::size_t AsymTwoSiteChannel::Index_gammaR = 4;
+const std::size_t AsymTwoSiteChannel::Index_beta = 5;
 
-AsymTwoSiteSimulateModel::AsymTwoSiteSimulateModel(
-	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
-	: SimulateModel(avail,
-	                order_from_map({{Index_EF, "ef"},
-	                                {Index_V, "v"},
-	                                {Index_epsilon, "epsilon"},
-	                                {Index_gammaL, "gammal"},
-	                                {Index_gammaR, "gammar"},
-	                                {Index_beta, "beta"}})) {
+std::vector<std::string> AsymTwoSiteChannel::get_names() const {
+	std::vector<std::string> ret(4);
+
+	// subtract two because we expect 2 parameters from the TranportJunction
+	ret[Index_epsilon - 2] = "epsilon";
+	ret[Index_gammaL - 2] = "gammal";
+	ret[Index_gammaR - 2] = "gammar";
+	ret[Index_beta - 2] = "beta";
+
+	return ret;
 }
 
-double AsymTwoSiteSimulateModel::transmission(const double e, const double V,
+double AsymTwoSiteChannel::transmission(const double e, const double V,
 	const double eps, const double gammal, const double gammar,
 	const double beta) {
 
@@ -45,13 +46,7 @@ double AsymTwoSiteSimulateModel::transmission(const double e, const double V,
 		(temp*temp + 4.*(gammal+gammar)*(gammal+gammar)*(e-eps)*(e-eps));
 }
 
-double AsymTwoSiteSimulateModel::AppBias(const std::array<double, 6> &params)
-	const {
-
-	return params[Index_V];
-}
-
-double AsymTwoSiteSimulateModel::static_c_integral(const double z,
+double AsymTwoSiteChannel::static_c_integral(const double z,
 	const double eps, const double gammal, const double gammar,
 	const double beta) {
 
@@ -70,9 +65,7 @@ double AsymTwoSiteSimulateModel::static_c_integral(const double z,
 		);
 }
 
-double AsymTwoSiteSimulateModel::StaticG(const std::array<double, 6> &params)
-	const {
-
+double AsymTwoSiteChannel::StaticG(const std::valarray<double> &params) const {
 	// unpack the parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];
@@ -85,9 +78,7 @@ double AsymTwoSiteSimulateModel::StaticG(const std::array<double, 6> &params)
 		static_c_integral(ef - 0.5*V, eps, gammal, gammar, beta)) / V;
 }
 
-double AsymTwoSiteSimulateModel::DiffG(const std::array<double, 6> &params)
-	const {
-
+double AsymTwoSiteChannel::DiffG(const std::valarray<double> &params) const {
 	// unpack the parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];

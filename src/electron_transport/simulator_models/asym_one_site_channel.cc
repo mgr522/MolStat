@@ -2,8 +2,8 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file asym_one_site_simulate_model.cc
- * \brief Tight-binding model with one site that couples asymmetrically to
+ * \file asym_one_site_channel.cc
+ * \brief Tight-binding channel with one site that couples asymmetrically to
  *    both electrodes.
  *
  * \author Matthew G.\ Reuter
