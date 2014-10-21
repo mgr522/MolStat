@@ -20,7 +20,7 @@ namespace molstat {
 namespace transport {
 
 /**
- * \brief Simulator model for transport through a single site that couples
+ * \brief Simulator submodel for transport through a single site that couples
  *    asymmetrically to both electrodes.
  *
  * Inherited model parameters (from molstat::transport::TransportJunction) are

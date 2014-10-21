@@ -2,34 +2,32 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file sym_two_site_simulate_model.h
- * \brief Tight-binding model of a two-site chain that couples symmetrically to
- *    both electrodes. The chain does not drop voltage.
+ * \file sym_two_site_channel.h
+ * \brief Tight-binding channel with a two-site chain that couples symmetrically
+ *    to both electrodes. The chain does not drop voltage.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
 
-#ifndef __sym_two_site_simulate_model_h__
-#define __sym_two_site_simulate_model_h__
+#ifndef __sym_two_site_channel_h__
+#define __sym_two_site_channel_h__
 
-#include <array>
-#include <memory>
-#include <string>
-#include <map>
-#include <general/simulator_tools/simulate_model_interface.h>
-#include "transport_observables.h"
+#include "observables.h"
+#include "junction.h"
 
 namespace molstat {
 namespace transport {
 
 /**
- * \brief Simulator model for transport through a two-site site that couples
+ * \brief Simulator submodel for transport through a two-site site that couples
  *    symmetrically to both electrodes.
  *
- * Model parameters are
+ * Inherited model parameters (from molstat::transport::TransportJunction) are
  * - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
- * - `v` (\f$V\f$), the applied bias,
+ * - `v` (\f$V\f$), the applied bias.
+ *
+ * Model parameters are
  * - `epsilon` (\f$\varepsilon\f$), the site-energy,
  * - `gamma` (\f$\Gamma\f$), the site/lead coupling,
  * - `beta` (\f$\beta\f$), the inter-site coupling.
@@ -45,10 +43,9 @@ namespace transport {
  *   \f{eqnarray*}{ G_\mathrm{s}(V) & = & \frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+\Gamma^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon + eV/2)}{2\beta + i\Gamma} \right) \right] \\
  *   && -\frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+\Gamma^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon - eV/2)}{2\beta + i\Gamma} \right) \right]. \f}
  */
-class SymTwoSiteSimulateModel : public SimulateModel<5>,
-	public AppliedBias<5>,
-	public DifferentialConductance<5>,
-	public StaticConductance<5> {
+class SymTwoSiteChannel : public Channel,
+	public DifferentialConductance,
+	public StaticConductance {
 
 private:
 	/**
@@ -92,24 +89,16 @@ public:
 	 */
 	static const std::size_t Index_beta;
 
-	SymTwoSiteSimulateModel() = delete;
-	virtual ~SymTwoSiteSimulateModel() = default;
-
+protected:
 	/**
-	 * \brief Constructor specifying the required parameters.
+	 * \brief Gets the names of model parameters for this channel.
 	 *
-	 * \param[in] avail The available distributions, keyed by name.
+	 * \return The names of model parameters.
 	 */
-	SymTwoSiteSimulateModel(
-		const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail);
+	virtual std::vector<std::string> get_names() const override;
 
-	/**
-	 * \brief Returns the applied bias for a set of model parameters.
-	 *
-	 * \param[in] params A set of model parameters.
-	 * \return The applied bias.
-	 */
-	virtual double AppBias(const std::array<double, 5> &params) const override;
+public:
+	virtual ~SymTwoSiteChannel() = default;
 
 	/**
 	 * \brief Calculates the transmission for a set of model parameters.
@@ -131,7 +120,7 @@ public:
 	 * \param[in] params A set of model parameters.
 	 * \return The differential conductance.
 	 */
-	virtual double DiffG(const std::array<double, 5> &params) const override;
+	virtual double DiffG(const std::valarray<double> &params) const override;
 
 	/**
 	 * \brief Returns the static conductance for a set of model parameters.
@@ -139,7 +128,7 @@ public:
 	 * \param[in] params A set of model parameters.
 	 * \return The static conductance.
 	 */
-	virtual double StaticG(const std::array<double, 5> &params) const override;
+	virtual double StaticG(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::transport
