@@ -24,47 +24,27 @@
 namespace molstat {
 namespace transport {
 
-/**
- * \brief Helper function that adds items the map.
- *
- * This function uses emplace to sidestep use of the default constructor.
- *
- * \param[in,out] collection The map. On output, has the item added to it.
- * \param[in] name The name of the item (key in the map).
- * \param[in] item The item to insert.
- */
-template<typename T>
-inline static void add_entry(std::map<std::string, T> &collection,
-                             std::string name,
-                             T &&item) {
-
-	// need to use emplace in case T doesn't have a default constructor
-	collection.emplace(
-		make_pair(to_lower(name), std::forward<T>(item))
-	);
-}
-
 void load_models(
 	std::map<std::string,
 	         SimulateModelFactoryFunction> &models) {
 
-	add_entry(models,
+	models.emplace(
 		to_lower("TransportJunction"),
 		GetSimulateModelFactory<TransportJunction>() );
 
-	add_entry(models,
+	models.emplace(
 		to_lower("SymmetricOneSiteChannel"),
 		GetSimulateModelFactory<SymOneSiteChannel>() );
 
-	add_entry(models,
+	models.emplace(
 		to_lower("AsymmetricOneSiteChannel"),
 		GetSimulateModelFactory<AsymOneSiteChannel>() );
 
-	add_entry(models,
+	models.emplace(
 		to_lower("SymmetricTwoSiteChannel"),
 		GetSimulateModelFactory<SymTwoSiteChannel>() );
 
-	add_entry(models,
+	models.emplace(
 		to_lower("AsymmetricTwoSiteChannel"),
 		GetSimulateModelFactory<AsymTwoSiteChannel>() );
 }
@@ -73,15 +53,15 @@ void load_observables(
 	std::map<std::string,
 	         ObservableIndex> &observables) {
 
-	add_entry(observables,
+	observables.emplace(
 		to_lower("AppliedBias"),
 		GetObservableIndex<AppliedBias>() );
 
-	add_entry(observables,
+	observables.emplace(
 		to_lower("StaticConductance"),
 		GetObservableIndex<StaticConductance>() );
 
-	add_entry(observables,
+	observables.emplace(
 		to_lower("DifferentialConductance"),
 		GetObservableIndex<DifferentialConductance>() );
 }
