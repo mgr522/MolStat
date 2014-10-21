@@ -2,51 +2,44 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file sym_one_site_simulate_model.cc
- * \brief Tight-binding model with one site that couples symmetrically to
+ * \file sym_one_site_channel.cc
+ * \brief Tight-binding channel with one site that couples symmetrically to
  *    both electrodes.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
 
-#include "sym_one_site_simulate_model.h"
+#include "sym_one_site_channel.h"
 #include <cmath>
 
 namespace molstat {
 namespace transport {
 
-const std::size_t SymOneSiteSimulateModel::Index_EF = 0;
-const std::size_t SymOneSiteSimulateModel::Index_V = 1;
-const std::size_t SymOneSiteSimulateModel::Index_epsilon = 2;
-const std::size_t SymOneSiteSimulateModel::Index_gamma = 3;
-const std::size_t SymOneSiteSimulateModel::Index_a = 4;
+const std::size_t SymOneSiteChannel::Index_EF = TransportJunction::Index_EF;
+const std::size_t SymOneSiteChannel::Index_V = TransportJunction::Index_V;
+const std::size_t SymOneSiteChannel::Index_epsilon = 2;
+const std::size_t SymOneSiteChannel::Index_gamma = 3;
+const std::size_t SymOneSiteChannel::Index_a = 4;
 
-SymOneSiteSimulateModel::SymOneSiteSimulateModel(
-	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
-	: SimulateModel(avail,
-	                order_from_map({{Index_EF, "ef"},
-	                                {Index_V, "v"},
-	                                {Index_epsilon, "epsilon"},
-	                                {Index_gamma, "gamma"},
-	                                {Index_a, "a"}})) {
+std::vector<std::string> SymOneSiteChannel::get_names() const {
+	std::vector<std::string> ret(3);
+
+	// subtract two because we expect 2 parameters from the TransportJunction
+	ret[Index_epsilon - 2] = "epsilon";
+	ret[Index_gamma - 2] = "gamma";
+	ret[Index_a - 2] = "a";
+
+	return ret;
 }
 
-double SymOneSiteSimulateModel::transmission(const double e, const double V,
+double SymOneSiteChannel::transmission(const double e, const double V,
 	const double eps, const double gamma, const double a) {
 
 	return gamma*gamma / ((e - eps - a*V)*(e - eps - a*V) + gamma*gamma);
 }
 
-double SymOneSiteSimulateModel::AppBias(const std::array<double, 5> &params)
-	const {
-
-	return params[Index_V];
-}
-
-double SymOneSiteSimulateModel::DiffG(const std::array<double, 5> &params)
-	const {
-
+double SymOneSiteChannel::DiffG(const std::valarray<double> &params) const {
 	// unpack the parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];
@@ -58,9 +51,7 @@ double SymOneSiteSimulateModel::DiffG(const std::array<double, 5> &params)
 		(0.5 + a) * transmission(ef-0.5*V, V, eps, gamma, a);
 }
 
-double SymOneSiteSimulateModel::StaticG(const std::array<double, 5> &params)
-	const {
-
+double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const {
 	// unpack the parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];
