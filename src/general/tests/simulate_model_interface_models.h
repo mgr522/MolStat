@@ -56,12 +56,9 @@ public:
 class TestSubmodelType : public virtual molstat::SimulateModel {
 protected:
 	/**
-	 * \brief Gets the type of this model.
-	 *
-	 * By default, all models are complete, and the type is
-	 * molstat::SimulateModel. It may sometimes be necessary, however, to
-	 * restrict the types of models we want to consider, and this function
-	 * should be overriden.
+	 * \internal
+	 * \brief Identifies a derived model as a submodel.
+	 * \endinternal
 	 */
 	virtual molstat::SimulateModelType getModelType() const override {
 		return std::type_index{ typeid(TestSubmodelType) };
