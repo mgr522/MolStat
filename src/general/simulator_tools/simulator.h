@@ -52,6 +52,9 @@ public:
 	/**
 	 * \brief Constructs molstat::Simulator using the specified model.
 	 *
+	 * \throw molstat::FullModelRequired if the specified model is a
+	 *    submodel type.
+	 *
 	 * \param[in] model_ The model to be used.
 	 */
 	Simulator(std::shared_ptr<SimulateModel> model_);

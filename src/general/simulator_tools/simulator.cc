@@ -17,6 +17,10 @@ namespace molstat {
 
 Simulator::Simulator(std::shared_ptr<SimulateModel> model_)
 	: model(model_), obs_functions() {
+
+	// make sure model is not a submodel
+	if(model->getModelType() != std::type_index{ typeid(SimulateModel) })
+		throw FullModelRequired();
 }
 
 std::valarray<double> Simulator::simulate(gsl_rng_ptr &r) const {

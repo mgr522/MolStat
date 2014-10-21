@@ -98,16 +98,6 @@ protected:
 	std::vector<std::shared_ptr<const RandomDistribution>> dists;
 
 	/**
-	 * \brief Gets the type of this model.
-	 *
-	 * By default, all models are complete, and the type is
-	 * molstat::SimulateModel. It may sometimes be necessary, however, to
-	 * restrict the types of models we want to consider, and this function
-	 * should be overriden.
-	 */
-	virtual SimulateModelType getModelType() const;
-
-	/**
 	 * \brief Gets a map of parameter name to index.
 	 *
 	 * \return The ordered list of names of distributions.
@@ -118,6 +108,16 @@ protected:
 
 public:
 	virtual ~SimulateModel() = default;
+
+	/**
+	 * \brief Gets the type of this model.
+	 *
+	 * By default, all models are complete, and the type is
+	 * molstat::SimulateModel. It may sometimes be necessary, however, to
+	 * restrict the types of models we want to consider, and this function
+	 * should be overriden.
+	 */
+	virtual SimulateModelType getModelType() const;
 
 	/**
 	 * \brief Gets the number of model parameters for this model.
@@ -172,15 +172,15 @@ protected:
 	 */
 	std::list<std::shared_ptr<SimulateModel>> submodels;
 
+public:
+	virtual ~CompositeSimulateModel() = default;
+
 	/**
 	 * \brief Returns the type of submodels for this composite model.
 	 *
 	 * \return The molstat::SimulateModelType.
 	 */
 	virtual SimulateModelType getSubmodelType() const = 0;
-
-public:
-	virtual ~CompositeSimulateModel() = default;
 
 	/**
 	 * \brief Gets the number of model parameters needed directly by the

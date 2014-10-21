@@ -91,6 +91,17 @@ public:
 	}
 };
 
+/**
+ * \brief Exception thrown when a submodel type is suppled to a
+ *    molstat::Simulator.
+ */
+class FullModelRequired : public std::logic_error {
+public:
+	FullModelRequired() :
+		std::logic_error("Simulators cannot directly use submodels.") {
+	}
+};
+
 } // namespace molstat
 
 #endif
