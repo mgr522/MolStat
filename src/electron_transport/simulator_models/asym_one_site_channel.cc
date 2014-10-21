@@ -10,31 +10,32 @@
  * \date October 2014
  */
 
-#include "asym_one_site_simulate_model.h"
+#include "asym_one_site_channel.h"
 #include <cmath>
 
 namespace molstat {
 namespace transport {
 
-const std::size_t AsymOneSiteSimulateModel::Index_EF = 0;
-const std::size_t AsymOneSiteSimulateModel::Index_V = 1;
-const std::size_t AsymOneSiteSimulateModel::Index_epsilon = 2;
-const std::size_t AsymOneSiteSimulateModel::Index_gammaL = 3;
-const std::size_t AsymOneSiteSimulateModel::Index_gammaR = 4;
-const std::size_t AsymOneSiteSimulateModel::Index_a = 5;
+const std::size_t AsymOneSiteChannel::Index_EF = TransportJunction::Index_EF;
+const std::size_t AsymOneSiteChannel::Index_V = TransportJunction::Index_V;
+const std::size_t AsymOneSiteChannel::Index_epsilon = 2;
+const std::size_t AsymOneSiteChannel::Index_gammaL = 3;
+const std::size_t AsymOneSiteChannel::Index_gammaR = 4;
+const std::size_t AsymOneSiteChannel::Index_a = 5;
 
-AsymOneSiteSimulateModel::AsymOneSiteSimulateModel(
-	const std::map<std::string, std::shared_ptr<RandomDistribution>> &avail)
-	: SimulateModel(avail,
-	                order_from_map({{Index_EF, "ef"},
-	                                {Index_V, "v"},
-	                                {Index_epsilon, "epsilon"},
-	                                {Index_gammaL, "gammal"},
-	                                {Index_gammaR, "gammar"},
-	                                {Index_a, "a"}})) {
+std::vector<std::string> AsymOneSiteChannel::get_names() const {
+	std::vector<std::string> ret(4);
+
+	// subtract two because we expect 2 parameters from the TransportJunction
+	ret[Index_epsilon - 2] = "epsilon";
+	ret[Index_gammaL - 2] = "gammal";
+	ret[Index_gammaR - 2] = "gammar";
+	ret[Index_a - 2] = "a";
+
+	return ret;
 }
 
-double AsymOneSiteSimulateModel::transmission(const double e, const double V,
+double AsymOneSiteChannel::transmission(const double e, const double V,
 	const double eps, const double gammal, const double gammar,
 	const double a) {
 
@@ -42,15 +43,7 @@ double AsymOneSiteSimulateModel::transmission(const double e, const double V,
 		(gammal + gammar)*(gammal + gammar));
 }
 
-double AsymOneSiteSimulateModel::AppBias(const std::array<double, 6> &params)
-	const {
-
-	return params[Index_V];
-}
-
-double AsymOneSiteSimulateModel::StaticG(const std::array<double, 6> &params
-	) const {
-
+double AsymOneSiteChannel::StaticG(const std::valarray<double> &params) const {
 	// unpack the model parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];
@@ -64,9 +57,7 @@ double AsymOneSiteSimulateModel::StaticG(const std::array<double, 6> &params
 		- atan(2. * (ef-eps-(0.5+a)*V) / (gammal + gammar)));
 }
 
-double AsymOneSiteSimulateModel::DiffG(const std::array<double, 6> &params
-	) const {
-
+double AsymOneSiteChannel::DiffG(const std::valarray<double> &params) const {
 	// unpack the model parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];
