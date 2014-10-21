@@ -15,9 +15,13 @@
 
 namespace molstat {
 
+std::size_t CompositeSimulateModel::get_num_composite_parameters() const {
+	return get_names().size();
+}
+
 std::size_t CompositeSimulateModel::get_num_parameters() const {
 	// first get the number of parameters required directly
-	std::size_t ret{ get_composite_parameters() };
+	std::size_t ret{ get_num_composite_parameters() };
 
 	// add in the parameters for each submodel
 	for(const auto submodel : submodels)
@@ -29,7 +33,7 @@ std::size_t CompositeSimulateModel::get_num_parameters() const {
 std::valarray<double> CompositeSimulateModel::generateParameters(gsl_rng_ptr &r)
 	const {
 
-	std::size_t tally = get_composite_parameters();
+	std::size_t tally = get_num_composite_parameters();
 	std::valarray<double> ret(get_num_parameters());
 
 	// simulate the parameters for the composite model

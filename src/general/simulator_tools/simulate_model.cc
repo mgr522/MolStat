@@ -19,6 +19,10 @@ SimulateModelType SimulateModel::getModelType() const {
 	return std::type_index{ typeid(SimulateModel) };
 }
 
+std::size_t SimulateModel::get_num_parameters() const {
+	return get_names().size();
+}
+
 ObservableFunction SimulateModel::getObservableFunction(
 	const ObservableIndex &obs) const {
 

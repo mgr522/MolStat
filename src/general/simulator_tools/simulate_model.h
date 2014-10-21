@@ -125,7 +125,7 @@ public:
 	 * \return The number of parameters used by the model for calculating
 	 *    observables.
 	 */
-	virtual std::size_t get_num_parameters() const = 0;
+	virtual std::size_t get_num_parameters() const;
 
 	/**
 	 * \brief Gets a function that calculates an observable, given a set of
@@ -186,7 +186,7 @@ public:
 	 * \brief Gets the number of model parameters needed directly by the
 	 *    composite model.
 	 */
-	virtual std::size_t get_composite_parameters() const = 0;
+	std::size_t get_num_composite_parameters() const;
 
 	/**
 	 * \brief Gets the number of model parameters for this model.
@@ -194,7 +194,7 @@ public:
 	 * \return The number of parameters used by the model for calculating
 	 *    observables.
 	 */
-	virtual std::size_t get_num_parameters() const override;
+	virtual std::size_t get_num_parameters() const override final;
 
 	/**
 	 * \brief Generates a set of model parameters using the specified random

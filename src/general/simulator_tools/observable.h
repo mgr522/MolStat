@@ -240,7 +240,7 @@ std::list<std::pair<std::valarray<std::size_t>, ObservableFunction>>
 
 	// get the number of model parameters explicitly required by the
 	// composite model
-	const std::size_t cparams{ cmodel->get_composite_parameters() };
+	const std::size_t cparams{ cmodel->get_num_composite_parameters() };
 	std::size_t tally { cparams };
 
 	// construct the information (parameters indices and observable function)
