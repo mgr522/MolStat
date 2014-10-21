@@ -292,6 +292,8 @@ public:
 	  *
 	  * \throw molstat::MissingDistribution if one of the required distributions
 	  *    has not been specified.
+	  * \throw molstat::NoSubmodels if a composite model is being constructed
+	  *    and no submodels have been specified.
 	  *
 	  * \return Pointer to the constructed model.
 	  */

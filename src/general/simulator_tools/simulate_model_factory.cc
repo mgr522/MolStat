@@ -60,6 +60,11 @@ std::shared_ptr<SimulateModel> SimulateModelFactory::getModel() {
 	if(remaining_names.size() > 0)
 		throw MissingDistribution(*(remaining_names.cbegin()));
 
+	// if this is a composite model, make sure at least one submodel has been
+	// specified
+	if(comp_model != nullptr && comp_model->submodels.size() == 0)
+		throw NoSubmodels();
+
 	return model;
 }
 

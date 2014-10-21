@@ -141,9 +141,11 @@ public:
 	 *
 	 * The produced factory function will throw molstat::IncompatibleObservable
 	 * if any of the underlying submodels are incompatible with the observable.
-	 * The factory function will also throw molstat::NotCompositeSimulateModel
-	 * if the model has not submodels or is not a composite model. If used as
-	 * intended (`this` is used; see above), the latter should not happen.
+	 * The factory function will also throw molstat::NoSubmodels is the
+	 * composite model has no submodels. Finally, the factory function will
+	 * throw molstat::NotCompositeSimulateModel if the model is not a composite
+	 * model. If used as intended (`this` is used; see above), the latter should
+	 * not happen.
 	 *
 	 * Note also that CompositeObservable<T> and Observable<T> both refer to
 	 * the same observable (class T). A particular MolStat simulator model
@@ -170,8 +172,10 @@ public:
 					= dynamic_pointer_cast<const CompositeSimulateModel>(model);
 
 				// verify that the model is a composite model and has submodels
-				if(cmodel == nullptr || cmodel->submodels.size() == 0)
+				if(cmodel == nullptr)
 					throw NotCompositeSimulateModel();
+				if(cmodel->submodels.size() == 0)
+					throw NoSubmodels();
 
 				// construct a list of submodel information; that is, the list of
 				// parameters to pass to each submodel as well as the observable

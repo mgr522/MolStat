@@ -80,6 +80,17 @@ public:
 	}
 };
 
+/**
+ * \brief Exception thrown when a molstat::CompositeSimulateModel is invoked
+ *    without any submodels specified.
+ */
+class NoSubmodels : public std::logic_error {
+public:
+	NoSubmodels() :
+		std::logic_error("No submodels specified.") {
+	}
+};
+
 } // namespace molstat
 
 #endif
