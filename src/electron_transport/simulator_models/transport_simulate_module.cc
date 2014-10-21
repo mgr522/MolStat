@@ -2,7 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file transport_simulate_models.cc
+ * \file transport_simulate_module.cc
  * \brief Functions that load the transport models and observables into
  *    MolStat.
  *
@@ -11,8 +11,9 @@
  */
 
 #include <general/string_tools.h>
-#include "transport_simulate_models.h"
-#include "transport_observables.h"
+#include "transport_simulate_module.h"
+#include "observables.h"
+#include "junction.h"
 #if 0
 #include "sym_one_site_simulate_model.h"
 #include "asym_one_site_simulate_model.h"

@@ -2,11 +2,8 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file transport_observables.h
+ * \file electron_transport/simulator_models/observables.h
  * \brief Interfaces for the various observables related to electron transport.
- *
- * Each observable should have a function that returns either double or
- * std::array<double, N> after taking in a GSL rng handle and a vector<double>.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
