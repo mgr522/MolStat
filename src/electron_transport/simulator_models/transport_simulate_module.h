@@ -24,14 +24,14 @@ namespace transport {
  * \brief Loads the transport models into the MolStat "database".
  *
  * Models are stored as a map from a string (the name of the model) to a
- * factory for molstat::SimulateModel.
+ * function that creates the desired molstat::SimulateModelFactory.
  *
  * \param[in,out] models The map of models in MolStat. On output, the models
  *    for transport have been added to it.
  */
 void load_models(
 	std::map<std::string,
-	         SimulateModelFactory> &models);
+	         SimulateModelFactoryFunction> &models);
 
 /**
  * \brief Loads the transport observables into the MolStat "database".
