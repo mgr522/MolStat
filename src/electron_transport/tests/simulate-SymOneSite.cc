@@ -14,7 +14,6 @@
  */
 
 #include <cassert>
-#include <cmath>
 #include <valarray>
 
 #include <electron_transport/simulator_models/sym_one_site_channel.h>
