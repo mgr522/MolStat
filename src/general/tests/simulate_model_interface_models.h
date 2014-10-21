@@ -16,10 +16,6 @@
 #include <general/simulator_tools/simulate_model.h>
 #include "simulate_model_interface_observables.h"
 
-constexpr double distvalue = 7.5;
-constexpr double constvalue = 4.;
-constexpr int exceptvalue = 4;
-
 /**
  * \internal
  * \brief Dummy model class.
@@ -31,25 +27,131 @@ class BasicTestModel : public virtual molstat::SimulateModel,
 	public BasicObs3 {
 
 public:
-	double Obs1(const valarray<double> &vals) const override {
-		return vals[0];
+	constexpr static double obs2value = 4.;
+	constexpr static int obs3except = 4;
+
+	virtual double Obs1(const valarray<double> &params) const override {
+		return params[0];
 	}
 
-	double Obs2(const valarray<double> &vals) const override {
-		return constvalue;
+	virtual double Obs2(const valarray<double> &params) const override {
+		return obs2value;
 	}
 
-	double Obs3(const valarray<double> &vals) const override {
-		throw(exceptvalue);
+	virtual double Obs3(const valarray<double> &params) const override {
+		throw(obs3except);
 		return 0.;
 	}
 
-	vector<string> get_names() const override {
+	virtual vector<string> get_names() const override {
 		return { "a" };
 	}
+};
 
-	size_t get_num_parameters() const override {
-		return 1;
+/**
+ * \internal
+ * \brief Type of submodel used in the test.
+ * \endinternal
+ */
+class TestSubmodelType : public virtual molstat::SimulateModel {
+protected:
+	/**
+	 * \brief Gets the type of this model.
+	 *
+	 * By default, all models are complete, and the type is
+	 * molstat::SimulateModel. It may sometimes be necessary, however, to
+	 * restrict the types of models we want to consider, and this function
+	 * should be overriden.
+	 */
+	virtual molstat::SimulateModelType getModelType() const override {
+		return std::type_index{ typeid(TestSubmodelType) };
+	}
+};
+
+/**
+ * \internal
+ * \brief Dummy composite model class.
+ *
+ * This is intended to be a base class; derived classes must specify the
+ * operation used to combine observables from the submodels.
+ * \endinternal
+ */
+class CompositeTestModel : public virtual molstat::CompositeSimulateModel,
+	public BasicObs4,
+	public molstat::CompositeObservable<BasicObs1> {
+
+protected:
+	virtual molstat::SimulateModelType getSubmodelType() const override {
+		return type_index{ typeid(TestSubmodelType) };
+	}
+
+	virtual vector<string> get_names() const override {
+		return { "ef", "v" };
+	}
+
+public:
+	CompositeTestModel(const std::function<double(double, double)> &oper) :
+		molstat::CompositeObservable<BasicObs1>(oper) {}
+
+	virtual double Obs4(const valarray<double> &params) const override {
+		return params[0] + params[1];
+	}
+};
+
+/**
+ * \internal
+ * \brief Dummy composite model class using addition to combine submodels.
+ * \endinternal
+ */
+class CompositeTestModelAdd : public CompositeTestModel {
+public:
+	CompositeTestModelAdd() :
+		CompositeTestModel(
+			[] (double obs1, double obs2) -> double { return obs1 + obs2; }
+		) {}
+};
+
+/**
+ * \internal
+ * \brief Dummy composite model class using multiplication to combine submodels.
+ * \endinternal
+ */
+class CompositeTestModelMultiply : public CompositeTestModel {
+public:
+	CompositeTestModelMultiply() :
+		CompositeTestModel(
+			[] (double obs1, double obs2) -> double { return obs1 * obs2; }
+		) {}
+};
+
+/**
+ * \internal
+ * \brief Dummy submodel type.
+ * \endinternal
+ */
+class CompositeSubModel : public TestSubmodelType,
+	public BasicObs1 {
+
+protected:
+	virtual vector<string> get_names() const override {
+		return { "eps", "gamma" };
+	}
+
+public:
+	virtual double Obs1(const valarray<double> &params) const override {
+		return params[1] * (params[2] - params[3]);
+	}
+};
+
+/**
+ * \internal
+ * \brief Failed submodel; used to test what happens when a submodel fails to
+ *    implement a requested observable.
+ */
+class FailedSubModel : public TestSubmodelType {
+protected:
+	virtual vector<string> get_names() const override {
+		return { "eps" };
 	}
 };
 

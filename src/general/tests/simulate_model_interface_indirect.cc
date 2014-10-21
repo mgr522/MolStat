@@ -31,6 +31,8 @@
  * \endinternal
  */
 int main(int argc, char **argv) {
+	constexpr double distvalue = 7.5;
+
 	map<string, molstat::SimulateModelFactoryFunction> models;
 	map<string, molstat::ObservableIndex> observables;
 
@@ -120,13 +122,13 @@ int main(int argc, char **argv) {
 	// verify the set of observables generated...
 	data = sim.simulate(r);
 	assert(abs(data[0] - distvalue) < 1.e-6);
-	assert(abs(data[1] - constvalue) < 1.e-6);
+	assert(abs(data[1] - BasicTestModel::obs2value) < 1.e-6);
 
 	// change an observable and recheck
 	sim.setObservable(0, observables.at("obs2"));
 	data = sim.simulate(r);
-	assert(abs(data[0] - constvalue) < 1.e-6);
-	assert(abs(data[1] - constvalue) < 1.e-6);
+	assert(abs(data[0] - BasicTestModel::obs2value) < 1.e-6);
+	assert(abs(data[1] - BasicTestModel::obs2value) < 1.e-6);
 
 	// now load in Observable3
 	sim.setObservable(1, observables.at("obs3"));
@@ -137,7 +139,7 @@ int main(int argc, char **argv) {
 		assert(false);
 	}
 	catch(int i) {
-		assert(i == exceptvalue);
+		assert(i == BasicTestModel::obs3except);
 	}
 
 	return 0;
