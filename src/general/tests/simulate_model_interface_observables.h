@@ -22,21 +22,17 @@
 
 using namespace std;
 
-const double distvalue = 7.5;
-const double constvalue = 4.;
-const int exceptvalue = 4;
-
 /**
  * \internal
  * \brief Dummy observable class.
  * \endinternal
  */
-class Observable1 : public molstat::Observable<Observable1> {
+class BasicObs1 : public molstat::Observable<BasicObs1> {
 public:
-	Observable1() :
-		Observable(&Observable1::Obs1) {}
+	BasicObs1() :
+		Observable(&BasicObs1::Obs1) {}
 
-	virtual ~Observable1() = default;
+	virtual ~BasicObs1() = default;
 	virtual double Obs1(const valarray<double> &vals) const = 0;
 };
 
@@ -45,12 +41,12 @@ public:
  * \brief Dummy observable class.
  * \endinternal
  */
-class Observable2 : public molstat::Observable<Observable2> {
+class BasicObs2 : public molstat::Observable<BasicObs2> {
 public:
-	Observable2() :
-		Observable(&Observable2::Obs2) {}
+	BasicObs2() :
+		Observable(&BasicObs2::Obs2) {}
 
-	virtual ~Observable2() = default;
+	virtual ~BasicObs2() = default;
 	virtual double Obs2(const valarray<double> &vals) const = 0;
 };
 
@@ -59,12 +55,12 @@ public:
  * \brief Dummy observable class.
  * \endinternal
  */
-class Observable3 : public molstat::Observable<Observable3> {
+class BasicObs3 : public molstat::Observable<BasicObs3> {
 public:
-	Observable3() :
-		Observable(&Observable3::Obs3) {}
+	BasicObs3() :
+		Observable(&BasicObs3::Obs3) {}
 
-	virtual ~Observable3() = default;
+	virtual ~BasicObs3() = default;
 	virtual double Obs3(const valarray<double> &vals) const = 0;
 };
 
@@ -73,12 +69,12 @@ public:
  * \brief Dummy observable class.
  * \endinternal
  */
-class Observable4 : public molstat::Observable<Observable4> {
+class BasicObs4 : public molstat::Observable<BasicObs4> {
 public:
-	Observable4() :
-		Observable(&Observable4::Obs4) {}
+	BasicObs4() :
+		Observable(&BasicObs4::Obs4) {}
 
-	virtual ~Observable4() = default;
+	virtual ~BasicObs4() = default;
 	virtual double Obs4(const valarray<double> &vals) const = 0;
 };
 

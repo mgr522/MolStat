@@ -16,15 +16,19 @@
 #include <general/simulator_tools/simulate_model.h>
 #include "simulate_model_interface_observables.h"
 
+constexpr double distvalue = 7.5;
+constexpr double constvalue = 4.;
+constexpr int exceptvalue = 4;
+
 /**
  * \internal
  * \brief Dummy model class.
  * \endinternal
  */
-class TestModel : public virtual molstat::SimulateModel,
-	public Observable1,
-	public Observable2,
-	public Observable3 {
+class BasicTestModel : public virtual molstat::SimulateModel,
+	public BasicObs1,
+	public BasicObs2,
+	public BasicObs3 {
 
 public:
 	double Obs1(const valarray<double> &vals) const override {

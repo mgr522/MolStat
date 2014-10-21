@@ -40,21 +40,21 @@ int main(int argc, char **argv) {
 	// must use emplace to avoid calling the allocator for type_index
 	// (no default constructor)
 	observables.emplace(make_pair("obs1",
-		molstat::GetObservableIndex<Observable1>()) );
+		molstat::GetObservableIndex<BasicObs1>()) );
 	observables.emplace(make_pair("obs2",
-		molstat::GetObservableIndex<Observable2>()) );
+		molstat::GetObservableIndex<BasicObs2>()) );
 	observables.emplace(make_pair("obs3",
-		molstat::GetObservableIndex<Observable3>()) );
+		molstat::GetObservableIndex<BasicObs3>()) );
 	observables.emplace(make_pair("obs4",
-		molstat::GetObservableIndex<Observable4>()) );
+		molstat::GetObservableIndex<BasicObs4>()) );
 
 	// add the model
 	// use emplace for consistency
-	models.emplace(make_pair("test",
-		molstat::GetSimulateModelFactory<TestModel>() ));
+	models.emplace(make_pair("basic",
+		molstat::GetSimulateModelFactory<BasicTestModel>() ));
 
 	// get our factory
-	molstat::SimulateModelFactory factory{ models.at("test")() };
+	molstat::SimulateModelFactory factory{ models.at("basic")() };
 
 	// try to get the model. this should fail because we haven't specified
 	// a distribution for the parameter "a"

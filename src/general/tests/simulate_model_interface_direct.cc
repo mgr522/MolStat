@@ -33,7 +33,7 @@
  */
 int main(int argc, char **argv) {
 	molstat::SimulateModelFactory factory 
-		{ molstat::SimulateModelFactory::makeFactory<TestModel>() };
+		{ molstat::SimulateModelFactory::makeFactory<BasicTestModel>() };
 
 	molstat::gsl_rng_ptr r{ nullptr, &gsl_rng_free }; // dummy rng
 
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 	// try to set an observable with a bad index.
 	try {
 		// only 0 is available right now...
-		sim.setObservable(1, type_index{ typeid(Observable1) });
+		sim.setObservable(1, type_index{ typeid(BasicObs1) });
 
 		assert(false);
 	}
@@ -78,10 +78,10 @@ int main(int argc, char **argv) {
 		// should be here
 	}
 
-	// try to set Observable4
-	// this should fail because TestModel doesn't implement Observable4
+	// try to set BasicObs4
+	// this should fail because TestModel doesn't implement BasicObs4
 	try {
-		sim.setObservable(0, type_index{ typeid(Observable4) });
+		sim.setObservable(0, type_index{ typeid(BasicObs4) });
 
 		assert(false);
 	}
@@ -90,13 +90,13 @@ int main(int argc, char **argv) {
 	}
 
 	// now, let's actually set an observable
-	sim.setObservable(0, type_index{ typeid(Observable1) });
+	sim.setObservable(0, type_index{ typeid(BasicObs1) });
 
 	valarray<double> data = sim.simulate(r);
 	assert(abs(data[0] - distvalue) < 1.e-6);
 
 	// set another observable
-	sim.setObservable(1, type_index{ typeid(Observable2) });
+	sim.setObservable(1, type_index{ typeid(BasicObs2) });
 
 	// verify the set of observables generated...
 	data = sim.simulate(r);
@@ -104,13 +104,13 @@ int main(int argc, char **argv) {
 	assert(abs(data[1] - constvalue) < 1.e-6);
 
 	// change an observable and recheck
-	sim.setObservable(0, type_index{ typeid(Observable2) });
+	sim.setObservable(0, type_index{ typeid(BasicObs2) });
 	data = sim.simulate(r);
 	assert(abs(data[0] - constvalue) < 1.e-6);
 	assert(abs(data[1] - constvalue) < 1.e-6);
 
 	// now load in Observable3
-	sim.setObservable(1, type_index{ typeid(Observable3) });
+	sim.setObservable(1, type_index{ typeid(BasicObs3) });
 
 	try {
 		// Observable3 should throw an exception; make sure we catch it
