@@ -7,8 +7,8 @@ if HAVE_PYTHON
 TESTS += fit-symmetric-resonant.py \
 	fit-symmetric-nonresonant.py \
    fit-symmetric-nonresonant-binlog.py \
-	fit-asymmetric-resonant.py \
-	fit-options.py
+	fit-options.py \
+	fit-asymmetric-resonant.py
 endif
 
 TEST_EXTENSIONS = .py

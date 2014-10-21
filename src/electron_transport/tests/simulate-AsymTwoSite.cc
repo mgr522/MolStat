@@ -4,27 +4,22 @@
 /**
  * \file tests/simulate-AsymTwoSite.cc
  * \brief Test suite for the asymmetric-coupling, two-site tight-binding
- *     model.
+ *     channel.
  *
  * \test Test suite for the asymmetric-coupling, two-site tight-binding
- *     model.
+ *     channel.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
 
-#include <cstdio>
 #include <cassert>
-#include <cmath>
-#include <array>
-#include <map>
+#include <valarray>
 
-#include <general/random_distributions/constant.h>
-#include <electron_transport/simulator_models/asym_two_site_simulate_model.h>
+#include <electron_transport/simulator_models/asym_two_site_channel.h>
 
 using namespace std;
-using Model = molstat::transport::AsymTwoSiteSimulateModel;
-constexpr size_t MPs{ 6 };
+using ChannelType = molstat::transport::AsymTwoSiteChannel;
 
 /**
  * \internal
@@ -37,62 +32,81 @@ constexpr size_t MPs{ 6 };
  */
 int main(int argc, char **argv) {
 	const double thresh = 1.0e-6;
-	array<double, MPs> params;
-	map<string, shared_ptr<molstat::RandomDistribution>> avail;
 
-	// rig up some distributions for the constructor
-	avail["ef"] = make_shared<molstat::ConstantDistribution>(0.);
-	avail["v"] = make_shared<molstat::ConstantDistribution>(0.);
-	avail["epsilon"] = make_shared<molstat::ConstantDistribution>(0.);
-	avail["gammal"] = make_shared<molstat::ConstantDistribution>(0.);
-	avail["gammar"] = make_shared<molstat::ConstantDistribution>(0.);
-	avail["beta"] = make_shared<molstat::ConstantDistribution>(0.);
+	// use the factory to create a channel
+	shared_ptr<ChannelType> channel = dynamic_pointer_cast<ChannelType>(
+			molstat::SimulateModelFactory::makeFactory<ChannelType>()
+			// not going to need the distributions, but the factory framework
+			// requires them
+			.setDistribution("epsilon", nullptr)
+			.setDistribution("gammal", nullptr)
+			.setDistribution("gammar", nullptr)
+			.setDistribution("beta", nullptr)
+			.getModel()
+		);
+	assert(channel != nullptr);
 
-	// create a model
-	Model model{ avail };
+	// use the factory to create a junction
+	shared_ptr<molstat::SimulateModel> junction =
+		molstat::SimulateModelFactory::makeFactory
+			<molstat::transport::TransportJunction>()
+		.setDistribution("ef", nullptr)
+		.setDistribution("v", nullptr)
+		.addSubmodel(channel)
+		.getModel();
+
+	// get the observable functions
+	auto AppBias = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::AppliedBias) } );
+	auto StaticG = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::StaticConductance) } );
+	auto DiffG = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::DifferentialConductance) } );
+
+	valarray<double> params(junction->get_num_parameters());
 
 	// check known values for several parameter sets
-	params[Model::Index_EF] = 0.;
-	params[Model::Index_V] = 1.;
-	params[Model::Index_epsilon] = -4.;
-	params[Model::Index_gammaL] = 0.8;
-	params[Model::Index_gammaR] = 1.;
-	params[Model::Index_beta] = -3.;
-	assert(abs(0.121622 - model.transmission
-		(params[Model::Index_EF], 0., params[Model::Index_epsilon],
-		 params[Model::Index_gammaL], params[Model::Index_gammaR],
-		 params[Model::Index_beta])) < thresh);
-	assert(abs(0.149936 - model.StaticG(params)) < thresh);
-	assert(abs(0.213248 - model.DiffG(params)) < thresh);
-	assert(abs(params[Model::Index_V] - model.AppBias(params)) < thresh);
+	params[ChannelType::Index_EF] = 0.;
+	params[ChannelType::Index_V] = 1.;
+	params[ChannelType::Index_epsilon] = -4.;
+	params[ChannelType::Index_gammaL] = 0.8;
+	params[ChannelType::Index_gammaR] = 1.;
+	params[ChannelType::Index_beta] = -3.;
+	assert(abs(0.121622 - channel->transmission
+		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
+		 params[ChannelType::Index_gammaL], params[ChannelType::Index_gammaR],
+		 params[ChannelType::Index_beta])) < thresh);
+	assert(abs(0.149936 - StaticG(params)) < thresh);
+	assert(abs(0.213248 - DiffG(params)) < thresh);
+	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
 
-	params[Model::Index_EF] = 1.;
-	params[Model::Index_V] = -0.4;
-	params[Model::Index_epsilon] = -3.;
-	params[Model::Index_gammaL] = 0.4;
-	params[Model::Index_gammaR] = 0.2;
-	params[Model::Index_beta] = -0.8;
-	assert(abs(0.000216257 - model.transmission
-		(params[Model::Index_EF], 0., params[Model::Index_epsilon],
-		 params[Model::Index_gammaL], params[Model::Index_gammaR],
-		 params[Model::Index_beta])) < thresh);
-	assert(abs(0.000218231 - model.StaticG(params)) < thresh);
-	assert(abs(0.000222203 - model.DiffG(params)) < thresh);
-	assert(abs(params[Model::Index_V] - model.AppBias(params)) < thresh);
+	params[ChannelType::Index_EF] = 1.;
+	params[ChannelType::Index_V] = -0.4;
+	params[ChannelType::Index_epsilon] = -3.;
+	params[ChannelType::Index_gammaL] = 0.4;
+	params[ChannelType::Index_gammaR] = 0.2;
+	params[ChannelType::Index_beta] = -0.8;
+	assert(abs(0.000216257 - channel->transmission
+		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
+		 params[ChannelType::Index_gammaL], params[ChannelType::Index_gammaR],
+		 params[ChannelType::Index_beta])) < thresh);
+	assert(abs(0.000218231 - StaticG(params)) < thresh);
+	assert(abs(0.000222203 - DiffG(params)) < thresh);
+	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
 
-	params[Model::Index_EF] = -1.;
-	params[Model::Index_V] = 1.4;
-	params[Model::Index_epsilon] = 5.;
-	params[Model::Index_gammaL] = 0.67;
-	params[Model::Index_gammaR] = 1.98;
-	params[Model::Index_beta] = -1.6;
-	assert(abs(0.00292927 - model.transmission
-		(params[Model::Index_EF], 0., params[Model::Index_epsilon],
-		 params[Model::Index_gammaL], params[Model::Index_gammaR],
-		 params[Model::Index_beta])) < thresh);
-	assert(abs(0.00308371 - model.StaticG(params)) < thresh);
-	assert(abs(0.00340305 - model.DiffG(params)) < thresh);
-	assert(abs(params[Model::Index_V] - model.AppBias(params)) < thresh);
+	params[ChannelType::Index_EF] = -1.;
+	params[ChannelType::Index_V] = 1.4;
+	params[ChannelType::Index_epsilon] = 5.;
+	params[ChannelType::Index_gammaL] = 0.67;
+	params[ChannelType::Index_gammaR] = 1.98;
+	params[ChannelType::Index_beta] = -1.6;
+	assert(abs(0.00292927 - channel->transmission
+		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
+		 params[ChannelType::Index_gammaL], params[ChannelType::Index_gammaR],
+		 params[ChannelType::Index_beta])) < thresh);
+	assert(abs(0.00308371 - StaticG(params)) < thresh);
+	assert(abs(0.00340305 - DiffG(params)) < thresh);
+	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
 
 	return 0;
 }
