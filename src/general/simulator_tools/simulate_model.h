@@ -207,7 +207,7 @@ public:
 	 * \return A set of model parameters.
 	 */
 	virtual std::valarray<double> generateParameters(gsl_rng_ptr &r) const
-		override;
+		override final;
 
 	// the factory needs to get at the internal details
 	friend class SimulateModelFactory;

@@ -110,24 +110,6 @@ template<typename T>
 class CompositeObservable : public virtual CompositeSimulateModel {
 private:
 	/**
-	 * \brief Constructs a list of information about each of the submodels.
-	 *
-	 * The first element in the pair is a list of indices that gets the correct
-	 * parameters to send to the submodel. (Remember, the total parameter set
-	 * for the composite model contains the composite-specified parameters and
-	 * then all the parameters for each submodel.) The second element is the
-	 * function for calculating the observable for the submodel.
-	 *
-	 * \throw molstat::IncompatibleObservable If any of the submodels are
-	 *    incompatible with the observable.
-	 *
-	 * \param[in] cmodel The composite model containing the submodels.
-	 * \return The list of observable functions for the observable of type T.
-	 */
-	static std::list<std::pair<std::valarray<std::size_t>, ObservableFunction>>
-		getSubmodelInfo(std::shared_ptr<const CompositeSimulateModel> cmodel);
-
-	/**
 	 * \brief Constructs a std::valarray from a std::list.
 	 *
 	 * std::valarray::operator[] can accept a std::valarray<std::size_t> to
@@ -184,21 +166,57 @@ public:
 
 				// cast the model to a CompositeModel class so we can access
 				// the submodels
-				shared_ptr<const CompositeSimulateModel> cast
+				shared_ptr<const CompositeSimulateModel> cmodel
 					= dynamic_pointer_cast<const CompositeSimulateModel>(model);
 
 				// verify that the model is a composite model and has submodels
-				if(cast == nullptr || cast->submodels.size() == 0)
+				if(cmodel == nullptr || cmodel->submodels.size() == 0)
 					throw NotCompositeSimulateModel();
 
-				// construct a list of the observable functions for each of the
-				// the submodels. if any submodel does not have such a function,
-				// it will throw IncompatibleObservable. we will let that
-				// exception pass upward
-				const list<pair<valarray<size_t>, ObservableFunction>>
-					subinfo{ getSubmodelInfo(cast) };
+				// construct a list of submodel information; that is, the list of
+				// parameters to pass to each submodel as well as the observable
+				// function for each observable.
+				//
+				// if any submodel does not have such a function,
+				// IncompatibleObservable will be thrown, let the exception pass up
+				//
+				// ideally, this construction would be a subfunction, but there are
+				// issues accessing the protected members of CompositeSimulateModel
+				// because we're in a lambda
+				list<pair<const valarray<size_t>, ObservableFunction>> subinfo;
 
-				// make the actual Observable function
+				// get the number of model parameters explicitly required by the
+				// composite model
+				const size_t cparams{ cmodel->get_num_composite_parameters() };
+				size_t tally { cparams };
+
+				// go through all of the submodels
+				for(const auto submodel : cmodel->submodels) {
+					const size_t sub_nparam{ submodel->get_num_parameters() };
+
+					// create a list of the parameters indices that should be passed
+					// to this submodel
+					list<size_t> indices;
+					// first add in the indices required by the composite model
+					for(size_t j = 0; j < cparams; ++j)
+						indices.emplace_back(j);
+					// now add in the indices for the specific submodel
+					for(size_t j = tally; j < tally + sub_nparam; ++j)
+						indices.emplace_back(j);
+
+					// getObservableFunction will throw IncompatibleObservable if
+					// this submodel is incompatible with the observable. let this
+					// exception pass up to the caller
+					subinfo.emplace_back(make_pair(
+						list2valarray(indices),
+						submodel->getObservableFunction(oindex)));
+
+					// now add the submodel's parameters to the tally for the next
+					// offset
+					tally += sub_nparam;
+				}
+
+				// make the actual Observable function for the composite observable
 				return [oper, subinfo] (const std::valarray<double> &params)
 					-> double {
 
@@ -209,8 +227,8 @@ public:
 					// calculate the observable of each and combine them using
 					// the specified operator
 					for(auto modelinfo : subinfo) {
-						// modelinfo.first has a valarray the filters out the correct
-						// model parameters to send to the submodel.
+						// modelinfo.first has a valarray that filters out the
+						// correct model parameters to send to the submodel.
 						// modelinfo.second is the function
 						double obs = modelinfo.second(params[modelinfo.first]);
 
@@ -230,49 +248,6 @@ public:
 };
 
 // template definitions
-template<typename T>
-std::list<std::pair<std::valarray<std::size_t>, ObservableFunction>>
-	CompositeObservable<T>::getSubmodelInfo(
-		std::shared_ptr<const CompositeSimulateModel> cmodel) {
-
-	// get the index for this observable
-	const ObservableIndex oindex{ GetObservableIndex<T>() };
-
-	// get the number of model parameters explicitly required by the
-	// composite model
-	const std::size_t cparams{ cmodel->get_num_composite_parameters() };
-	std::size_t tally { cparams };
-
-	// construct the information (parameters indices and observable function)
-	// for each submodel
-	std::list<std::pair<std::valarray<std::size_t>, ObservableFunction>> ret;
-	for(const auto submodel : cmodel->submodels) {
-		const std::size_t submodel_nparam{ submodel->get_num_parameters() };
-
-		// create a list of the parameters indices that should be passed to this
-		// submodel
-		std::list<std::size_t> indices;
-		// first add in the indices required by the composite model
-		for(std::size_t j = 0; j < cparams; ++j)
-			indices.emplace_back(j);
-		// now add in the indices for the specific submodel
-		for(std::size_t j = tally; j < tally + submodel_nparam; ++j)
-			indices.emplace_back(j);
-
-		// getObservableFunction will throw IncompatibleObservable if this
-		// submodel is incompatible with the observable. let this exception pass
-		// up to the caller
-		ret.emplace_back(std::make_pair(
-			list2valarray(indices),
-			submodel->getObservableFunction(oindex)));
-
-		// now add the submodel's parameters to the tally for the next offset
-		tally += submodel_nparam;
-	}
-
-	return ret;
-}
-
 template<typename T>
 std::valarray<std::size_t> CompositeObservable<T>::list2valarray(
 	const std::list<std::size_t> &list) {
