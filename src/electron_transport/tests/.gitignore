@@ -15,6 +15,9 @@ simulate-AsymOneSite.trs
 simulate-AsymTwoSite
 simulate-AsymTwoSite.log
 simulate-AsymTwoSite.trs
+simulate-CompositeJunction
+simulate-CompositeJunction.log
+simulate-CompositeJunction.trs
 simulate-SymOneSite
 simulate-SymOneSite.log
 simulate-SymOneSite.trs

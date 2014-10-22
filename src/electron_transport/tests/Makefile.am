@@ -1,7 +1,8 @@
 TESTS = simulate-SymOneSite \
 	simulate-AsymOneSite \
 	simulate-SymTwoSite \
-	simulate-AsymTwoSite
+	simulate-AsymTwoSite \
+	simulate-CompositeJunction
 
 if HAVE_PYTHON
 TESTS += fit-symmetric-resonant.py \
@@ -17,7 +18,8 @@ PY_LOG_COMPILER = $(PYTHON_BIN)
 check_PROGRAMS = simulate-SymOneSite \
 	simulate-AsymOneSite \
 	simulate-SymTwoSite \
-	simulate-AsymTwoSite
+	simulate-AsymTwoSite \
+	simulate-CompositeJunction
 
 simulate_SymOneSite_SOURCES = simulate-SymOneSite.cc
 simulate_SymOneSite_LDADD = ../simulator_models/libtransport_simulate.a \
@@ -33,4 +35,8 @@ simulate_SymTwoSite_LDADD = ../simulator_models/libtransport_simulate.a \
 
 simulate_AsymTwoSite_SOURCES = simulate-AsymTwoSite.cc
 simulate_AsymTwoSite_LDADD = ../simulator_models/libtransport_simulate.a \
+	../../general/libmolstat_general.a 
+
+simulate_CompositeJunction_SOURCES = simulate-CompositeJunction.cc
+simulate_CompositeJunction_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_general.a 
