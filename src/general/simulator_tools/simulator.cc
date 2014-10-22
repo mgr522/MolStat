@@ -16,14 +16,18 @@
 namespace molstat {
 
 Simulator::Simulator(std::shared_ptr<SimulateModel> model_)
-	: model(model_), obs_functions() {
-
+	: model(model_), obs_functions()
+{
 	// make sure model is not a submodel
+	if(model == nullptr)
+		throw std::runtime_error("No model specified.");
+
 	if(model->getModelType() != std::type_index{ typeid(SimulateModel) })
 		throw FullModelRequired();
 }
 
-std::valarray<double> Simulator::simulate(gsl_rng_ptr &r) const {
+std::valarray<double> Simulator::simulate(gsl_rng_ptr &r) const
+{
 	std::size_t num_obs{ obs_functions.size() };
 
 	if(num_obs == 0)
@@ -41,7 +45,8 @@ std::valarray<double> Simulator::simulate(gsl_rng_ptr &r) const {
 	return ret;
 }
 
-void Simulator::setObservable(std::size_t j, const ObservableIndex &obs) {
+void Simulator::setObservable(std::size_t j, const ObservableIndex &obs)
+{
 	std::size_t length { obs_functions.size() };
 
 	if(j > length)

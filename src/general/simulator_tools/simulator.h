@@ -48,6 +48,7 @@ public:
 	/**
 	 * \brief Constructs molstat::Simulator using the specified model.
 	 *
+	 * \throw runtime_error if a nullptr is provided.
 	 * \throw molstat::FullModelRequired if the specified model is a
 	 *    submodel type.
 	 *
