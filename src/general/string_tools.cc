@@ -7,7 +7,7 @@
  * \brief Functions for processing strings, useful in I/O.
  *
  * \author Matthew G.\ Reuter
- * \date April 2014
+ * \date October 2014
  * \endinternal
  */
 
