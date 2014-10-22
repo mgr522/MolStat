@@ -10,7 +10,6 @@
  * \date October 2014
  */
 
-#include <utility>
 #include <general/string_tools.h>
 #include "transport_simulate_module.h"
 #include "observables.h"
