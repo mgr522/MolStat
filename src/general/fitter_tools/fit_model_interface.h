@@ -415,7 +415,7 @@ void FitModel<N>::append_initial_guess(const std::vector<std::string> &tokens,
 
 	for(i = 0; i < size; i += 2) {
 		std::string name = tokens[i];
-		make_lower(name);
+		name = to_lower(name);
 		double value;
 
 		try {
