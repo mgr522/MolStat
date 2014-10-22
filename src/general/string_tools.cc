@@ -16,9 +16,9 @@
 #include <stdexcept>
 #include <algorithm>
 
-namespace molstat {
-
 using namespace std;
+
+namespace molstat {
 
 /**
  * \internal
@@ -71,49 +71,41 @@ static bool next_token(string::const_iterator &next,
 	return true;
 }
 
-string getline(FILE *f) {
-	string line;
-	char *cline;
-	size_t chars;
-
-	cline = nullptr;
-	chars = 0;
-	chars = getline(&cline, &chars, f);
-	if(chars == -1)
-		throw runtime_error("EOF encountered");
-
-	line = cline;
-	free(cline);
-	return line;
-}
-
-void tokenize(const std::string &str, std::vector<std::string> &vec) {
+std::queue<std::string> tokenize(const std::string &str) {
+	queue<string> ret;
 	string::const_iterator next = str.begin();
 	string token;
 
-	vec.clear();
 	while(next_token(next, str.end(), token))
-		vec.push_back(token);
+		ret.emplace(token);
+
+	return ret;
 }
 
-void make_lower(std::string &str) {
-	for(char &c : str)
+std::string to_lower(const std::string &str) {
+	std::string ret{ str };
+
+	for(char &c : ret)
 		c = tolower(c);
+
+	return ret;
 }
 
-std::string &&to_lower(std::string str) {
-	make_lower(str);
-	return move(str);
-}
-
-double string_to_double(const std::string &str) {
+template<>
+double cast_string(const std::string &str) {
 	double ret;
+	size_t next;
 
 	try {
-		ret = stod(str);
+		// do the conversion and get the index of the first character not used.
+		ret = stod(str, &next);
+
+		// make sure the entire string was used.
+		if(next != str.size())
+			throw bad_cast();
 	}
 	catch(const invalid_argument &e) {
-		throw invalid_argument("Unable to convert \"" + str + "\" to a double.");
+		throw bad_cast();
 	}
 
 	return ret;

@@ -1,4 +1,5 @@
-TESTS = gsl_std_vector \
+TESTS = string_tools \
+	gsl_std_vector \
 	histogram1d_linear \
 	histogram1d_log \
 	histogram2d_linear \
@@ -6,13 +7,17 @@ TESTS = gsl_std_vector \
 	simulate_model_interface_direct \
 	simulate_model_interface_indirect
 
-check_PROGRAMS = gsl_std_vector \
+check_PROGRAMS = string_tools \
+	gsl_std_vector \
 	histogram1d_linear \
 	histogram1d_log \
 	histogram2d_linear \
 	histogram2d_log \
 	simulate_model_interface_direct \
 	simulate_model_interface_indirect
+
+string_tools_SOURCES = string_tools.cc
+string_tools_LDADD = ../libmolstat_general.a
 
 gsl_std_vector_SOURCES = gsl_std_vector.cc
 gsl_std_vector_LDADD = ../libmolstat_general.a

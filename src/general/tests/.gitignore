@@ -19,4 +19,7 @@ simulate_model_interface_direct.trs
 simulate_model_interface_indirect
 simulate_model_interface_indirect.log
 simulate_model_interface_indirect.trs
+string_tools
+string_tools.log
+string_tools.trs
 test-suite.log

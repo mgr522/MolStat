@@ -28,7 +28,7 @@ std::unique_ptr<BinStyle> BinStyleFactory(
 
 	// the first token is the name of the binning style
 	string name = tokens[0];
-	make_lower(name);
+	name = to_lower(name);
 
 	if(name == "linear") {
 		ret.reset(new BinLinear());
@@ -38,7 +38,7 @@ std::unique_ptr<BinStyle> BinStyleFactory(
 		double b;
 
 		if(tokens.size() >= 2) {
-			b = string_to_double(tokens[1]);
+			b = cast_string<double>(tokens[1]);
 			if(b <= 0.)
 				throw invalid_argument("The logarithm base must be positive.");
 		}

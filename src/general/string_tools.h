@@ -13,8 +13,7 @@
 #define __string_tools_h__
 
 #include <string>
-#include <vector>
-#include <cstdio>
+#include <queue>
 
 /**
  * \namespace molstat
@@ -24,34 +23,16 @@ namespace molstat {
 
 /**
  * \internal
- * \brief Gets a line from the desired stream and puts it in std::string form.
- *
- * \exception std::runtime_error if EOF is encountered.
- *
- * \param[in,out] f The stream.
- * \return The string.
- * \endinternal
- */
-std::string getline(FILE *f);
-
-/**
- * \internal
  * \brief Tokenizes a string.
  *
- * \param[in] str The string to be tokenize.
- * \param[out] vec The strings, in std::vector form.
- * \endinternal
- */
-void tokenize(const std::string &str, std::vector<std::string> &vec);
-
-/**
- * \internal
- * \brief Makes a string lower case.
+ * Tokens are delimited by whitespace. Quotes (\"\") can be used to include
+ * whitespace in a token.
  *
- * \param[in,out] str The string.
+ * \param[in] str The string to be tokenized.
+ * \return The tokens, ordered in a std::queue.
  * \endinternal
  */
-void make_lower(std::string &str);
+std::queue<std::string> tokenize(const std::string &str);
 
 /**
  * \internal
@@ -60,19 +41,42 @@ void make_lower(std::string &str);
  * \param[in] str The string.
  * \return The string, in lower case.
  */
-std::string &&to_lower(std::string str);
+std::string to_lower(const std::string &str);
 
 /**
  * \internal
- * \brief Turns a string into a double.
+ * \brief Template for casting a string to the desired type.
  *
- * \exception std::invalid_argument if the string cannot be cast to a double.
+ * The entire string must be used in the conversion.
  *
+ * \throw std::bad_cast if the string cannot be cast to a specified type or if
+ *    only part of the string was needed.
+ *
+ * \tparam T The type to which we aim to cast.
  * \param[in] str The string to be cast.
- * \return The double.
+ * \return The string, as cast to the specified type.
  * \endinternal
  */
-double string_to_double(const std::string &str);
+template<typename T>
+T cast_string(const std::string &str) {
+	throw std::bad_cast();
+}
+
+/**
+ * \internal
+ * \brief Specialization for casting a string to a double.
+ *
+ * The entire string must be used in the conversion.
+ *
+ * \throw std::bad_cast if the string cannot be cast to the double or if only
+ *    the beginning of the string is used.
+ *
+ * \param[in] str The string to be cast.
+ * \return The string, as a double.
+ * \endinternal
+ */
+template<>
+double cast_string(const std::string &str);
 
 } // namespace molstat
 

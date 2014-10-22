@@ -19,9 +19,9 @@
 #include "lognormal.h"
 #include "gamma.h"
 
-namespace molstat {
-
 using namespace std;
+
+namespace molstat {
 
 std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 	const std::vector<std::string> &tokens) {
@@ -33,7 +33,7 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 
 	// the first token is the type of distribution to form
 	string type = tokens[0];
-	make_lower(type);
+	type = to_lower(type);
 
 	if(type == "constant") {
 		double val;
@@ -44,7 +44,7 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 				"   constant value\n" \
 				"where value is the value to be returned.");
 
-		val = string_to_double(tokens[1]);
+		val = cast_string<double>(tokens[1]);
 
 		ret = unique_ptr<RandomDistribution>(new ConstantDistribution(val));
 	}
@@ -58,8 +58,8 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 				"   uniform lower upper\n" \
 				"where lower and upper are the bounds, respectively.");
 
-		lower = string_to_double(tokens[1]);
-		upper = string_to_double(tokens[2]);
+		lower = cast_string<double>(tokens[1]);
+		upper = cast_string<double>(tokens[2]);
 
 		if(lower >= upper)
 			throw invalid_argument("Uniform Distribution: The lower bound must " \
@@ -77,8 +77,8 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			throw invalid_argument("Invalid normal distribution. Use\n" \
 				"   normal mean standard-deviation");
 
-		mean = string_to_double(tokens[1]);
-		stdev = string_to_double(tokens[2]);
+		mean = cast_string<double>(tokens[1]);
+		stdev = cast_string<double>(tokens[2]);
 
 		if(stdev <= 0.)
 			throw invalid_argument("Normal Distribution: The standard deviation" \
@@ -96,8 +96,8 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			throw invalid_argument("Invalid lognormal distribution. Use\n" \
 				"   lognormal zeta sigma");
 
-		zeta = string_to_double(tokens[1]);
-		sigma = string_to_double(tokens[2]);
+		zeta = cast_string<double>(tokens[1]);
+		sigma = cast_string<double>(tokens[2]);
 
 		if(sigma <= 0.)
 			throw invalid_argument("Lognormal Distribution: The standard " \
@@ -114,8 +114,8 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			throw invalid_argument("Invalid gamma distribution. Use\n" \
 				"   gamma shape scale");
 
-		shape = string_to_double(tokens[1]);
-		scale = string_to_double(tokens[2]);
+		shape = cast_string<double>(tokens[1]);
+		scale = cast_string<double>(tokens[2]);
 
 		if(shape <= 0. || scale <= 0.)
 			throw invalid_argument("Gamma Distribution: The shape and scale " \
