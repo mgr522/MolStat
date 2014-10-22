@@ -11,35 +11,68 @@
  * histograms, depending on the desired observable.
  *
  * \author Matthew G.\ Reuter
- * \date September 2014
+ * \date October 2014
  */
 
 #include <memory>
-#include <cstdio>
+#include <iostream>
 #include <stdexcept>
 #include <string>
-#include <vector>
+#include <queue>
 #include <functional>
 #include <map>
 #include <cmath>
 #include <forward_list>
-#include <array>
+#include <valarray>
 #include <limits>
 
-#include "general/string_tools.h"
-#include "general/random_distributions/rng.h"
-#include "general/histogram_tools/histogram1d.h"
-#include "general/histogram_tools/histogram2d.h"
-#include "electron_transport/simulator_models/transport_simulate_models.h"
+#include <general/string_tools.h>
+#include <general/random_distributions/rng.h>
+#include <general/histogram_tools/histogram1d.h>
+#include <general/histogram_tools/histogram2d.h>
+#include <general/simulator_tools/simulator.h>
+#include <general/simulator_tools/simulator_exceptions.h>
+#include <electron_transport/simulator_models/transport_simulate_module.h>
 
 using namespace std;
+
+// functions for handling input commands
+/**
+ * \brief Processes the input deck.
+ *
+ * \throw std::runtime_error if an unrecoverable error occurs.
+ *
+ * \param[in,out] input The input stream.
+ * \param[out] ofname Name for the histogram output file.
+ * \return Pointer to the molstat::Simulator object.
+ */
+unique_ptr<molstat::Simulator> processInput(istream &input, string &ofname);
+
+/**
+ * \brief Gets an observable from a list of tokens.
+ *
+ * The list of tokens is destroyed in this function.
+ *
+ * \throw std::runtime_error if the token cannot be matched to an observable or
+ *    a name was not specified (too few tokens).
+ *
+ * \param[in] observables The list of observables (stored as a map from
+ *    string to ObservableIndex).
+ * \param[in] tokens The list of tokens.
+ * \return The observable.
+ */
+molstat::ObservableIndex processObservable(
+	const map<string,
+	          molstat::ObservableIndex> &observables,
+	queue<string> &&tokens);
 
 /**
  * \internal
  * \brief Enum for the type of histogram (1D or 2D).
  * \endinternal
  */
-enum class HistogramType {
+enum class HistogramType
+{
 	OneD, // 1D Histogram
 	TwoD // 2D Histogram
 };
@@ -58,7 +91,22 @@ enum class HistogramType {
  * \return Exit status; 0 for normal.
  * \endinternal
  */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
+	// name of the histogram output file with a default name
+	string histfilename{"histogram.dat"};
+
+	// process the input deck and get our simulator
+	unique_ptr<molstat::Simulator> sim;
+	try {
+		sim = processInput(cin, histfilename);
+	}
+	catch(const exception &e) {
+		cout << "FATAL ERROR: " << e.what() << endl;
+		return 0;
+	}
+
+#if 0
 	// initialize the GSL random number generator
 	gsl_rng_env_setup();
 	molstat::gsl_rng_ptr r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
@@ -72,22 +120,10 @@ int main(int argc, char **argv) {
 	map<string, shared_ptr<molstat::RandomDistribution>> parameters;
 
 	// the model
-	shared_ptr<molstat::SimulateModel> model;
-	// the list of models:
-	// stored as a map of string (model name) to a factory for that model (given
-	// a map of random number distributions).
-	map<string, molstat::SimulateModelFactory> models;
+	shared_ptr<molstat::Simulator<2>> model;
 
 	// function for generating our observable
 	molstat::Observable<2> observable;
-	// the list of available observables:
-	// stored as a map of string (observable name) to a function that takes
-	// a SimulateModel and produces the observable function.
-	// This extra function layer is needed to dynamically typecheck the model,
-	// making sure the model/observable pair is valid.
-	map<string,
-	    function< molstat::Observable<2>(shared_ptr<molstat::SimulateModel>) >
-	   > observables;
 
 	// I/O variables
 	string line, modelname, obsname, name;
@@ -99,12 +135,6 @@ int main(int argc, char **argv) {
 		mins{{numeric_limits<double>::max(), numeric_limits<double>::max()}},
 		maxs{{-numeric_limits<double>::max(), -numeric_limits<double>::max()}};
 	forward_list<array<double, 2>> data;
-
-	// load models and observables
-	// SimulateModelAdd calls appear here
-	molstat::load_transport_models(models);
-	// ObservableCheck calls appear here
-	molstat::load_transport_observables(observables);
 
 	// setup the simulation -- read in parameters from stdin
 	// Line 1: One token specifying the model to use
@@ -362,5 +392,139 @@ int main(int argc, char **argv) {
 		}
 	}
 
+#endif
 	return 0;
+}
+
+// ************************************************************************
+// BEGIN INPUT AND COMMAND PROCESSING FUNCTIONS
+// ************************************************************************
+unique_ptr<molstat::Simulator> processInput(istream &input, string &ofname)
+{
+	// the list of models:
+	// stored as a map of string (model name) to a function that produces a
+	// factory for that model.
+	map<string, molstat::SimulateModelFactoryFunction> models;
+
+	// the list of available observables:
+	// stored as a map of string (observable name) to the index of the
+	// observable.
+	map<string, molstat::ObservableIndex> observables;
+
+	// load models and observables
+	// the general syntax for loading models is
+	// models.emplace( to_lower(name),
+	//                 molstat::GetSimulateModelFactory<model_type>() );
+	//
+	// and likewise for observables,
+	// observables.emplace( to_lower(name),
+	//                      GetObservableIndex<observable_type>() );
+	molstat::transport::load_models(models);
+	molstat::transport::load_observables(observables);
+
+	// a pointer to the model that will get fed to the simulator
+	shared_ptr<molstat::SimulateModel> model{ nullptr };
+
+	// a map of observables, from number to index
+	map<size_t, molstat::ObservableIndex> used_observables;
+
+	// process the input deck
+	// input evaluates to "false" when we hit EOF
+	while(input)
+	{
+		string line;
+		getline(input, line);
+
+		// tokenize the string
+		queue<string> tokens = molstat::tokenize(line);
+		if(tokens.size() == 0) // empty line
+			continue;
+
+		// the first token is the command name, pop it off and then process the
+		// rest of the tokens
+		string command { molstat::to_lower(tokens.front()) };
+		tokens.pop();
+
+		// go through the supported commands
+		if(command == "observable" || command == "observable_x")
+		{
+			try
+			{
+				used_observables.emplace(
+					0, processObservable(observables, move(tokens)));
+			}
+			catch(const runtime_error &e)
+			{
+				cout << "Error processing \"" + line + "\":\n   " << e.what() <<
+					endl;
+			}
+		}
+		else if(command == "observable_y")
+		{
+			try
+			{
+				used_observables.emplace(
+					1, processObservable(observables, move(tokens)));
+			}
+			catch(const runtime_error &e)
+			{
+				cout << "Error processing \"" + line + "\":\n   " << e.what() <<
+					endl;
+			}
+		}
+		else
+		{
+			cout << "Unrecognized command: \"" << command << "\"." << endl;
+		}
+	}
+
+	// construct the Simulator
+	unique_ptr<molstat::Simulator> sim{ new molstat::Simulator(model) };
+
+	// load the observables
+	for(const auto obs : used_observables)
+	{
+		try
+		{
+			sim->setObservable(obs.first, obs.second);
+		}
+		catch(const out_of_range &e)
+		{
+			throw runtime_error(
+				"Non-contiguous observable numbering is not allowed.");
+		}
+		catch(const molstat::IncompatibleObservable &e)
+		{
+			throw runtime_error("The model is incompatible with observable "
+				+ to_string(obs.first) + '.');
+		}
+	}
+
+	return sim;
+}
+
+molstat::ObservableIndex processObservable(
+	const map<string,
+	          molstat::ObservableIndex> &observables,
+	queue<string> &&tokens)
+{
+	// make sure there is a token left, otherwise throw a runtime_error
+	if(tokens.size() == 0)
+		throw runtime_error("Observable not specified.");
+
+	molstat::ObservableIndex obsindex{ typeid(void*) };
+
+	// look up the specified observable
+	try
+	{
+		// use at to check existence of the key in the observables map
+		obsindex = observables.at(molstat::to_lower(tokens.front()));
+	}
+	catch(const out_of_range &e)
+	{
+		// observable not found
+		throw runtime_error("Observable \"" + tokens.front() + "\" not found.");
+	}
+
+	return obsindex;
 }
