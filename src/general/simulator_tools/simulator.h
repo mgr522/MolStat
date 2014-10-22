@@ -23,9 +23,6 @@
 
 namespace molstat {
 
-// forward declaration
-class SimulateModel;
-
 /**
  * \brief Class for simulating data.
  *
@@ -47,7 +44,6 @@ private:
 
 public:
 	Simulator() = delete;
-	~Simulator() = default;
 
 	/**
 	 * \brief Constructs molstat::Simulator using the specified model.
