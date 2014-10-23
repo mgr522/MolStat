@@ -38,7 +38,10 @@ void SimulatorInputParse::readInput(std::istream &input)
 		// tokenize the string
 		molstat::TokenContainer tokens = molstat::tokenize(line);
 		if(tokens.size() == 0) // empty line
+		{
+			++lineno;
 			continue;
+		}
 
 		// the first token is the command name, pop it off and then process the
 		// rest of the tokens
@@ -154,7 +157,10 @@ SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
 		// tokenize the string
 		molstat::TokenContainer tokens = molstat::tokenize(line);
 		if(tokens.size() == 0) // empty line
+		{
+			++lineno;
 			continue;
+		}
 
 		// the first token is the command name, pop it off and then process the
 		// rest of the tokens
