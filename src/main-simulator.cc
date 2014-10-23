@@ -548,6 +548,26 @@ std::shared_ptr<molstat::SimulateModel> processModel(
 		else if(command == "model")
 		{
 			// construct a submodel... recursion!
+			shared_ptr<molstat::SimulateModel> model{ nullptr };
+			try
+			{
+				model = processModel(move(tokens), input, models);
+
+				// add the submodel
+				factory.addSubmodel(model);
+			}
+			catch(const molstat::NotCompositeSimulateModel &e)
+			{
+				cout << "Error setting submodel: invalid model type." << endl;
+			}
+			catch(const molstat::IncompatibleObservable &e)
+			{
+				cout << "Error setting submodel: invalid model type." << endl;
+			}
+			catch(const runtime_error &e)
+			{
+				cout << "Error constructing submodel: " << e.what() << endl;
+			}
 		}
 		else
 		{
