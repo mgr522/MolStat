@@ -33,10 +33,12 @@ using namespace std;
  * \endinternal
  */
 static void assert_tokens_same(queue<string> &&q1,
-	list<string> &&q2) {
+	list<string> &&q2)
+{
 
 	assert(q1.size() == q2.size());
-	while(q1.size() > 0) {
+	while(q1.size() > 0)
+	{
 		assert(q1.front() == q2.front());
 		q1.pop();
 		q2.pop_front();
@@ -52,7 +54,8 @@ static void assert_tokens_same(queue<string> &&q1,
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
  * \endinternal
  */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	// test the to_lower function
 	assert(string("") == molstat::to_lower(""));
 	assert(string("hello") == molstat::to_lower("hello"));
@@ -78,6 +81,42 @@ int main(int argc, char **argv) {
 		{ "Other", "forms", "of", "whitespace" });
 
 	// check the cast function
+	// to size_t
+	assert(4 == molstat::cast_string<size_t>("4"));
+	assert(0 == molstat::cast_string<size_t>("0"));
+
+	// some bad size_t casts
+	try
+	{
+		molstat::cast_string<size_t>("-1");
+
+		assert(false);
+	}
+	catch(const bad_cast &e)
+	{
+		// should be here
+	}
+
+	try
+	{
+		molstat::cast_string<size_t>("a");
+		assert(false);
+	}
+	catch(const bad_cast &e)
+	{
+		// should be here
+	}
+
+	try
+	{
+		molstat::cast_string<size_t>("5-1");
+		assert(false);
+	}
+	catch(const bad_cast &e)
+	{
+		// should be here
+	}
+
 	// to double
 	assert(abs(4.5 - molstat::cast_string<double>("4.5")) < 1.e-6);
 	assert(abs(1.1e2 - molstat::cast_string<double>("1.1e2")) < 1.e-6);
@@ -86,42 +125,46 @@ int main(int argc, char **argv) {
 	assert(abs(-4. - molstat::cast_string<double>("-4")) < 1.e-6);
 
 	// some bad double casts
-	try {
-		molstat::cast_string<double>("a");
-		
+	try
+	{
+		molstat::cast_string<double>("a");	
 		assert(false);
 	}
-	catch(const bad_cast &e) {
+	catch(const bad_cast &e)
+	{
 		// should be here
 	}
 
-	try {
+	try
+	{
 		molstat::cast_string<double>("_-");
-
 		assert(false);
 	}
-	catch(const bad_cast &e) {
+	catch(const bad_cast &e)
+	{
 		// should be here
 	}
 
-	try {
+	try
+	{
 		// this one fails because the entire string/token is not used
 		// std::stod would simply return 4.5
 		molstat::cast_string<double>("4.5-1.4");
-
 		assert(false);
 	}
-	catch(const bad_cast &e) {
+	catch(const bad_cast &e)
+	{
 		// should be here
 	}
 
 	// unimplemented cast
-	try {
+	try
+	{
 		 molstat::cast_string<queue<list<string>>>("abcdefg");
-
 		 assert(false);
 	}
-	catch(const bad_cast &e) {
+	catch(const bad_cast &e)
+	{
 		// should be here
 	}
 	

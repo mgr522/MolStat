@@ -31,7 +31,8 @@ namespace molstat {
  * \endinternal
  */
 static bool next_token(string::const_iterator &next,
-	string::const_iterator end, string &tok) {
+	string::const_iterator end, string &tok)
+{
 
 	// skip past any leading whitespace
 	while(next != end && isspace(*next))
@@ -39,10 +40,12 @@ static bool next_token(string::const_iterator &next,
 	if(next == end)
 		return false;
 
-	if(*next == '"') {
+	if(*next == '"')
+	{
 		// this token is delimited by quotes
 		string::const_iterator quote = next;
-		do {
+		do
+		{
 			++quote; // move past the current quote mark
 			quote = find(quote, end, '"');
 			if(quote == end) // unterminated token
@@ -53,7 +56,8 @@ static bool next_token(string::const_iterator &next,
 		next = quote;
 		++next; // move past the terminal quote
 	}
-	else if(*next == '<') {
+	else if(*next == '<')
+	{
 		// this token is delimited by angle brackets
 		string::const_iterator bracket = find(next, end, '>');
 		if(bracket == end) // unterminated token
@@ -61,7 +65,8 @@ static bool next_token(string::const_iterator &next,
 		tok.assign(next, bracket+1);
 		next = bracket+1; // move past the closing bracket
 	}
-	else {
+	else
+	{
 		string::const_iterator first = next;
 		while(next != end && !isspace(*next))
 			++next;
@@ -71,7 +76,8 @@ static bool next_token(string::const_iterator &next,
 	return true;
 }
 
-TokenContainer tokenize(const std::string &str) {
+TokenContainer tokenize(const std::string &str)
+{
 	TokenContainer ret;
 	string::const_iterator next = str.begin();
 	string token;
@@ -82,7 +88,8 @@ TokenContainer tokenize(const std::string &str) {
 	return ret;
 }
 
-std::string to_lower(const std::string &str) {
+std::string to_lower(const std::string &str)
+{
 	std::string ret{ str };
 
 	for(char &c : ret)
@@ -92,11 +99,13 @@ std::string to_lower(const std::string &str) {
 }
 
 template<>
-double cast_string(const std::string &str) {
+double cast_string(const std::string &str)
+{
 	double ret;
 	size_t next;
 
-	try {
+	try
+	{
 		// do the conversion and get the index of the first character not used.
 		ret = stod(str, &next);
 
@@ -104,7 +113,36 @@ double cast_string(const std::string &str) {
 		if(next != str.size())
 			throw bad_cast();
 	}
-	catch(const invalid_argument &e) {
+	catch(const invalid_argument &e)
+	{
+		throw bad_cast();
+	}
+
+	return ret;
+}
+
+template<>
+std::size_t cast_string(const std::string &str)
+{
+	size_t ret, next;
+
+	try
+	{
+		// do the conversion and get the index of the first character not used.
+		int cast = stoi(str, &next);
+
+		// make sure the entire string was used
+		if(next != str.size())
+			throw bad_cast();
+
+		// make sure the value is non-negative
+		if(cast < 0)
+			throw bad_cast();
+
+		ret = cast;
+	}
+	catch(const invalid_argument &e)
+	{
 		throw bad_cast();
 	}
 

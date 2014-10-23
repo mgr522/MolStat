@@ -85,6 +85,22 @@ T cast_string(const std::string &str) {
 template<>
 double cast_string(const std::string &str);
 
+/**
+ * \internal
+ * \brief Specialization for casting a string to a size_t.
+ *
+ * The entire string must be used in the conversion.
+ *
+ * \throw std::bad_cast if the string cannot be cast to the double or if only
+ *    the beginning of the string is used.
+ *
+ * \param[in] str The string to be cast.
+ * \return The string, as a double.
+ * \endinternal
+ */
+template<>
+std::size_t cast_string(const std::string &str);
+
 } // namespace molstat
 
 #endif
