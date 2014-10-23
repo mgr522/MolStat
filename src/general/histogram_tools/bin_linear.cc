@@ -13,18 +13,27 @@
 
 #include "bin_linear.h"
 
-namespace molstat {
+namespace molstat
+{
 
-double BinLinear::mask(const double x) const {
+double BinLinear::mask(const double x) const
+{
 	return x;
 }
 
-double BinLinear::invmask(const double u) const {
+double BinLinear::invmask(const double u) const
+{
 	return u;
 }
 
-double BinLinear::dmaskdx(const double x) const {
+double BinLinear::dmaskdx(const double x) const
+{
 	return 1.;
+}
+
+std::string BinLinear::info() const
+{
+	return "Linear binning";
 }
 
 } // namespace molstat

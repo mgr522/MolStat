@@ -12,23 +12,22 @@
 #include "bin_style.h"
 #include "bin_linear.h"
 #include "bin_log.h"
-#include "../string_tools.h"
 
 using namespace std;
 
 namespace molstat {
 
 std::unique_ptr<BinStyle> BinStyleFactory(
-	const std::vector<std::string> &tokens) {
+	TokenContainer &&tokens) {
 
 	unique_ptr<BinStyle> ret;
 
-	if(tokens.size() < 1)
+	if(tokens.size() == 0)
 		throw invalid_argument("Empty line.");
 
 	// the first token is the name of the binning style
-	string name = tokens[0];
-	name = to_lower(name);
+	string name = to_lower(tokens.front());
+	tokens.pop();
 
 	if(name == "linear") {
 		ret.reset(new BinLinear());
@@ -37,8 +36,8 @@ std::unique_ptr<BinStyle> BinStyleFactory(
 		// need to read the base, if available. If not, use 10.
 		double b;
 
-		if(tokens.size() >= 2) {
-			b = cast_string<double>(tokens[1]);
+		if(tokens.size() > 0) {
+			b = cast_string<double>(tokens.front());
 			if(b <= 0.)
 				throw invalid_argument("The logarithm base must be positive.");
 		}
@@ -48,7 +47,8 @@ std::unique_ptr<BinStyle> BinStyleFactory(
 		ret.reset(new BinLog(b));
 	}
 	else
-		throw invalid_argument("Unrecognized binning style.\n" \
+		throw invalid_argument(
+			"Unrecognized binning style: \"" + name + "\".\n" \
 			"Possible options are:\n" \
 			"   Linear - Linear binning.\n" \
 			"   Log - Logarithmic binning (base defaults to 10).\n");

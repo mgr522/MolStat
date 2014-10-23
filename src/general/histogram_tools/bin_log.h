@@ -14,7 +14,8 @@
 
 #include "bin_style.h"
 
-namespace molstat {
+namespace molstat
+{
 
 /**
  * \brief Logarithmic binning style.
@@ -22,7 +23,8 @@ namespace molstat {
  * \f$u = f(x) = \log_b(x)\f$. Then, \f$x = f^{-1}(u) = b^u\f$ and
  * \f$f'(x) = [x \ln(b)]^{-1} \f$.
  */
-class BinLog : public BinStyle {
+class BinLog : public BinStyle
+{
 protected:
 	/**
 	 * \brief The base of the logarithm.
@@ -46,7 +48,7 @@ public:
 	 * \param[in] x The unmasked data value.
 	 * \return The transformed (masked) data value.
 	 */
-	virtual double mask(const double x) const;
+	virtual double mask(const double x) const override;
 
 	/**
 	 * \brief The inverse mask function, \f$x=f^{-1}(u) = b^u\f$.
@@ -54,7 +56,7 @@ public:
 	 * \param[in] u The transformed (masked) data value.
 	 * \return The unmasked data value.
 	 */
-	virtual double invmask(const double u) const;
+	virtual double invmask(const double u) const override;
 
 	/**
 	 * \brief The derivative \f$\mathrm{d}f / \mathrm{d}x = [x \ln(b)]^{-1}\f$.
@@ -62,7 +64,14 @@ public:
 	 * \param[in] x The unmasked data value, \f$x\f$.
 	 * \return The derivative evaluated at \f$x\f$, \f$f'(x)\f$.
 	 */
-	virtual double dmaskdx(const double x) const;
+	virtual double dmaskdx(const double x) const override;
+
+	/**
+	 * \brief Create a string summary of this binning style.
+	 *
+	 * \return The string representation.
+	 */
+	virtual std::string info() const override;
 };
 
 } // namespace molstat

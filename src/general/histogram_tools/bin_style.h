@@ -15,6 +15,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <general/string_tools.h>
 
 namespace molstat {
 
@@ -63,13 +64,22 @@ public:
 	 * \return The derivative evaluated at \f$x\f$, \f$f'(x)\f$.
 	 */
 	virtual double dmaskdx(const double x) const = 0;
+
+	/**
+	 * \brief Create a string summary of this binning style.
+	 *
+	 * \return The string representation.
+	 */
+	virtual std::string info() const = 0;
 };
 
 /**
  * \brief Gets a binning style from a vector of string tokens.
  *
- * The first token (element 0) is the name of the binning style. All subsequent
- * tokens, if any, are options for that binning style.
+ * The first token is the name of the binning style. All subsequent tokens, if
+ * any, are options for that binning style.
+ *
+ * This function destroys the tokens.
  *
  * \throw invalid_argument if a BinStyle object cannot be constructed from the
  *    provided arguments.
@@ -78,7 +88,7 @@ public:
  * \return The BinStyle object.
  */
 std::unique_ptr<BinStyle> BinStyleFactory(
-	const std::vector<std::string> &tokens);
+	TokenContainer &&tokens);
 
 } // namespace molstat
 

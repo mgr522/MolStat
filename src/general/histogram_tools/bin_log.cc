@@ -14,22 +14,32 @@
 #include "bin_log.h"
 #include <cmath>
 
-namespace molstat {
+namespace molstat
+{
 
 BinLog::BinLog(const double b_)
-	: b(b_) {
+	: b(b_)
+{
 }
 
-double BinLog::mask(const double x) const {
+double BinLog::mask(const double x) const
+{
 	return log(x) / log(b);
 }
 
-double BinLog::invmask(const double u) const {
+double BinLog::invmask(const double u) const
+{
 	return pow(b, u);
 }
 
-double BinLog::dmaskdx(const double x) const {
+double BinLog::dmaskdx(const double x) const
+{
 	return 1. / (x * log(b));
+}
+
+std::string BinLog::info() const
+{
+	return std::string("Logarithmic binning, base ") + std::to_string(b);
 }
 
 } // namespace molstat

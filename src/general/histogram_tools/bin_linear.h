@@ -14,14 +14,16 @@
 
 #include "bin_style.h"
 
-namespace molstat {
+namespace molstat
+{
 
 /**
  * \brief Linear binning style. This is the \"identity\" mask.
  *
  * \f$u = f(x) = x\f$. Trivially, \f$x = f^{-1}(u) = u\f$ and \f$f'(x) = 1\f$.
  */
-class BinLinear : public BinStyle {
+class BinLinear : public BinStyle
+{
 public:
 	BinLinear() = default;
 	virtual ~BinLinear() = default;
@@ -32,7 +34,7 @@ public:
 	 * \param[in] x The unmasked data value.
 	 * \return The transformed (masked) data value.
 	 */
-	virtual double mask(const double x) const;
+	virtual double mask(const double x) const override;
 
 	/**
 	 * \brief The inverse mask function, \f$x=f^{-1}(u) = u\f$.
@@ -40,7 +42,7 @@ public:
 	 * \param[in] u The transformed (masked) data value.
 	 * \return The unmasked data value.
 	 */
-	virtual double invmask(const double u) const;
+	virtual double invmask(const double u) const override;
 
 	/**
 	 * \brief The derivative \f$\mathrm{d}f / \mathrm{d}x = 1\f$.
@@ -48,7 +50,14 @@ public:
 	 * \param[in] x The unmasked value, \f$x\f$.
 	 * \return The derivative evaluated at \f$x\f$, \f$f'(x)\f$.
 	 */
-	virtual double dmaskdx(const double x) const;
+	virtual double dmaskdx(const double x) const override;
+
+	/**
+	 * \brief Create a string summary of this binning style.
+	 *
+	 * \return The string representation.
+	 */
+	virtual std::string info() const override;
 };
 
 } // namespace molstat
