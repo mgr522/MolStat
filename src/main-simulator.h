@@ -92,6 +92,18 @@ private:
 	static void printError(std::ostream &output, std::size_t lineno,
 		std::string message);
 
+	/**
+	 * \brief Reads a model from the input stream
+	 *
+	 * \throw std::runtime_error if there is a fatal error reading the input
+	 *    deck (notably, a lack of "endmodel" before EOF).
+	 *
+	 * \param[in,out] input The input stream.
+	 * \param[in,out] lineno The input line number.
+	 * \return The model information, save for the name of the model type.
+	 */
+	static ModelInformation readModel(std::istream &input, std::size_t &lineno);
+
 public:
 	/**
 	 * \brief Reads the input deck from the stream and performs some runtime

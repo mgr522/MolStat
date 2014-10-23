@@ -51,7 +51,26 @@ void SimulatorInputParse::readInput(std::istream &input)
 		}
 		else if(command == "model")
 		{
-			printError(cout, lineno, "model handler not implemented.");
+			// the total lineno needs to be passed to the model reader
+			const size_t mylineno{ lineno };
+
+			// enter the model reader to process input lines until the
+			// appropriate "endmodel" command is found
+			ModelInformation model = readModel(input, ++lineno);
+
+			// make sure there is a name (model type) specified
+			if(tokens.size() == 0)
+			{
+				printError(cout, mylineno, "No model type specified.");
+			}
+			else
+			{
+				// store the name of the model type
+				model.name = molstat::to_lower(tokens.front());
+
+				// set this to the parser's top model
+				top_model = move(model);
+			}
 		}
 		else if(command == "observable" || command == "observable_x" ||
 			command == "observable_y")
@@ -111,6 +130,81 @@ void SimulatorInputParse::readInput(std::istream &input)
 #endif
 }
 
+SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
+	std::istream &input, std::size_t &lineno)
+{
+	ModelInformation ret;
+
+	while(input)
+	{
+		string line;
+		getline(input, line);
+
+		// tokenize the string
+		molstat::TokenContainer tokens = molstat::tokenize(line);
+		if(tokens.size() == 0) // empty line
+			continue;
+
+		// the first token is the command name, pop it off and then process the
+		// rest of the tokens
+		string command { molstat::to_lower(tokens.front()) };
+		tokens.pop();
+
+		// go through the supported commands
+		if(command == "endmodel")
+		{
+			// we're done here
+			return ret;
+		}
+		else if(command == "model")
+		{
+			// the total lineno needs to be passed to the (sub)model reader
+			const size_t mylineno{ lineno };
+
+			// enter the (sub)model reader to process input lines until the
+			// appropriate "endmodel" command is found
+			ModelInformation model = readModel(input, ++lineno);
+
+			// make sure there is a name (model type) specified
+			if(tokens.size() == 0)
+			{
+				printError(cout, mylineno, "No submodel type specified.");
+			}
+			else
+			{
+				// store the name of the model type
+				model.name = molstat::to_lower(tokens.front());
+
+				// set this to the parser's top model
+				ret.submodels.emplace_back( move(model) );
+			}
+		}
+		else if(command == "distribution")
+		{
+			// make sure there are tokens, if so, push the tokens
+			if(tokens.size() == 0)
+			{
+				printError(cout, lineno, "No distribution type specified.");
+			}
+			else
+			{
+				ret.dists.emplace_back(tokens);
+			}
+		}
+		else
+		{
+			printError(cout, lineno,
+				"Unknown model command: \"" + command + "\".");
+		}
+
+		// move to the next line
+		++lineno;
+	}
+
+	// if we're here, we hit EOF before finding the appropriate endmodel command
+	throw runtime_error("Missing \"endmodel\" command.");
+}
+
 std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator()
 {
 	// the map of model instantiators
@@ -129,6 +223,10 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator()
 	//                      GetObservableIndex<observable_type>() );
 	molstat::transport::load_models(models);
 	molstat::transport::load_observables(observables);
+
+	// make the model
+
+	// set the observables
 
 	return nullptr;
 }
