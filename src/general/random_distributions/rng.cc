@@ -124,7 +124,8 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			new GammaDistribution(shape, scale));
 	}
 	else
-		throw invalid_argument("Unrecognized probability distribution.\n" \
+		throw invalid_argument(
+			string("Unrecognized probability distribution: \"") + type + "\".\n" \
 			"Possible options are:\n" \
 			"   Constant - Specify a value.\n" \
 			"   Uniform - Uniform distribution.\n" \
