@@ -59,6 +59,9 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
+	// debug print
+	parser.printState(cout);
+
 	// create the simulator
 	unique_ptr<molstat::Simulator> sim{ nullptr };
 	try

@@ -65,6 +65,15 @@ private:
 		 * \brief A list of submodels to be created.
 		 */
 		std::list<ModelInformation> submodels;
+
+		/**
+		 * \internal
+		 * \brief Gets a string representation of the model information.
+		 *
+		 * \return The string.
+		 * \endinternal
+		 */
+		std::string to_string() const;
 	};
 
 	/**
@@ -130,6 +139,17 @@ public:
 	 * \return The simulator.
 	 */
 	std::unique_ptr<molstat::Simulator> createSimulator();
+
+	/**
+	 * \internal
+	 * \brief Prints the state of the input parser.
+	 *
+	 * For debugging purposes, only.
+	 *
+	 * \param[in,out] output The output stream.
+	 * \endinteral
+	 */
+	void printState(std::ostream &output) const;
 };
 
 #if 0

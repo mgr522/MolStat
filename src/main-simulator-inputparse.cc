@@ -373,3 +373,55 @@ molstat::ObservableIndex processObservable(
 	return obsindex;
 }
 #endif
+
+std::string SimulatorInputParse::ModelInformation::to_string() const
+{
+	// first put in the name
+	string ret{ name };
+	ret += "\n   Distributions:";
+
+	// load in the distributions
+	for(auto dist : dists)
+	{
+		ret += "\n      " + dist.front();
+	}
+
+	// submodel information
+	for(auto submodel : submodels)
+	{
+		ret += "\n   Submodel type: ";
+
+		// get the submodel info; indent it
+		string submodel_string{ submodel.to_string() };
+		size_t start_pos{ 0 }, newl_pos{ 0 };
+		while((newl_pos = submodel_string.find("\n", start_pos)) != string::npos)
+		{
+			// move up to (and including) the newline to the return string
+			ret += submodel_string.substr(start_pos, newl_pos - start_pos + 1);
+			ret += "   "; // the indent
+			start_pos = newl_pos + 1;
+		}
+
+		// copy the last segment
+		ret += submodel_string.substr(start_pos, string::npos);
+	}
+
+	return ret;
+}
+
+void SimulatorInputParse::printState(std::ostream &output) const
+{
+	output << "--------------------------------------------------\n" <<
+		"State of input parser.\n\n";
+
+	output << "Model type: " << top_model.to_string() << "\n\n";
+
+	output << "Observables:\n";
+	for(auto obspair : used_observables)
+	{
+		output << obspair.first << " -> " << obspair.second << '\n';
+	}
+	output << '\n';
+
+	output << "--------------------------------------------------" << endl;
+}
