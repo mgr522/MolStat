@@ -3,7 +3,8 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file main-simulator.h
- * \brief Function and class declarations for the main simulator program.
+ * \brief Function and class declarations for the main simulator program and
+ *    the molstat::SimulatorInputParse class for parsing the input deck.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
@@ -16,6 +17,7 @@
 #include <memory>
 #include <string>
 #include <queue>
+#include <list>
 #include <map>
 
 #include <general/simulator_tools/simulator.h>
@@ -32,17 +34,93 @@ enum class HistogramType
 };
 
 /**
- * \brief Processes the input deck.
+ * \brief Class that reads the input deck and sets up the molstat::Simulator
+ *    object.
  *
- * \throw std::runtime_error if an unrecoverable error occurs.
+ * Preliminary error checking is done in the SimulatorInputParse::readInput()
+ * function. This function only process the lines and stores them for later
+ * use. The SimulatorInputParse::create() function actually builds the
+ * molstat::Simulator object, performing additional runtime error checking.
  *
- * \param[in,out] input The input stream.
- * \param[out] ofname Name for the histogram output file.
- * \return Pointer to the molstat::Simulator object.
+ * This separation of responsibility is to provide the user with better error
+ * messages, should there be problems.
  */
-std::unique_ptr<molstat::Simulator> processInput(std::istream &input,
-	std::string &ofname);
+class SimulatorInputParse {
+private:
+	/**
+	 * \brief Data structure that stores information about models to be created.
+	 */
+	struct ModelInformation {
+		/**
+		 * \brief The name of the model to instantiate.
+		 */
+		std::string name;
 
+		/**
+		 * \brief The list of distributions, stored by their tokens.
+		 */
+		std::list<molstat::TokenContainer> dists;
+
+		/**
+		 * \brief A list of submodels to be created.
+		 */
+		std::list<ModelInformation> submodels;
+	};
+
+	/**
+	 * \brief The top-level simulate model information.
+	 */
+	ModelInformation top_model;
+
+	/**
+	 * \brief Map of observable index (order) to the observable name.
+	 */
+	std::map<std::size_t, std::string> used_observables;
+
+	/**
+	 * \brief File name for the histogram output.
+	 */
+	std::string histfilename{ "histogram.dat" };
+
+	/**
+	 * \brief Prints an error message.
+	 *
+	 * \param[in,out] output The output stream.
+	 * \param[in] lineno The line number.
+	 * \param[in] message The error message.
+	 */
+	static void printError(std::ostream &output, std::size_t lineno,
+		std::string message);
+
+public:
+	/**
+	 * \brief Reads the input deck from the stream and performs some runtime
+	 *    error checking.
+	 *
+	 * This function minimally processes the input deck; it does not attempt
+	 * to instantiate models or the simulator. Instead, it creates a data
+	 * structure that can be processed in the next call.
+	 *
+	 * \throw std::runtime_error if there is a fatal error reading the input
+	 *    deck.
+	 *
+	 * \param[in,out] input The input stream containing the input deck.
+	 */
+	void readInput(std::istream &input);
+
+	/**
+	 * \brief Processes the input to actually instantiate models and the
+	 *    simulator.
+	 *
+	 * \throw exception if any exceptions from the molstat::Simulator or
+	 *    molstat::SimulateModel functions is thrown.
+	 *
+	 * \return The simulator.
+	 */
+	std::unique_ptr<molstat::Simulator> createSimulator();
+};
+
+#if 0
 /**
  * \brief Gets a molstat::SimulateModel from the tokens.
  *
@@ -85,5 +163,6 @@ molstat::ObservableIndex processObservable(
 	std::queue<std::string> &&tokens,
 	const std::map<std::string,
 	               molstat::ObservableIndex> &observables);
+#endif
 
 #endif
