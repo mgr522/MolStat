@@ -47,7 +47,19 @@ void SimulatorInputParse::readInput(std::istream &input)
 		// go through the supported commands
 		if(command == "bin" || command == "bin_x" || command == "bin_y")
 		{
-			printError(cout, lineno, "bin handler not implemented.");
+			// make sure we have some tokens for the binning style
+			if(tokens.size() == 0)
+			{
+				printError(cout, lineno, "No binning information specified.");
+			}
+			else
+			{
+				// store the tokens for later
+				if(command == "bin_y")
+					bin_styles[1] = tokens;
+				else
+					bin_styles[0] = tokens;
+			}
 		}
 		else if(command == "model")
 		{
@@ -83,9 +95,9 @@ void SimulatorInputParse::readInput(std::istream &input)
 			else {
 				// store the name of the observable for later
 				if(command == "observable_y")
-					used_observables.emplace(1, tokens.front());
+					used_observables[1] = tokens.front();
 				else
-					used_observables.emplace(0, tokens.front());
+					used_observables[0] = tokens.front();
 			}
 		}
 		else if(command == "output")
@@ -439,18 +451,45 @@ void SimulatorInputParse::printState(std::ostream &output) const
 	output << "Model type: " << top_model.to_string() << "\n\n";
 
 	output << "Observables:\n";
-	for(auto obspair : used_observables)
 	{
-		output << obspair.first << " -> " << obspair.second << '\n';
+		auto bin_iter = bin_styles.cbegin();
+		auto obs_iter = used_observables.cbegin();
+		while(bin_iter != bin_styles.cend() ||
+			obs_iter != used_observables.cend())
+		{
+			if(bin_iter == bin_styles.cend() || obs_iter->first < bin_iter->first)
+			{
+				// observable specified but not binning style
+				output << obs_iter->first << " -> " << obs_iter->second <<
+					" (no binning information)\n";
+				++obs_iter;
+			}
+			else if(obs_iter == used_observables.cend() ||
+				bin_iter->first < obs_iter->first)
+			{
+				// bin specified but not observable
+				output << bin_iter->first << " -> <missing observable> (" <<
+					bin_iter->second.front() << ")\n";
+				++bin_iter;
+			}
+			else /*if(obs_iter->first == bin_iter->first)*/
+			{
+				// same index
+				output << obs_iter->first << " -> " << obs_iter->second <<
+					" (" << bin_iter->second.front() << ")\n";
+				++obs_iter;
+				++bin_iter;
+			}
+		}
 	}
 	output << '\n';
-
-	output << "Histogram Output File: " << histfilename << "\n";
 
 	output << trials << " data point";
 	if(trials != 1)
 		output << 's';
 	output << " will be simulated.\n";
+
+	output << "Histogram Output File: " << histfilename << '\n';
 
 	output << "--------------------------------------------------" << endl;
 }

@@ -82,9 +82,14 @@ private:
 	ModelInformation top_model;
 
 	/**
-	 * \brief Map of observable index (order) to the observable name.
+	 * \brief Map of observable index (axis) to the observable name.
 	 */
 	std::map<std::size_t, std::string> used_observables;
+
+	/**
+	 * \brief Map of observable index (axis) to the binning style tokens.
+	 */
+	std::map<std::size_t, molstat::TokenContainer> bin_styles;
 
 	/**
 	 * \brief File name for the histogram output.
