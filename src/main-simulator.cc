@@ -14,13 +14,8 @@
  * \date October 2014
  */
 
-#include <memory>
-#include <iostream>
 #include <stdexcept>
-#include <string>
-#include <queue>
 #include <functional>
-#include <map>
 #include <cmath>
 #include <forward_list>
 #include <valarray>
@@ -30,52 +25,12 @@
 #include <general/random_distributions/rng.h>
 #include <general/histogram_tools/histogram1d.h>
 #include <general/histogram_tools/histogram2d.h>
-#include <general/simulator_tools/simulator.h>
 #include <general/simulator_tools/simulator_exceptions.h>
 #include <electron_transport/simulator_models/transport_simulate_module.h>
 
+#include "main-simulator.h"
+
 using namespace std;
-
-// functions for handling input commands
-/**
- * \brief Processes the input deck.
- *
- * \throw std::runtime_error if an unrecoverable error occurs.
- *
- * \param[in,out] input The input stream.
- * \param[out] ofname Name for the histogram output file.
- * \return Pointer to the molstat::Simulator object.
- */
-unique_ptr<molstat::Simulator> processInput(istream &input, string &ofname);
-
-/**
- * \brief Gets an observable from a list of tokens.
- *
- * The list of tokens is destroyed in this function.
- *
- * \throw std::runtime_error if the token cannot be matched to an observable or
- *    a name was not specified (too few tokens).
- *
- * \param[in] observables The list of observables (stored as a map from
- *    string to ObservableIndex).
- * \param[in] tokens The list of tokens.
- * \return The observable.
- */
-molstat::ObservableIndex processObservable(
-	const map<string,
-	          molstat::ObservableIndex> &observables,
-	queue<string> &&tokens);
-
-/**
- * \internal
- * \brief Enum for the type of histogram (1D or 2D).
- * \endinternal
- */
-enum class HistogramType
-{
-	OneD, // 1D Histogram
-	TwoD // 2D Histogram
-};
 
 /**
  * \internal
@@ -83,8 +38,6 @@ enum class HistogramType
  *
  * Parses the input parameters and outputs randomly generated data
  * for the desired observable.
- *
- * \todo Add a mechanism to specify the binning style of each axis.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
@@ -399,7 +352,8 @@ int main(int argc, char **argv)
 // ************************************************************************
 // BEGIN INPUT AND COMMAND PROCESSING FUNCTIONS
 // ************************************************************************
-unique_ptr<molstat::Simulator> processInput(istream &input, string &ofname)
+std::unique_ptr<molstat::Simulator> processInput(std::istream &input,
+	std::string &ofname)
 {
 	// the list of models:
 	// stored as a map of string (model name) to a function that produces a
@@ -446,12 +400,23 @@ unique_ptr<molstat::Simulator> processInput(istream &input, string &ofname)
 		tokens.pop();
 
 		// go through the supported commands
-		if(command == "observable" || command == "observable_x")
+		if(command == "model")
+		{
+			try
+			{
+				model = processModel(move(tokens), input, models);
+			}
+			catch(const runtime_error &e) {
+				cout << "Error processing \"" + line + "\":\n   " << e.what() <<
+					endl;
+			}
+		}
+		else if(command == "observable" || command == "observable_x")
 		{
 			try
 			{
 				used_observables.emplace(
-					0, processObservable(observables, move(tokens)));
+					0, processObservable(move(tokens), observables));
 			}
 			catch(const runtime_error &e)
 			{
@@ -464,7 +429,7 @@ unique_ptr<molstat::Simulator> processInput(istream &input, string &ofname)
 			try
 			{
 				used_observables.emplace(
-					1, processObservable(observables, move(tokens)));
+					1, processObservable(move(tokens), observables));
 			}
 			catch(const runtime_error &e)
 			{
@@ -503,21 +468,116 @@ unique_ptr<molstat::Simulator> processInput(istream &input, string &ofname)
 	return sim;
 }
 
+std::shared_ptr<molstat::SimulateModel> processModel(
+	std::queue<std::string> &&tokens,
+	std::istream &input,
+	const std::map<std::string,
+	               molstat::SimulateModelFactoryFunction> &models)
+{
+	if(tokens.size() == 0)
+		throw runtime_error("Model name not specified.");
+
+	// get the factory
+	molstat::SimulateModelFactoryFunction ffunc;
+	try
+	{
+		// the next token is the name of the model
+		// use "at" to check existence of the key in the models map
+		ffunc = models.at(molstat::to_lower(tokens.front()));
+	}
+	catch(const out_of_range &e)
+	{
+		// model not found
+		throw runtime_error("Model \"" + tokens.front() + "\" not found.");
+	}
+	molstat::SimulateModelFactory factory{ ffunc() };
+
+	// start processing information from input...
+	string command{ "not endmodel" };
+	while(input && command != "endmodel")
+	{
+		string line;
+		getline(input, line);
+
+		// tokenize the string
+		tokens = molstat::tokenize(line);
+		if(tokens.size() == 0) // empty line
+			continue;
+
+		// the first token is the command name, pop it off and then process the
+		// rest of the tokens
+		command = molstat::to_lower(tokens.front());
+		tokens.pop();
+
+		// process the two available commands (get a submodel or set a
+		// distribution)
+		if(command == "distribution")
+		{
+			// get the name
+			if(tokens.size() == 0) // no name specified
+			{
+				cout << "   No name specified on \"distribution\"." << endl;
+			}
+			else
+			{
+				const string name{ molstat::to_lower(tokens.front()) };
+				tokens.pop();
+				shared_ptr<const molstat::RandomDistribution> dist{ nullptr };
+
+				// process the remaining tokens as a distribution
+				try
+				{
+					dist = molstat::RandomDistributionFactory(move(tokens));
+
+					// set the distribution
+					factory.setDistribution(name, dist);
+				}
+				catch(const invalid_argument &e)
+				{
+					// print out a message, but don't error out
+					cout << "   Error constructing random distribution: " <<
+						e.what() << endl;
+				}
+			}
+		}
+		else if(command == "endmodel")
+		{
+			// don't need to do anything; we'll exit the input reading loop after
+			// this cycle. we just don't want to print the error message.
+		}
+		else if(command == "model")
+		{
+			// construct a submodel... recursion!
+		}
+		else
+		{
+			cout << "   Unrecognized model command: \"" + command + "\"." << endl;
+		}
+	}
+
+	// make sure the last command was endmodel; that is, we didn't hit EOF
+	if(command != "endmodel")
+		throw runtime_error("EOF encountered in \"model\" block.");
+
+	return factory.getModel(); // let any exceptions pass up
+}
+
 molstat::ObservableIndex processObservable(
-	const map<string,
-	          molstat::ObservableIndex> &observables,
-	queue<string> &&tokens)
+	std::queue<std::string> &&tokens,
+	const std::map<std::string,
+	          molstat::ObservableIndex> &observables)
 {
 	// make sure there is a token left, otherwise throw a runtime_error
 	if(tokens.size() == 0)
-		throw runtime_error("Observable not specified.");
+		throw runtime_error("Observable name not specified.");
 
 	molstat::ObservableIndex obsindex{ typeid(void*) };
 
 	// look up the specified observable
 	try
 	{
-		// use at to check existence of the key in the observables map
+		// the next token is the name of the observable
+		// use "at" to check existence of the key in the observables map
 		obsindex = observables.at(molstat::to_lower(tokens.front()));
 	}
 	catch(const out_of_range &e)
