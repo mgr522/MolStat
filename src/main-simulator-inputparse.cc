@@ -101,7 +101,22 @@ void SimulatorInputParse::readInput(std::istream &input)
 		}
 		else if(command == "trials")
 		{
-			printError(cout, lineno, "trials handler not implemented.");
+			if(tokens.size() == 0)
+			{
+				printError(cout, lineno, "Number of trials not specified.");
+			}
+			else
+			{
+				try
+				{
+					trials = molstat::cast_string<size_t>(tokens.front());
+				}
+				catch(const bad_cast &e)
+				{
+					printError(cout, lineno, "Unable to convert \"" + tokens.front() +
+						"\" to a non-negative number.");
+				}
+			}
 		}
 		else
 		{
@@ -431,6 +446,11 @@ void SimulatorInputParse::printState(std::ostream &output) const
 	output << '\n';
 
 	output << "Histogram Output File: " << histfilename << "\n";
+
+	output << trials << " data point";
+	if(trials != 1)
+		output << 's';
+	output << " will be simulated.\n";
 
 	output << "--------------------------------------------------" << endl;
 }

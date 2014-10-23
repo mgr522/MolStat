@@ -92,6 +92,11 @@ private:
 	std::string histfilename{ "histogram.dat" };
 
 	/**
+	 * \brief The number of trials (i.e., data points to simulate).
+	 */
+	std::size_t trials{ 0 };
+
+	/**
 	 * \brief Prints an error message.
 	 *
 	 * \param[in,out] output The output stream.
