@@ -52,6 +52,17 @@ std::string to_lower(const std::string &str);
 
 /**
  * \internal
+ * \brief Finds and replaces a substring within another string.
+ *
+ * \param[in,out] str String modified by the search and replace.
+ * \param[in] find The pattern to replace.
+ * \param[in] replace The string to substitute.
+ */
+void find_replace(std::string &str, const std::string find,
+	const std::string replace);
+
+/**
+ * \internal
  * \brief Template for casting a string to the desired type.
  *
  * The entire string must be used in the conversion.

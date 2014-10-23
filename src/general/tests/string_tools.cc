@@ -80,6 +80,19 @@ int main(int argc, char **argv)
 		molstat::tokenize(" Other forms\tof\nwhitespace   "),
 		{ "Other", "forms", "of", "whitespace" });
 
+	// check the find and replace function
+	{
+		string orig{ "Hello, world!" };
+		molstat::find_replace(orig, "o, w", "! Not the w");
+		assert(orig == "Hell! Not the world!");
+		molstat::find_replace(orig, "", "Do nothing");
+		assert(orig == "Hell! Not the world!");
+		molstat::find_replace(orig, "not going to find this", "");
+		assert(orig == "Hell! Not the world!");
+		molstat::find_replace(orig, "Hell! Not", "");
+		assert(orig == " the world!");
+	}
+
 	// check the cast function
 	// to size_t
 	assert(4 == molstat::cast_string<size_t>("4"));
