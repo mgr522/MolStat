@@ -98,26 +98,27 @@ std::string to_lower(const std::string &str)
 	return ret;
 }
 
-void find_replace(std::string &str, const std::string find,
-	const std::string replace)
+std::string find_replace(const std::string &str, const std::string &find,
+	const std::string &replace)
 {
 	if(find.size() == 0)
-		return;
+		return str;
 
-	string orig;
-	orig.swap(str); // now we can construct the modified string "in place"
+	string ret;
 	size_t start_pos{ 0 }, find_pos{ 0 };
 
 	// use find to find occurences of the target string; replace them
-	while((find_pos = orig.find(find, start_pos)) != string::npos)
+	while((find_pos = str.find(find, start_pos)) != string::npos)
 	{
-		str += orig.substr(start_pos, find_pos - start_pos);
-		str += replace;
+		ret += str.substr(start_pos, find_pos - start_pos);
+		ret += replace;
 		start_pos = find_pos + find.size();
 	}
 
 	// copy over the last segment
-	str += orig.substr(start_pos, string::npos);
+	ret += str.substr(start_pos, string::npos);
+
+	return ret;
 }
 
 template<>

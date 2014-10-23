@@ -83,13 +83,13 @@ int main(int argc, char **argv)
 	// check the find and replace function
 	{
 		string orig{ "Hello, world!" };
-		molstat::find_replace(orig, "o, w", "! Not the w");
+		orig = molstat::find_replace(orig, "o, w", "! Not the w");
 		assert(orig == "Hell! Not the world!");
-		molstat::find_replace(orig, "", "Do nothing");
+		orig = molstat::find_replace(orig, "", "Do nothing");
 		assert(orig == "Hell! Not the world!");
-		molstat::find_replace(orig, "not going to find this", "");
+		orig = molstat::find_replace(orig, "not going to find this", "");
 		assert(orig == "Hell! Not the world!");
-		molstat::find_replace(orig, "Hell! Not", "");
+		orig = molstat::find_replace(orig, "Hell! Not", "");
 		assert(orig == " the world!");
 	}
 
