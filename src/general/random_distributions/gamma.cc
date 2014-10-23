@@ -24,8 +24,8 @@ double GammaDistribution::sample(gsl_rng_ptr &r) const {
 }
 
 std::string GammaDistribution::info() const {
-	return "Gamma distribution with shape and scale factors of " +
-		std::to_string(shape) + " and " + std::to_string(scale) + ".";
+	return "Gamma: shape = " + std::to_string(shape) + " and scale = " +
+		std::to_string(scale) + ".";
 }
 
 } // namespace molstat

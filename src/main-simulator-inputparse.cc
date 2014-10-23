@@ -210,10 +210,10 @@ SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
 				tokens.pop();
 
 				// construct the random number distribution
-				shared_ptr<const molstat::RandomDistribution> dist{ nullptr };
 				try
 				{
-					dist = molstat::RandomDistributionFactory(move(tokens));
+					shared_ptr<const molstat::RandomDistribution> dist
+						{ molstat::RandomDistributionFactory(move(tokens)) };
 					ret.dists.emplace(name, dist);
 				}
 				catch(const invalid_argument &e)

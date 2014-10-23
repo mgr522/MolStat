@@ -25,8 +25,8 @@ double LognormalDistribution::sample(gsl_rng_ptr &r) const {
 }
 
 std::string LognormalDistribution::info() const {
-	return "Lognormal distribution with mean " + std::to_string(zeta) +
-		" and standard deviation " + std::to_string(sigma) + " in log space.";
+	return "Lognormal: mean = " + std::to_string(zeta) +
+		" and stdev = " + std::to_string(sigma) + " (log space).";
 }
 
 } // namespace molstat

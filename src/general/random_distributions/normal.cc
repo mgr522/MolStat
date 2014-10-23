@@ -24,8 +24,8 @@ double NormalDistribution::sample(gsl_rng_ptr &r) const {
 }
 
 std::string NormalDistribution::info() const {
-	return "Normal distribution with mean " + std::to_string(mean) +
-		" and standard deviation " + std::to_string(stdev) + ".";
+	return "Normal: mean = " + std::to_string(mean) + " and stdev = " +
+		std::to_string(stdev) + ".";
 }
 
 } // namespace molstat

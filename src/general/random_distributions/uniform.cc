@@ -24,7 +24,7 @@ double UniformDistribution::sample(gsl_rng_ptr &r) const {
 }
 
 std::string UniformDistribution::info() const {
-	return "Uniform distribution between " + std::to_string(lower) + " and " +
+	return "Uniform between " + std::to_string(lower) + " and " +
 		std::to_string(upper) + ".";
 }
 
