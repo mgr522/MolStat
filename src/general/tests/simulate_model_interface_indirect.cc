@@ -41,19 +41,19 @@ int main(int argc, char **argv) {
 	// add the observables
 	// must use emplace to avoid calling the allocator for type_index
 	// (no default constructor)
-	observables.emplace(make_pair("obs1",
-		molstat::GetObservableIndex<BasicObs1>()) );
-	observables.emplace(make_pair("obs2",
-		molstat::GetObservableIndex<BasicObs2>()) );
-	observables.emplace(make_pair("obs3",
-		molstat::GetObservableIndex<BasicObs3>()) );
-	observables.emplace(make_pair("obs4",
-		molstat::GetObservableIndex<BasicObs4>()) );
+	observables.emplace("obs1",
+		molstat::GetObservableIndex<BasicObs1>() );
+	observables.emplace("obs2",
+		molstat::GetObservableIndex<BasicObs2>() );
+	observables.emplace("obs3",
+		molstat::GetObservableIndex<BasicObs3>() );
+	observables.emplace("obs4",
+		molstat::GetObservableIndex<BasicObs4>() );
 
 	// add the model
 	// use emplace for consistency
-	models.emplace(make_pair("basic",
-		molstat::GetSimulateModelFactory<BasicTestModel>() ));
+	models.emplace("basic",
+		molstat::GetSimulateModelFactory<BasicTestModel>() );
 
 	// get our factory
 	molstat::SimulateModelFactory factory{ models.at("basic")() };
