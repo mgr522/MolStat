@@ -12,31 +12,55 @@
 #include "bin_style.h"
 #include "bin_linear.h"
 #include "bin_log.h"
+#include <general/string_tools.h>
 
 using namespace std;
 
-namespace molstat {
+namespace molstat
+{
 
-std::unique_ptr<BinStyle> BinStyleFactory(
-	TokenContainer &&tokens) {
+BinStyle::BinStyle(const std::size_t nbins_)
+	: nbins(nbins_)
+{
+}
 
+std::unique_ptr<BinStyle> BinStyleFactory(TokenContainer &&tokens)
+{
 	unique_ptr<BinStyle> ret;
 
 	if(tokens.size() == 0)
 		throw invalid_argument("Empty line.");
 
-	// the first token is the name of the binning style
+	// the first token is the number of bins to use
+	size_t nbins;
+	try
+	{
+		nbins = cast_string<size_t>(tokens.front());
+	}
+	catch(const bad_cast &e)
+	{
+		throw invalid_argument("Unable to determine the number of bins.");
+	}
+	tokens.pop();
+
+	// the next token is the name of the binning style
+	if(tokens.size() == 0)
+		throw invalid_argument("No binning style specified.");
+
 	string name = to_lower(tokens.front());
 	tokens.pop();
 
-	if(name == "linear") {
-		ret.reset(new BinLinear());
+	if(name == "linear")
+	{
+		ret.reset(new BinLinear(nbins));
 	}
-	else if(name == "log") {
+	else if(name == "log")
+	{
 		// need to read the base, if available. If not, use 10.
 		double b;
 
-		if(tokens.size() > 0) {
+		if(tokens.size() > 0)
+		{
 			b = cast_string<double>(tokens.front());
 			if(b <= 0.)
 				throw invalid_argument("The logarithm base must be positive.");
@@ -44,7 +68,7 @@ std::unique_ptr<BinStyle> BinStyleFactory(
 		else
 			b = 10.;
 
-		ret.reset(new BinLog(b));
+		ret.reset(new BinLog(nbins, b));
 	}
 	else
 		throw invalid_argument(

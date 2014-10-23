@@ -41,6 +41,8 @@ public:
 	 * \brief Constructor requiring the number of bins in the histogram, the
 	 *    ranges of the variables, and the binning style.
 	 *
+	 * \todo BinStyle now carries the number of bins.
+	 *
 	 * \param[in] nbin The number of bins to use, in each dimension.
 	 * \param[in] mins The minimum values in the ranges of each dimension.
 	 * \param[in] maxs The maximum values in the ranges of each dimension.

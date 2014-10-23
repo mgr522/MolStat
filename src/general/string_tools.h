@@ -19,7 +19,8 @@
  * \namespace molstat
  * \brief Namespace for components of MolStat.
  */
-namespace molstat {
+namespace molstat
+{
 
 /**
  * \internal

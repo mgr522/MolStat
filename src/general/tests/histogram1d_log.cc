@@ -33,8 +33,8 @@ using namespace std;
  * \endinternal
  */
 int main(int argc, char **argv) {
-	shared_ptr<molstat::BinStyle> bstyle(make_shared<molstat::BinLog>(10.));
-	molstat::Histogram1D hist(5, 1.e-5, 1., bstyle);
+	shared_ptr<molstat::BinStyle> bstyle(make_shared<molstat::BinLog>(5, 10.));
+	molstat::Histogram1D hist(bstyle->nbins, 1.e-5, 1., bstyle);
 	const double thresh = 1.0e-6;
 
 	// artificially populate the histogram

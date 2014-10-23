@@ -25,7 +25,7 @@ namespace molstat
 class BinLinear : public BinStyle
 {
 public:
-	BinLinear() = default;
+	using BinStyle::BinStyle;
 	virtual ~BinLinear() = default;
 
 	/**

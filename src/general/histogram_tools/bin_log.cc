@@ -17,8 +17,8 @@
 namespace molstat
 {
 
-BinLog::BinLog(const double b_)
-	: b(b_)
+BinLog::BinLog(const std::size_t nbin_, const double b_)
+	: BinStyle(nbin_), b(b_)
 {
 }
 

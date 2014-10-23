@@ -17,7 +17,8 @@
 #include <vector>
 #include <general/string_tools.h>
 
-namespace molstat {
+namespace molstat
+{
 
 /**
  * \brief Interface for an arbitrary binning style.
@@ -36,10 +37,23 @@ namespace molstat {
  * .
  * Full details about binning styles can be found in \ref sec_histograms.
  */
-class BinStyle {
+class BinStyle
+{
 public:
-	BinStyle() = default;
+	/**
+	 * \brief The number of bins.
+	 */
+	const std::size_t nbins;
+
+	BinStyle() = delete;
 	virtual ~BinStyle() = default;
+
+	/**
+	 * \brief Constructor requires the number of bins.
+	 *
+	 * \param[in] nbins_ The number of bins.
+	 */
+	BinStyle(const std::size_t nbins_);
 
 	/**
 	 * \brief The mask function, \f$u=f(x)\f$.

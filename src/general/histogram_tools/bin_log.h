@@ -38,9 +38,10 @@ public:
 	/**
 	 * \brief Constructor specifying the base of logarithm to use.
 	 *
+	 * \param[in] nbin_ The number of bins.
 	 * \param[in] b_ The base.
 	 */
-	BinLog(const double b_);
+	BinLog(const std::size_t nbin_, const double b_);
 
 	/**
 	 * \brief The mask function, \f$u = f(x) = \log_b(x)\f$.
