@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 	unique_ptr<molstat::Simulator> sim{ nullptr };
 	try
 	{
-		;
+		sim = parser.createSimulator();
 	}
 	catch(const exception &e)
 	{

@@ -22,6 +22,11 @@
 
 #include <general/simulator_tools/simulator.h>
 
+// forward declaration
+namespace molstat {
+class RandomDistribution;
+}
+
 /**
  * \internal
  * \brief Enum for the type of histogram (1D or 2D).
@@ -57,9 +62,10 @@ private:
 		std::string name;
 
 		/**
-		 * \brief The list of distributions, stored by their tokens.
+		 * \brief The list of distributions for this model.
 		 */
-		std::list<molstat::TokenContainer> dists;
+		std::map<std::string,
+		          std::shared_ptr<const molstat::RandomDistribution>> dists;
 
 		/**
 		 * \brief A list of submodels to be created.
@@ -108,7 +114,7 @@ private:
 	 * \param[in] lineno The line number.
 	 * \param[in] message The error message.
 	 */
-	static void printError(std::ostream &output, std::size_t lineno,
+	static inline void printError(std::ostream &output, std::size_t lineno,
 		std::string message);
 
 	/**
@@ -122,6 +128,21 @@ private:
 	 * \return The model information, save for the name of the model type.
 	 */
 	static ModelInformation readModel(std::istream &input, std::size_t &lineno);
+
+	/**
+	 * \brief Constructs a model from the
+	 *    SimulatorInputParser::ModelInformation.
+	 *
+	 * \throw std::exception if the model cannot be constructed.
+	 *
+	 * \param[in] models Map of available models.
+	 * \param[in] info The model information from the input deck.
+	 * \return The constructed model.
+	 */
+	static std::shared_ptr<molstat::SimulateModel> constructModel(
+		const std::map<std::string,
+		               molstat::SimulateModelFactoryFunction> &models,
+		const ModelInformation &info);
 
 public:
 	/**

@@ -13,12 +13,13 @@
 #include "main-simulator.h"
 #include <iomanip>
 #include <general/simulator_tools/simulator_exceptions.h>
+#include <general/random_distributions/rng.h>
 #include <electron_transport/simulator_models/transport_simulate_module.h>
 
 using namespace std;
 
-void SimulatorInputParse::printError(std::ostream &output, std::size_t lineno,
-	std::string message)
+inline void SimulatorInputParse::printError(std::ostream &output,
+	std::size_t lineno, std::string message)
 {
 	output << "Error on line " << setw(2) << lineno << ": " << message << endl;
 }
@@ -95,9 +96,9 @@ void SimulatorInputParse::readInput(std::istream &input)
 			else {
 				// store the name of the observable for later
 				if(command == "observable_y")
-					used_observables[1] = tokens.front();
+					used_observables[1] = molstat::to_lower(tokens.front());
 				else
-					used_observables[0] = tokens.front();
+					used_observables[0] = molstat::to_lower(tokens.front());
 			}
 		}
 		else if(command == "output")
@@ -138,30 +139,6 @@ void SimulatorInputParse::readInput(std::istream &input)
 		// move to the next line
 		++lineno;
 	}
-
-#if 0
-	// construct the Simulator
-	unique_ptr<molstat::Simulator> sim{ new molstat::Simulator(model) };
-
-	// load the observables
-	for(const auto obs : used_observables)
-	{
-		try
-		{
-			sim->setObservable(obs.first, obs.second);
-		}
-		catch(const out_of_range &e)
-		{
-			throw runtime_error(
-				"Non-contiguous observable numbering is not allowed.");
-		}
-		catch(const molstat::IncompatibleObservable &e)
-		{
-			throw runtime_error("The model is incompatible with observable "
-				+ to_string(obs.first) + '.');
-		}
-	}
-#endif
 }
 
 SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
@@ -216,13 +193,29 @@ SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
 		else if(command == "distribution")
 		{
 			// make sure there are tokens, if so, push the tokens
-			if(tokens.size() == 0)
+			if(tokens.size() < 2)
 			{
-				printError(cout, lineno, "No distribution type specified.");
+				printError(cout, lineno,
+					"No distribution name and/or type specified.");
 			}
 			else
 			{
-				ret.dists.emplace_back(tokens);
+				const string name{ tokens.front() };
+				tokens.pop();
+
+				// construct the random number distribution
+				shared_ptr<const molstat::RandomDistribution> dist{ nullptr };
+				try
+				{
+					dist = molstat::RandomDistributionFactory(move(tokens));
+					ret.dists.emplace(name, dist);
+				}
+				catch(const invalid_argument &e)
+				{
+					// indent the error message
+					printError(cout, lineno,
+						molstat::find_replace(e.what(), "\n", "\n   "));
+				}
 			}
 		}
 		else
@@ -259,154 +252,92 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator()
 	molstat::transport::load_observables(observables);
 
 	// make the model
+	// if there are exceptions, let them pass up to the caller
+	shared_ptr<molstat::SimulateModel> model
+		{ constructModel(models, top_model) };
+	
+	// make the simulator
+	unique_ptr<molstat::Simulator> sim{ new molstat::Simulator(model) };
 
 	// set the observables
+	for(const auto obs : used_observables)
+	{
+		try
+		{
+			auto obsindex = observables.at(obs.second);
+			sim->setObservable(obs.first, obsindex);
+		}
+		catch(const out_of_range &e)
+		{
+			cout << "Unknown observable: \"" << obs.second << "\"." << endl;
+		}
+		catch(const logic_error &e)
+		{
+			cout << "Error setting observable " << obs.first << ".\n   " <<
+				e.what() << endl;
+		}
+	}
 
-	return nullptr;
+	return sim;
 }
 
-#if 0
-std::shared_ptr<molstat::SimulateModel> processModel(
-	std::queue<std::string> &&tokens,
-	std::istream &input,
+std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
 	const std::map<std::string,
-	               molstat::SimulateModelFactoryFunction> &models)
+	               molstat::SimulateModelFactoryFunction> &models,
+	const ModelInformation &info)
 {
-	if(tokens.size() == 0)
-		throw runtime_error("Model name not specified.");
+	// see if the name specified is valid
+	if(models.count(info.name) == 0)
+		throw runtime_error("Unknown model: \"" + info.name + "\".");
 
-	// get the factory
-	molstat::SimulateModelFactoryFunction ffunc;
-	try
+	molstat::SimulateModelFactory factory{ models.at(info.name)() };
+
+	// set the distributions
+	for(auto dist : info.dists)
 	{
-		// the next token is the name of the model
-		// use "at" to check existence of the key in the models map
-		ffunc = models.at(molstat::to_lower(tokens.front()));
+		factory.setDistribution(dist.first, dist.second);
 	}
-	catch(const out_of_range &e)
+
+	// add any submodels
+	for(auto submodelinfo : info.submodels)
 	{
-		// model not found
-		throw runtime_error("Model \"" + tokens.front() + "\" not found.");
-	}
-	molstat::SimulateModelFactory factory{ ffunc() };
+		shared_ptr<molstat::SimulateModel> submodel{ nullptr };
 
-	// start processing information from input...
-	string command{ "not endmodel" };
-	while(input && command != "endmodel")
-	{
-		string line;
-		getline(input, line);
-
-		// tokenize the string
-		tokens = molstat::tokenize(line);
-		if(tokens.size() == 0) // empty line
-			continue;
-
-		// the first token is the command name, pop it off and then process the
-		// rest of the tokens
-		command = molstat::to_lower(tokens.front());
-		tokens.pop();
-
-		// process the two available commands (get a submodel or set a
-		// distribution)
-		if(command == "distribution")
+		// create the submodel
+		try
 		{
-			// get the name
-			if(tokens.size() == 0) // no name specified
-			{
-				cout << "   No name specified on \"distribution\"." << endl;
-			}
-			else
-			{
-				const string name{ molstat::to_lower(tokens.front()) };
-				tokens.pop();
-				shared_ptr<const molstat::RandomDistribution> dist{ nullptr };
+			submodel = constructModel(models, submodelinfo);
 
-				// process the remaining tokens as a distribution
-				try
-				{
-					dist = molstat::RandomDistributionFactory(move(tokens));
-
-					// set the distribution
-					factory.setDistribution(name, dist);
-				}
-				catch(const invalid_argument &e)
-				{
-					// print out a message, but don't error out
-					cout << "   Error constructing random distribution: " <<
-						e.what() << endl;
-				}
-			}
-		}
-		else if(command == "endmodel")
-		{
-			// don't need to do anything; we'll exit the input reading loop after
-			// this cycle. we just don't want to print the error message.
-		}
-		else if(command == "model")
-		{
-			// construct a submodel... recursion!
-			shared_ptr<molstat::SimulateModel> model{ nullptr };
+			// add the submodel
 			try
 			{
-				model = processModel(move(tokens), input, models);
-
-				// add the submodel
-				factory.addSubmodel(model);
+				factory.addSubmodel(submodel);
 			}
-			catch(const molstat::NotCompositeSimulateModel &e)
+			catch(const exception &e)
 			{
-				cout << "Error setting submodel: invalid model type." << endl;
-			}
-			catch(const molstat::IncompatibleObservable &e)
-			{
-				cout << "Error setting submodel: invalid model type." << endl;
-			}
-			catch(const runtime_error &e)
-			{
-				cout << "Error constructing submodel: " << e.what() << endl;
+				cout << "Error: " << e.what() << endl;
 			}
 		}
-		else
+		catch(const exception &e)
 		{
-			cout << "   Unrecognized model command: \"" + command + "\"." << endl;
+			cout << "Error: " << e.what() << endl;
 		}
 	}
 
-	// make sure the last command was endmodel; that is, we didn't hit EOF
-	if(command != "endmodel")
-		throw runtime_error("EOF encountered in \"model\" block.");
-
-	return factory.getModel(); // let any exceptions pass up
-}
-
-molstat::ObservableIndex processObservable(
-	std::queue<std::string> &&tokens,
-	const std::map<std::string,
-	          molstat::ObservableIndex> &observables)
-{
-	// make sure there is a token left, otherwise throw a runtime_error
-	if(tokens.size() == 0)
-		throw runtime_error("Observable name not specified.");
-
-	molstat::ObservableIndex obsindex{ typeid(void*) };
-
-	// look up the specified observable
+	// get the model
+	shared_ptr<molstat::SimulateModel> model{ nullptr };
 	try
 	{
-		// the next token is the name of the observable
-		// use "at" to check existence of the key in the observables map
-		obsindex = observables.at(molstat::to_lower(tokens.front()));
+		model = factory.getModel();
 	}
-	catch(const out_of_range &e)
+	catch(const logic_error &e)
 	{
-		// observable not found
-		throw runtime_error("Observable \"" + tokens.front() + "\" not found.");
+		throw runtime_error(string(e.what()) + " When constructing model\n   " + 
+			molstat::find_replace(info.to_string(), "\n", "\n   "));
 	}
 
-	return obsindex;
+	return model;
 }
-#endif
 
 std::string SimulatorInputParse::ModelInformation::to_string() const
 {
@@ -417,7 +348,7 @@ std::string SimulatorInputParse::ModelInformation::to_string() const
 	// load in the distributions
 	for(auto dist : dists)
 	{
-		ret += "\n      " + dist.front();
+		ret += "\n      " + dist.first + " -> " + dist.second->info();
 	}
 
 	// submodel information
@@ -426,18 +357,7 @@ std::string SimulatorInputParse::ModelInformation::to_string() const
 		ret += "\n   Submodel type: ";
 
 		// get the submodel info; indent it
-		string submodel_string{ submodel.to_string() };
-		size_t start_pos{ 0 }, newl_pos{ 0 };
-		while((newl_pos = submodel_string.find("\n", start_pos)) != string::npos)
-		{
-			// move up to (and including) the newline to the return string
-			ret += submodel_string.substr(start_pos, newl_pos - start_pos + 1);
-			ret += "   "; // the indent
-			start_pos = newl_pos + 1;
-		}
-
-		// copy the last segment
-		ret += submodel_string.substr(start_pos, string::npos);
+		ret += molstat::find_replace(submodel.to_string(), "\n", "\n   ");
 	}
 
 	return ret;
