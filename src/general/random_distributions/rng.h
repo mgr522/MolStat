@@ -16,6 +16,7 @@
 #include <queue>
 #include <string>
 #include <gsl/gsl_rng.h>
+#include <general/string_tools.h>
 
 namespace molstat {
 
@@ -75,7 +76,7 @@ public:
  * \return The RandomDistribution.
  */
 std::unique_ptr<RandomDistribution> RandomDistributionFactory(
-	std::queue<std::string> &&tokens);
+	TokenContainer &&tokens);
 
 } // namespace molstat
 

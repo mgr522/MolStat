@@ -12,7 +12,6 @@
 
 #include "rng.h"
 #include <gsl/gsl_randist.h>
-#include <general/string_tools.h>
 #include "constant.h"
 #include "uniform.h"
 #include "normal.h"
@@ -24,7 +23,7 @@ using namespace std;
 namespace molstat {
 
 std::unique_ptr<RandomDistribution> RandomDistributionFactory(
-	std::queue<std::string> &&tokens)
+	TokenContainer &&tokens)
 {
 
 	unique_ptr<RandomDistribution> ret;
