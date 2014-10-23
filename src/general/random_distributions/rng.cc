@@ -24,42 +24,42 @@ using namespace std;
 namespace molstat {
 
 std::unique_ptr<RandomDistribution> RandomDistributionFactory(
-	const std::vector<std::string> &tokens) {
+	std::queue<std::string> &&tokens)
+{
 
 	unique_ptr<RandomDistribution> ret;
 
-	if(tokens.size() < 1)
+	if(tokens.size() == 0)
 		throw invalid_argument("Empty line.");
 
 	// the first token is the type of distribution to form
-	string type = tokens[0];
-	type = to_lower(type);
+	string type = to_lower(tokens.front());
+	tokens.pop();
 
-	if(type == "constant") {
-		double val;
-
-		// tokens[1] is the value to return; cast it to a double
-		if(tokens.size() < 2)
+	if(type == "constant")
+	{
+		// tokens[0] is the value to return; cast it to a double
+		if(tokens.size() < 1)
 			throw invalid_argument("Invalid constant distribution. Use\n" \
 				"   constant value\n" \
 				"where value is the value to be returned.");
 
-		val = cast_string<double>(tokens[1]);
+		const double val = cast_string<double>(tokens.front());
 
 		ret = unique_ptr<RandomDistribution>(new ConstantDistribution(val));
 	}
-	else if(type == "uniform") {
-		double lower, upper;
-
-		// tokens[1] and tokens[2] are the lower and upper bounds of the range,
+	else if(type == "uniform")
+	{
+		// tokens[0] and tokens[1] are the lower and upper bounds of the range,
 		// respectively
-		if(tokens.size() < 3)
+		if(tokens.size() < 2)
 			throw invalid_argument("Invalid uniform distribution. Use\n" \
 				"   uniform lower upper\n" \
 				"where lower and upper are the bounds, respectively.");
 
-		lower = cast_string<double>(tokens[1]);
-		upper = cast_string<double>(tokens[2]);
+		const double lower = cast_string<double>(tokens.front());
+		tokens.pop();
+		const double upper = cast_string<double>(tokens.front());
 
 		if(lower >= upper)
 			throw invalid_argument("Uniform Distribution: The lower bound must " \
@@ -68,17 +68,17 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 		ret = unique_ptr<RandomDistribution>(
 			new UniformDistribution(lower, upper));
 	}
-	else if(type == "normal" || type == "gaussian") {
-		double mean, stdev;
-
-		// tokens[1] and tokens[2] are the mean and standard deviation of the
+	else if(type == "normal" || type == "gaussian")
+	{
+		// tokens[0] and tokens[1] are the mean and standard deviation of the
 		// distribution, respectively
-		if(tokens.size() < 3)
+		if(tokens.size() < 2)
 			throw invalid_argument("Invalid normal distribution. Use\n" \
 				"   normal mean standard-deviation");
 
-		mean = cast_string<double>(tokens[1]);
-		stdev = cast_string<double>(tokens[2]);
+		const double mean = cast_string<double>(tokens.front());
+		tokens.pop();
+		const double stdev = cast_string<double>(tokens.front());
 
 		if(stdev <= 0.)
 			throw invalid_argument("Normal Distribution: The standard deviation" \
@@ -87,17 +87,17 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 		ret = unique_ptr<RandomDistribution>(
 			new NormalDistribution(mean, stdev));
 	}
-	else if(type == "lognormal") {
-		double zeta, sigma;
-
-		// tokens[1] and tokens[2] are the mean and standard deviation (in log-
+	else if(type == "lognormal")
+	{
+		// tokens[0] and tokens[1] are the mean and standard deviation (in log-
 		// space), respectively
-		if(tokens.size() < 3)
+		if(tokens.size() < 2)
 			throw invalid_argument("Invalid lognormal distribution. Use\n" \
 				"   lognormal zeta sigma");
 
-		zeta = cast_string<double>(tokens[1]);
-		sigma = cast_string<double>(tokens[2]);
+		const double zeta = cast_string<double>(tokens.front());
+		tokens.pop();
+		const double sigma = cast_string<double>(tokens.front());
 
 		if(sigma <= 0.)
 			throw invalid_argument("Lognormal Distribution: The standard " \
@@ -106,16 +106,16 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 		ret = unique_ptr<RandomDistribution>(
 			new LognormalDistribution(zeta, sigma));
 	}
-	else if(type == "gamma") {
-		double shape, scale;
-
-		// tokens[1] and tokens[2] are the shape and scale factors, respectively
-		if(tokens.size() < 3)
+	else if(type == "gamma")
+	{
+		// tokens[0] and tokens[1] are the shape and scale factors, respectively
+		if(tokens.size() < 2)
 			throw invalid_argument("Invalid gamma distribution. Use\n" \
 				"   gamma shape scale");
 
-		shape = cast_string<double>(tokens[1]);
-		scale = cast_string<double>(tokens[2]);
+		const double shape = cast_string<double>(tokens.front());
+		tokens.pop();
+		const double scale = cast_string<double>(tokens.front());
 
 		if(shape <= 0. || scale <= 0.)
 			throw invalid_argument("Gamma Distribution: The shape and scale " \

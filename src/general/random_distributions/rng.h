@@ -13,7 +13,7 @@
 #define __rng_h__
 
 #include <memory>
-#include <vector>
+#include <queue>
 #include <string>
 #include <gsl/gsl_rng.h>
 
@@ -66,6 +66,8 @@ public:
  * The first token is the name of the distribution. The remaining tokens are
  * the parameters for the distribution.
  *
+ * The list of tokens is destroyed by this function.
+ *
  * \exception std::invalid_argument if the parameters are invalid for the
  *    specified distribution.
  *
@@ -73,7 +75,7 @@ public:
  * \return The RandomDistribution.
  */
 std::unique_ptr<RandomDistribution> RandomDistributionFactory(
-	const std::vector<std::string> &tokens);
+	std::queue<std::string> &&tokens);
 
 } // namespace molstat
 
