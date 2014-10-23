@@ -33,7 +33,7 @@ double BinLinear::dmaskdx(const double x) const
 
 std::string BinLinear::info() const
 {
-	return "Linear binning";
+	return std::to_string(nbins) + " linear bins";
 }
 
 } // namespace molstat

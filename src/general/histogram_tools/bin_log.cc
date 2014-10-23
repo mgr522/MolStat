@@ -39,7 +39,8 @@ double BinLog::dmaskdx(const double x) const
 
 std::string BinLog::info() const
 {
-	return std::string("Logarithmic binning, base ") + std::to_string(b);
+	return std::to_string(nbins) + " logarithmic bins, base " +
+		std::to_string(b);
 }
 
 } // namespace molstat
