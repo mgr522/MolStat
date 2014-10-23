@@ -23,16 +23,23 @@ namespace molstat {
 
 /**
  * \internal
+ * \brief Alias for a container of tokens.
+ * \endinternal
+ */
+using TokenContainer = std::queue<std::string>;
+
+/**
+ * \internal
  * \brief Tokenizes a string.
  *
  * Tokens are delimited by whitespace. Quotes (\"\") can be used to include
  * whitespace in a token.
  *
  * \param[in] str The string to be tokenized.
- * \return The tokens, ordered in a std::queue.
+ * \return The tokens.
  * \endinternal
  */
-std::queue<std::string> tokenize(const std::string &str);
+TokenContainer tokenize(const std::string &str);
 
 /**
  * \internal

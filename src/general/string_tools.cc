@@ -71,8 +71,8 @@ static bool next_token(string::const_iterator &next,
 	return true;
 }
 
-std::queue<std::string> tokenize(const std::string &str) {
-	queue<string> ret;
+TokenContainer tokenize(const std::string &str) {
+	TokenContainer ret;
 	string::const_iterator next = str.begin();
 	string token;
 
