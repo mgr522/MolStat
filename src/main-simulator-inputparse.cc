@@ -90,7 +90,14 @@ void SimulatorInputParse::readInput(std::istream &input)
 		}
 		else if(command == "output")
 		{
-			printError(cout, lineno, "output handler not implemented.");
+			if(tokens.size() == 0)
+			{
+				printError(cout, lineno, "No output file name specified.");
+			}
+			else
+			{
+				histfilename = tokens.front();
+			}
 		}
 		else if(command == "trials")
 		{
@@ -422,6 +429,8 @@ void SimulatorInputParse::printState(std::ostream &output) const
 		output << obspair.first << " -> " << obspair.second << '\n';
 	}
 	output << '\n';
+
+	output << "Histogram Output File: " << histfilename << "\n";
 
 	output << "--------------------------------------------------" << endl;
 }
