@@ -14,6 +14,7 @@
 #include <iomanip>
 #include <general/simulator_tools/simulator_exceptions.h>
 #include <general/random_distributions/rng.h>
+#include <general/histogram_tools/bin_style.h>
 #include <electron_transport/simulator_models/transport_simulate_module.h>
 
 using namespace std;
@@ -51,18 +52,31 @@ void SimulatorInputParse::readInput(std::istream &input)
 		// go through the supported commands
 		if(command == "bin" || command == "bin_x" || command == "bin_y")
 		{
-			// make sure we have some tokens for the binning style
+			// make sure there are tokens, if so, push the tokens
 			if(tokens.size() == 0)
 			{
-				printError(cout, lineno, "No binning information specified.");
+				printError(cout, lineno,
+					"No binning information specified.");
 			}
 			else
 			{
-				// store the tokens for later
-				if(command == "bin_y")
-					bin_styles[1] = tokens;
-				else
-					bin_styles[0] = tokens;
+				// construct the binning style
+				try
+				{
+					shared_ptr<molstat::BinStyle> binstyle
+						{ molstat::BinStyleFactory(move(tokens)) };
+
+					if(command == "bin_y")
+						bin_styles[1] = binstyle;
+					else
+						bin_styles[0] = binstyle;
+				}
+				catch(const invalid_argument &e)
+				{
+					// indent the error message
+					printError(cout, lineno,
+						molstat::find_replace(e.what(), "\n", "\n   "));
+				}
 			}
 		}
 		else if(command == "model")
@@ -345,6 +359,11 @@ std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
 	return model;
 }
 
+std::size_t SimulatorInputParse::numTrials() const noexcept
+{
+	return trials;
+}
+
 std::string SimulatorInputParse::ModelInformation::to_string() const
 {
 	// first put in the name
@@ -371,9 +390,6 @@ std::string SimulatorInputParse::ModelInformation::to_string() const
 
 void SimulatorInputParse::printState(std::ostream &output) const
 {
-	output << "--------------------------------------------------\n" <<
-		"State of input parser.\n\n";
-
 	output << "Model type: " << top_model.to_string() << "\n\n";
 
 	output << "Observables:\n";
@@ -395,14 +411,14 @@ void SimulatorInputParse::printState(std::ostream &output) const
 			{
 				// bin specified but not observable
 				output << bin_iter->first << " -> <missing observable> (" <<
-					bin_iter->second.front() << ")\n";
+					bin_iter->second->info() << ")\n";
 				++bin_iter;
 			}
 			else /*if(obs_iter->first == bin_iter->first)*/
 			{
 				// same index
 				output << obs_iter->first << " -> " << obs_iter->second <<
-					" (" << bin_iter->second.front() << ")\n";
+					" (" << bin_iter->second->info() << ")\n";
 				++obs_iter;
 				++bin_iter;
 			}
@@ -416,6 +432,4 @@ void SimulatorInputParse::printState(std::ostream &output) const
 	output << " will be simulated.\n";
 
 	output << "Histogram Output File: " << histfilename << '\n';
-
-	output << "--------------------------------------------------" << endl;
 }

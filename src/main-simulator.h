@@ -25,6 +25,7 @@
 // forward declaration
 namespace molstat {
 class RandomDistribution;
+class BinStyle;
 }
 
 /**
@@ -95,7 +96,7 @@ private:
 	/**
 	 * \brief Map of observable index (axis) to the binning style tokens.
 	 */
-	std::map<std::size_t, molstat::TokenContainer> bin_styles;
+	std::map<std::size_t, std::shared_ptr<molstat::BinStyle>> bin_styles;
 
 	/**
 	 * \brief File name for the histogram output.
@@ -170,6 +171,13 @@ public:
 	 * \return The simulator.
 	 */
 	std::unique_ptr<molstat::Simulator> createSimulator();
+
+	/**
+	 * \brief Gets the number of trials.
+	 *
+	 * \return The number of trials.
+	 */
+	std::size_t numTrials() const noexcept;
 
 	/**
 	 * \internal

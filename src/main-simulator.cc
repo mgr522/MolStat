@@ -58,10 +58,7 @@ int main(int argc, char **argv)
 		cout << "FATAL ERROR: " << e.what() << endl;
 		return 0;
 	}
-
-	// debug print
-	parser.printState(cout);
-
+	
 	// create the simulator
 	unique_ptr<molstat::Simulator> sim{ nullptr };
 	try
@@ -73,6 +70,9 @@ int main(int argc, char **argv)
 		cout << "FATAL ERROR: " << e.what() << endl;
 		return 0;
 	}
+
+	// print the simulator information
+	parser.printState(cout);
 
 #if 0
 	// initialize the GSL random number generator
