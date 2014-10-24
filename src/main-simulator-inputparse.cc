@@ -6,6 +6,8 @@
  * \brief Definition of the SimulatorInputParse class for parsing the simulator
  *    input deck.
  *
+ * \todo Document how this code works.
+ *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
@@ -25,7 +27,7 @@ inline void SimulatorInputParse::printError(std::ostream &output,
 	output << "Error on line " << setw(2) << lineno << ": " << message << endl;
 }
 
-void SimulatorInputParse::readInput(std::istream &input)
+void SimulatorInputParse::readInput(std::istream &input, std::ostream &output)
 {
 	std::size_t lineno{ 1 }; // line number
 
@@ -55,7 +57,7 @@ void SimulatorInputParse::readInput(std::istream &input)
 			// make sure there are tokens, if so, push the tokens
 			if(tokens.size() == 0)
 			{
-				printError(cout, lineno,
+				printError(output, lineno,
 					"No binning information specified.");
 			}
 			else
@@ -74,7 +76,7 @@ void SimulatorInputParse::readInput(std::istream &input)
 				catch(const invalid_argument &e)
 				{
 					// indent the error message
-					printError(cout, lineno,
+					printError(output, lineno,
 						molstat::find_replace(e.what(), "\n", "\n   "));
 				}
 			}
@@ -86,12 +88,12 @@ void SimulatorInputParse::readInput(std::istream &input)
 
 			// enter the model reader to process input lines until the
 			// appropriate "endmodel" command is found
-			ModelInformation model = readModel(input, ++lineno);
+			ModelInformation model = readModel(input, output, ++lineno);
 
 			// make sure there is a name (model type) specified
 			if(tokens.size() == 0)
 			{
-				printError(cout, mylineno, "No model type specified.");
+				printError(output, mylineno, "No model type specified.");
 			}
 			else
 			{
@@ -108,7 +110,7 @@ void SimulatorInputParse::readInput(std::istream &input)
 			// make sure we have a name for the observable
 			if(tokens.size() == 0)
 			{
-				printError(cout, lineno, "No observable specified.");
+				printError(output, lineno, "No observable specified.");
 			}
 			else {
 				// store the name of the observable for later
@@ -122,7 +124,7 @@ void SimulatorInputParse::readInput(std::istream &input)
 		{
 			if(tokens.size() == 0)
 			{
-				printError(cout, lineno, "No output file name specified.");
+				printError(output, lineno, "No output file name specified.");
 			}
 			else
 			{
@@ -133,24 +135,27 @@ void SimulatorInputParse::readInput(std::istream &input)
 		{
 			if(tokens.size() == 0)
 			{
-				printError(cout, lineno, "Number of trials not specified.");
+				printError(output, lineno, "Number of trials not specified.");
 			}
 			else
 			{
 				try
 				{
 					trials = molstat::cast_string<size_t>(tokens.front());
+					if(trials == 0)
+						printError(output, lineno,
+							"More than 0 trials should be specified.");
 				}
 				catch(const bad_cast &e)
 				{
-					printError(cout, lineno, "Unable to convert \"" + tokens.front() +
+					printError(output, lineno, "Unable to convert \"" + tokens.front() +
 						"\" to a non-negative number.");
 				}
 			}
 		}
 		else
 		{
-			printError(cout, lineno, "Unknown command: \"" + command + "\".");
+			printError(output, lineno, "Unknown command: \"" + command + "\".");
 		}
 
 		// move to the next line
@@ -159,7 +164,7 @@ void SimulatorInputParse::readInput(std::istream &input)
 }
 
 SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
-	std::istream &input, std::size_t &lineno)
+	std::istream &input, std::ostream &output, std::size_t &lineno)
 {
 	ModelInformation ret;
 
@@ -194,12 +199,12 @@ SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
 
 			// enter the (sub)model reader to process input lines until the
 			// appropriate "endmodel" command is found
-			ModelInformation model = readModel(input, ++lineno);
+			ModelInformation model = readModel(input, output, ++lineno);
 
 			// make sure there is a name (model type) specified
 			if(tokens.size() == 0)
 			{
-				printError(cout, mylineno, "No submodel type specified.");
+				printError(output, mylineno, "No submodel type specified.");
 			}
 			else
 			{
@@ -215,7 +220,7 @@ SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
 			// make sure there are tokens, if so, push the tokens
 			if(tokens.size() < 2)
 			{
-				printError(cout, lineno,
+				printError(output, lineno,
 					"No distribution name and/or type specified.");
 			}
 			else
@@ -233,14 +238,14 @@ SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
 				catch(const invalid_argument &e)
 				{
 					// indent the error message
-					printError(cout, lineno,
+					printError(output, lineno,
 						molstat::find_replace(e.what(), "\n", "\n   "));
 				}
 			}
 		}
 		else
 		{
-			printError(cout, lineno,
+			printError(output, lineno,
 				"Unknown model command: \"" + command + "\".");
 		}
 
@@ -252,7 +257,8 @@ SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
 	throw runtime_error("Missing \"endmodel\" command.");
 }
 
-std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator()
+std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator(
+	std::ostream &output)
 {
 	// the map of model instantiators
 	map<string, molstat::SimulateModelFactoryFunction> models;
@@ -274,7 +280,7 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator()
 	// make the model
 	// if there are exceptions, let them pass up to the caller
 	shared_ptr<molstat::SimulateModel> model
-		{ constructModel(models, top_model) };
+		{ constructModel(output, models, top_model) };
 	
 	// make the simulator
 	unique_ptr<molstat::Simulator> sim{ new molstat::Simulator(model) };
@@ -289,11 +295,11 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator()
 		}
 		catch(const out_of_range &e)
 		{
-			cout << "Unknown observable: \"" << obs.second << "\"." << endl;
+			output << "Unknown observable: \"" << obs.second << "\"." << endl;
 		}
 		catch(const logic_error &e)
 		{
-			cout << "Error setting observable " << obs.first << ".\n   " <<
+			output << "Error setting observable " << obs.first << ".\n   " <<
 				e.what() << endl;
 		}
 	}
@@ -302,9 +308,10 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator()
 }
 
 std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
+	std::ostream &output,
 	const std::map<std::string,
 	               molstat::SimulateModelFactoryFunction> &models,
-	const ModelInformation &info)
+	ModelInformation &info)
 {
 	// see if the name specified is valid
 	if(models.count(info.name) == 0)
@@ -312,21 +319,42 @@ std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
 
 	molstat::SimulateModelFactory factory{ models.at(info.name)() };
 
-	// set the distributions
-	for(auto dist : info.dists)
+	// set the distributions, removing any distributions that aren't used
 	{
-		factory.setDistribution(dist.first, dist.second);
+		auto dist = info.dists.cbegin();
+		while(dist != info.dists.cend())
+		{
+			bool used;
+			factory.setDistribution(dist->first, dist->second, &used);
+			if(!used)
+			{
+				// this distribution wasn't used... remove it from the list
+				auto here = dist;
+				if(dist == info.dists.cbegin())
+				{
+					info.dists.erase(here);
+					dist = info.dists.cbegin();
+				}
+				else
+				{
+					++dist;
+					info.dists.erase(here);
+				}
+			}
+			else
+				++dist;
+		}
 	}
 
 	// add any submodels
-	for(auto submodelinfo : info.submodels)
+	for(auto &submodelinfo : info.submodels)
 	{
 		shared_ptr<molstat::SimulateModel> submodel{ nullptr };
 
 		// create the submodel
 		try
 		{
-			submodel = constructModel(models, submodelinfo);
+			submodel = constructModel(output, models, submodelinfo);
 
 			// add the submodel
 			try
@@ -335,12 +363,12 @@ std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
 			}
 			catch(const exception &e)
 			{
-				cout << "Error: " << e.what() << endl;
+				output << "Error: " << e.what() << endl;
 			}
 		}
 		catch(const exception &e)
 		{
-			cout << "Error: " << e.what() << endl;
+			output << "Error: " << e.what() << endl;
 		}
 	}
 
@@ -368,7 +396,11 @@ std::string SimulatorInputParse::ModelInformation::to_string() const
 {
 	// first put in the name
 	string ret{ name };
-	ret += "\n   Distributions:";
+	ret += "\n   " + std::to_string(dists.size()) + " Distribution";
+	if(dists.size() != 1)
+		ret += 's';
+	if(dists.size() > 0)
+		ret += ':';
 
 	// load in the distributions
 	for(auto dist : dists)

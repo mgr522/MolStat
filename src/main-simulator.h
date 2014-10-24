@@ -125,10 +125,12 @@ private:
 	 *    deck (notably, a lack of "endmodel" before EOF).
 	 *
 	 * \param[in,out] input The input stream.
+	 * \param[in,out] output Output stream for any error messages.
 	 * \param[in,out] lineno The input line number.
 	 * \return The model information, save for the name of the model type.
 	 */
-	static ModelInformation readModel(std::istream &input, std::size_t &lineno);
+	static ModelInformation readModel(std::istream &input, std::ostream &output,
+		std::size_t &lineno);
 
 	/**
 	 * \brief Constructs a model from the
@@ -136,14 +138,16 @@ private:
 	 *
 	 * \throw std::exception if the model cannot be constructed.
 	 *
+	 * \param[in,out] output Output stream for any error messages.
 	 * \param[in] models Map of available models.
 	 * \param[in] info The model information from the input deck.
 	 * \return The constructed model.
 	 */
 	static std::shared_ptr<molstat::SimulateModel> constructModel(
+		std::ostream &output,
 		const std::map<std::string,
 		               molstat::SimulateModelFactoryFunction> &models,
-		const ModelInformation &info);
+		ModelInformation &info);
 
 public:
 	/**
@@ -158,19 +162,24 @@ public:
 	 *    deck.
 	 *
 	 * \param[in,out] input The input stream containing the input deck.
+	 * \param[in,out] output Output stream for any error messages.
 	 */
-	void readInput(std::istream &input);
+	void readInput(std::istream &input, std::ostream &output);
 
 	/**
 	 * \brief Processes the input to actually instantiate models and the
 	 *    simulator.
 	 *
+	 * This function may change the state of the input parser if certain
+	 * aspects of the input data are invalid, incomplete, etc.
+	 *
 	 * \throw exception if any exceptions from the molstat::Simulator or
 	 *    molstat::SimulateModel functions is thrown.
 	 *
+	 * \param[in,out] output Output stream for any error messages.
 	 * \return The simulator.
 	 */
-	std::unique_ptr<molstat::Simulator> createSimulator();
+	std::unique_ptr<molstat::Simulator> createSimulator(std::ostream &output);
 
 	/**
 	 * \brief Gets the number of trials.

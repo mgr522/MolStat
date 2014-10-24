@@ -51,19 +51,30 @@ int main(int argc, char **argv)
 	SimulatorInputParse parser;
 	try
 	{
-		parser.readInput(cin);
+		parser.readInput(cin, cout);
 	}
 	catch(const runtime_error &e)
 	{
 		cout << "FATAL ERROR: " << e.what() << endl;
 		return 0;
 	}
-	
+
+	// for debugging purposes, we may want to print the state here
+	// parser.printState(cout);
+
+	// readInput did some checking (syntax of input file, etc.), but is
+	// incomplete... no verifying model names are correct, all observables
+	// and binning styles are specified, etc.
+
+	// need to finish processing input
+
 	// create the simulator
+	// this will make sure model names are good, all distributions are
+	// specified, etc.
 	unique_ptr<molstat::Simulator> sim{ nullptr };
 	try
 	{
-		sim = parser.createSimulator();
+		sim = parser.createSimulator(cout);
 	}
 	catch(const exception &e)
 	{
