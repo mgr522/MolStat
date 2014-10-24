@@ -189,6 +189,14 @@ public:
 	std::size_t numTrials() const noexcept;
 
 	/**
+	 * \brief Reconciles the requested observables with the specified
+	 *    binning styles.
+	 *
+	 * Prunes indices that do not have both specified.
+	 */
+	void reconcileObservablesAndBinStyles();
+
+	/**
 	 * \internal
 	 * \brief Prints the state of the input parser.
 	 *
@@ -199,50 +207,5 @@ public:
 	 */
 	void printState(std::ostream &output) const;
 };
-
-#if 0
-/**
- * \brief Gets a molstat::SimulateModel from the tokens.
- *
- * The command for making a model is multi-line; this function has input loop
- * similar to that of ::processInput.
- *
- * The list of tokens is destroyed in this function.
- *
- * \throw std::runtime_error if
- *    - no model name is specified,
- *    - the model name is not found,
- *    - EOF is encountered while reading the model's command block.
- *
- * \param[in] tokens The list of tokens for the first line of the model command.
- * \param[in] input The input stream.
- * \param[in] models The list of available models (stored as a map from string
- *    to a function that facilitates model creation).
- * \return The constructed model.
- */
-std::shared_ptr<molstat::SimulateModel> processModel(
-	std::queue<std::string> &&tokens,
-	std::istream &input,
-	const std::map<std::string,
-	               molstat::SimulateModelFactoryFunction> &models);
-
-/**
- * \brief Gets an observable from a list of tokens.
- *
- * The list of tokens is destroyed in this function.
- *
- * \throw std::runtime_error if the token cannot be matched to an observable or
- *    a name was not specified (too few tokens).
- *
- * \param[in] tokens The list of tokens.
- * \param[in] observables The list of observables (stored as a map from
- *    string to ObservableIndex).
- * \return The observable.
- */
-molstat::ObservableIndex processObservable(
-	std::queue<std::string> &&tokens,
-	const std::map<std::string,
-	               molstat::ObservableIndex> &observables);
-#endif
 
 #endif

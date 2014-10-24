@@ -348,7 +348,7 @@ std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
 				// create the submodel
 				shared_ptr<molstat::SimulateModel> submodel 
 					{ constructModel(output, models, *submodel_iter) };
-					
+
 				// add the submodel
 				factory.addSubmodel(submodel);
 
@@ -385,6 +385,48 @@ std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
 std::size_t SimulatorInputParse::numTrials() const noexcept
 {
 	return trials;
+}
+
+void SimulatorInputParse::reconcileObservablesAndBinStyles()
+{
+	auto bin_iter = bin_styles.begin();
+	auto obs_iter = used_observables.begin();
+	while(bin_iter != bin_styles.end() && obs_iter != used_observables.end())
+	{
+		if(bin_iter->first == obs_iter->first)
+		{
+			// indices match, so we're good
+			++bin_iter;
+			++obs_iter;
+		}
+		else if(bin_iter->first < obs_iter->first)
+		{
+			// bin_iter has items obs_iter doesn't... advance bin_iter
+			auto here = bin_iter;
+			do
+			{
+				++bin_iter;
+			} while(bin_iter->first < obs_iter->first);
+			bin_styles.erase(here, bin_iter);
+		}
+		else if(obs_iter->first < bin_iter->first)
+		{
+			// obs_iter has items obs_iter doesn't... advance obs_iter
+			auto here = obs_iter;
+			do
+			{
+				++obs_iter;
+			} while(obs_iter->first < bin_iter->first);
+			used_observables.erase(here, obs_iter);
+		}
+	}
+
+	// at least one of the sequences has reached the end, check to make sure
+	// both have
+	if(obs_iter == used_observables.end() && bin_iter != bin_styles.end())
+		bin_styles.erase(bin_iter, bin_styles.end());
+	else if(obs_iter != used_observables.end() && bin_iter == bin_styles.end())
+		used_observables.erase(obs_iter, used_observables.end());
 }
 
 std::string SimulatorInputParse::ModelInformation::to_string() const

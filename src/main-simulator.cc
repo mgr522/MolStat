@@ -67,6 +67,16 @@ int main(int argc, char **argv)
 	// and binning styles are specified, etc.
 
 	// need to finish processing input
+	// check the number of trials
+	const size_t ntrials{ parser.numTrials() };
+	if(ntrials == 0)
+	{
+		cout << "FATAL ERROR: There must be at least one trial." << endl;
+		return 0;
+	}
+
+	// prune observables and/or binning styles that lack the other
+	parser.reconcileObservablesAndBinStyles();
 
 	// create the simulator
 	// this will make sure model names are good, all distributions are
