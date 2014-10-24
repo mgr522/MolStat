@@ -321,54 +321,49 @@ std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
 
 	// set the distributions, removing any distributions that aren't used
 	{
-		auto dist = info.dists.cbegin();
-		while(dist != info.dists.cend())
+		auto dist_iter = info.dists.cbegin();
+		while(dist_iter != info.dists.cend())
 		{
 			bool used;
-			factory.setDistribution(dist->first, dist->second, &used);
+			factory.setDistribution(dist_iter->first, dist_iter->second, &used);
 			if(!used)
 			{
 				// this distribution wasn't used... remove it from the list
-				auto here = dist;
-				if(dist == info.dists.cbegin())
-				{
-					info.dists.erase(here);
-					dist = info.dists.cbegin();
-				}
-				else
-				{
-					++dist;
-					info.dists.erase(here);
-				}
+				auto here = dist_iter;
+				++dist_iter;
+				info.dists.erase(here);
 			}
 			else
-				++dist;
+				++dist_iter;
 		}
 	}
 
-	// add any submodels
-	for(auto &submodelinfo : info.submodels)
+	// add any submodels and remove any that aren't compatible/usable
 	{
-		shared_ptr<molstat::SimulateModel> submodel{ nullptr };
-
-		// create the submodel
-		try
+		auto submodel_iter = info.submodels.begin();
+		while(submodel_iter != info.submodels.end())
 		{
-			submodel = constructModel(output, models, submodelinfo);
+			shared_ptr<molstat::SimulateModel> submodel{ nullptr };
 
-			// add the submodel
 			try
 			{
+				// create the submodel
+				submodel = constructModel(output, models, *submodel_iter);
+				// add the submodel
 				factory.addSubmodel(submodel);
+
+				// advance to the next submodel
+				++submodel_iter;
 			}
 			catch(const exception &e)
 			{
 				output << "Error: " << e.what() << endl;
+
+				// this submodel was unusable... remove it from the information
+				auto here = submodel_iter;
+				++submodel_iter;
+				info.submodels.erase(here);
 			}
-		}
-		catch(const exception &e)
-		{
-			output << "Error: " << e.what() << endl;
 		}
 	}
 
