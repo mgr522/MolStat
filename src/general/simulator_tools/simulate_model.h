@@ -265,10 +265,13 @@ public:
 	 *
 	 * \param[in] name The name of the distribution being added.
 	 * \param[in] dist The distribution being added.
+	 * \param[out] used_dist If specified, true if dist was used,
+	 *    false otherwise. Unused if nullptr.
 	 * \return The factory.
 	 */
 	 SimulateModelFactory &setDistribution(std::string name,
-	 	std::shared_ptr<const RandomDistribution> dist);
+	 	std::shared_ptr<const RandomDistribution> dist,
+	 	bool *used_dist = nullptr);
 
 	 /**
 	  * \brief Adds a submodel to the composite model being constructed.

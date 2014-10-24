@@ -13,20 +13,29 @@
 #include "simulate_model.h"
 #include "simulator_exceptions.h"
 
-namespace molstat {
+namespace molstat
+{
 
 SimulateModelFactory &SimulateModelFactory::setDistribution(std::string name,
-	std::shared_ptr<const RandomDistribution> dist) {
-
+	std::shared_ptr<const RandomDistribution> dist,
+	bool *used_dist /*= nullptr*/)
+{
 	// set the distribution in the model
 	const std::size_t length = model->get_num_parameters();
 	const std::string lower_name{ to_lower(name) };
 
+	if(used_dist != nullptr)
+		*used_dist = false;
+
 	// find the position of the distribution
-	for(std::size_t pos = 0; pos < length; ++pos) {
-		if(lower_name == to_lower(model_names[pos])) {
-			// found! set the distribution
+	for(std::size_t pos = 0; pos < length; ++pos)
+	{
+		if(lower_name == to_lower(model_names[pos]))
+		{
+			// found! set the distribution and signal that the distribution is used
 			model->dists[pos] = dist;
+			if(used_dist != nullptr)
+				*used_dist = true;
 
 			// check off the name
 			auto spot = remaining_names.find(lower_name);
@@ -39,8 +48,8 @@ SimulateModelFactory &SimulateModelFactory::setDistribution(std::string name,
 }
 
 SimulateModelFactory &SimulateModelFactory::addSubmodel(
-	std::shared_ptr<SimulateModel> submodel_add) {
-
+	std::shared_ptr<SimulateModel> submodel_add)
+{
 	// make sure this is a composite model
 	if(comp_model == nullptr)
 		throw NotCompositeSimulateModel();
@@ -55,7 +64,8 @@ SimulateModelFactory &SimulateModelFactory::addSubmodel(
 	return *this;
 }
 
-std::shared_ptr<SimulateModel> SimulateModelFactory::getModel() {
+std::shared_ptr<SimulateModel> SimulateModelFactory::getModel()
+{
 	// make sure all distributions have been specified
 	if(remaining_names.size() > 0)
 		throw MissingDistribution(*(remaining_names.cbegin()));
