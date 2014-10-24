@@ -343,12 +343,12 @@ std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
 		auto submodel_iter = info.submodels.begin();
 		while(submodel_iter != info.submodels.end())
 		{
-			shared_ptr<molstat::SimulateModel> submodel{ nullptr };
-
 			try
 			{
 				// create the submodel
-				submodel = constructModel(output, models, *submodel_iter);
+				shared_ptr<molstat::SimulateModel> submodel 
+					{ constructModel(output, models, *submodel_iter) };
+					
 				// add the submodel
 				factory.addSubmodel(submodel);
 
