@@ -61,7 +61,16 @@ std::unique_ptr<BinStyle> BinStyleFactory(TokenContainer &&tokens)
 
 		if(tokens.size() > 0)
 		{
-			b = cast_string<double>(tokens.front());
+			try
+			{
+				b = cast_string<double>(tokens.front());
+			}
+			catch(const bad_cast &e)
+			{
+				throw invalid_argument(
+					"Unable to convert the base to a numerical value.");
+			}
+
 			if(b <= 0.)
 				throw invalid_argument("The logarithm base must be positive.");
 		}

@@ -43,7 +43,16 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 				"   constant value\n" \
 				"where value is the value to be returned.");
 
-		const double val = cast_string<double>(tokens.front());
+		double val;
+		try
+		{
+			val = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"value\" to a numeric value.");
+		}
 
 		ret = unique_ptr<RandomDistribution>(new ConstantDistribution(val));
 	}
@@ -56,9 +65,27 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 				"   uniform lower upper\n" \
 				"where lower and upper are the bounds, respectively.");
 
-		const double lower = cast_string<double>(tokens.front());
+		double lower, upper;
+		try
+		{
+			lower = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"lower\" to a numeric value.");
+		}
 		tokens.pop();
-		const double upper = cast_string<double>(tokens.front());
+
+		try
+		{
+			upper = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"upper\" to a numeric value.");
+		}
 
 		if(lower >= upper)
 			throw invalid_argument("Uniform Distribution: The lower bound must " \
@@ -75,9 +102,27 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			throw invalid_argument("Invalid normal distribution. Use\n" \
 				"   normal mean standard-deviation");
 
-		const double mean = cast_string<double>(tokens.front());
+		double mean, stdev;
+		try
+		{
+			mean = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"mean\" to a numeric value.");
+		}
 		tokens.pop();
-		const double stdev = cast_string<double>(tokens.front());
+
+		try
+		{
+			stdev = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"stdev\" to a numeric value.");
+		}
 
 		if(stdev <= 0.)
 			throw invalid_argument("Normal Distribution: The standard deviation" \
@@ -94,9 +139,27 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			throw invalid_argument("Invalid lognormal distribution. Use\n" \
 				"   lognormal zeta sigma");
 
-		const double zeta = cast_string<double>(tokens.front());
+		double zeta, sigma;
+		try
+		{
+			zeta = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"zeta\" to a numeric value.");
+		}
 		tokens.pop();
-		const double sigma = cast_string<double>(tokens.front());
+
+		try
+		{
+			sigma = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"sigma\" to a numeric value.");
+		}
 
 		if(sigma <= 0.)
 			throw invalid_argument("Lognormal Distribution: The standard " \
@@ -112,9 +175,27 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			throw invalid_argument("Invalid gamma distribution. Use\n" \
 				"   gamma shape scale");
 
-		const double shape = cast_string<double>(tokens.front());
+		double shape, scale;
+		try
+		{
+			shape = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"shape\" to a numeric value.");
+		}
 		tokens.pop();
-		const double scale = cast_string<double>(tokens.front());
+
+		try
+		{
+			scale = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"scale\" to a numeric value.");
+		}
 
 		if(shape <= 0. || scale <= 0.)
 			throw invalid_argument("Gamma Distribution: The shape and scale " \
