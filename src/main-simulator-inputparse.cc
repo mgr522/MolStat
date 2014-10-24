@@ -52,36 +52,7 @@ void SimulatorInputParse::readInput(std::istream &input, std::ostream &output)
 		tokens.pop();
 
 		// go through the supported commands
-		if(command == "bin" || command == "bin_x" || command == "bin_y")
-		{
-			// make sure there are tokens, if so, push the tokens
-			if(tokens.size() == 0)
-			{
-				printError(output, lineno,
-					"No binning information specified.");
-			}
-			else
-			{
-				// construct the binning style
-				try
-				{
-					shared_ptr<molstat::BinStyle> binstyle
-						{ molstat::BinStyleFactory(move(tokens)) };
-
-					if(command == "bin_y")
-						bin_styles[1] = binstyle;
-					else
-						bin_styles[0] = binstyle;
-				}
-				catch(const invalid_argument &e)
-				{
-					// indent the error message
-					printError(output, lineno,
-						molstat::find_replace(e.what(), "\n", "\n   "));
-				}
-			}
-		}
-		else if(command == "model")
+		if(command == "model")
 		{
 			// the total lineno needs to be passed to the model reader
 			const size_t mylineno{ lineno };
@@ -107,17 +78,36 @@ void SimulatorInputParse::readInput(std::istream &input, std::ostream &output)
 		else if(command == "observable" || command == "observable_x" ||
 			command == "observable_y")
 		{
-			// make sure we have a name for the observable
-			if(tokens.size() == 0)
+			// make sure we have a name for the observable, the number of bins,
+			// and (at least) the name of the binning style
+			if(tokens.size() < 3)
 			{
-				printError(output, lineno, "No observable specified.");
+				printError(output, lineno, "No observable, number of bins, " \
+					"and/or binning style specified.");
 			}
 			else {
 				// store the name of the observable for later
-				if(command == "observable_y")
-					used_observables[1] = molstat::to_lower(tokens.front());
-				else
-					used_observables[0] = molstat::to_lower(tokens.front());
+				string obsname = molstat::to_lower(tokens.front());
+				tokens.pop();
+
+				// construct the binning style
+				try
+				{
+					shared_ptr<molstat::BinStyle> binstyle
+						{ molstat::BinStyleFactory(move(tokens)) };
+
+					// store the observable name and binning style
+					if(command == "observable_y")
+						obs_bins.emplace(1, make_pair(obsname, binstyle));
+					else
+						obs_bins.emplace(0, make_pair(obsname, binstyle));
+				}
+				catch(const invalid_argument &e)
+				{
+					// indent the error message
+					printError(output, lineno,
+						molstat::find_replace(e.what(), "\n", "\n   "));
+				}
 			}
 		}
 		else if(command == "output")
@@ -286,21 +276,42 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator(
 	unique_ptr<molstat::Simulator> sim{ new molstat::Simulator(model) };
 
 	// set the observables
-	for(const auto obs : used_observables)
+	auto obs_iter = obs_bins.begin();
+	while(obs_iter != obs_bins.end())
 	{
+		// flag for a successful set of the observable
+		bool good_set{ false };
+
 		try
 		{
-			auto obsindex = observables.at(obs.second);
-			sim->setObservable(obs.first, obsindex);
+			// get the index
+			auto obsindex = observables.at(obs_iter->second.first);
+			try
+			{
+				// set the index
+				sim->setObservable(obs_iter->first, obsindex);
+				good_set = true;
+			}
+			catch(const exception &e) // problem setting the observable
+			{
+				output << "Error setting observable " << obs_iter->first <<
+					".\n   " << e.what() << endl;
+			}
 		}
-		catch(const out_of_range &e)
+		catch(const out_of_range &e) // index not found
 		{
-			output << "Unknown observable: \"" << obs.second << "\"." << endl;
+			output << "Unknown observable: \"" << obs_iter->second.first << "\"."
+				<< endl;
 		}
-		catch(const logic_error &e)
+
+		if(good_set)
+			++obs_iter;
+		else // couldn't set the observable
 		{
-			output << "Error setting observable " << obs.first << ".\n   " <<
-				e.what() << endl;
+			// remove the observable from the list
+			auto obs_here = obs_iter;
+			++obs_iter;
+			obs_bins.erase(obs_here);
 		}
 	}
 
@@ -387,48 +398,6 @@ std::size_t SimulatorInputParse::numTrials() const noexcept
 	return trials;
 }
 
-void SimulatorInputParse::reconcileObservablesAndBinStyles()
-{
-	auto bin_iter = bin_styles.begin();
-	auto obs_iter = used_observables.begin();
-	while(bin_iter != bin_styles.end() && obs_iter != used_observables.end())
-	{
-		if(bin_iter->first == obs_iter->first)
-		{
-			// indices match, so we're good
-			++bin_iter;
-			++obs_iter;
-		}
-		else if(bin_iter->first < obs_iter->first)
-		{
-			// bin_iter has items obs_iter doesn't... advance bin_iter
-			auto here = bin_iter;
-			do
-			{
-				++bin_iter;
-			} while(bin_iter->first < obs_iter->first);
-			bin_styles.erase(here, bin_iter);
-		}
-		else if(obs_iter->first < bin_iter->first)
-		{
-			// obs_iter has items obs_iter doesn't... advance obs_iter
-			auto here = obs_iter;
-			do
-			{
-				++obs_iter;
-			} while(obs_iter->first < bin_iter->first);
-			used_observables.erase(here, obs_iter);
-		}
-	}
-
-	// at least one of the sequences has reached the end, check to make sure
-	// both have
-	if(obs_iter == used_observables.end() && bin_iter != bin_styles.end())
-		bin_styles.erase(bin_iter, bin_styles.end());
-	else if(obs_iter != used_observables.end() && bin_iter == bin_styles.end())
-		used_observables.erase(obs_iter, used_observables.end());
-}
-
 std::string SimulatorInputParse::ModelInformation::to_string() const
 {
 	// first put in the name
@@ -463,34 +432,10 @@ void SimulatorInputParse::printState(std::ostream &output) const
 
 	output << "Observables:\n";
 	{
-		auto bin_iter = bin_styles.cbegin();
-		auto obs_iter = used_observables.cbegin();
-		while(bin_iter != bin_styles.cend() ||
-			obs_iter != used_observables.cend())
+		for(auto obs_bin : obs_bins)
 		{
-			if(bin_iter == bin_styles.cend() || obs_iter->first < bin_iter->first)
-			{
-				// observable specified but not binning style
-				output << obs_iter->first << " -> " << obs_iter->second <<
-					" (no binning information)\n";
-				++obs_iter;
-			}
-			else if(obs_iter == used_observables.cend() ||
-				bin_iter->first < obs_iter->first)
-			{
-				// bin specified but not observable
-				output << bin_iter->first << " -> <missing observable> (" <<
-					bin_iter->second->info() << ")\n";
-				++bin_iter;
-			}
-			else /*if(obs_iter->first == bin_iter->first)*/
-			{
-				// same index
-				output << obs_iter->first << " -> " << obs_iter->second <<
-					" (" << bin_iter->second->info() << ")\n";
-				++obs_iter;
-				++bin_iter;
-			}
+			output << obs_bin.first << " -> " << obs_bin.second.first <<
+				" (" << obs_bin.second.second->info() << ")\n";
 		}
 	}
 	output << '\n';

@@ -75,9 +75,6 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
-	// prune observables and/or binning styles that lack the other
-	parser.reconcileObservablesAndBinStyles();
-
 	// create the simulator
 	// this will make sure model names are good, all distributions are
 	// specified, etc.

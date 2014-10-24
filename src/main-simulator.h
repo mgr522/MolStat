@@ -89,14 +89,12 @@ private:
 	ModelInformation top_model;
 
 	/**
-	 * \brief Map of observable index (axis) to the observable name.
+	 * \brief Map of observable index (axis) to a pair of observable name
+	 *    and the binning style.
 	 */
-	std::map<std::size_t, std::string> used_observables;
-
-	/**
-	 * \brief Map of observable index (axis) to the binning style tokens.
-	 */
-	std::map<std::size_t, std::shared_ptr<molstat::BinStyle>> bin_styles;
+	std::map<std::size_t,
+	         std::pair<std::string, std::shared_ptr<molstat::BinStyle>>>
+		obs_bins;
 
 	/**
 	 * \brief File name for the histogram output.
@@ -187,14 +185,6 @@ public:
 	 * \return The number of trials.
 	 */
 	std::size_t numTrials() const noexcept;
-
-	/**
-	 * \brief Reconciles the requested observables with the specified
-	 *    binning styles.
-	 *
-	 * Prunes indices that do not have both specified.
-	 */
-	void reconcileObservablesAndBinStyles();
 
 	/**
 	 * \internal
