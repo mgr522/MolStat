@@ -187,6 +187,9 @@ int main(int argc, char **argv)
 	ci.setIndex(2, 1);
 	testIndex(ci, {0, 0, 1, 0}, 3);
 
+	max[0] = 2; // make sure the index doesn't rely on the original size array
+	testIndex(ci, {0, 0, 1, 0}, 3);
+
 	return 0;
 }
 

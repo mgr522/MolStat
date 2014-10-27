@@ -12,6 +12,7 @@
 #include "histogram.h"
 #include "bin_style.h"
 #include <limits>
+#include "counterindex.h"
 
 namespace molstat {
 
@@ -91,11 +92,48 @@ void Histogram::bin_data(
 
 	// set the size of binned_data vector
 	binned_data.resize(total_bins);
+	for(std::size_t j = 0; j < total_bins; ++j)
+		binned_data[j] = 0.;
 
 	// set up the indexor for accesing the bins in binned_data
-	std::valarray<std::size_t> max_indices(ndim);
+	std::vector<std::size_t> index(ndim);
 	for(std::size_t j = 0; j < ndim; ++j)
-		max_indices[j] = binstyles[j]->nbins;
+		index[j] = binstyles[j]->nbins;
+	CounterIndex ci{ index };
+
+	// go through the data
+	while(!data.empty())
+	{
+		for(std::size_t j = 0; j < ndim; ++j)
+		{
+			// convert each value to the masked space
+			double element = binstyles[j]->mask(data.front()[j]);
+
+			// figure out which bin for this dimension
+			if(binstyles[j]->nbins == 1)
+				ci.setIndex(j, 0);
+			else
+				ci.setIndex(j, static_cast<std::size_t>(
+					(element - bounds[j][0]) / bounds[j][2]
+				));
+		}
+
+		// increase the bin count
+		binned_data[ci.arrayOffset()] += 1.;
+
+		// discard this data point
+		data.pop_front();
+	}
+
+	// apply the weight function to account for the bin sizes
+	for(ci.reset(); !ci.at_end(); ++ci)
+	{
+		for(std::size_t j = 0; j < ndim; ++j)
+		{
+			binned_data[ci.arrayOffset()] *= binstyles[j]->dmaskdx(
+				bin_value[j][ci[j]]);
+		}
+	}
 }
 
 std::vector<double> Histogram::bin_values(double dmin, double dmax,
