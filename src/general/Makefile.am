@@ -24,6 +24,8 @@ libmolstat_general_a_SOURCES = string_tools.h \
 	random_distributions/gamma.cc \
 	fitter_tools/fit_model_interface.h \
 	fitter_tools/fit_model_interface.cc \
+	histogram_tools/counterindex.h \
+	histogram_tools/counterindex.cc \
 	histogram_tools/bin_style.h \
 	histogram_tools/bin_style.cc \
 	histogram_tools/bin_linear.h \
