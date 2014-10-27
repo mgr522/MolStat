@@ -15,6 +15,8 @@
 
 #include <vector>
 
+namespace molstat {
+
 class CounterIndex
 {
 private:
@@ -36,6 +38,8 @@ public:
 	 *
 	 * A similar constructor that moves the indices (given a rvalue) could also
 	 * be implemented, but the length of these arrays is expected to be small.
+	 *
+	 * \throw std::invalid_argument if one of the max indices is 0.
 	 *
 	 * \param[in] max_index_ The maximum indices.
 	 */
@@ -89,5 +93,7 @@ public:
 	 */
 	std::size_t arrayOffset() const;
 };
+
+} // namespace molstat
 
 #endif

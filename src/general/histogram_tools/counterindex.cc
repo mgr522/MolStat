@@ -13,10 +13,17 @@
 #include "counterindex.h"
 #include <string>
 
+namespace molstat {
+
 CounterIndex::CounterIndex(const std::vector<std::size_t> &max_index_)
 	: max_index(max_index_), index(max_index_.size() + 1, 0)
 	// note: add 1 dimension to index to store the "at end" bit
-{}
+{
+	// check for 0 indices
+	for(std::size_t j = 0; j < max_index.size(); ++j)
+		if(max_index[j] == 0)
+			throw std::invalid_argument("0 max index detected.");
+}
 
 CounterIndex CounterIndex::operator++()
 {
@@ -93,3 +100,5 @@ std::size_t CounterIndex::arrayOffset() const
 
 	return ret;
 }
+
+} // namespace molstat
