@@ -12,7 +12,6 @@
 #include "histogram.h"
 #include "bin_style.h"
 #include <limits>
-#include "counterindex.h"
 
 namespace molstat {
 
@@ -20,7 +19,7 @@ Histogram::Histogram(std::size_t ndim_)
 	: haveBinned(false), ndim(ndim_), data(),
 	  extremes(ndim_, {{std::numeric_limits<double>::max(),
 	                    std::numeric_limits<double>::lowest()}}),
-	  bin_value(0), binned_data(0)
+	  nbin_dim(ndim_, 0), bin_value(0), binned_data(0)
 {
 }
 
@@ -96,10 +95,10 @@ void Histogram::bin_data(
 		binned_data[j] = 0.;
 
 	// set up the indexor for accesing the bins in binned_data
-	std::vector<std::size_t> index(ndim);
+	// -> need to get the number of bins in each dimension
 	for(std::size_t j = 0; j < ndim; ++j)
-		index[j] = binstyles[j]->nbins;
-	CounterIndex ci{ index };
+		nbin_dim[j] = binstyles[j]->nbins;
+	CounterIndex ci{ nbin_dim };
 
 	// go through the data
 	while(!data.empty())
@@ -154,28 +153,26 @@ std::vector<double> Histogram::bin_values(double dmin, double dmax,
 	return ret;
 }
 
-#if 0
-template<std::size_t N>
-Histogram<N>::const_iterator::const_iterator(
-	const std::shared_ptr<const BinStyle> bstyle_)
-	: bincount(0), bstyle(bstyle_) {
-
-	for(std::size_t i = 0; i < N; ++i) {
-		bin[i] = 0;
-		val[i] = 0.;
-	}
-}
-
-template<std::size_t N>
-const std::array<double, N> &Histogram<N>::const_iterator::get_variable() const
+CounterIndex Histogram::begin() const
 {
-	return val;
+	return CounterIndex(nbin_dim);
 }
 
-template<std::size_t N>
-double Histogram<N>::const_iterator::get_bin_count() const {
-	return bincount;
+std::valarray<double> Histogram::getCoordinates(const CounterIndex &index)
+	const
+{
+	std::valarray<double> ret(ndim);
+
+	// set the coordinate for each dimension
+	for(std::size_t j = 0; j < ndim; ++j)
+		ret[j] = bin_value[j][index[j]];
+
+	return ret;
 }
-#endif
+
+double Histogram::getBinCount(const CounterIndex &index) const
+{
+	return binned_data[index.arrayOffset()];
+}
 
 } // namespace molstat

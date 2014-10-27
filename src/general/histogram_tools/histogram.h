@@ -17,6 +17,7 @@
 #include <vector>
 #include <forward_list>
 #include <array>
+#include "counterindex.h"
 
 namespace molstat {
 
@@ -37,96 +38,8 @@ class BinStyle;
  * maximum values.
  *
  * Histograms of any dimensionality can be constructed.
- *
- * An iterator-style class is provided for iterating through the bins.
  */
 class Histogram {
-#if 0
-public:
-	/**
-	 * \internal
-	 * \brief Iterator class for accessing the histogram bins.
-	 *
-	 * This class needs the inverse mask function for calculating the middle of
-	 * the bin.
-	 * \endinternal
-	 */
-	class const_iterator {
-	protected:
-		/**
-		 * \internal
-		 * \brief The bin index.
-		 * \endinternal
-		 */
-		std::valarray<size_t> bin;
-
-		/**
-		 * \internal
-		 * \brief The value of the variable(s) in the middle of this bin.
-		 * \endinternal
-		 */
-		std::valarray<double> val;
-
-		/**
-		 * \internal
-		 * \brief The bin count of this bin.
-		 * \endinternal
-		 */
-		double bincount;
-
-		/**
-		 * \internal
-		 * \brief The binning styles.
-		 * \endinternal
-		 */
-		std::vector<std::shared_ptr<const BinStyle>> bstyles;
-
-		/**
-		 * \internal
-		 * \brief Advances the values of bin to the next bin.
-		 * \endinternal
-		 */
-		void next_bin();
-
-		/**
-		 * \internal
-		 * \brief Sets the output values for this bin.
-		 * \endinternal
-		 */
-		void set_output();
-
-	public:
-		const_iterator() = delete;
-
-		/**
-		 * \internal
-		 * \brief Constructor specifying the binning style for each axis.
-		 *
-		 * \param[in] bstyle_ The binning style.
-		 * \endinternal
-		 */
-		const_iterator(const std::shared_ptr<const BinStyle> bstyle_);
-
-		/**
-		 * \internal
-		 * \brief Get the value of the variable in the middle of this bin.
-		 *
-		 * \return The value of the variable in the middle of this bin.
-		 * \endinternal
-		 */
-		const std::valarray<double> &get_variable() const;
-
-		/**
-		 * \internal
-		 * \brief Get the bin count of this bin.
-		 *
-		 * \return The bin count of this bin.
-		 * \endinternal
-		 */
-		double get_bin_count() const;
-	};
-#endif
-
 private:
 	/**
 	 * \brief State of the histogram.
@@ -149,6 +62,11 @@ private:
 	 * \brief The minimum and maximum values in each dimension.
 	 */
 	std::vector<std::array<double, 2>> extremes;
+
+	/**
+	 * \brief The number of bins in each dimension.
+	 */
+	std::vector<std::size_t> nbin_dim;
 
 	/**
 	 * \brief The middle of each bin.
@@ -207,6 +125,30 @@ public:
 	 */
 	void bin_data(
 		const std::vector<std::shared_ptr<const BinStyle>> &binstyles);
+
+	/**
+	 * \brief Gets an index that iterates over all the bins.
+	 *
+	 * \return The iterator.
+	 */
+	CounterIndex begin() const;
+
+	/**
+	 * \brief Returns the coordinates (the values of the variables in the middle
+	 *    of a bin) for the given bin.
+	 *
+	 * \param[in] index The index of the bin.
+	 * \return The coordinates of the bin.
+	 */
+	std::valarray<double> getCoordinates(const CounterIndex &index) const;
+
+	/**
+	 * \brief Returns the bin count for the given bin.
+	 *
+	 * \param[in] index The index of the bin.
+	 * \return The bin count of the bin.
+	 */
+	double getBinCount(const CounterIndex &index) const;
 };
 
 } // namespace molstat
