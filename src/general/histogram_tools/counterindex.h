@@ -55,8 +55,9 @@ public:
 	/**
 	 * \brief Set the index for a specified dimension.
 	 *
-	 * \throw std::out_of_range if an invalid dimension is specified or if the
-	 *    new index is out of range within its dimension.
+	 * \throw std::out_of_range if an invalid dimension is specified, if the new
+	 *    index is out of range within its dimension, or if the object is at the
+	 *    end.
 	 *
 	 * \param[in] dim The dimension to acces.
 	 * \param[in] val The new index within the dimension.
@@ -66,7 +67,8 @@ public:
 	/**
 	 * \brief Access the index for a specified dimension.
 	 *
-	 * \throw std::out_of_range if an invalid dimension is specified.
+	 * \throw std::out_of_range if an invalid dimension is specified or if the
+	 *    molstat::CounterIndex is at its end.
 	 *
 	 * \param[in] dim The dimension to access.
 	 * \return The index in dimension `dim`.

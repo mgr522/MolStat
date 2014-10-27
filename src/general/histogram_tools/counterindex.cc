@@ -48,6 +48,9 @@ CounterIndex CounterIndex::operator++()
 
 void CounterIndex::setIndex(const std::size_t dim, const std::size_t val)
 {
+	if(at_end())
+		throw std::out_of_range("CounterIndex is at the end: cannot set.");
+
 	// make sure the index is in range
 	try
 	{
@@ -67,6 +70,10 @@ void CounterIndex::setIndex(const std::size_t dim, const std::size_t val)
 
 std::size_t CounterIndex::operator[] (const std::size_t dim) const
 {
+	if(at_end())
+		throw std::out_of_range("CounterIndex is at teh end: [] operator " \
+			"invalid.");
+	
 	// at will throw the out_of_range, if necessary
 	return index.at(dim);
 }
@@ -93,7 +100,7 @@ std::size_t CounterIndex::arrayOffset() const
 
 	// -2 in the initialization -- remember, there's an extra value for the "at
 	// end" index
-	for(int j = index.size() - 2; j >= 0; ++j)
+	for(int j = index.size() - 2; j >= 0; --j)
 	{
 		ret = max_index[j] * ret + index[j];
 	}
