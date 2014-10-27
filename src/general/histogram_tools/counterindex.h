@@ -78,6 +78,16 @@ public:
 	 * \brief Returns true if this counter is at the end (no more `++`).
 	 */
 	bool at_end() const;
+
+	/**
+	 * \brief Gets an 1-D array offset for this index.
+	 *
+	 * \throw std::out_of_range if this index is at the end (and is not a valid
+	 *    index).
+	 *
+	 * \return The 1-D array offset.
+	 */
+	std::size_t arrayOffset() const;
 };
 
 #endif

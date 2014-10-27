@@ -76,3 +76,20 @@ bool CounterIndex::at_end() const
 	// the last element of index is a "end" marker.
 	return index[index.size() - 1] != 0;
 }
+
+std::size_t CounterIndex::arrayOffset() const
+{
+	if(at_end())
+		throw std::out_of_range("No offset for an index at the end.");
+
+	std::size_t ret{ 0 };
+
+	// -2 in the initialization -- remember, there's an extra value for the "at
+	// end" index
+	for(int j = index.size() - 2; j >= 0; ++j)
+	{
+		ret = max_index[j] * ret + index[j];
+	}
+
+	return ret;
+}
