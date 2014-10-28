@@ -15,16 +15,14 @@
  */
 
 #include <stdexcept>
-#include <functional>
 #include <cmath>
-#include <forward_list>
 #include <valarray>
-#include <limits>
+#include <iostream>
+#include <fstream>
 
 #include <general/string_tools.h>
 #include <general/random_distributions/rng.h>
-#include <general/histogram_tools/histogram1d.h>
-#include <general/histogram_tools/histogram2d.h>
+#include <general/histogram_tools/histogram.h>
 
 #include "main-simulator.h"
 
@@ -89,46 +87,35 @@ int main(int argc, char **argv)
 		return 0;
 	}
 
+	// open the output file
+	ofstream histout(parser.outputFileName());
+	if(!histout)
+	{
+		cout << "FATAL ERROR: Unable to open \"" << parser.outputFileName() <<
+			"\" for output." << endl;
+		return 0;
+	}
+
 	// print the simulator information
 	parser.printState(cout);
 
-#if 0
 	// initialize the GSL random number generator
 	gsl_rng_env_setup();
 	molstat::gsl_rng_ptr r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
 	//gsl_rng_set(r.get(), 0xFEEDFACE); // use this line for debugging
 	gsl_rng_set(r.get(), time(nullptr));
 
-	// simulation variables
-	size_t nbin, i;
-	shared_ptr<molstat::BinStyle> bstyle;
-
-	// variables for setting up the histograms / storing the random data
-	array<double, 2>
-		mins{{numeric_limits<double>::max(), numeric_limits<double>::max()}},
-		maxs{{-numeric_limits<double>::max(), -numeric_limits<double>::max()}};
-	forward_list<array<double, 2>> data;
+	// create the histogram object
+	molstat::Histogram hist(2);
 
 	// Get the requested number of samples
-	for (i = 0; i < ntrials; ++i) {
-		array<double, 2> datum;
-
-		datum = observable(r);
-
-		// check the limits
-		if(datum[0] < mins[0])
-			mins[0] = datum[0];
-		if(datum[0] > maxs[0])
-			maxs[0] = datum[0];
-		if(datum[1] < mins[1])
-			mins[1] = datum[1];
-		if(datum[1] > maxs[1])
-			maxs[1] = datum[1];
-
+	for (size_t j = 0; j < ntrials; ++j)
+	{
 		// add the data to the list
-		data.emplace_front(datum);
+		hist.add_data(sim->simulate(r));
 	}
 
+#if 0
 	// histogram variables
 	HistogramType htype;
 	unique_ptr<molstat::Histogram1D> hist1;
@@ -207,5 +194,7 @@ int main(int argc, char **argv)
 	}
 
 #endif
+	histout.close();
+
 	return 0;
 }

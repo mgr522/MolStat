@@ -447,3 +447,8 @@ void SimulatorInputParse::printState(std::ostream &output) const
 
 	output << "Histogram Output File: " << histfilename << '\n';
 }
+
+std::string SimulatorInputParse::outputFileName() const
+{
+	return histfilename;
+}

@@ -196,6 +196,13 @@ public:
 	 * \endinteral
 	 */
 	void printState(std::ostream &output) const;
+
+	/**
+	 * \brief Returns the name of the output file.
+	 *
+	 * \return The name of the output file.
+	 */
+	std::string outputFileName() const;
 };
 
 #endif
