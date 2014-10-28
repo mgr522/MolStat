@@ -207,9 +207,10 @@ int main(int argc, char **argv) {
 		hist2.bin_data({ bstyle });
 		assert(false);
 	}
-	catch(const runtime_error &e)
+	catch(const size_t &dim)
 	{
 		// should be here
+		assert(dim == 0);
 	}
 
 	bstyle = make_shared<molstat::BinLinear>(1);

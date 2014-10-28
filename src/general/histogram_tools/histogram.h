@@ -118,8 +118,11 @@ public:
 	 *
 	 * \throw std::invalid_argument if the number of binning styles doesn't
 	 *    match the dimensionality of the data.
-	 * \throw std::runtime_error if one dimension does not have a range of
-	 *    values and more than one bin is requested.
+	 * \throw std::runtime_error if the histogram has already been binned, if
+	 *    one dimension doesn't specify a binning style, or if one dimension
+	 *    uses a binning style with 0 bins.
+	 * \throw std::size_t if a dimenion (its index is thrown) has a null data
+	 *    range (all values are the same) and more than one bin is requested.
 	 *
 	 * \param[in] binstyles The binning styles.
 	 */

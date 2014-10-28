@@ -68,8 +68,7 @@ void Histogram::bin_data(
 				"There must be at least 1 bin in every dimension.");
 
 		if(extremes[j][0] == extremes[j][1] && binstyles[j]->nbins != 1)
-			throw std::runtime_error("Unable to bin data with >1 bins in " \
-				"dimension" + std::to_string(j) + ".");
+			throw j;
 
 		total_bins *= binstyles[j]->nbins;
 	}

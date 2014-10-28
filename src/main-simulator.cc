@@ -24,6 +24,7 @@
 #include <general/random_distributions/rng.h>
 #include <general/histogram_tools/counterindex.h>
 #include <general/histogram_tools/histogram.h>
+#include <general/histogram_tools/bin_linear.h>
 
 #include "main-simulator.h"
 
@@ -126,8 +127,26 @@ int main(int argc, char **argv)
 	}
 
 	// make the histogram
-	hist.bin_data(bstyles);
-	// DO ERROR CHECKING ----------------------------------------------------
+	// if we encounter a bad dimension -- specifically, one where there is no
+	// range of data (all trials yield the same value) and more than one bin
+	// is specified -- override the binstyle for that dimension and try again
+	bool binned { false };
+	do
+	{
+		try
+		{
+			hist.bin_data(bstyles);
+			binned = true;
+		}
+		catch(const size_t &bad_dim)
+		{
+			// one dimension specified multiple bins and does not have a range of
+			// values
+			cout << "Empty data range in dimension " << bad_dim << "; however, " \
+				"more than 1 bin was requested.\nOnly using 1 bin." << endl;
+			bstyles[bad_dim] = make_shared<const molstat::BinLinear>(1);
+		}
+	} while(!binned);
 
 	// go through the bins
 	molstat::CounterIndex ci { hist.begin() };
@@ -140,6 +159,7 @@ int main(int argc, char **argv)
 		histout << hist.getBinCount(ci) << endl;
 	}
 
+	// close the output stream
 	histout.close();
 
 	return 0;
