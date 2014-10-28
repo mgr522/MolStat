@@ -17,6 +17,7 @@
 #include <general/simulator_tools/simulator_exceptions.h>
 #include <general/random_distributions/rng.h>
 #include <general/histogram_tools/bin_style.h>
+#include <general/simulator_tools/identity_tools.h>
 #include <electron_transport/simulator_models/transport_simulate_module.h>
 
 using namespace std;
@@ -25,6 +26,83 @@ inline void SimulatorInputParse::printError(std::ostream &output,
 	std::size_t lineno, std::string message)
 {
 	output << "Error on line " << setw(2) << lineno << ": " << message << endl;
+}
+
+std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator(
+	std::ostream &output)
+{
+	// the map of model instantiators
+	map<string, molstat::SimulateModelFactoryFunction> models;
+
+	// the map of observable indexes
+	map<string, molstat::ObservableIndex> observables;
+
+	// load model and observable names
+	// the general syntax for loading models is
+	// models.emplace( molstat::to_lower(name),
+	//                 molstat::GetSimulateModelFactory<model_type>() );
+	//
+	// and likewise for observables,
+	// observables.emplace( molstat::to_lower(name),
+	//                      molstat::GetObservableIndex<observable_type>() );
+	models.emplace( molstat::to_lower("IdentityModel"),
+		molstat::GetSimulateModelFactory<molstat::IdentityModel>() );
+	observables.emplace( molstat::to_lower("Identity"),
+		molstat::GetObservableIndex<molstat::IdentityObservable>() );
+
+	// load transport models
+	molstat::transport::load_models(models);
+	molstat::transport::load_observables(observables);
+
+	// make the model
+	// if there are exceptions, let them pass up to the caller
+	shared_ptr<molstat::SimulateModel> model
+		{ constructModel(output, models, top_model) };
+	
+	// make the simulator
+	unique_ptr<molstat::Simulator> sim{ new molstat::Simulator(model) };
+
+	// set the observables
+	auto obs_iter = obs_bins.begin();
+	while(obs_iter != obs_bins.end())
+	{
+		// flag for a successful set of the observable
+		bool good_set{ false };
+
+		try
+		{
+			// get the index
+			auto obsindex = observables.at(obs_iter->second.first);
+			try
+			{
+				// set the index
+				sim->setObservable(obs_iter->first, obsindex);
+				good_set = true;
+			}
+			catch(const exception &e) // problem setting the observable
+			{
+				output << "Error setting observable " << obs_iter->first <<
+					".\n   " << e.what() << endl;
+			}
+		}
+		catch(const out_of_range &e) // index not found
+		{
+			output << "Unknown observable: \"" << obs_iter->second.first << "\"."
+				<< endl;
+		}
+
+		if(good_set)
+			++obs_iter;
+		else // couldn't set the observable
+		{
+			// remove the observable from the list
+			auto obs_here = obs_iter;
+			++obs_iter;
+			obs_bins.erase(obs_here);
+		}
+	}
+
+	return sim;
 }
 
 void SimulatorInputParse::readInput(std::istream &input, std::ostream &output)
@@ -245,77 +323,6 @@ SimulatorInputParse::ModelInformation SimulatorInputParse::readModel(
 
 	// if we're here, we hit EOF before finding the appropriate endmodel command
 	throw runtime_error("Missing \"endmodel\" command.");
-}
-
-std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator(
-	std::ostream &output)
-{
-	// the map of model instantiators
-	map<string, molstat::SimulateModelFactoryFunction> models;
-
-	// the map of observable indexes
-	map<string, molstat::ObservableIndex> observables;
-
-	// load model and observable names
-	// the general syntax for loading models is
-	// models.emplace( to_lower(name),
-	//                 molstat::GetSimulateModelFactory<model_type>() );
-	//
-	// and likewise for observables,
-	// observables.emplace( to_lower(name),
-	//                      GetObservableIndex<observable_type>() );
-	molstat::transport::load_models(models);
-	molstat::transport::load_observables(observables);
-
-	// make the model
-	// if there are exceptions, let them pass up to the caller
-	shared_ptr<molstat::SimulateModel> model
-		{ constructModel(output, models, top_model) };
-	
-	// make the simulator
-	unique_ptr<molstat::Simulator> sim{ new molstat::Simulator(model) };
-
-	// set the observables
-	auto obs_iter = obs_bins.begin();
-	while(obs_iter != obs_bins.end())
-	{
-		// flag for a successful set of the observable
-		bool good_set{ false };
-
-		try
-		{
-			// get the index
-			auto obsindex = observables.at(obs_iter->second.first);
-			try
-			{
-				// set the index
-				sim->setObservable(obs_iter->first, obsindex);
-				good_set = true;
-			}
-			catch(const exception &e) // problem setting the observable
-			{
-				output << "Error setting observable " << obs_iter->first <<
-					".\n   " << e.what() << endl;
-			}
-		}
-		catch(const out_of_range &e) // index not found
-		{
-			output << "Unknown observable: \"" << obs_iter->second.first << "\"."
-				<< endl;
-		}
-
-		if(good_set)
-			++obs_iter;
-		else // couldn't set the observable
-		{
-			// remove the observable from the list
-			auto obs_here = obs_iter;
-			++obs_iter;
-			obs_bins.erase(obs_here);
-		}
-	}
-
-	return sim;
 }
 
 std::shared_ptr<molstat::SimulateModel> SimulatorInputParse::constructModel(
