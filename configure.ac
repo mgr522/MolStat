@@ -58,6 +58,7 @@ AC_CONFIG_FILES([
 				src/electron_transport/fitter_models/Makefile
 				src/electron_transport/simulator_models/Makefile
 				src/electron_transport/tests/Makefile
+			src/tests/Makefile
 ])
 
 # finish up
