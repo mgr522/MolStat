@@ -109,8 +109,10 @@ void Histogram::bin_data(
 			double element = binstyles[j]->mask(data.front()[j]);
 
 			// figure out which bin for this dimension
-			if(binstyles[j]->nbins == 1)
+			if(binstyles[j]->nbins == 1) // only 1 bin to put it in
 				ci.setIndex(j, 0);
+			else if(element == bounds[j][1]) // the upper bound
+				ci.setIndex(j, nbin_dim[j] - 1);
 			else
 				ci.setIndex(j, static_cast<std::size_t>(
 					(element - bounds[j][0]) / bounds[j][2]
@@ -133,6 +135,9 @@ void Histogram::bin_data(
 				bin_value[j][ci[j]]);
 		}
 	}
+
+	// note that we've finished the binning
+	haveBinned = true;
 }
 
 std::vector<double> Histogram::bin_values(double dmin, double dmax,
@@ -155,12 +160,18 @@ std::vector<double> Histogram::bin_values(double dmin, double dmax,
 
 CounterIndex Histogram::begin() const
 {
+	if(!haveBinned)
+		throw std::runtime_error("Cannot access an iterator before binning.");
+
 	return CounterIndex(nbin_dim);
 }
 
 std::valarray<double> Histogram::getCoordinates(const CounterIndex &index)
 	const
 {
+	if(!haveBinned)
+		throw std::runtime_error("Cannot get coordinates before binning.");
+
 	std::valarray<double> ret(ndim);
 
 	// set the coordinate for each dimension
@@ -172,6 +183,9 @@ std::valarray<double> Histogram::getCoordinates(const CounterIndex &index)
 
 double Histogram::getBinCount(const CounterIndex &index) const
 {
+	if(!haveBinned)
+		throw std::runtime_error("Cannot get a bin count before binning.");
+
 	return binned_data[index.arrayOffset()];
 }
 

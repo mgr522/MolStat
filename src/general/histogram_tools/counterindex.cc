@@ -71,7 +71,7 @@ void CounterIndex::setIndex(const std::size_t dim, const std::size_t val)
 std::size_t CounterIndex::operator[] (const std::size_t dim) const
 {
 	if(at_end())
-		throw std::out_of_range("CounterIndex is at teh end: [] operator " \
+		throw std::out_of_range("CounterIndex is at the end: [] operator " \
 			"invalid.");
 	
 	// at will throw the out_of_range, if necessary

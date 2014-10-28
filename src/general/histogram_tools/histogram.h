@@ -129,6 +129,8 @@ public:
 	/**
 	 * \brief Gets an index that iterates over all the bins.
 	 *
+	 * \throw std::runtime_error if the data has not yet been binned.
+	 *
 	 * \return The iterator.
 	 */
 	CounterIndex begin() const;
@@ -137,6 +139,8 @@ public:
 	 * \brief Returns the coordinates (the values of the variables in the middle
 	 *    of a bin) for the given bin.
 	 *
+	 * \throw std::runtime_error if the data has not yet been binned.
+	 *
 	 * \param[in] index The index of the bin.
 	 * \return The coordinates of the bin.
 	 */
@@ -144,6 +148,8 @@ public:
 
 	/**
 	 * \brief Returns the bin count for the given bin.
+	 *
+	 * \throw std::runtime_error if the data has not yet been binned.
 	 *
 	 * \param[in] index The index of the bin.
 	 * \return The bin count of the bin.
