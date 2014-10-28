@@ -3,7 +3,8 @@ TESTS = string_tools \
 	counter_index_functionality \
 	histogram1d_linear \
 	histogram1d_log \
-	histogram2d_linear 
+	histogram2d_linear \
+	histogram2d_mixed
 #	histogram2d_log \
 #	simulate_model_interface_direct \
 #	simulate_model_interface_indirect
@@ -13,7 +14,8 @@ check_PROGRAMS = string_tools \
 	counter_index_functionality \
 	histogram1d_linear \
 	histogram1d_log \
-	histogram2d_linear 
+	histogram2d_linear \
+	histogram2d_mixed
 #	histogram2d_log \
 #	simulate_model_interface_direct \
 #	simulate_model_interface_indirect
@@ -35,6 +37,9 @@ histogram1d_log_LDADD = ../libmolstat_general.a
 
 histogram2d_linear_SOURCES = histogram2d_linear.cc
 histogram2d_linear_LDADD = ../libmolstat_general.a
+
+histogram2d_mixed_SOURCES = histogram2d_mixed.cc
+histogram2d_mixed_LDADD = ../libmolstat_general.a
 
 #histogram2d_log_SOURCES = histogram2d_log.cc
 #histogram2d_log_LDADD = ../libmolstat_general.a

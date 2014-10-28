@@ -35,7 +35,6 @@ using namespace std;
  */
 int main(int argc, char **argv) {
 	shared_ptr<molstat::BinStyle> bstyle(make_shared<molstat::BinLinear>(2));
-	//molstat::Histogram2D hist({{bstyle->nbins,bstyle->nbins}}, {{0.,0.}}, {{1.,1.}}, bstyle);
 	molstat::Histogram hist(2);
 	const double thresh = 1.0e-6;
 
@@ -61,28 +60,32 @@ int main(int argc, char **argv) {
 	// the average is (0.25, 0.25) and the bin count should be 4
 	assert(abs(hist.getCoordinates(iter)[0] - 0.25) < thresh);
 	assert(abs(hist.getCoordinates(iter)[1] - 0.25) < thresh);
-	assert(abs(hist.getBinCount(iter) - 4.*bstyle->dmaskdx(0.25)) < thresh);
+	assert(abs(hist.getBinCount(iter) -
+		4. * bstyle->dmaskdx(0.25) * bstyle->dmaskdx(0.25)) < thresh);
 
 	++iter;
 	// bin 1, 0 (#3 above)
 	// the average is (0.75, 0.25) and the bin count should be 2
 	assert(abs(hist.getCoordinates(iter)[0] - 0.75) < thresh);
 	assert(abs(hist.getCoordinates(iter)[1] - 0.25) < thresh);
-	assert(abs(hist.getBinCount(iter) - 2.*bstyle->dmaskdx(0.25)) < thresh);
+	assert(abs(hist.getBinCount(iter) -
+		2. * bstyle->dmaskdx(0.75) * bstyle->dmaskdx(0.25)) < thresh);
 
 	++iter;
 	// bin 0, 1 (#2 above)
 	// the average is (0.25, 0.75) and the bin count should be 3
 	assert(abs(hist.getCoordinates(iter)[0] - 0.25) < thresh);
 	assert(abs(hist.getCoordinates(iter)[1] - 0.75) < thresh);
-	assert(abs(hist.getBinCount(iter) - 3.*bstyle->dmaskdx(0.75)) < thresh);
+	assert(abs(hist.getBinCount(iter) -
+		3. * bstyle->dmaskdx(0.25) * bstyle->dmaskdx(0.75)) < thresh);
 
 	++iter;
 	// bin 1, 1 (#4 above)
 	// the average is (0.75, 0.75) and the bin count should be 1
 	assert(abs(hist.getCoordinates(iter)[0] - 0.75) < thresh);
 	assert(abs(hist.getCoordinates(iter)[1] - 0.75) < thresh);
-	assert(abs(hist.getBinCount(iter) - 1.*bstyle->dmaskdx(0.75)) < thresh);
+	assert(abs(hist.getBinCount(iter) -
+		1. * bstyle->dmaskdx(0.75) * bstyle->dmaskdx(0.75)) < thresh);
 
 	// just for sanity
 	++iter;

@@ -16,6 +16,9 @@ histogram2d_linear.trs
 histogram2d_log
 histogram2d_log.log
 histogram2d_log.trs
+histogram2d_mixed
+histogram2d_mixed.log
+histogram2d_mixed.trs
 simulate_model_interface_direct
 simulate_model_interface_direct.log
 simulate_model_interface_direct.trs
