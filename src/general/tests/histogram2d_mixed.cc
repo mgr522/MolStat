@@ -36,12 +36,9 @@ using namespace std;
  * \endinternal
  */
 int main(int argc, char **argv) {
-	// this example fails to use the nbin in BinStyle. Set to 2 for now, but will
-	// need to update to have separate binstyles (4 on y-axis...)
 	shared_ptr<molstat::BinStyle> blog(make_shared<molstat::BinLog>(4, 10.)),
 	                              blin(make_shared<molstat::BinLinear>(2));
 	molstat::Histogram hist(2);
-	//molstat::Histogram2D hist({{bstyle->nbins,4}}, {{0.,1.e-4}}, {{1.,1.}}, bstyle);
 	const double thresh = 1.0e-6;
 
 	// artificially populate the histogram
