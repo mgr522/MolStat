@@ -21,10 +21,6 @@ AC_DEFUN([ACX_WITH_GSL],
       [AC_MSG_ERROR([Unable to find the gsl/gsl_rng.h header file.])])
     AC_CHECK_HEADER([gsl/gsl_randist.h], [],
       [AC_MSG_ERROR([Unable to find the gsl/gsl_randist.h header file.])])
-    AC_CHECK_HEADER([gsl/gsl_histogram.h], [],
-      [AC_MSG_ERROR([Unable to find the gsl/gsl_histogram.h header file.])])
-    AC_CHECK_HEADER([gsl/gsl_histogram2d.h], [],
-      [AC_MSG_ERROR([Unable to find the gsl/gsl_histogram2d.h header file.])])
     AC_CHECK_HEADER([gsl/gsl_blas.h], [],
       [AC_MSG_ERROR([Unable to find the gsl/gsl_blas.h header file.])])
     AC_CHECK_HEADER([gsl/gsl_vector.h], [],
