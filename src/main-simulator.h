@@ -29,17 +29,6 @@ class BinStyle;
 }
 
 /**
- * \internal
- * \brief Enum for the type of histogram (1D or 2D).
- * \endinternal
- */
-enum class HistogramType
-{
-	OneD, // 1D Histogram
-	TwoD // 2D Histogram
-};
-
-/**
  * \brief Class that reads the input deck and sets up the molstat::Simulator
  *    object.
  *
