@@ -203,6 +203,13 @@ public:
 	 * \return The name of the output file.
 	 */
 	std::string outputFileName() const;
+
+	/**
+	 * \brief Get the binning styles.
+	 *
+	 * \return A vector containing the binning styles.
+	 */
+	std::vector<std::shared_ptr<molstat::BinStyle>> getBinStyles() const;
 };
 
 #endif

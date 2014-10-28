@@ -452,3 +452,16 @@ std::string SimulatorInputParse::outputFileName() const
 {
 	return histfilename;
 }
+
+std::vector<std::shared_ptr<molstat::BinStyle>>
+	SimulatorInputParse::getBinStyles() const
+{
+	vector<shared_ptr<molstat::BinStyle>> ret(obs_bins.size());
+
+	for(auto obs_bin : obs_bins)
+	{
+		ret[obs_bin.first] = obs_bin.second.second;
+	}
+
+	return ret;
+}

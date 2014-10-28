@@ -22,6 +22,7 @@
 
 #include <general/string_tools.h>
 #include <general/random_distributions/rng.h>
+#include <general/histogram_tools/counterindex.h>
 #include <general/histogram_tools/histogram.h>
 
 #include "main-simulator.h"
@@ -106,7 +107,16 @@ int main(int argc, char **argv)
 	gsl_rng_set(r.get(), time(nullptr));
 
 	// create the histogram object
-	molstat::Histogram hist(2);
+	// first need the bin styles to determine the dimensionality
+	vector<shared_ptr<const molstat::BinStyle>> bstyles(0);
+	{
+		const auto nonconst = parser.getBinStyles();
+		bstyles.resize(nonconst.size());
+		for(size_t j = 0; j < nonconst.size(); ++j)
+			bstyles[j] = nonconst[j];
+	} // this was necessary to add const to the pointer
+
+	molstat::Histogram hist(bstyles.size());
 
 	// Get the requested number of samples
 	for (size_t j = 0; j < ntrials; ++j)
@@ -115,85 +125,21 @@ int main(int argc, char **argv)
 		hist.add_data(sim->simulate(r));
 	}
 
-#if 0
-	// histogram variables
-	HistogramType htype;
-	unique_ptr<molstat::Histogram1D> hist1;
-	unique_ptr<molstat::Histogram2D> hist2;
-	function<double(const array<double, 2> &)> mask1;
-	array<double, 2> bounds1;
+	// make the histogram
+	hist.bin_data(bstyles);
+	// DO ERROR CHECKING ----------------------------------------------------
 
-	// setup the histogram type; what type are we making?
-	htype = HistogramType::TwoD; // base guess
+	// go through the bins
+	molstat::CounterIndex ci { hist.begin() };
 
-	// check the range of the first variable
-	if(mins[0] == maxs[0] && mins[1] == maxs[1]) {
-		fprintf(stderr, "Error: no data to bin into histograms. All simulated " \
-			"data have the value\n       {%f, %f}\n", mins[0], mins[1]);
-		return 0;
-	}
-	else if(mins[0] == maxs[0]) {
-		// process only the second variable
-		htype = HistogramType::OneD;
-		mask1 = [] (const array<double, 2> &a) -> double {
-			return a[1];
-		};
-		bounds1[0] = mins[1];
-		bounds1[1] = maxs[1];
-	}
-	else if(mins[1] == maxs[1]) {
-		// process only the second variable
-		htype = HistogramType::OneD;
-		mask1 = [] (const array<double, 2> &a) -> double {
-			return a[0];
-		};
-		bounds1[0] = mins[0];
-		bounds1[1] = maxs[0];
-	}
-	else {
-		// add a pinch to the max since the GSL histogrammer is exclusive on the
-		// upper bounds of binning ranges
-		maxs[0] += 1.e-6;
-		maxs[1] += 1.e-6;
+	for(molstat::CounterIndex ci{ hist.begin() }; !ci.at_end(); ++ci)
+	{
+		const valarray<double> coords = hist.getCoordinates(ci);
+		for(size_t j = 0; j < coords.size(); ++j)
+			histout << coords[j] << ' ';
+		histout << hist.getBinCount(ci) << endl;
 	}
 
-	// set up the histogram, populate it, and print it
-	if(htype == HistogramType::OneD) {
-		// note the similar pinch added to bounds[1] for the above reason
-		hist1.reset(new molstat::Histogram1D(nbin, bounds1[0],
-			bounds1[1] + 1.e-6, bstyle));
-
-		while(!data.empty()) {
-			hist1->add_data(mask1(data.front()));
-			data.pop_front();
-		}
-
-		for(molstat::Histogram1D::const_iterator iter = hist1->begin();
-			iter != hist1->end();
-			++iter) {
-
-			printf("%.6f %.6f\n", iter.get_variable()[0], iter.get_bin_count());
-		}
-	}
-	else if(htype == HistogramType::TwoD) {
-		hist2.reset(new molstat::Histogram2D(array<size_t, 2>{{nbin, nbin}},
-			mins, maxs, bstyle));
-
-		while(!data.empty()) {
-			hist2->add_data(data.front());
-			data.pop_front();
-		}
-
-		for(molstat::Histogram2D::const_iterator iter = hist2->begin();
-			iter != hist2->end();
-			++iter) {
-
-			printf("%.6f %.6f %.6f\n", iter.get_variable()[0],
-				iter.get_variable()[1], iter.get_bin_count());
-		}
-	}
-
-#endif
 	histout.close();
 
 	return 0;
