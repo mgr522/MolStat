@@ -65,7 +65,7 @@ os.remove(datfile)
 
 
 # test 2 -- uniform distribution
-print "Uniform distribution"
+print "\nUniform distribution"
 minval = -2.
 maxval = 2.
 process = subprocess.Popen('../molstat-simulator', \
@@ -93,7 +93,7 @@ for bin in hist:
 
 	assert(math.fabs(x - (minval + (j + 0.5) * (maxval - minval)/bins)) < 1.e-2)
 	print "Expected: " + str(float(trials)/bins) + ", Actual: " + str(pdf)
-	assert(math.fabs(pdf - float(trials)/bins) < 2.e-2 * float(trials))
+	assert(math.fabs(pdf - float(trials)/bins) < 1.e-2 * float(trials))
 	j += 1
 
 hist.close()
@@ -104,9 +104,10 @@ os.remove(datfile)
 
 
 # test 3 -- normal distribution
-print "Normal distribution"
+print "\nNormal distribution"
 mean = 1.
 stdev = 2.
+bins = 17
 process = subprocess.Popen('../molstat-simulator', \
 	stdout=subprocess.PIPE, \
 	stdin=subprocess.PIPE, \
@@ -121,24 +122,30 @@ output = process.communicate( \
 
 # read in the histogram
 hist = open(datfile, 'r')
-j = 0 # line count
+x = []
+pdf = []
 for bin in hist:
 	# make sure that the output is correct. first, tokenize the string
 	tokens = str.split(bin)
 	assert(len(tokens) == 2)
 	
-	x = float(tokens[0])
-	pdf = float(tokens[1])
-	expected = math.exp(-0.5 * (x - mean) * (x - mean) / (stdev * stdev)) \
-		/ math.sqrt(2.*math.pi * stdev * stdev)
-
-	print "Expected: " + str(expected * trials) + ", Actual: " + str(pdf)
-	assert(math.fabs(pdf - float(trials)/bins) < 2.e-2 * float(trials))
-	j += 1
+	x.append( float(tokens[0]) )
+	pdf.append( float(tokens[1]) )
 
 hist.close()
-assert(j == bins)
 # delete the output histogram file
 os.remove(datfile)
+assert(len(x) == bins)
+
+# make sure the distribution is correct
+dx = 0.5 * (x[1] - x[0])
+for j in range(len(x)):
+	expected = trials * \
+		(0.5 * (1. + math.erf((x[j] + dx - mean) / (math.sqrt(2.) * stdev))) \
+		-0.5 * (1. + math.erf((x[j] - dx - mean) / (math.sqrt(2.) * stdev)))
+	)
+
+	print "Expected: " + str(expected) + ", Actual: " + str(pdf[j])
+	assert(math.fabs(pdf[j] - expected) < 1.e-2 * float(trials))
 
 ## @endcond
