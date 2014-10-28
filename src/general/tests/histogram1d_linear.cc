@@ -16,7 +16,6 @@
 
 #include <cassert>
 #include <cmath>
-#include <iostream>
 
 #include <general/histogram_tools/counterindex.h>
 #include <general/histogram_tools/histogram.h>
@@ -26,7 +25,8 @@ using namespace std;
 
 /**
  * \internal
- * \brief Main function for testing the Histogram1D class with linear binning.
+ * \brief Main function for testing the Histogram (1D) class with linear
+ *    binning.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
