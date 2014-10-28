@@ -2,8 +2,8 @@ TESTS = string_tools \
 	gsl_std_vector \
 	counter_index_functionality \
 	histogram1d_linear \
-	histogram1d_log 
-#	histogram2d_linear \
+	histogram1d_log \
+	histogram2d_linear 
 #	histogram2d_log \
 #	simulate_model_interface_direct \
 #	simulate_model_interface_indirect
@@ -12,9 +12,9 @@ check_PROGRAMS = string_tools \
 	gsl_std_vector \
 	counter_index_functionality \
 	histogram1d_linear \
-	histogram1d_log 
-#	histogram2d_linear 
-#	histogram2d_log 
+	histogram1d_log \
+	histogram2d_linear 
+#	histogram2d_log \
 #	simulate_model_interface_direct \
 #	simulate_model_interface_indirect
 
@@ -33,8 +33,8 @@ histogram1d_linear_LDADD = ../libmolstat_general.a
 histogram1d_log_SOURCES = histogram1d_log.cc
 histogram1d_log_LDADD = ../libmolstat_general.a
 
-#histogram2d_linear_SOURCES = histogram2d_linear.cc
-#histogram2d_linear_LDADD = ../libmolstat_general.a
+histogram2d_linear_SOURCES = histogram2d_linear.cc
+histogram2d_linear_LDADD = ../libmolstat_general.a
 
 #histogram2d_log_SOURCES = histogram2d_log.cc
 #histogram2d_log_LDADD = ../libmolstat_general.a
