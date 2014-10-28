@@ -28,7 +28,8 @@ namespace transport {
  * \brief Type representing the channel concept for transport through
  *    junctions.
  */
-class Channel : public virtual SimulateModel {
+class Channel : public virtual SimulateModel
+{
 protected:
 	/**
 	 * \brief Identifies this model as a channel.
@@ -44,7 +45,8 @@ protected:
 class TransportJunction :
 	public AppliedBias,
 	public CompositeObservable<StaticConductance>,
-	public CompositeObservable<DifferentialConductance> {
+	public CompositeObservable<DifferentialConductance>
+{
 
 public:
 	/**

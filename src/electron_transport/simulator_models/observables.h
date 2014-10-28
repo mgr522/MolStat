@@ -21,7 +21,8 @@ namespace transport {
 /**
  * \brief Observable class for the applied bias.
  */
-class AppliedBias : public Observable<AppliedBias> {
+class AppliedBias : public Observable<AppliedBias>
+{
 public:
 	AppliedBias()
 		: Observable<AppliedBias>(&AppliedBias::AppBias) {}
@@ -40,7 +41,8 @@ public:
 /**
  * \brief Observable class for the static conductance.
  */
-class StaticConductance : public Observable<StaticConductance> {
+class StaticConductance : public Observable<StaticConductance>
+{
 public:
 	StaticConductance()
 		: Observable<StaticConductance>(&StaticConductance::StaticG) {}
@@ -59,7 +61,8 @@ public:
 /**
  * \brief Observable class for the differential conductance.
  */
-class DifferentialConductance : public Observable<DifferentialConductance> {
+class DifferentialConductance : public Observable<DifferentialConductance>
+{
 public:
 	DifferentialConductance()
 		: Observable<DifferentialConductance>(&DifferentialConductance::DiffG) {}

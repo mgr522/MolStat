@@ -24,26 +24,30 @@
 class BasicTestModel :
 	public BasicObs1,
 	public BasicObs2,
-	public BasicObs3 {
-
+	public BasicObs3
+{
 public:
 	constexpr static double obs2value = 4.;
 	constexpr static int obs3except = 4;
 
-	virtual double Obs1(const valarray<double> &params) const override {
+	virtual double Obs1(const valarray<double> &params) const override
+	{
 		return params[0];
 	}
 
-	virtual double Obs2(const valarray<double> &params) const override {
+	virtual double Obs2(const valarray<double> &params) const override
+	{
 		return obs2value;
 	}
 
-	virtual double Obs3(const valarray<double> &params) const override {
+	virtual double Obs3(const valarray<double> &params) const override
+	{
 		throw(obs3except);
 		return 0.;
 	}
 
-	virtual vector<string> get_names() const override {
+	virtual vector<string> get_names() const override
+	{
 		return { "a" };
 	}
 };
@@ -53,14 +57,16 @@ public:
  * \brief Type of submodel used in the test.
  * \endinternal
  */
-class TestSubmodelType : public virtual molstat::SimulateModel {
+class TestSubmodelType : public virtual molstat::SimulateModel
+{
 protected:
 	/**
 	 * \internal
 	 * \brief Identifies a derived model as a submodel.
 	 * \endinternal
 	 */
-	virtual molstat::SimulateModelType getModelType() const override {
+	virtual molstat::SimulateModelType getModelType() const override
+	{
 		return std::type_index{ typeid(TestSubmodelType) };
 	}
 };
@@ -75,14 +81,16 @@ protected:
  */
 class CompositeTestModel :
 	public BasicObs4,
-	public molstat::CompositeObservable<BasicObs1> {
-
+	public molstat::CompositeObservable<BasicObs1>
+{
 protected:
-	virtual molstat::SimulateModelType getSubmodelType() const override {
+	virtual molstat::SimulateModelType getSubmodelType() const override
+	{
 		return type_index{ typeid(TestSubmodelType) };
 	}
 
-	virtual vector<string> get_names() const override {
+	virtual vector<string> get_names() const override
+	{
 		return { "ef", "v" };
 	}
 
@@ -90,7 +98,8 @@ public:
 	CompositeTestModel(const std::function<double(double, double)> &oper) :
 		molstat::CompositeObservable<BasicObs1>(oper) {}
 
-	virtual double Obs4(const valarray<double> &params) const override {
+	virtual double Obs4(const valarray<double> &params) const override
+	{
 		return params[0] + params[1];
 	}
 };
@@ -100,7 +109,8 @@ public:
  * \brief Dummy composite model class using addition to combine submodels.
  * \endinternal
  */
-class CompositeTestModelAdd : public CompositeTestModel {
+class CompositeTestModelAdd : public CompositeTestModel
+{
 public:
 	CompositeTestModelAdd() :
 		CompositeTestModel(
@@ -113,7 +123,8 @@ public:
  * \brief Dummy composite model class using multiplication to combine submodels.
  * \endinternal
  */
-class CompositeTestModelMultiply : public CompositeTestModel {
+class CompositeTestModelMultiply : public CompositeTestModel
+{
 public:
 	CompositeTestModelMultiply() :
 		CompositeTestModel(
@@ -127,15 +138,17 @@ public:
  * \endinternal
  */
 class CompositeSubModel : public TestSubmodelType,
-	public BasicObs1 {
-
+	public BasicObs1
+{
 protected:
-	virtual vector<string> get_names() const override {
+	virtual vector<string> get_names() const override
+	{
 		return { "eps", "gamma" };
 	}
 
 public:
-	virtual double Obs1(const valarray<double> &params) const override {
+	virtual double Obs1(const valarray<double> &params) const override
+	{
 		return params[1] * (params[2] - params[3]);
 	}
 };
@@ -145,9 +158,11 @@ public:
  * \brief Failed submodel; used to test what happens when a submodel fails to
  *    implement a requested observable.
  */
-class FailedSubModel : public TestSubmodelType {
+class FailedSubModel : public TestSubmodelType
+{
 protected:
-	virtual vector<string> get_names() const override {
+	virtual vector<string> get_names() const override
+	{
 		return { "eps" };
 	}
 };
