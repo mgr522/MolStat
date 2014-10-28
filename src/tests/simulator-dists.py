@@ -148,4 +148,56 @@ for j in range(len(x)):
 	print "Expected: " + str(expected) + ", Actual: " + str(pdf[j])
 	assert(math.fabs(pdf[j] - expected) < 1.e-2 * float(trials))
 
+
+
+# test 4 -- lognormal distribution
+print "\nLognormal distribution"
+mean = 2.
+stdev = 0.25
+bins = 17
+process = subprocess.Popen('../molstat-simulator', \
+	stdout=subprocess.PIPE, \
+	stdin=subprocess.PIPE, \
+	stderr=subprocess.PIPE)
+output = process.communicate( \
+'observable Identity ' + str(bins) + ' linear\n' \
+'model IdentityModel\n' \
+'	distribution parameter lognormal ' + str(mean) + ' ' + str(stdev) + '\n' \
+'endmodel\n' \
+'trials ' + str(trials) + '\n' \
+'output ' + datfile)
+
+# read in the histogram
+hist = open(datfile, 'r')
+x = []
+pdf = []
+for bin in hist:
+	# make sure that the output is correct. first, tokenize the string
+	tokens = str.split(bin)
+	assert(len(tokens) == 2)
+	
+	x.append( float(tokens[0]) )
+	pdf.append( float(tokens[1]) )
+
+hist.close()
+# delete the output histogram file
+os.remove(datfile)
+assert(len(x) == bins)
+
+# make sure the distribution is correct
+dx = 0.5 * (x[1] - x[0])
+for j in range(len(x)):
+	expected = trials * \
+		(0.5 * (1. + math.erf((math.log(x[j] + dx) - mean) / (math.sqrt(2.) * stdev))) \
+		-0.5 * (1. + math.erf((math.log(x[j] - dx) - mean) / (math.sqrt(2.) * stdev)))
+	)
+
+	print "Expected: " + str(expected) + ", Actual: " + str(pdf[j])
+	assert(math.fabs(pdf[j] - expected) < 1.e-2 * float(trials))
+
+
+
+# test 5 -- gamma distribution
+# cannot calculate the cumulative distribution function without scipy. no test
+
 ## @endcond
