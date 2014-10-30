@@ -16,9 +16,9 @@
 #define IJth(A,i,j) DENSE_ELEM(A,i-1,j-1)
 
 #define NEQ 2
-#define RTOL 1.0e-5
-#define ATOL1 1.0e-8
-#define ATOL2 1.0e-8
+#define RTOL 1.0e-8
+#define ATOL1 1.0e-6
+#define ATOL2 1.0e-6
 #define T0 0.0
 
 using namespace std;
@@ -83,10 +83,11 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   int rootsfound[2];
 
   //set the maximum steps for ODE solver
-  int mxsteps = 1000;
+  int mxsteps = 2000;
 
   //set the maximum step size
   double hmax = 4.0 * tlimit / mxsteps;
+  //double hmin = tlimit * 1.0e-12;
 
   std::vector<double> vec_cvode;
   vec_cvode = vec;
@@ -130,6 +131,10 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
 
   // call CVodeSetMaxStep to specify the maximum step size.
   CVodeSetMaxStep(cvode_mem, hmax);
+
+  // Call CVodeSetMaxErrTestFails to specify the maximun number of error test failures
+  // permitted in attempting one step
+  CVodeSetMaxErrTestFails(cvode_mem, 20);
 
   // call CVodeRootInit to specify the root function g with 1 component
   CVodeRootInit(cvode_mem, 1, g);
