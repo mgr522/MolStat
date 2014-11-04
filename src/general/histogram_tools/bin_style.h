@@ -6,7 +6,7 @@
  * \brief Provides an interface for various binning styles.
  *
  * \author Matthew G.\ Reuter
- * \date June 2014
+ * \date October 2014
  */
 
 #ifndef __bin_style_h__

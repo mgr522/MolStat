@@ -15,7 +15,9 @@
  */
 
 #include <memory>
-#include <cstdio>
+#include <fstream>
+#include <iostream>
+#include <stdexcept>
 #include <cstdlib>
 #include <cmath>
 #include <list>
@@ -28,6 +30,7 @@
 
 #include "general/string_tools.h"
 #include "general/histogram_tools/bin_style.h"
+#include "general/histogram_tools/bin_linear.h"
 #include "electron_transport/fitter_models/transport_fit_models.h"
 
 using namespace std;
@@ -44,7 +47,8 @@ using namespace std;
  * \return Exit status; 0 for normal.
  * \endinternal
  */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	// non-linear fitting tools
 	unique_ptr<gsl_multifit_fdfsolver,
 	           decltype(&gsl_multifit_fdfsolver_free)>
@@ -72,14 +76,10 @@ int main(int argc, char **argv) {
 	vector<double> bestfit;
 	list<vector<double>> initvals;
 	list<vector<double>>::const_iterator initval;
-	unique_ptr<molstat::BinStyle> binstyle;
 
 	// counters & auxiliary variables
 	size_t i, iter;
-	double g, pdf;
-	FILE *f;
 	string line, modelname;
-	vector<string> tokens;
 
 	gsl_set_error_handler_off();
 
@@ -89,47 +89,54 @@ int main(int argc, char **argv) {
 
 	// set up the fit -- read in parameters from stdin
 	// Line 1: One token specifying the model to use for fitting
-	try {
-		line = molstat::getline(stdin);
-	}
-	catch(const runtime_error &e) {
-		fprintf(stderr, "Error: %s.\n", e.what());
+	if(cin)
+		getline(cin, line);
+	else
+	{
+		cerr << "Error: EOF encountered in line 1.\n" << endl;
 		return 0;
 	}
 
-	molstat::tokenize(line, tokens);
-	if(tokens.size() < 1) {
-		fprintf(stderr, "Error: model name expected in line 1.\n");
+	molstat::TokenContainer tokens = molstat::tokenize(line);
+	if(tokens.size() < 1)
+	{
+		cerr << "Error: model name expected in line 1." << endl;
 		return 0;
 	}
 	// store the model name for later (need to continue reading data before
 	// instantiating the model)
-	modelname = tokens[0];
+	modelname = tokens.front();
 
 	// Line 2: The file name of the conductance histogram data to fit
-	try {
-		line = molstat::getline(stdin);
-	} catch(const runtime_error &e) {
-		fprintf(stderr, "Error: %s.\n", e.what());
+	if(cin)
+		getline(cin, line);
+	else
+	{
+		cerr << "Error: EOF encountered in line 2." << endl;
 		return 0;
 	}
-	molstat::tokenize(line, tokens);
+	tokens = molstat::tokenize(line);
 	if(tokens.size() < 1) {
-		fprintf(stderr, "Error: file name expected in line 2.\n");
+		cerr << "Error: file name expected in line 2." << endl;
 		return 0;
 	}
 
 	// read in the data points from the specified file
-	f = fopen(tokens[0].c_str(), "r");
-	if(!f) {
-		fprintf(stderr, "Error opening %s for input.\n", tokens[0].c_str());
-		return 0;
+	{
+		ifstream f(tokens.front());
+		if(!f) {
+			cerr << "Error opening " << tokens.front() << " for input." << endl;
+			return 0;
+		}
+		// read all lines in the file.
+		while(f)
+		{
+			double g, pdf;
+			f >> g >> pdf;
+			data.emplace_back(pair<array<double, 1>, double>({{g}}, pdf));
+		}
+		f.close();
 	}
-	// read all lines in the file.
-	while(fscanf(f, "%le %le", &g, &pdf) != EOF) {
-		data.emplace_back(pair<array<double, 1>, double>({{g}}, pdf));
-	}
-	fclose(f);
 	size_t nbin = data.size();
 
 	// set the model
@@ -153,71 +160,95 @@ int main(int argc, char **argv) {
 	iterprint = false; // don't print details at every iteration
 	initvals.clear(); // no initial guesses
 	usedefaultguess = false; // user specifies to use the default guesses
-	binstyle = molstat::BinStyleFactory({{"linear"}}); // default: linear bins
+	// default is linear bins
+	unique_ptr<molstat::BinStyle> binstyle{ new molstat::BinLinear(1) };
 
 	// process the lines and override any of the default options
-	try {
-		while(true) {
-			line = molstat::getline(stdin);
+	try
+	{
+		while(true)
+		{
+			getline(cin, line);
 
-			molstat::tokenize(line, tokens);
-			if(tokens.size() > 0) {
-				line = tokens[0];
-				molstat::make_lower(line);
+			tokens = molstat::tokenize(line);
+			if(tokens.size() > 0)
+			{
+				line = molstat::to_lower(tokens.front());
+				tokens.pop();
 
 				if(line == "print")
 					iterprint = true;
 				else if(line == "noprint")
 					iterprint = false;
-				else if(line == "guess") {
+				else if(line == "guess")
+				{
 					// this line specifies a guess -- is it to use the defaults
 					// or a specific set of parameters?
-					if(tokens.size() == 1) {
-						fprintf(stderr, "Error: No initial guess specified. " \
-							"Skipping line.\n");
+					if(tokens.size() == 0)
+					{
+						cerr << "Error: No initial guess specified. Skipping line."
+							<< endl;
 					}
-					else {
-						line = tokens[1];
-						molstat::make_lower(line);
+					else
+					{
+						line = molstat::to_lower(tokens.front());
+						tokens.pop();
+
 						if(line == "default")
 							usedefaultguess = true;
-						else {
-							// this is a user-specified initial guess
-
-							// remove the first token from the vector ("guess")
-							tokens.erase(tokens.begin());
-
+						else // this is a user-specified initial guess
+						{
 							// process the initial guess
-							try {
-								model->append_initial_guess(tokens, initvals);
+							try
+							{
+								model->append_initial_guess(move(tokens), initvals);
 							}
-							catch(const invalid_argument &e) {
-								fprintf(stderr, "Error: %s Skipping input line.\n",
-									e.what());
+							catch(const invalid_argument &e)
+							{
+								cerr << "Error: " << e.what() <<
+									" Skipping input line." << endl;
 							}
 						}
 					}
 				}
-				else if(line == "bin"){
-					// load a bin style
-
-					// first need to remove the "bin" token
-					tokens.erase(tokens.begin());
-					molstat::make_lower(tokens[0]);
-
-					try {
-						binstyle = molstat::BinStyleFactory(tokens);
+				else if(line == "bin") // load a bin style
+				{
+					if(tokens.size() == 0)
+					{
+						cerr << "Error: No binning style specified. Skipping line."
+							<< endl;
 					}
-					catch(const invalid_argument &e) {
-						fprintf(stderr, "Error: Unknown binning style. Skipping " \
-							"line.\n");
+					else
+					{
+						// need to create an auxiliary TokenContainer with the number
+						// of bins (not needed) in the front spot
+						molstat::TokenContainer tc;
+						tc.push("1");
+						tc.push(molstat::to_lower(tokens.front()));
+						tokens.pop();
+						while(!tokens.empty())
+						{
+							tc.push(tokens.front());
+							tokens.pop();
+						}
+
+						try
+						{
+							binstyle = molstat::BinStyleFactory(move(tc));
+						}
+						catch(const invalid_argument &e)
+						{
+							cerr << "Error: Unknown binning style. Skipping line." <<
+								endl;
+						}
 					}
 				}
 				// add other keywords/options here
 			}
 		}
 	}
-	catch(const runtime_error &e) {
+	catch(const runtime_error &e)
+	{
 		// this just means we hit EOF -- stop trying to read more
 	}
 

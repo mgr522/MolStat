@@ -24,7 +24,8 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_multifit_nlin.h>
-#include "../string_tools.h"
+
+#include <general/string_tools.h>
 
 namespace molstat {
 
@@ -218,7 +219,7 @@ public:
 	 *    specified values for the preceding names.
 	 * \param[in,out] guess A list of initial guesses.
 	 */
-	void append_initial_guess(const std::vector<std::string> &tokens,
+	void append_initial_guess(molstat::TokenContainer &&tokens,
 		std::list<std::vector<double>> &guess) const;
 
 	/**
@@ -404,29 +405,26 @@ gsl_multifit_function_fdf FitModel<N>::gsl_handle() const {
 }
 
 template<std::size_t N>
-void FitModel<N>::append_initial_guess(const std::vector<std::string> &tokens,
+void FitModel<N>::append_initial_guess(molstat::TokenContainer &&tokens,
 	std::list<std::vector<double>> &guess) const {
 
 	std::map<std::string, double> values;
-	size_t i, size = tokens.size();
 
-	if(size % 2 == 1)
-		--size; // there's a name but no value to follow it; ignore
-
-	for(i = 0; i < size; i += 2) {
-		std::string name = tokens[i];
-		name = to_lower(name);
+	while(tokens.size() >= 2) // guesses come in name-value pairs
+	{
+		std::string name = to_lower(tokens.front());
+		tokens.pop();
 		double value;
 
 		try {
-			value = stod(tokens[i+1]);
+			value = stod(tokens.front());
+			values[name] = value;
 		}
 		catch(const std::invalid_argument &e) {
 			// error converting to a double; ignore this pair
-			continue;
 		}
 
-		values[name] = value;
+		tokens.pop(); // get rid of the number
 	}
 
 	guess.emplace_back(create_initial_guess(values));
