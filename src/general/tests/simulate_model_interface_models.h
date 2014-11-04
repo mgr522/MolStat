@@ -112,6 +112,11 @@ public:
 class CompositeTestModelAdd : public CompositeTestModel
 {
 public:
+	/**
+	 * \internal
+	 * \brief Constructor that specifies how to combine two submodels.
+	 * \endinternal
+	 */
 	CompositeTestModelAdd() :
 		CompositeTestModel(
 			[] (double obs1, double obs2) -> double { return obs1 + obs2; }
@@ -126,6 +131,11 @@ public:
 class CompositeTestModelMultiply : public CompositeTestModel
 {
 public:
+	/**
+	 * \internal
+	 * \brief Constructor that specifies how to combine two submodels.
+	 * \endinternal
+	 */
 	CompositeTestModelMultiply() :
 		CompositeTestModel(
 			[] (double obs1, double obs2) -> double { return obs1 * obs2; }

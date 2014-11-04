@@ -9,7 +9,7 @@
  * the Fermi energy and the applied bias. Each junction then also some
  * discrete number of channels, which ultimately lead to conductance.
  *
- * The junction is thus modeled as a \"composite\" model; each submodel
+ * The junction is thus modeled as a \"composite\" model, where each submodel
  * is a channel. This file defines these concepts.
  *
  * \author Matthew G.\ Reuter

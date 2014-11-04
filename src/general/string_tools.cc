@@ -3,7 +3,7 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \internal
- * \file string_tools.cc
+ * \file src/general/string_tools.cc
  * \brief Functions for processing strings, useful in I/O.
  *
  * \author Matthew G.\ Reuter

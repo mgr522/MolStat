@@ -17,6 +17,14 @@
 
 namespace molstat {
 
+/**
+ * \brief Index class for the bins of a histogram.
+ *
+ * This class is essentially an iterator to go through the bins of a
+ * histogram. Different numbers of bins in different dimensions are allowed,
+ * and the molstat::CounterIndex::arrayOffset() function calculates how this
+ * bin (via its index) translates to a one-dimensional array.
+ */
 class CounterIndex
 {
 private:
