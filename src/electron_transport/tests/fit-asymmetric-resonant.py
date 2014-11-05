@@ -24,9 +24,10 @@
  # @endverbatim
  #
  # @author Matthew G.\ Reuter
- # @date September 2014
+ # @date November 2014
 
 import subprocess
+import math
 
 ## @cond
 
@@ -40,8 +41,34 @@ output = process.communicate( \
 assert(output[1] == '')
 
 # check the output string
-assert(output[0] == \
-'Resid = 2.788663e+02\n' \
-'gammaL=1.7799e+01, gammaR=1.2761e+01, r=7.2185e-01, norm=4.3011e+01\n')
+tokens = output[0].split()
+assert(tokens[0] == 'Resid')
+assert(tokens[1] == '=')
+# check the residual -- this is empirical
+assert(math.fabs(float(tokens[2]) - 330.) / 330. < 5.e-2)
+
+# check gammaL -- not empirical
+gammalline = tokens[3].split('=')
+assert(gammalline[0] == 'gammaL')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(gammalline[1][:-1]) - 12.5) / 12.5 < 5.e-2) #5% relative error
+
+# check gammaR -- not empirical
+gammarline = tokens[4].split('=')
+assert(gammarline[0] == 'gammaR')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(gammarline[1][:-1]) - 17.5) / 17.5 < 5.e-2) #5% relative error
+
+# check r -- not empirical
+rline = tokens[5].split('=')
+assert(rline[0] == 'r')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(rline[1][:-1]) - 1.) / 1. < 5.e-1) #50% relative error
+# remember, the fit is insensitive to r
+
+# check norm -- this is empirical
+normline = tokens[6].split('=')
+assert(normline[0] == 'norm')
+assert(math.fabs(float(normline[1]) - 54.) / 54. < 5.e-2)
 
 ## @endcond

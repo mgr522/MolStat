@@ -20,25 +20,29 @@ using namespace std;
 namespace molstat {
 
 std::vector<double> AsymmetricResonantFitModel::create_initial_guess(
-	const std::map<std::string, double> &values) const {
-
+	const std::map<std::string, double> &values) const
+{
 	vector<double> ret(4);
 
-	try {
+	try
+	{
 		ret[GAMMAL] = values.at("gammal");
 		ret[GAMMAR] = values.at("gammar");
 		ret[R] = values.at("r");
 	}
-	catch(const out_of_range &e) {
+	catch(const out_of_range &e)
+	{
 		throw invalid_argument("Initial guesses for the Asymmetric" \
 			"ResonantFitModel must specify \"gammal\", \"gammar\", and \"r\"" \
 			" parameters.");
 	}
 
-	try {
+	try
+	{
 		ret[NORM] = values.at("norm");
 	}
-	catch(const out_of_range &e) {
+	catch(const out_of_range &e)
+	{
 		// norm not specified
 		ret[NORM] = 1.;
 	}
@@ -49,12 +53,12 @@ std::vector<double> AsymmetricResonantFitModel::create_initial_guess(
 AsymmetricResonantFitModel::AsymmetricResonantFitModel(
 	const std::list<std::pair<std::array<double, 1>, double>> &data)
 	: FitModel<1>(4, data), w(gsl_integration_workspace_alloc(nquad),
-		&gsl_integration_workspace_free) {
-}
+		&gsl_integration_workspace_free) 
+{}
 
 double AsymmetricResonantFitModel::resid(const std::vector<double> &fitparam,
-	const std::array<double, 1> &x, const double f) const {
-
+	const std::array<double, 1> &x, const double f) const
+{
 	vector<double> params(nfit+1);
 	double error, intmin, intmax, integral;
 	gsl_function func;
@@ -81,8 +85,8 @@ double AsymmetricResonantFitModel::resid(const std::vector<double> &fitparam,
 
 std::vector<double> AsymmetricResonantFitModel::jacobian(
 	const std::vector<double> &fitparam, const std::array<double, 1> &x,
-	const double f) const {
-
+	const double f) const
+{
 	vector<double> params(nfit+1), ret(nfit);
 	double error, intmin, intmax, integral, intgl, intgr, intr;
 	gsl_function func;
@@ -135,8 +139,8 @@ std::vector<double> AsymmetricResonantFitModel::jacobian(
 
 std::pair<double, std::vector<double>> AsymmetricResonantFitModel::resid_j(
 	const std::vector<double> &fitparam, const std::array<double, 1> &x,
-	const double f) const {
-
+	const double f) const
+{
 	pair<double, vector<double>> ret;
 	vector<double> params(nfit+1);
 	double error, intmin, intmax, integral, intgl, intgr, intr;
@@ -193,17 +197,20 @@ std::pair<double, std::vector<double>> AsymmetricResonantFitModel::resid_j(
 }
 
 void AsymmetricResonantFitModel::append_default_guesses(
-	std::list<std::vector<double>> &guess) const {
-
+	std::list<std::vector<double>> &guess) const
+{
 	const list<double> list_gamma{5., 10., 20., 30., 40.},
 		list_r{0.1, 0.5, 1., 2., 10.};
 
 	for(list<double>::const_iterator gammaL = list_gamma.cbegin();
-		gammaL != list_gamma.cend(); ++gammaL) {
+		gammaL != list_gamma.cend(); ++gammaL)
+	{
 	for(list<double>::const_iterator gammaR = list_gamma.cbegin();
-		gammaR != list_gamma.cend(); ++gammaR) {
+		gammaR != list_gamma.cend(); ++gammaR)
+	{
 	for(list<double>::const_iterator r = list_r.cbegin();
-		r != list_r.cend(); ++r) {
+		r != list_r.cend(); ++r)
+	{
 
 		vector<double> init(nfit);
 		init[GAMMAL] = *gammaL;
@@ -216,8 +223,8 @@ void AsymmetricResonantFitModel::append_default_guesses(
 }
 
 void AsymmetricResonantFitModel::print_fit(std::ostream &out,
-	const std::vector<double> &fitparam) const {
-
+	const std::vector<double> &fitparam) const
+{
 	out << "gammaL=" << scientific << setprecision(4) << fitparam[GAMMAL] <<
 		", gammaR=" << scientific << setprecision(4) << fitparam[GAMMAR] <<
 		", r=" << scientific << setprecision(4) << fitparam[R] << ", norm=" <<
@@ -225,20 +232,26 @@ void AsymmetricResonantFitModel::print_fit(std::ostream &out,
 }
 
 void AsymmetricResonantFitModel::process_fit_parameters(
-	std::vector<double> &fitparams) const {
-
+	std::vector<double> &fitparams) const
+{
 	// sometimes both gammas go negative...
-	if(fitparams[GAMMAL] < 0. && fitparams[GAMMAR] < 0.) {
+	if(fitparams[GAMMAL] < 0. && fitparams[GAMMAR] < 0.)
+	{
 		fitparams[GAMMAL] = -fitparams[GAMMAL];
 		fitparams[GAMMAR] = -fitparams[GAMMAR];
 	}
+
+	// for convenience, make sure gammaL is smaller than gammaR
+	if(fitparams[GAMMAL] > fitparams[GAMMAR])
+		swap(fitparams[GAMMAL], fitparams[GAMMAR]);
 
 	// sometimes r is negative
 	if(fitparams[R] < 0.)
 		fitparams[R] = -fitparams[R];
 }
 
-double AsymmetricResonantFitModel::int_p(double x, void *params) {
+double AsymmetricResonantFitModel::int_p(double x, void *params)
+{
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
 	const double g = fitparams[4];
@@ -255,7 +268,8 @@ double AsymmetricResonantFitModel::int_p(double x, void *params) {
 			-0.125*r*r*(gammaL*gammaL + gammaR*gammaR)*temp1 / (temp2 * g));
 }
 
-double AsymmetricResonantFitModel::int_dp_dr(double x, void *params) {
+double AsymmetricResonantFitModel::int_dp_dr(double x, void *params)
+{
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
 	const double g = fitparams[4];
@@ -272,7 +286,8 @@ double AsymmetricResonantFitModel::int_dp_dr(double x, void *params) {
 			-0.125*r*r*(gammaL*gammaL + gammaR*gammaR)*temp1 / (temp2 * g));
 }
 
-double AsymmetricResonantFitModel::int_dp_dgammaL(double x, void *params) {
+double AsymmetricResonantFitModel::int_dp_dgammaL(double x, void *params)
+{
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
 	const double g = fitparams[4];
@@ -293,7 +308,8 @@ double AsymmetricResonantFitModel::int_dp_dgammaL(double x, void *params) {
 			-0.125*r*r*(gammaL*gammaL + gammaR*gammaR)*temp1 / (temp2 * g));
 }
 
-double AsymmetricResonantFitModel::int_dp_dgammaR(double x, void *params) {
+double AsymmetricResonantFitModel::int_dp_dgammaR(double x, void *params)
+{
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
 	const double g = fitparams[4];
