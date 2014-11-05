@@ -25,9 +25,10 @@
  # numerical problems when fitting to the SymmetricResonantFitModel).
  #
  # @author Matthew G.\ Reuter
- # @date September 2014
+ # @date November 2014
 
 import subprocess
+import math
 
 ## @cond
 
@@ -43,8 +44,20 @@ output = process.communicate( \
 assert(output[1] == '')
 
 # check the output string
-assert(output[0] == \
-'Resid = 3.922257e+00\n' \
-'gamma=9.8877e+00, norm=8.7814e+02\n')
+tokens = output[0].split()
+assert(tokens[0] == 'Resid')
+assert(tokens[1] == '=')
+assert(math.fabs(float(tokens[2]) - 3.93) < 1.e-2) # check the residual
+
+# check gamma
+gammaline = tokens[3].split('=')
+assert(gammaline[0] == 'gamma')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(gammaline[1][:-1]) - 10.) / 10. < 5.e-2) # 5% relative error
+
+# check norm
+normline = tokens[4].split('=')
+assert(normline[0] == 'norm')
+assert(math.fabs(float(normline[1]) - 890.) / 890. < 5.e-2) # 5% relative error
 
 ## @endcond
