@@ -167,10 +167,8 @@ int main(int argc, char **argv)
 	// process the lines and override any of the default options
 	try
 	{
-		while(cin)
+		while(getline(cin, line)) // read until EOF
 		{
-			getline(cin, line);
-
 			tokens = molstat::tokenize(line);
 			if(tokens.size() > 0)
 			{
