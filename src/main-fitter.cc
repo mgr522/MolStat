@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 	// process the lines and override any of the default options
 	try
 	{
-		while(true)
+		while(cin)
 		{
 			getline(cin, line);
 
@@ -192,10 +192,12 @@ int main(int argc, char **argv)
 					else
 					{
 						line = molstat::to_lower(tokens.front());
-						tokens.pop();
 
 						if(line == "default")
+						{
+							tokens.pop();
 							usedefaultguess = true;
+						}
 						else // this is a user-specified initial guess
 						{
 							// process the initial guess
