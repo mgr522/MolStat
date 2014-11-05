@@ -37,7 +37,8 @@ namespace molstat {
  *
  * This model is detailed in Reference \cite williams-5937.
  */
-class AsymmetricResonantFitModel : public FitModel<1> {
+class AsymmetricResonantFitModel : public FitModel<1>
+{
 protected:
 	/**
 	 * \internal
@@ -69,7 +70,7 @@ protected:
 	 * \return A vector containing the initial guess.
 	 */
 	virtual std::vector<double> create_initial_guess(
-		const std::map<std::string, double> &values) const;
+		const std::map<std::string, double> &values) const override;
 
 	/**
 	 * \internal
@@ -184,7 +185,7 @@ public:
 	 *    fitting parameters.
 	 */
 	virtual double resid(const std::vector<double> &fitparam,
-		const std::array<double, 1> &x, const double f) const;
+		const std::array<double, 1> &x, const double f) const override;
 
 	/**
 	 * \brief Calculates the Jacobian of the fit function for a given set of
@@ -210,7 +211,7 @@ public:
 	 *    fitting parameters.
 	 */
 	virtual std::vector<double> jacobian(const std::vector<double> &fitparam,
-		const std::array<double, 1> &x, const double f) const;
+		const std::array<double, 1> &x, const double f) const override;
 
 	/**
 	 * \brief Calculates both the residual and Jacobian of the fit for a given
@@ -227,7 +228,7 @@ public:
 	 */
 	virtual std::pair<double, std::vector<double>> resid_j(
 		const std::vector<double> &fitparam, const std::array<double, 1> &x,
-		const double f) const;
+		const double f) const override;
 
 	/**
 	 * \brief Appends default initial guesses to a list.
@@ -235,16 +236,16 @@ public:
 	 * \param[in,out] guess A list of initial guesses.
 	 */
 	virtual void append_default_guesses(std::list<std::vector<double>> &guess)
-		const;
+		const override;
 
 	/**
 	 * \brief Prints the fit variables from a gsl_vector.
 	 *
-	 * \param[in] f The output stream.
+	 * \param[in] out The output stream.
 	 * \param[in] fitparam The fitting parameters.
 	 */
-	virtual void print_fit(FILE *f, const std::vector<double> &fitparam)
-		const;
+	virtual void print_fit(std::ostream &out,
+		const std::vector<double> &fitparam) const override;
 
 	/**
 	 * \brief Perform post-processing on a set of fit parameters.
@@ -253,7 +254,8 @@ public:
 	 *
 	 * \param[in,out] fitparams The fitting parameters.
 	 */
-	virtual void process_fit_parameters(std::vector<double> &fitparams) const;
+	virtual void process_fit_parameters(std::vector<double> &fitparams) const
+		override;
 };
 
 } // namespace molstat

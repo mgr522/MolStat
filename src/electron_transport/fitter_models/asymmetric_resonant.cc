@@ -13,6 +13,7 @@
  */
 
 #include "asymmetric_resonant.h"
+#include <iomanip>
 
 using namespace std;
 
@@ -214,11 +215,13 @@ void AsymmetricResonantFitModel::append_default_guesses(
 	}}}
 }
 
-void AsymmetricResonantFitModel::print_fit(FILE *f,
+void AsymmetricResonantFitModel::print_fit(std::ostream &out,
 	const std::vector<double> &fitparam) const {
 
-	fprintf(f, "gammaL=%.4e, gammaR=%.4e, r=%.4e, norm=%.4e",
-		fitparam[GAMMAL], fitparam[GAMMAR], fitparam[R], fitparam[NORM]);
+	out << "gammaL=" << scientific << setprecision(4) << fitparam[GAMMAL] <<
+		", gammaR=" << scientific << setprecision(4) << fitparam[GAMMAR] <<
+		", r=" << scientific << setprecision(4) << fitparam[R] << ", norm=" <<
+		scientific << setprecision(4) << fitparam[NORM];
 }
 
 void AsymmetricResonantFitModel::process_fit_parameters(

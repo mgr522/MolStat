@@ -17,6 +17,7 @@
 #include <memory>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <stdexcept>
 #include <cstdlib>
 #include <cmath>
@@ -289,18 +290,18 @@ int main(int argc, char **argv)
 		// start iterating
 		iter = 0;
 		if(iterprint) {
-			fprintf(stdout, "Iter=%3zu, ", iter);
-			model->print_fit(stdout, molstat::gsl_to_std(solver->x));
-			fprintf(stdout, "\n");
+			cout << "Iter=" << setw(3) << iter << ", ";
+			model->print_fit(cout, molstat::gsl_to_std(solver->x));
+			cout << endl;
 		}
 
 		do {
 			++iter;
 			status = gsl_multifit_fdfsolver_iterate(solver.get());
 			if(iterprint) {
-				fprintf(stdout, "Iter=%3zu, ", iter);
-				model->print_fit(stdout, molstat::gsl_to_std(solver->x));
-				fprintf(stdout, "\n");
+				cout << "Iter=" << setw(3) << iter << ", ";
+				model->print_fit(cout, molstat::gsl_to_std(solver->x));
+				cout << endl;
 			}
 
 			if(status)
@@ -312,7 +313,7 @@ int main(int argc, char **argv)
 
 		if(iterprint) {
 			if(status != GSL_CONTINUE && status != GSL_SUCCESS)
-				printf("   %s\n\n", gsl_strerror(status));
+				cout << "   " << gsl_strerror(status) << '\n' << endl;
 		}
 
 		// did we converge, iteration out, or error out?
@@ -326,7 +327,8 @@ int main(int argc, char **argv)
 		// do some final processing
 		resid = gsl_blas_dnrm2(solver->f);
 		if(iterprint)
-			printf("Residual = %.6e\n\n", resid);
+			cout << "Residual = " << scientific << setprecision(6) << resid <<
+				'\n' << endl;
 
 		if(!hasfit || resid < bestresid) {
 			// copy over the parameters
@@ -340,16 +342,16 @@ int main(int argc, char **argv)
 
 	// did we get a fit?
 	if(!hasfit) {
-		fprintf(stderr, "Error fitting.\n");
+		cerr << "Error fitting." << endl;
 	}
 	else {
 		// make sure the fit parameters are good
 		model->process_fit_parameters(bestfit);
 
 		// print ou the fit
-		printf("Resid = %.6e\n", bestresid);
-		model->print_fit(stdout, bestfit);
-		printf("\n");
+		cout << "Resid = " << scientific << setprecision(6) << bestresid << '\n';
+		model->print_fit(cout, bestfit);
+		cout << endl;
 	}
 
 	return 0;

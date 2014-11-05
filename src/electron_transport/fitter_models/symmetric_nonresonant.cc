@@ -13,6 +13,7 @@
  */
 
 #include "symmetric_nonresonant.h"
+#include <iomanip>
 
 using namespace std;
 
@@ -109,11 +110,12 @@ void SymmetricNonresonantFitModel::append_default_guesses(
 	}}
 }
 
-void SymmetricNonresonantFitModel::print_fit(FILE *f,
+void SymmetricNonresonantFitModel::print_fit(std::ostream &out,
 	const std::vector<double> &fitparam) const {
 
-	fprintf(f, "c=%.4e, d=%.4e, norm=%.4e", fitparam[C], fitparam[D],
-		fitparam[NORM]);
+	out << "c=" << scientific << setprecision(4) << fitparam[C] << ", d=" <<
+		scientific << setprecision(4) << fitparam[D] << ", norm=" << scientific
+		<< setprecision(4) << fitparam[NORM];
 }
 
 } // namespace molstat

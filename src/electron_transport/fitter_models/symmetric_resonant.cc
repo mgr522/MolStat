@@ -13,6 +13,7 @@
  */
 
 #include "symmetric_resonant.h"
+#include <iomanip>
 
 using namespace std;
 
@@ -103,10 +104,11 @@ void SymmetricResonantFitModel::append_default_guesses(
 	}
 }
 
-void SymmetricResonantFitModel::print_fit(FILE *f,
+void SymmetricResonantFitModel::print_fit(std::ostream &out,
 	const std::vector<double> &fitparam) const {
 
-	fprintf(f, "gamma=%.4e, norm=%.4e", fitparam[GAMMA], fitparam[NORM]);
+	out << "gamma=" << scientific << setprecision(4) << fitparam[GAMMA] <<
+		", norm=" << scientific << setprecision(4) << fitparam[NORM];
 }
 
 void SymmetricResonantFitModel::process_fit_parameters(

@@ -14,6 +14,7 @@
 #define __fit_model_interface_h__
 
 #include <memory>
+#include <iostream>
 #include <vector>
 #include <array>
 #include <utility>
@@ -46,7 +47,8 @@ namespace molstat {
  * \tparam N The number of independent variables in the fit function.
  */
 template<std::size_t N>
-class FitModel {
+class FitModel
+{
 private:
 	/**
 	 * \internal
@@ -225,11 +227,11 @@ public:
 	/**
 	 * \brief Prints the fit variables from a gsl_vector.
 	 *
-	 * \param[in] f The output stream.
+	 * \param[in] out The output stream.
 	 * \param[in] fitparam The fitting parameters.
 	 */
-	virtual void print_fit(FILE *f, const std::vector<double> &fitparam)
-		const = 0;
+	virtual void print_fit(std::ostream &out,
+		const std::vector<double> &fitparam) const = 0;
 
 	/**
 	 * \brief Perform post-processing on a set of fit parameters.

@@ -34,7 +34,8 @@ namespace molstat {
  *
  * This model is detailed in Reference \cite williams-5937.
  */
-class SymmetricNonresonantFitModel : public FitModel<1> {
+class SymmetricNonresonantFitModel : public FitModel<1>
+{
 protected:
 	/**
 	 * \brief Converts a map of names to values to an initial guess (ordered
@@ -50,7 +51,7 @@ protected:
 	 * \return A vector containing the initial guess.
 	 */
 	virtual std::vector<double> create_initial_guess(
-		const std::map<std::string, double> &values) const;
+		const std::map<std::string, double> &values) const override;
 
 public:
 	/**
@@ -91,7 +92,7 @@ public:
 	 *    fitting parameters.
 	 */
 	virtual double resid(const std::vector<double> &fitparam,
-		const std::array<double, 1> &x, const double f) const;
+		const std::array<double, 1> &x, const double f) const override;
 
 	/**
 	 * \brief Calculates the Jacobian of the fit function for a given set of
@@ -111,7 +112,7 @@ public:
 	 *    fitting parameters.
 	 */
 	virtual std::vector<double> jacobian(const std::vector<double> &fitparam,
-		const std::array<double, 1> &x, const double f) const;
+		const std::array<double, 1> &x, const double f) const override;
 
 	/* There is no redundency in calculating fit_function and jacobian, so we
 	 * can use the simple default resid_j function in FitModel<1>. */
@@ -122,16 +123,16 @@ public:
 	 * \param[in,out] guess A list of initial guesses.
 	 */
 	virtual void append_default_guesses(std::list<std::vector<double>> &guess)
-		const;
+		const override;
 
 	/**
 	 * \brief Prints the fit variables from a gsl_vector.
 	 *
-	 * \param[in] f The output stream.
+	 * \param[in] out The output stream.
 	 * \param[in] fitparam The fitting parameters.
 	 */
-	virtual void print_fit(FILE *f, const std::vector<double> &fitparam)
-		const;
+	virtual void print_fit(std::ostream &out,
+		const std::vector<double> &fitparam) const override;
 
 	/* No post-processing issues encountered. We can just use the default
 	 * function that does nothing. */
