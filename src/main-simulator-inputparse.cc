@@ -110,12 +110,9 @@ void SimulatorInputParse::readInput(std::istream &input, std::ostream &output)
 	std::size_t lineno{ 1 }; // line number
 
 	// process the input deck
-	// input evaluates to "false" when we hit EOF
-	while(input)
+	// getline evaluates to "false" when we hit EOF
+	for(string line; getline(input, line);)
 	{
-		string line;
-		getline(input, line);
-
 		// tokenize the string
 		molstat::TokenContainer tokens = molstat::tokenize(line);
 		if(tokens.size() == 0) // empty line
