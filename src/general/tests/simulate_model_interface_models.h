@@ -27,7 +27,14 @@ class BasicTestModel :
 	public BasicObs3
 {
 public:
+	/**
+	 * \brief The set value for BasicObs2.
+	 */
 	constexpr static double obs2value = 4.;
+
+	/**
+	 * \brief Value to throw for BasicObs3.
+	 */
 	constexpr static int obs3except = 4;
 
 	virtual double Obs1(const valarray<double> &params) const override
@@ -95,6 +102,12 @@ protected:
 	}
 
 public:
+	/**
+	 * \brief Constructor for a dummy composite model that requires a function
+	 *    for combining the composite observables.
+	 *
+	 * \param[in] oper The operation for combining observables.
+	 */
 	CompositeTestModel(const std::function<double(double, double)> &oper) :
 		molstat::CompositeObservable<BasicObs1>(oper) {}
 
@@ -119,7 +132,9 @@ public:
 	 */
 	CompositeTestModelAdd() :
 		CompositeTestModel(
+			/// \cond
 			[] (double obs1, double obs2) -> double { return obs1 + obs2; }
+			/// \endcond
 		) {}
 };
 
@@ -138,7 +153,9 @@ public:
 	 */
 	CompositeTestModelMultiply() :
 		CompositeTestModel(
+			/// \cond
 			[] (double obs1, double obs2) -> double { return obs1 * obs2; }
+			/// \endcond
 		) {}
 };
 

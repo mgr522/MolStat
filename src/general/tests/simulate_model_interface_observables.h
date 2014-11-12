@@ -33,6 +33,13 @@ public:
 		Observable(&BasicObs1::Obs1) {}
 
 	virtual ~BasicObs1() = default;
+
+	/**
+	 * \brief Dummy observable function for BasicObs1.
+	 *
+	 * \param[in] vals A set of model parameters.
+	 * \return The observable.
+	 */
 	virtual double Obs1(const valarray<double> &vals) const = 0;
 };
 
@@ -47,6 +54,13 @@ public:
 		Observable(&BasicObs2::Obs2) {}
 
 	virtual ~BasicObs2() = default;
+
+	/**
+	 * \brief Dummy observable function for BasicObs2.
+	 *
+	 * \param[in] vals A set of model parameters.
+	 * \return The observable.
+	 */
 	virtual double Obs2(const valarray<double> &vals) const = 0;
 };
 
@@ -61,6 +75,13 @@ public:
 		Observable(&BasicObs3::Obs3) {}
 
 	virtual ~BasicObs3() = default;
+
+	/**
+	 * \brief Dummy observable function for BasicObs3.
+	 *
+	 * \param[in] vals A set of model parameters.
+	 * \return The observable.
+	 */
 	virtual double Obs3(const valarray<double> &vals) const = 0;
 };
 
@@ -75,6 +96,13 @@ public:
 		Observable(&BasicObs4::Obs4) {}
 
 	virtual ~BasicObs4() = default;
+
+	/**
+	 * \brief Dummy observable function for BasicObs4.
+	 *
+	 * \param[in] vals A set of model parameters.
+	 * \return The observable.
+	 */
 	virtual double Obs4(const valarray<double> &vals) const = 0;
 };
 

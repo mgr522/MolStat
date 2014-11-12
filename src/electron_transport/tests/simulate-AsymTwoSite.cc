@@ -19,6 +19,12 @@
 #include <electron_transport/simulator_models/asym_two_site_channel.h>
 
 using namespace std;
+
+/**
+ * \internal
+ * \brief Shortcut for the type of channel used in this test.
+ * \endinternal
+ */
 using ChannelType = molstat::transport::AsymTwoSiteChannel;
 
 /**

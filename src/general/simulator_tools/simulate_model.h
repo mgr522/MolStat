@@ -247,8 +247,10 @@ private:
 	std::vector<std::string> model_names;
 
 public:
+	/// \cond
 	SimulateModelFactory(SimulateModelFactory &&) = default;
 	SimulateModelFactory &operator=(SimulateModelFactory &&) = default;
+	/// \endcond
 
 	/**
 	 * \brief Creates a molstat::SimulateModelFactory with the underlying model

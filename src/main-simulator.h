@@ -182,7 +182,7 @@ public:
 	 * For debugging purposes, only.
 	 *
 	 * \param[in,out] output The output stream.
-	 * \endinteral
+	 * \endinternal
 	 */
 	void printState(std::ostream &output) const;
 

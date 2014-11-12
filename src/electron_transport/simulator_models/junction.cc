@@ -37,6 +37,7 @@ std::vector<std::string> TransportJunction::get_names() const {
 	return ret;
 }
 
+/// \cond
 TransportJunction::TransportJunction() :
 	CompositeObservable<StaticConductance>(
 		[] (double g1, double g2) -> double { return g1 + g2; }
@@ -45,6 +46,7 @@ TransportJunction::TransportJunction() :
 		[] (double g1, double g2) -> double { return g1 + g2; }
 	) {
 }
+/// \endcond
 
 double TransportJunction::AppBias(const std::valarray<double> &params) const {
 	return params[Index_V];

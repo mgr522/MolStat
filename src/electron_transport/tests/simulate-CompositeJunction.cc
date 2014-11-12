@@ -18,7 +18,19 @@
 #include <electron_transport/simulator_models/asym_one_site_channel.h>
 
 using namespace std;
+
+/**
+ * \internal
+ * \brief Shortcut for one type of channel used in this test.
+ * \endinternal
+ */
 using ChannelType1 = molstat::transport::SymOneSiteChannel;
+
+/**
+ * \internal
+ * \brief Shortcut for the other type of channel used in this test.
+ * \endinternal
+ */
 using ChannelType2 = molstat::transport::AsymOneSiteChannel;
 
 /**
