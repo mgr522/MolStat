@@ -19,13 +19,14 @@
  # information on how the input data was generated.
  #
  # @author Matthew G.\ Reuter
- # @date September 2014
+ # @date November 2014
 
 import subprocess
+import math
 
 ## @cond
 
-# test for the symmetric, non-resonant model
+# test using the symmetric, non-resonant model
 process = subprocess.Popen('../../molstat-fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 output = process.communicate( \
 'SymmetricNonresonant\n' \
@@ -38,16 +39,113 @@ output = process.communicate( \
 assert(output[1] == '')
 
 # check the output string
-assert(output[0] == \
-'Iter=  0, c=6.0000e+01, d=1.0000e+01, norm=1.0000e+05\n' \
-'Iter=  1, c=5.9241e+01, d=9.8731e+00, norm=1.0205e+05\n' \
-'Iter=  2, c=5.9267e+01, d=9.8774e+00, norm=1.0206e+05\n' \
-'Iter=  3, c=5.9267e+01, d=9.8774e+00, norm=1.0206e+05\n' \
-'Residual = 1.599687e+04\n' \
-'\n' \
-'Resid = 1.599687e+04\n' \
-'c=5.9267e+01, d=9.8774e+00, norm=1.0206e+05\n' \
-)
+tokens = output[0].split()
+
+# first iteration
+base = 0
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '0,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'c')
+assert(math.fabs(float(numval[1][:-1]) - 60.) / 60. < 5.e-2) # 5% relative error
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'd')
+assert(math.fabs(float(numval[1][:-1]) - 10.) / 10. < 5.e-2) # 5% relative error
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'norm')
+assert(math.fabs(float(numval[1]) - 1.e5) / 1.e5 < 5.e-2) # 5% relative error
+
+# second iteration
+base = base + 5
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '1,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'c')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'd')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# third iteration
+base = base + 5
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '2,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'c')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'd')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# fourth iteration
+base = base + 5
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '3,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'c')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'd')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# fifth iteration
+base = base + 5
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '4,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'c')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'd')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# initial print of the residual
+base = base + 5
+assert(tokens[base+0] == 'Residual')
+assert(tokens[base+1] == '=')
+float(tokens[base+2]) # make sure it's a number
+
+# the standard end-of-fitting output
+base = base + 3
+assert(tokens[base+0] == 'Resid')
+assert(tokens[base+1] == '=')
+# check the residual -- this is empirical
+assert(math.fabs(float(tokens[base+2]) - 287.) / 287. < 5.e-2)
+
+# check c -- not empirical
+cline = tokens[base+3].split('=')
+assert(cline[0] == 'c')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(cline[1][:-1]) - 60.) / 60. < 5.e-2) #5% relative error
+
+# check d -- not empirical
+dline = tokens[base+4].split('=')
+assert(dline[0] == 'd')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(dline[1][:-1]) - 10.) / 10. < 5.e-2) #5% relative error
+
+# check norm -- this is empirical
+normline = tokens[base+5].split('=')
+assert(normline[0] == 'norm')
+assert(math.fabs(float(normline[1]) - 567.) / 567. < 5.e-2)
+
+
+
+
+
+
 
 # test for the symmetric, resonant tunneling model
 process = subprocess.Popen('../../molstat-fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -62,17 +160,92 @@ output = process.communicate( \
 assert(output[1] == '')
 
 # check the output string
-assert(output[0] == \
-'Iter=  0, gamma=9.7000e+00, norm=5.7000e+02\n' \
-'Iter=  1, gamma=9.9347e+00, norm=8.6442e+02\n' \
-'Iter=  2, gamma=9.8875e+00, norm=8.7932e+02\n' \
-'Iter=  3, gamma=9.8877e+00, norm=8.7813e+02\n' \
-'Iter=  4, gamma=9.8877e+00, norm=8.7814e+02\n' \
-'Residual = 3.922257e+00\n' \
-'\n' \
-'Resid = 3.922257e+00\n' \
-'gamma=9.8877e+00, norm=8.7814e+02\n' \
-)
+tokens = output[0].split()
+
+# first iteration
+base = 0
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '0,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gamma')
+assert(math.fabs(float(numval[1][:-1]) - 9.7) / 9.7 < 5.e-2) # 5% relative error
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'norm')
+assert(math.fabs(float(numval[1]) - 570.) / 570. < 5.e-2) # 5% relative error
+
+# second iteration
+base = base + 4
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '1,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gamma')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# third iteration
+base = base + 4
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '2,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gamma')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# fourth iteration
+base = base + 4
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '3,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gamma')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# fifth iteration
+base = base + 4
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '4,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gamma')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# initial print of the residual
+base = base + 4
+assert(tokens[base+0] == 'Residual')
+assert(tokens[base+1] == '=')
+float(tokens[base+2]) # make sure it's a number
+
+# the standard end-of-fitting output
+base = base + 3
+assert(tokens[base+0] == 'Resid')
+assert(tokens[base+1] == '=')
+# check the residual -- this is empirical
+assert(math.fabs(float(tokens[base+2]) - 3.57) / 3.57 < 5.e-2)
+
+# check gamma -- not empirical
+gammaline = tokens[base+3].split('=')
+assert(gammaline[0] == 'gamma')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(gammaline[1][:-1]) - 10.) / 10. < 5.e-2) #5% relative error
+
+# check norm -- this is empirical
+normline = tokens[base+4].split('=')
+assert(normline[0] == 'norm')
+assert(math.fabs(float(normline[1]) - 714.) / 714. < 5.e-2)
+
+
+
+
+
+
 
 # test for the asymmetric, resonant tunneling model
 process = subprocess.Popen('../../molstat-fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -87,17 +260,144 @@ output = process.communicate( \
 assert(output[1] == '')
 
 # check the output string
-assert(output[0] == \
-'Iter=  0, gammaL=1.7000e+01, gammaR=1.2000e+01, r=8.0000e-01, norm=4.4000e+01\n' \
-'Iter=  1, gammaL=1.7946e+01, gammaR=1.2943e+01, r=6.3351e-01, norm=3.8541e+01\n' \
-'Iter=  2, gammaL=1.7851e+01, gammaR=1.2814e+01, r=7.0020e-01, norm=4.1773e+01\n' \
-'Iter=  3, gammaL=1.7800e+01, gammaR=1.2762e+01, r=7.2074e-01, norm=4.2944e+01\n' \
-'Iter=  4, gammaL=1.7799e+01, gammaR=1.2761e+01, r=7.2187e-01, norm=4.3013e+01\n' \
-'Iter=  5, gammaL=1.7799e+01, gammaR=1.2761e+01, r=7.2185e-01, norm=4.3011e+01\n' \
-'Residual = 2.788663e+02\n' \
-'\n' \
-'Resid = 2.788663e+02\n' \
-'gammaL=1.7799e+01, gammaR=1.2761e+01, r=7.2185e-01, norm=4.3011e+01\n' \
-)
+tokens = output[0].split()
+
+# first iteration
+base = 0
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '0,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gammaL')
+assert(math.fabs(float(numval[1][:-1]) - 17.) / 17. < 5.e-2) # 5% relative error
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'gammaR')
+assert(math.fabs(float(numval[1][:-1]) - 12.) / 12. < 5.e-2) # 5% relative error
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'r')
+assert(math.fabs(float(numval[1][:-1]) - 0.8) / 0.8 < 5.e-2) # 5% relative error
+numval = tokens[base+5].split('=')
+assert(numval[0] == 'norm')
+assert(math.fabs(float(numval[1]) - 44.) / 44. < 5.e-2) # 5% relative error
+
+# second iteration
+base = base + 6
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '1,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gammaL')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'gammaR')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'r')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+5].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# third iteration
+base = base + 6
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '2,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gammaL')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'gammaR')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'r')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+5].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# fourth iteration
+base = base + 6
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '3,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gammaL')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'gammaR')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'r')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+5].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# fifth iteration
+base = base + 6
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '4,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gammaL')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'gammaR')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'r')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+5].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# sixth iteration
+base = base + 6
+assert(tokens[base+0] == 'Iter=')
+assert(tokens[base+1] == '5,')
+numval = tokens[base+2].split('=')
+assert(numval[0] == 'gammaL')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+3].split('=')
+assert(numval[0] == 'gammaR')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+4].split('=')
+assert(numval[0] == 'r')
+float(numval[1][:-1]) # make sure it's a number
+numval = tokens[base+5].split('=')
+assert(numval[0] == 'norm')
+float(numval[1]) # make sure it's a number
+
+# initial print of the residual
+base = base + 6
+assert(tokens[base+0] == 'Residual')
+assert(tokens[base+1] == '=')
+float(tokens[base+2]) # make sure it's a number
+
+# the standard end-of-fitting output
+base = base + 3
+assert(tokens[base+0] == 'Resid')
+assert(tokens[base+1] == '=')
+# check the residual -- this is empirical
+assert(math.fabs(float(tokens[base+2]) - 330.) / 330. < 5.e-2)
+
+# check gammaL -- not empirical
+gammalline = tokens[base+3].split('=')
+assert(gammalline[0] == 'gammaL')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(gammalline[1][:-1]) - 12.) / 12. < 5.e-2) #5% relative error
+
+# check gammaR -- not empirical
+gammarline = tokens[base+4].split('=')
+assert(gammarline[0] == 'gammaR')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(gammarline[1][:-1]) - 17.) / 17. < 5.e-2) #5% relative error
+
+# check r -- not empirical
+rline = tokens[base+5].split('=')
+assert(rline[0] == 'r')
+# need to remove the last character (a comma) from the number for the float call
+assert(math.fabs(float(rline[1][:-1]) - 0.8) / 0.8 < 5.e-2) #5% relative error
+
+# check norm -- this is empirical
+normline = tokens[base+6].split('=')
+assert(normline[0] == 'norm')
+assert(math.fabs(float(normline[1]) - 54.) / 54. < 5.e-2)
 
 ## @endcond
