@@ -28,14 +28,10 @@ namespace molstat {
 class CounterIndex
 {
 private:
-	/**
-	 * \brief The maximum index in each direction.
-	 */
+	/// The maximum index in each direction.
 	const std::vector<std::size_t> max_index;
 
-	/**
-	 * \brief The index represented by this counter.
-	 */
+	/// The index represented by this counter.
 	std::vector<std::size_t> index;
 
 public:
@@ -83,14 +79,10 @@ public:
 	 */
 	std::size_t operator[] (const std::size_t dim) const;
 
-	/**
-	 * \brief Resets a counter to all 0s.
-	 */
+	/// Resets a counter to all 0s.
 	void reset();
 
-	/**
-	 * \brief Returns true if this counter is at the end (no more `++`).
-	 */
+	/// Returns true if this counter is at the end (no more `++`).
 	bool at_end() const;
 
 	/**

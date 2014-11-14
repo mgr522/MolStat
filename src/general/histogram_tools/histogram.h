@@ -39,33 +39,23 @@ class BinStyle;
  *
  * Histograms of any dimensionality can be constructed.
  */
-class Histogram {
+class Histogram
+{
 private:
-	/**
-	 * \brief State of the histogram.
-	 *
-	 * False if binning has not occurred; true if it has.
-	 */
+	/// State of the histogram: False if binning has not occurred; true if it
+	/// has.
 	bool haveBinned;
 
-	/**
-	 * \brief The dimensionality of the data.
-	 */
+	/// The dimensionality of the data.
 	const std::size_t ndim;
 
-	/**
-	 * \brief The accumulated data.
-	 */
+	/// The accumulated data.
 	std::forward_list<std::valarray<double>> data;
 
-	/**
-	 * \brief The minimum and maximum values in each dimension.
-	 */
+	/// The minimum and maximum values in each dimension.
 	std::vector<std::array<double, 2>> extremes;
 
-	/**
-	 * \brief The number of bins in each dimension.
-	 */
+	/// The number of bins in each dimension.
 	std::vector<std::size_t> nbin_dim;
 
 	/**
@@ -75,9 +65,7 @@ private:
 	 */
 	std::vector<std::vector<double>> bin_value;
 
-	/**
-	 * \brief The counts in each bin.
-	 */
+	/// The counts in each bin.
 	std::vector<double> binned_data;
 
 	/**
