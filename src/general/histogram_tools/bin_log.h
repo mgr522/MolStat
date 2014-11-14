@@ -26,9 +26,7 @@ namespace molstat
 class BinLog : public BinStyle
 {
 protected:
-	/**
-	 * \brief The base of the logarithm.
-	 */
+	/// The base of the logarithm.
 	const double b;
 
 public:
@@ -67,11 +65,6 @@ public:
 	 */
 	virtual double dmaskdx(const double x) const override;
 
-	/**
-	 * \brief Create a string summary of this binning style.
-	 *
-	 * \return The string representation.
-	 */
 	virtual std::string info() const override;
 };
 

@@ -40,9 +40,7 @@ namespace molstat
 class BinStyle
 {
 public:
-	/**
-	 * \brief The number of bins.
-	 */
+	/// The number of bins.
 	const std::size_t nbins;
 
 	BinStyle() = delete;
@@ -101,8 +99,7 @@ public:
  * \param[in] tokens The vector of input tokens for creating a BinStyle.
  * \return The BinStyle object.
  */
-std::unique_ptr<BinStyle> BinStyleFactory(
-	TokenContainer &&tokens);
+std::unique_ptr<BinStyle> BinStyleFactory(TokenContainer &&tokens);
 
 } // namespace molstat
 
