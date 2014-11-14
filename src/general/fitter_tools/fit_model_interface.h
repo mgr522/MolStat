@@ -81,9 +81,7 @@ protected:
 		const std::map<std::string, double> &values) const = 0;
 
 public:
-	/**
-	 * \brief The number of fitting parameters in the model.
-	 */
+	/// The number of fitting parameters in the model.
 	const std::size_t nfit;
 
 	FitModel() = delete;
@@ -273,15 +271,16 @@ using FitModelFactory =
  * \return A function for instantiating the class from a list of data points.
  */
 template<typename T, std::size_t N>
-inline FitModelFactory<N> GetFitModelFactory() {
+inline FitModelFactory<N> GetFitModelFactory()
+{
 	return []
 		(const std::list<std::pair<std::array<double, N>, double>> &data)
-		-> std::unique_ptr<FitModel<N>> {
+			-> std::unique_ptr<FitModel<N>>
+		{
+			std::unique_ptr<FitModel<N>> ret(new T(data));
 
-		std::unique_ptr<FitModel<N>> ret(new T(data));
-
-		return ret;
-	};
+			return ret;
+		};
 }
 
 /**
@@ -298,11 +297,13 @@ std::vector<double> gsl_to_std(const gsl_vector *gslv);
 template<std::size_t N>
 FitModel<N>::FitModel(const std::size_t nfit_,
 	const std::list<std::pair<std::array<double, N>, double>> &data_)
-	: data(data_), nfit(nfit_) {
+	: data(data_), nfit(nfit_)
+{
 }
 
 template<std::size_t N>
-int FitModel<N>::f(const gsl_vector *x, void *model, gsl_vector *f) {
+int FitModel<N>::f(const gsl_vector *x, void *model, gsl_vector *f)
+{
 	const FitModel<N> *fitmodel = (FitModel<N>*)model;
 	std::size_t i;
 	const std::vector<double> fitparam(gsl_to_std(x));
@@ -310,7 +311,8 @@ int FitModel<N>::f(const gsl_vector *x, void *model, gsl_vector *f) {
 		iter;
 
 	i = 0;
-	for(iter = fitmodel->data.cbegin(); iter != fitmodel->data.cend(); ++iter) {
+	for(iter = fitmodel->data.cbegin(); iter != fitmodel->data.cend(); ++iter)
+	{
 		// get the data point
 		const std::pair<std::array<double, N>, double> &datai = *iter;
 
@@ -323,7 +325,8 @@ int FitModel<N>::f(const gsl_vector *x, void *model, gsl_vector *f) {
 }
 
 template<std::size_t N>
-int FitModel<N>::df(const gsl_vector *x, void *model, gsl_matrix *J) {
+int FitModel<N>::df(const gsl_vector *x, void *model, gsl_matrix *J)
+{
 	const FitModel<N> *fitmodel = (FitModel<N>*)model;
 	std::size_t i, j;
 	const std::vector<double> fitparam(gsl_to_std(x));
@@ -331,7 +334,8 @@ int FitModel<N>::df(const gsl_vector *x, void *model, gsl_matrix *J) {
 		iter;
 
 	i = 0;
-	for(iter = fitmodel->data.cbegin(); iter != fitmodel->data.cend(); ++iter) {
+	for(iter = fitmodel->data.cbegin(); iter != fitmodel->data.cend(); ++iter)
+	{
 		// get the data point
 		const std::pair<std::array<double, N>, double> &datai = *iter;
 
@@ -350,8 +354,8 @@ int FitModel<N>::df(const gsl_vector *x, void *model, gsl_matrix *J) {
 
 template<std::size_t N>
 int FitModel<N>::fdf(const gsl_vector *x, void *model, gsl_vector *f,
-	gsl_matrix *J) {
-
+	gsl_matrix *J)
+{
 	const FitModel<N> *fitmodel = (FitModel<N>*)model;
 	std::size_t i, j;
 	const std::vector<double> fitparam(gsl_to_std(x));
@@ -359,7 +363,8 @@ int FitModel<N>::fdf(const gsl_vector *x, void *model, gsl_vector *f,
 		iter;
 
 	i = 0;
-	for(iter = fitmodel->data.cbegin(); iter != fitmodel->data.cend(); ++iter) {
+	for(iter = fitmodel->data.cbegin(); iter != fitmodel->data.cend(); ++iter)
+	{
 		// get the data point
 		const std::pair<std::array<double, N>, double> &datai = *iter;
 
@@ -382,8 +387,8 @@ int FitModel<N>::fdf(const gsl_vector *x, void *model, gsl_vector *f,
 template<std::size_t N>
 std::pair<double, std::vector<double>> FitModel<N>::resid_j(
 	const std::vector<double> &fitparam, const std::array<double, N> &x,
-	const double f) const {
-
+	const double f) const
+{
 	std::pair<double, std::vector<double>> ret;
 
 	ret.first = resid(fitparam, x, f);
@@ -393,7 +398,8 @@ std::pair<double, std::vector<double>> FitModel<N>::resid_j(
 }
 
 template<std::size_t N>
-gsl_multifit_function_fdf FitModel<N>::gsl_handle() const {
+gsl_multifit_function_fdf FitModel<N>::gsl_handle() const
+{
 	gsl_multifit_function_fdf fit;
 
 	fit.f = &f;
@@ -408,8 +414,8 @@ gsl_multifit_function_fdf FitModel<N>::gsl_handle() const {
 
 template<std::size_t N>
 void FitModel<N>::append_initial_guess(molstat::TokenContainer &&tokens,
-	std::list<std::vector<double>> &guess) const {
-
+	std::list<std::vector<double>> &guess) const
+{
 	std::map<std::string, double> values;
 
 	while(tokens.size() >= 2) // guesses come in name-value pairs
@@ -418,11 +424,13 @@ void FitModel<N>::append_initial_guess(molstat::TokenContainer &&tokens,
 		tokens.pop();
 		double value;
 
-		try {
+		try
+		{
 			value = stod(tokens.front());
 			values[name] = value;
 		}
-		catch(const std::invalid_argument &e) {
+		catch(const std::invalid_argument &e)
+		{
 			// error converting to a double; ignore this pair
 		}
 
@@ -434,7 +442,8 @@ void FitModel<N>::append_initial_guess(molstat::TokenContainer &&tokens,
 
 template<std::size_t N>
 void FitModel<N>::process_fit_parameters(std::vector<double> &fitparams)
-	const {
+	const
+{
 }
 
 } // namespace molstat

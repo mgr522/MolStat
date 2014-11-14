@@ -15,7 +15,8 @@
 
 namespace molstat {
 
-std::vector<double> gsl_to_std(const gsl_vector *gslv) {
+std::vector<double> gsl_to_std(const gsl_vector *gslv)
+{
 	std::vector<double> ret(gslv->size);
 
 	for(std::size_t i = 0; i < gslv->size; ++i)
