@@ -25,11 +25,10 @@ namespace molstat {
  *
  * This distribution is included for the case where the value should be fixed.
  */
-class ConstantDistribution : public RandomDistribution {
+class ConstantDistribution : public RandomDistribution
+{
 protected:
-	/**
-	 * \brief The fixed value to return.
-	 */
+	/// The fixed value to return.
 	double value;
 
 public:
@@ -43,19 +42,8 @@ public:
 	 */
 	ConstantDistribution(const double val);
 
-	/**
-	 * \brief Samples from the constant distribution (returns value).
-	 *
-	 * \param[in] r The handle for GSL random number generation.
-	 * \return The random number.
-	 */
 	virtual double sample(gsl_rng_ptr &r) const override;
 
-	/**
-	 * \brief A description of this random number distribution.
-	 *
-	 * \return A string containing the description.
-	 */
 	virtual std::string info() const override;
 };
 

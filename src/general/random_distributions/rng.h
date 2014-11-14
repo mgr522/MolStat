@@ -29,18 +29,11 @@ namespace molstat {
 using gsl_rng_ptr =
 	std::unique_ptr<gsl_rng, decltype(&gsl_rng_free)>;
 
-/**
- * \brief Interface for random number generation.
- */
-class RandomDistribution {
+/// Interface for random number generation.
+class RandomDistribution
+{
 public:
 	RandomDistribution() = default;
-
-	/**
-	 * \internal
-	 * \brief Destructor.
-	 * \endinternal
-	 */
 	virtual ~RandomDistribution() = default;
 
 	/**

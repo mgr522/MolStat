@@ -20,19 +20,14 @@
 
 namespace molstat {
 
-/**
- * \brief Lognormal distribution.
- */
-class LognormalDistribution : public RandomDistribution {
+/// Lognormal distribution.
+class LognormalDistribution : public RandomDistribution
+{
 protected:
-	/**
-	 * \brief The average, in log-space.
-	 */
+	/// The average, in log-space.
 	double zeta;
 
-	/**
-	 * \brief The standard deviation, in log-space.
-	 */
+	/// The standard deviation, in log-space.
 	double sigma;
 
 public:
@@ -47,19 +42,8 @@ public:
 	 */
 	LognormalDistribution(const double zeta_, const double sigma_);
 
-	/**
-	 * \brief Samples from the lognormal distribution.
-	 *
-	 * \param[in] r The handle for GSL random number generation.
-	 * \return The random number.
-	 */
 	virtual double sample(gsl_rng_ptr &r) const override;
 
-	/**
-	 * \brief A description of this random number distribution.
-	 *
-	 * \return A string containing the description.
-	 */
 	virtual std::string info() const override;
 };
 

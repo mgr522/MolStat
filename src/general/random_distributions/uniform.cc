@@ -17,13 +17,17 @@
 namespace molstat {
 
 UniformDistribution::UniformDistribution(const double low, const double up)
-	: RandomDistribution(), lower(low), upper(up) {}
+	: RandomDistribution(), lower(low), upper(up)
+{
+}
 
-double UniformDistribution::sample(gsl_rng_ptr &r) const {
+double UniformDistribution::sample(gsl_rng_ptr &r) const
+{
 	return lower + (upper - lower) * gsl_rng_uniform(r.get());
 }
 
-std::string UniformDistribution::info() const {
+std::string UniformDistribution::info() const
+{
 	return "Uniform between " + std::to_string(lower) + " and " +
 		std::to_string(upper) + ".";
 }

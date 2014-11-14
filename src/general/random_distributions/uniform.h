@@ -20,19 +20,14 @@
 
 namespace molstat {
 
-/**
- * \brief Uniform distribution.
- */
-class UniformDistribution : public RandomDistribution {
+/// Uniform distribution.
+class UniformDistribution : public RandomDistribution
+{
 protected:
-	/**
-	 * \brief The lower bound of possible values.
-	 */
+	/// The lower bound of possible values.
 	double lower;
 
-	/**
-	 * \brief The upper bound of possible values.
-	 */
+	/// The upper bound of possible values.
 	double upper;
 
 public:
@@ -47,19 +42,8 @@ public:
 	 */
 	UniformDistribution(const double low, const double up);
 
-	/**
-	 * \brief Samples from the uniform distribution.
-	 *
-	 * \param[in] r The handle for GSL random number generation.
-	 * \return The random number.
-	 */
 	virtual double sample(gsl_rng_ptr &r) const override;
 
-	/**
-	 * \brief A description of this random number distribution.
-	 *
-	 * \return A string containing the description.
-	 */
 	virtual std::string info() const override;
 };
 

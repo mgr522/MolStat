@@ -18,13 +18,17 @@ namespace molstat {
 
 LognormalDistribution::LognormalDistribution(const double zeta_,
 	const double sigma_)
-	: RandomDistribution(), zeta(zeta_), sigma(sigma_) {}
+	: RandomDistribution(), zeta(zeta_), sigma(sigma_)
+{
+}
 
-double LognormalDistribution::sample(gsl_rng_ptr &r) const {
+double LognormalDistribution::sample(gsl_rng_ptr &r) const
+{
 	return gsl_ran_lognormal(r.get(), zeta, sigma);
 }
 
-std::string LognormalDistribution::info() const {
+std::string LognormalDistribution::info() const
+{
 	return "Lognormal: mean = " + std::to_string(zeta) +
 		" and stdev = " + std::to_string(sigma) + " (log space).";
 }

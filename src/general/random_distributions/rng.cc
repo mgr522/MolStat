@@ -25,7 +25,6 @@ namespace molstat {
 std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 	TokenContainer &&tokens)
 {
-
 	unique_ptr<RandomDistribution> ret;
 
 	if(tokens.size() == 0)

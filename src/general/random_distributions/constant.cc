@@ -17,13 +17,17 @@
 namespace molstat {
 
 ConstantDistribution::ConstantDistribution(const double val)
-	: RandomDistribution(), value(val) {}
+	: RandomDistribution(), value(val)
+{
+}
 
-double ConstantDistribution::sample(gsl_rng_ptr &r) const {
+double ConstantDistribution::sample(gsl_rng_ptr &r) const
+{
 	return value;
 }
 
-std::string ConstantDistribution::info() const {
+std::string ConstantDistribution::info() const
+{
 	return "Constant = " + std::to_string(value) + ".";
 }
 

@@ -17,13 +17,17 @@
 namespace molstat {
 
 GammaDistribution::GammaDistribution(const double shape_, const double scale_)
-	: RandomDistribution(), shape(shape_), scale(scale_) {}
+	: RandomDistribution(), shape(shape_), scale(scale_)
+{
+}
 
-double GammaDistribution::sample(gsl_rng_ptr &r) const {
+double GammaDistribution::sample(gsl_rng_ptr &r) const
+{
 	return gsl_ran_gamma(r.get(), shape, scale);
 }
 
-std::string GammaDistribution::info() const {
+std::string GammaDistribution::info() const
+{
 	return "Gamma: shape = " + std::to_string(shape) + " and scale = " +
 		std::to_string(scale) + ".";
 }

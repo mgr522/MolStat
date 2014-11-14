@@ -20,19 +20,14 @@
 
 namespace molstat {
 
-/**
- * \brief Normal distribution.
- */
-class NormalDistribution : public RandomDistribution {
+/// Normal distribution.
+class NormalDistribution : public RandomDistribution
+{
 protected:
-	/**
-	 * \brief The mean.
-	 */
+	/// The mean.
 	double mean;
 
-	/**
-	 * \brief The standard deviation.
-	 */
+	/// The standard deviation.
 	double stdev;
 
 public:
@@ -47,19 +42,8 @@ public:
 	 */
 	NormalDistribution(const double mean_, const double stdev_);
 
-	/**
-	 * \brief Samples from the uniform distribution.
-	 *
-	 * \param[in] r The handle for GSL random number generation.
-	 * \return The random number.
-	 */
 	virtual double sample(gsl_rng_ptr &r) const override;
 
-	/**
-	 * \brief A description of this random number distribution.
-	 *
-	 * \return A string containing the description.
-	 */
 	virtual std::string info() const override;
 };
 

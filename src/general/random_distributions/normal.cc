@@ -17,13 +17,17 @@
 namespace molstat {
 
 NormalDistribution::NormalDistribution(const double mean_, const double stdev_)
-	: RandomDistribution(), mean(mean_), stdev(stdev_) {}
+	: RandomDistribution(), mean(mean_), stdev(stdev_)
+{
+}
 
-double NormalDistribution::sample(gsl_rng_ptr &r) const {
+double NormalDistribution::sample(gsl_rng_ptr &r) const
+{
 	return gsl_ran_gaussian(r.get(), stdev) + mean;
 }
 
-std::string NormalDistribution::info() const {
+std::string NormalDistribution::info() const
+{
 	return "Normal: mean = " + std::to_string(mean) + " and stdev = " +
 		std::to_string(stdev) + ".";
 }
