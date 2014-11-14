@@ -27,14 +27,10 @@ class BasicTestModel :
 	public BasicObs3
 {
 public:
-	/**
-	 * \brief The set value for BasicObs2.
-	 */
+	/// The set value for BasicObs2.
 	constexpr static double obs2value = 4.;
 
-	/**
-	 * \brief Value to throw for BasicObs3.
-	 */
+	/// Value to throw for BasicObs3.
 	constexpr static int obs3except = 4;
 
 	virtual double Obs1(const valarray<double> &params) const override

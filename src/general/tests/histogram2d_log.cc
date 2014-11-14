@@ -33,7 +33,8 @@ using namespace std;
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
  * \endinternal
  */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	shared_ptr<molstat::BinStyle> blog2(make_shared<molstat::BinLog>(2, 10.)),
 	                              blog4(make_shared<molstat::BinLog>(4, 10.));
 	molstat::Histogram hist(2);

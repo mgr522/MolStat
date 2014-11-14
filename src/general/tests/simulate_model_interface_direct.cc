@@ -31,7 +31,8 @@
  * \return Exit status; 0 for normal.
  * \endinternal
  */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	constexpr double distvalue1 = 7.5;
 	constexpr double distvalue2 = -6.3;
 	constexpr double distvalue3 = 4.1;
@@ -46,12 +47,14 @@ int main(int argc, char **argv) {
 
 	// try to get the model. this should fail because we haven't specified
 	// a distribution for the parameter "a"
-	try{
+	try
+	{
 		basic_factory.getModel();
 
 		assert(false);
 	}
-	catch(const molstat::MissingDistribution &e) {
+	catch(const molstat::MissingDistribution &e)
+	{
 		// should be here
 	}
 
@@ -67,34 +70,40 @@ int main(int argc, char **argv) {
 
 	// try to simulate data. this should fail because we haven't set any
 	// observables or distributions yet.
-	try {
+	try
+	{
 		basic_sim.simulate(r);
 
 		assert(false);
 	}
-	catch(const molstat::NoObservables &e) {
+	catch(const molstat::NoObservables &e)
+	{
 		// we should be here
 	}
 
 	// try to set an observable with a bad index.
-	try {
+	try
+	{
 		// only 0 is available right now...
 		basic_sim.setObservable(1, type_index{ typeid(BasicObs1) });
 
 		assert(false);
 	}
-	catch(const out_of_range &e) {
+	catch(const out_of_range &e)
+	{
 		// should be here
 	}
 
 	// try to set BasicObs4
 	// this should fail because TestModel doesn't implement BasicObs4
-	try {
+	try
+	{
 		basic_sim.setObservable(0, type_index{ typeid(BasicObs4) });
 
 		assert(false);
 	}
-	catch(const molstat::IncompatibleObservable &e) {
+	catch(const molstat::IncompatibleObservable &e)
+	{
 		// should be here
 	}
 
@@ -121,12 +130,14 @@ int main(int argc, char **argv) {
 	// now load in Observable3
 	basic_sim.setObservable(1, type_index{ typeid(BasicObs3) });
 
-	try {
+	try
+	{
 		// Observable3 should throw an exception; make sure we catch it
 		basic_sim.simulate(r);
 		assert(false);
 	}
-	catch(int i) {
+	catch(int i)
+	{
 		assert(i == BasicTestModel::obs3except);
 	}
 
@@ -134,12 +145,14 @@ int main(int argc, char **argv) {
 
 	// as is, the factory object is still set to the basic model.
 	// try to set a submodel.
-	try {
+	try
+	{
 		basic_factory.addSubmodel(nullptr);
 
 		assert(false);
 	}
-	catch(const molstat::NotCompositeSimulateModel &e) {
+	catch(const molstat::NotCompositeSimulateModel &e)
+	{
 		// should be here
 	}
 
@@ -151,12 +164,14 @@ int main(int argc, char **argv) {
 			makeFactory<CompositeTestModelMultiply>() };
 
 	// try to set an invalid submodel (wrong type)
-	try {
+	try
+	{
 		cfactory_add.addSubmodel(basic_model);
 
 		assert(false);
 	}
-	catch(const molstat::IncompatibleSubmodel &e) {
+	catch(const molstat::IncompatibleSubmodel &e)
+	{
 		// should be here
 	}
 
@@ -172,12 +187,14 @@ int main(int argc, char **argv) {
 
 	// try to get access to the model
 	// this should fail because we haven't specified any submodels yet
-	try {
+	try
+	{
 		cfactory_add.getModel();
 
 		assert(false);
 	}
-	catch(const molstat::NoSubmodels &e) {
+	catch(const molstat::NoSubmodels &e)
+	{
 		// should be here
 	}
 
@@ -195,21 +212,25 @@ int main(int argc, char **argv) {
 
 	// try to get a model
 	// this should still fail because one of the distributions is unspecified
-	try {
+	try
+	{
 		subfactory1.getModel();
 
 		assert(false);
 	}
-	catch(const molstat::MissingDistribution &e) {
+	catch(const molstat::MissingDistribution &e)
+	{
 		// should be here
 	}
 
-	try {
+	try
+	{
 		subfactory2.getModel();
 
 		assert(false);
 	}
-	catch(const molstat::MissingDistribution &e) {
+	catch(const molstat::MissingDistribution &e)
+	{
 		// should be here
 	}
 
@@ -248,12 +269,14 @@ int main(int argc, char **argv) {
 
 	// set observables
 	// first try one that fails
-	try {
+	try
+	{
 		sim_add.setObservable(0, type_index{ typeid(BasicObs2) });
 
 		assert(false);
 	}
-	catch(const molstat::IncompatibleObservable &e) {
+	catch(const molstat::IncompatibleObservable &e)
+	{
 		// should be here
 	}
 
@@ -281,12 +304,14 @@ int main(int argc, char **argv) {
 		make_shared<molstat::ConstantDistribution>(distvalue4));
 
 	// try to make a simulator from the submodel... not allowed
-	try {
+	try
+	{
 		molstat::Simulator sim_bad{ subfactory_bad.getModel() };
 
 		assert(false);
 	}
-	catch(const molstat::FullModelRequired &e) {
+	catch(const molstat::FullModelRequired &e)
+	{
 		// should be here
 	}
 
@@ -305,12 +330,14 @@ int main(int argc, char **argv) {
 		assert(abs(data[0] - (distvalue1 + distvalue2)) < 1.e-6);
 
 		// setting BasicObs1 should fail because the submodel doesn't support it
-		try {
+		try
+		{
 			sim.setObservable(1, type_index{ typeid(BasicObs1) });
 
 			assert(false);
 		}
-		catch(const molstat::IncompatibleObservable &e) {
+		catch(const molstat::IncompatibleObservable &e)
+		{
 			// should be here
 		}
 	}

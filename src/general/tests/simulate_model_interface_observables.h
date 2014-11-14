@@ -27,10 +27,13 @@ using namespace std;
  * \brief Dummy observable class.
  * \endinternal
  */
-class BasicObs1 : public molstat::Observable<BasicObs1> {
+class BasicObs1 : public molstat::Observable<BasicObs1>
+{
 public:
 	BasicObs1() :
-		Observable(&BasicObs1::Obs1) {}
+		Observable(&BasicObs1::Obs1)
+	{
+	}
 
 	virtual ~BasicObs1() = default;
 
@@ -51,7 +54,9 @@ public:
 class BasicObs2 : public molstat::Observable<BasicObs2> {
 public:
 	BasicObs2() :
-		Observable(&BasicObs2::Obs2) {}
+		Observable(&BasicObs2::Obs2)
+	{
+	}
 
 	virtual ~BasicObs2() = default;
 
@@ -72,7 +77,9 @@ public:
 class BasicObs3 : public molstat::Observable<BasicObs3> {
 public:
 	BasicObs3() :
-		Observable(&BasicObs3::Obs3) {}
+		Observable(&BasicObs3::Obs3)
+	{
+	}
 
 	virtual ~BasicObs3() = default;
 
@@ -93,7 +100,9 @@ public:
 class BasicObs4 : public molstat::Observable<BasicObs4> {
 public:
 	BasicObs4() :
-		Observable(&BasicObs4::Obs4) {}
+		Observable(&BasicObs4::Obs4)
+	{
+	}
 
 	virtual ~BasicObs4() = default;
 

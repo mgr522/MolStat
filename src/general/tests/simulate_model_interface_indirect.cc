@@ -30,7 +30,8 @@
  * \return Exit status; 0 for normal.
  * \endinternal
  */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	constexpr double distvalue = 7.5;
 
 	map<string, molstat::SimulateModelFactoryFunction> models;
@@ -60,12 +61,14 @@ int main(int argc, char **argv) {
 
 	// try to get the model. this should fail because we haven't specified
 	// a distribution for the parameter "a"
-	try{
+	try
+	{
 		factory.getModel();
 
 		assert(false);
 	}
-	catch(const molstat::MissingDistribution &e) {
+	catch(const molstat::MissingDistribution &e)
+	{
 		// should be here
 	}
 
@@ -79,34 +82,40 @@ int main(int argc, char **argv) {
 
 	// try to simulate data. this should fail because we haven't set any
 	// observables or distributions yet.
-	try {
+	try
+	{
 		sim.simulate(r);
 
 		assert(false);
 	}
-	catch(const molstat::NoObservables &e) {
+	catch(const molstat::NoObservables &e)
+	{
 		// we should be here
 	}
 
 	// try to set an observable with a bad index.
-	try {
+	try
+	{
 		// only 0 is available right now...
 		sim.setObservable(1, observables.at("obs1"));
 
 		assert(false);
 	}
-	catch(const out_of_range &e) {
+	catch(const out_of_range &e)
+	{
 		// should be here
 	}
 
 	// try to set Observable4
 	// this should fail because TestModel doesn't implement Observable4
-	try {
+	try
+	{
 		sim.setObservable(0, observables.at("obs4"));
 
 		assert(false);
 	}
-	catch(const molstat::IncompatibleObservable &e) {
+	catch(const molstat::IncompatibleObservable &e)
+	{
 		// should be here
 	}
 
@@ -133,12 +142,14 @@ int main(int argc, char **argv) {
 	// now load in Observable3
 	sim.setObservable(1, observables.at("obs3"));
 
-	try {
+	try
+	{
 		// Observable3 should throw an exception; make sure we catch it
 		sim.simulate(r);
 		assert(false);
 	}
-	catch(int i) {
+	catch(int i)
+	{
 		assert(i == BasicTestModel::obs3except);
 	}
 
