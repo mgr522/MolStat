@@ -28,7 +28,9 @@ class IdentityObservable : public Observable<IdentityObservable>
 {
 public:
 	IdentityObservable()
-		: Observable<IdentityObservable>(&IdentityObservable::identity) {}
+		: Observable<IdentityObservable>(&IdentityObservable::identity)
+	{
+	}
 
 	virtual ~IdentityObservable() = default;
 
@@ -48,28 +50,12 @@ public:
  * \brief Dummy model that implements the dummy identity observable.
  * \endinternal
  */
-class IdentityModel :
-	public IdentityObservable
+class IdentityModel : public IdentityObservable
 {
 protected:
-	/**
-	 * \internal
-	 * \brief List of required distributions.
-	 *
-	 * \return The list of required distributions.
-	 * \endinternal
-	 */
 	virtual std::vector<std::string> get_names() const override;
 
 public:
-	/**
-	 * \internal
-	 * \brief Gets the identity observable.
-	 *
-	 * \param[in] params A set of model parameters.
-	 * \return The identity observable.
-	 * \endinternal
-	 */
 	virtual double identity(const std::valarray<double> &params) const override;
 };
 

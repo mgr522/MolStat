@@ -13,12 +13,11 @@
 #include "simulate_model.h"
 #include "simulator_exceptions.h"
 
-namespace molstat
-{
+namespace molstat {
 
 SimulateModelFactory &SimulateModelFactory::setDistribution(std::string name,
 	std::shared_ptr<const RandomDistribution> dist,
-	bool *used_dist /*= nullptr */)
+	bool *used_dist /* = nullptr */)
 {
 	// set the distribution in the model
 	const std::size_t length = model->get_num_parameters();

@@ -29,11 +29,10 @@ namespace molstat {
  * This class contains the actual model used to simulate data and functions
  * for constructing the model, setting observables, etc.
  */
-class Simulator {
+class Simulator
+{
 private:
-	/**
-	 * \brief The actual model used to simulate data.
-	 */
+	/// The actual model used to simulate data.
 	std::shared_ptr<SimulateModel> model;
 
 	/**

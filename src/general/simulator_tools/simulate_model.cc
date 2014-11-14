@@ -15,35 +15,41 @@
 
 namespace molstat {
 
-SimulateModelType SimulateModel::getModelType() const {
+SimulateModelType SimulateModel::getModelType() const
+{
 	return std::type_index{ typeid(SimulateModel) };
 }
 
-std::size_t SimulateModel::get_num_parameters() const {
+std::size_t SimulateModel::get_num_parameters() const
+{
 	return get_names().size();
 }
 
 ObservableFunction SimulateModel::getObservableFunction(
-	const ObservableIndex &obs) const {
-
+	const ObservableIndex &obs) const
+{
 	ObservableFunction obsfunc;
 
-	try {
+	try
+	{
 		// get the observable's factory and then bind it to this
 		obsfunc = (compatible_observables.at(obs))(shared_from_this());
 	}
-	catch(const std::out_of_range &e) {
+	catch(const std::out_of_range &e)
+	{
 		throw IncompatibleObservable();
 	}
 
 	return obsfunc;
 }
 
-std::valarray<double> SimulateModel::generateParameters(gsl_rng_ptr &r) const {
+std::valarray<double> SimulateModel::generateParameters(gsl_rng_ptr &r) const
+{
 	const std::size_t length = get_num_parameters();
 	std::valarray<double> ret(length);
 
-	for(std::size_t j = 0; j < length; ++j) {
+	for(std::size_t j = 0; j < length; ++j)
+	{
 		ret[j] = dists[j]->sample(r);
 	}
 

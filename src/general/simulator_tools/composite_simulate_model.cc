@@ -15,11 +15,13 @@
 
 namespace molstat {
 
-std::size_t CompositeSimulateModel::get_num_composite_parameters() const {
+std::size_t CompositeSimulateModel::get_num_composite_parameters() const
+{
 	return get_names().size();
 }
 
-std::size_t CompositeSimulateModel::get_num_parameters() const {
+std::size_t CompositeSimulateModel::get_num_parameters() const
+{
 	// first get the number of parameters required directly
 	std::size_t ret{ get_num_composite_parameters() };
 
@@ -30,19 +32,21 @@ std::size_t CompositeSimulateModel::get_num_parameters() const {
 	return ret;
 }
 
-std::valarray<double> CompositeSimulateModel::generateParameters(gsl_rng_ptr &r)
-	const {
-
+std::valarray<double> CompositeSimulateModel::generateParameters(
+	gsl_rng_ptr &r) const
+{
 	std::size_t tally = get_num_composite_parameters();
 	std::valarray<double> ret(get_num_parameters());
 
 	// simulate the parameters for the composite model
-	for(std::size_t j = 0; j < tally; ++j) {
+	for(std::size_t j = 0; j < tally; ++j)
+	{
 		ret[j] = dists[j]->sample(r);
 	}
 
 	// go through the submodels, having them simulate parameters
-	for(const auto submodel : submodels) {
+	for(const auto submodel : submodels)
+	{
 		std::size_t submodel_length = submodel->get_num_parameters();
 
 		ret[std::slice(tally, submodel_length, 1)]

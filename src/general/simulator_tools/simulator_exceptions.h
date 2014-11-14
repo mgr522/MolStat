@@ -19,9 +19,10 @@ namespace molstat {
 
 /**
  * \brief Exception thrown when a model is missing one of its required
- *    molstat::RandomDistributions.
+ *    {molstat::RandomDistribution}s.
  */
-class MissingDistribution : public std::logic_error {
+class MissingDistribution : public std::logic_error
+{
 public:
 	MissingDistribution() = delete;
 	virtual ~MissingDistribution() = default;
@@ -33,7 +34,8 @@ public:
 	 * \param[in] name The name of the missing distribution.
 	 */
 	MissingDistribution(const std::string &name)
-		: std::logic_error("Missing the distribution \"" + name + "\".") {
+		: std::logic_error("Missing the distribution \"" + name + "\".")
+	{
 	}
 };
 
@@ -41,20 +43,22 @@ public:
  * \brief Exception thrown when the desired observable is incompatible with
  *    the model used to simulate data.
  */
-class IncompatibleObservable : public std::logic_error {
+class IncompatibleObservable : public std::logic_error
+{
 public:
 	IncompatibleObservable() :
-		std::logic_error("Incompatible observable.") {
+		std::logic_error("Incompatible observable.")
+	{
 	}
 };
 
-/**
- * \brief Exception thrown when no observables have been requested.
- */
-class NoObservables : public std::logic_error {
+/// Exception thrown when no observables have been requested.
+class NoObservables : public std::logic_error
+{
 public:
 	NoObservables() :
-		std::logic_error("No observables specified.") {
+		std::logic_error("No observables specified.")
+	{
 	}
 };
 
@@ -62,10 +66,12 @@ public:
  * \brief Exception thrown when a molstat::CompositeObservable is requested
  *    by a model that is not a molstat::CompositeSimulateModel.
  */
-class NotCompositeSimulateModel : public std::logic_error {
+class NotCompositeSimulateModel : public std::logic_error
+{
 public:
 	NotCompositeSimulateModel() :
-		std::logic_error("Not a composite model.") {
+		std::logic_error("Not a composite model.")
+	{
 	}
 };
 
@@ -73,10 +79,12 @@ public:
  * \brief Exception thrown when a molstat::SimulateModel is not the correct type
  *    to be used with the specified molstat::CompositeSimulateModel.
  */
-class IncompatibleSubmodel : public std::logic_error {
+class IncompatibleSubmodel : public std::logic_error
+{
 public:
 	IncompatibleSubmodel() :
-		std::logic_error("Incompatible submodel.") {
+		std::logic_error("Incompatible submodel.")
+	{
 	}
 };
 
@@ -84,10 +92,12 @@ public:
  * \brief Exception thrown when a molstat::CompositeSimulateModel is invoked
  *    without any submodels specified.
  */
-class NoSubmodels : public std::logic_error {
+class NoSubmodels : public std::logic_error
+{
 public:
 	NoSubmodels() :
-		std::logic_error("No submodels specified.") {
+		std::logic_error("No submodels specified.")
+	{
 	}
 };
 
@@ -95,10 +105,12 @@ public:
  * \brief Exception thrown when a submodel type is suppled to a
  *    molstat::Simulator.
  */
-class FullModelRequired : public std::logic_error {
+class FullModelRequired : public std::logic_error
+{
 public:
 	FullModelRequired() :
-		std::logic_error("Simulators cannot directly use submodels.") {
+		std::logic_error("Simulators cannot directly use submodels.")
+	{
 	}
 };
 

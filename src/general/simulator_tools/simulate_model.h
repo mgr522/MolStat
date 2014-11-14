@@ -80,7 +80,8 @@ using SimulateModelType = std::type_index;
  * all required random number distributions are specified before using the
  * model to simulate data.
  */
-class SimulateModel : public std::enable_shared_from_this<SimulateModel> {
+class SimulateModel : public std::enable_shared_from_this<SimulateModel>
+{
 protected:
 	/**
 	 * \brief Factories that produce an observable's function, assuming the
@@ -163,7 +164,8 @@ public:
  * observables. Composite models that require a specific type of submodel
  * should override the getModelType function to return the submodel type.
  */
-class CompositeSimulateModel : public virtual SimulateModel {
+class CompositeSimulateModel : public virtual SimulateModel
+{
 protected:
 	CompositeSimulateModel() = default;
 
@@ -190,6 +192,9 @@ public:
 
 	/**
 	 * \brief Gets the number of model parameters for this model.
+	 *
+	 * This accumulates all submodel parameters as well as any parameters
+	 * required by the composite model itself.
 	 *
 	 * \return The number of parameters used by the model for calculating
 	 *    observables.
@@ -219,13 +224,12 @@ public:
  * This class instantiates models at runtime, making sure the model is in a
  * valid state before giving the user access to it.
  */
-class SimulateModelFactory {
+class SimulateModelFactory
+{
 private:
 	SimulateModelFactory() = default;
 
-	/**
-	 * \brief Pointer to the model being constructed.
-	 */
+	/// Pointer to the model being constructed.
 	std::shared_ptr<SimulateModel> model;
 
 	/**
@@ -241,9 +245,7 @@ private:
 	 */
 	std::set<std::string> remaining_names;
 
-	/**
-	 * \brief Cache of the names of distributions required by the model.
-	 */
+	/// Cache of the names of distributions required by the model.
 	std::vector<std::string> model_names;
 
 public:
@@ -313,14 +315,12 @@ public:
  * \return A function that gives the observable's molstat::ObservableIndex.
  */
 template<typename T>
-inline ObservableIndex GetObservableIndex() {
+inline ObservableIndex GetObservableIndex()
+{
 	return std::type_index{ typeid(T) };
 }
 
-/**
- * \brief Shortcut for a function that constructs a
- *    molstat::SimulateModelFactory.
- */
+/// Shortcut for a function that constructs a molstat::SimulateModelFactory.
 using SimulateModelFactoryFunction =
 	std::function<SimulateModelFactory()>;
 
@@ -332,7 +332,8 @@ using SimulateModelFactoryFunction =
  * \return A function that creates the model when invoked.
  */
 template<typename T>
-inline SimulateModelFactoryFunction GetSimulateModelFactory() {
+inline SimulateModelFactoryFunction GetSimulateModelFactory()
+{
 	return [] () -> SimulateModelFactory {
 		return SimulateModelFactory::makeFactory<T>();
 	};
@@ -340,7 +341,8 @@ inline SimulateModelFactoryFunction GetSimulateModelFactory() {
 
 // templated definitions
 template<typename T>
-SimulateModelFactory SimulateModelFactory::makeFactory() {
+SimulateModelFactory SimulateModelFactory::makeFactory()
+{
 	using namespace std;
 
 	SimulateModelFactory factory;

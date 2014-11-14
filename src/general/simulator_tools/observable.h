@@ -45,7 +45,8 @@ namespace molstat {
  * \tparam T The derived class for a specific observable.
  */
 template<typename T>
-class Observable : public virtual SimulateModel {
+class Observable : public virtual SimulateModel
+{
 public:
 	Observable() = delete;
 	virtual ~Observable() = default;
@@ -68,14 +69,15 @@ public:
 	 *
 	 * \param[in] obsfunc Member pointer to the observable function.
 	 */
-	Observable(double (T::*obsfunc)(const std::valarray<double> &) const) {
+	Observable(double (T::*obsfunc)(const std::valarray<double> &) const)
+	{
 		using namespace std;
 
 		// add the function to the list of compatible observables
 		compatible_observables[GetObservableIndex<T>()] =
 			[obsfunc] (shared_ptr<const SimulateModel> model)
-				-> ObservableFunction {
-
+				-> ObservableFunction
+			{
 				// cast the model to the observable (derived) class
 				shared_ptr<const T> cast = dynamic_pointer_cast<const T>(model);
 
@@ -85,10 +87,10 @@ public:
 
 				// make the actual Observable function
 				return [cast, obsfunc] (const std::valarray<double> &params)
-					-> double {
-
-					return (cast.get()->*obsfunc)(params);
-				};
+						-> double
+					{
+						return (cast.get()->*obsfunc)(params);
+					};
 			};
 	}
 };
@@ -107,7 +109,8 @@ public:
  * \tparam T The derived class for a specific observable.
  */
 template<typename T>
-class CompositeObservable : public virtual CompositeSimulateModel {
+class CompositeObservable : public virtual CompositeSimulateModel
+{
 private:
 	/**
 	 * \brief Constructs a std::valarray from a std::list.
@@ -155,7 +158,8 @@ public:
 	 *    submodels. This operation should probably be associative and
 	 *    commutative.
 	 */
-	CompositeObservable(const std::function<double(double, double)> &oper) {
+	CompositeObservable(const std::function<double(double, double)> &oper)
+	{
 		using namespace std;
 
 		// get the index for this observable
@@ -164,8 +168,8 @@ public:
 		// add the function to the list of compatible observables
 		compatible_observables[oindex] =
 			[oper, oindex] (shared_ptr<const SimulateModel> model)
-				-> ObservableFunction {
-
+				-> ObservableFunction
+			{
 				// cast the model to a CompositeModel class so we can access
 				// the submodels
 				shared_ptr<const CompositeSimulateModel> cmodel
@@ -195,7 +199,8 @@ public:
 				size_t tally { cparams };
 
 				// go through all of the submodels
-				for(const auto submodel : cmodel->submodels) {
+				for(const auto submodel : cmodel->submodels)
+				{
 					const size_t sub_nparam{ submodel->get_num_parameters() };
 
 					// create a list of the parameters indices that should be passed
@@ -222,31 +227,33 @@ public:
 
 				// make the actual Observable function for the composite observable
 				return [oper, subinfo] (const std::valarray<double> &params)
-					-> double {
+						-> double
+					{
+						double ret{ 0. };
+						bool isfirst{ true };
 
-					double ret{ 0. };
-					bool isfirst{ true };
+						// go through the submodels:
+						// calculate the observable of each and combine them using
+						// the specified operator
+						for(auto modelinfo : subinfo)
+						{
+							// modelinfo.first has a valarray that filters out the
+							// correct model parameters to send to the submodel.
+							// modelinfo.second is the function
+							double obs = modelinfo.second(params[modelinfo.first]);
 
-					// go through the submodels:
-					// calculate the observable of each and combine them using
-					// the specified operator
-					for(auto modelinfo : subinfo) {
-						// modelinfo.first has a valarray that filters out the
-						// correct model parameters to send to the submodel.
-						// modelinfo.second is the function
-						double obs = modelinfo.second(params[modelinfo.first]);
-
-						if(isfirst) {
-							// ret is uninitialized
-							ret = obs;
-							isfirst = false;
+							if(isfirst)
+							{
+								// ret is uninitialized
+								ret = obs;
+								isfirst = false;
+							}
+							else
+								ret = oper(ret, obs);
 						}
-						else
-							ret = oper(ret, obs);
-					}
 
-					return ret;
-				};
+						return ret;
+					};
 			};
 	}
 };
@@ -254,12 +261,13 @@ public:
 // template definitions
 template<typename T>
 std::valarray<std::size_t> CompositeObservable<T>::list2valarray(
-	const std::list<std::size_t> &list) {
-
+	const std::list<std::size_t> &list)
+{
 	std::valarray<std::size_t> ret(list.size());
 	std::size_t j = 0;
 
-	for(auto index : list) {
+	for(auto index : list)
+	{
 		ret[j] = index;
 		++j;
 	}
