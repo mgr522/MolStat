@@ -4,9 +4,7 @@
 /**
  * \internal
  * \file transport_fit_models.cc
- * \brief Implementation of the FitModel interface for its 1-dimensional
- *    (i.e., the fit function maps \f$\mathbb{R}\f$ to \f$\mathbb{R}\f$)
- *    specialization.
+ * \brief Function that loads transport fit models.
  *
  * \author Matthew G.\ Reuter
  * \date September 2014
@@ -24,8 +22,8 @@ using namespace std;
 namespace molstat {
 
 void load_transport_models(
-	std::map<std::string, FitModelFactory<1>> &models) {
-
+	std::map<std::string, FitModelFactory<1>> &models)
+{
 	models["symmetricresonant"] =
 		GetFitModelFactory<SymmetricResonantFitModel, 1>();
 

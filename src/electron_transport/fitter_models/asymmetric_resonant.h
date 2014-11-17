@@ -40,19 +40,10 @@ namespace molstat {
 class AsymmetricResonantFitModel : public FitModel<1>
 {
 protected:
-	/**
-	 * \internal
-	 * \brief Maximum number of quadrature points for the adaptive quadrature
-	 *    GSL routines.
-	 * \endinternal
-	 */
+	/// Maximum number of quadrature points for the adaptive GSL routines.
 	const std::size_t nquad = 2000;
 
-	/**
-	 * \internal
-	 * \brief Integration workspace for GSL numerical integration.
-	 * \endinternal
-	 */
+	/// Integration workspace for GSL numerical integration.
 	std::unique_ptr<gsl_integration_workspace,
 	                decltype(&gsl_integration_workspace_free)> w;
 
@@ -142,24 +133,16 @@ protected:
 	static double int_dp_dr(double x, void *params);
 
 public:
-	/**
-	 * \brief Index for the \f$\gamma_\mathrm{L}\f$ fitting parameter.
-	 */
+	/// Index for the \f$\gamma_\mathrm{L}\f$ fitting parameter.
 	const static int GAMMAL = 0;
 
-	/**
-	 * \brief Index for the \f$\gamma_\mathrm{R}\f$ fitting parameter.
-	 */
+	/// Index for the \f$\gamma_\mathrm{R}\f$ fitting parameter.
 	const static int GAMMAR = 1;
 
-	/**
-	 * \brief Index for the \f$r\f$ fitting parameter.
-	 */
+	/// Index for the \f$r\f$ fitting parameter.
 	const static int R = 2;
 
-	/**
-	 * \brief Index for the norm fitting parameter.
-	 */
+	/// Index for the norm fitting parameter.
 	const static int NORM = 3;
 
 	AsymmetricResonantFitModel() = delete;
@@ -230,27 +213,17 @@ public:
 		const std::vector<double> &fitparam, const std::array<double, 1> &x,
 		const double f) const override;
 
-	/**
-	 * \brief Appends default initial guesses to a list.
-	 *
-	 * \param[in,out] guess A list of initial guesses.
-	 */
 	virtual void append_default_guesses(std::list<std::vector<double>> &guess)
 		const override;
 
-	/**
-	 * \brief Prints the fit variables from a gsl_vector.
-	 *
-	 * \param[in] out The output stream.
-	 * \param[in] fitparam The fitting parameters.
-	 */
 	virtual void print_fit(std::ostream &out,
 		const std::vector<double> &fitparam) const override;
 
 	/**
 	 * \brief Perform post-processing on a set of fit parameters.
 	 *
-	 * This basic implementation does nothing.
+	 * Makes sure the `gammaL`, `gammaR`, and `r` are all non-negative. Also,
+	 * for convenience, makes gammaL the smaller than gammaR.
 	 *
 	 * \param[in,out] fitparams The fitting parameters.
 	 */

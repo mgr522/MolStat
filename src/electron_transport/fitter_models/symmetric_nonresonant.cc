@@ -20,23 +20,27 @@ using namespace std;
 namespace molstat {
 
 std::vector<double> SymmetricNonresonantFitModel::create_initial_guess(
-	const std::map<std::string, double> &values) const {
-
+	const std::map<std::string, double> &values) const
+{
 	vector<double> ret(3);
 
-	try {
+	try
+	{
 		ret[C] = values.at("c");
 		ret[D] = values.at("d");
 	}
-	catch(const out_of_range &e) {
+	catch(const out_of_range &e)
+	{
 		throw invalid_argument("Initial guesses for the Symmetric" \
 			"NonresonantFitModel must specify \"c\" and \"d\" parameters.");
 	}
 
-	try {
+	try
+	{
 		ret[NORM] = values.at("norm");
 	}
-	catch(const out_of_range &e) {
+	catch(const out_of_range &e)
+	{
 		// norm not specified
 		ret[NORM] = 1.;
 	}
@@ -46,12 +50,13 @@ std::vector<double> SymmetricNonresonantFitModel::create_initial_guess(
 
 SymmetricNonresonantFitModel::SymmetricNonresonantFitModel(
 	const std::list<std::pair<std::array<double, 1>, double>> &data)
-	: FitModel<1>(3, data) {
+	: FitModel<1>(3, data)
+{
 }
 
 double SymmetricNonresonantFitModel::resid(const std::vector<double> &fitparam,
-	const std::array<double, 1> &x, const double f) const {
-
+	const std::array<double, 1> &x, const double f) const
+{
 	// get the current parameters and independent variable
 	const double g = x[0];
 	const double c = fitparam[C];
@@ -68,8 +73,8 @@ double SymmetricNonresonantFitModel::resid(const std::vector<double> &fitparam,
 
 std::vector<double> SymmetricNonresonantFitModel::jacobian(
 	const std::vector<double> &fitparam,
-	const std::array<double, 1> &x, const double f) const {
-
+	const std::array<double, 1> &x, const double f) const
+{
 	// get the current parameters and independent variable
 	const double g = x[0];
 	const double c = fitparam[C];
@@ -91,15 +96,17 @@ std::vector<double> SymmetricNonresonantFitModel::jacobian(
 }
 
 void SymmetricNonresonantFitModel::append_default_guesses(
-	std::list<std::vector<double>> &guess) const {
-
+	std::list<std::vector<double>> &guess) const
+{
 	const list<double> list_c{50., 100., 200., 300., 400., 500.},
 		list_d{5., 10., 20., 30., 40., 50.};
 
 	for(list<double>::const_iterator c = list_c.cbegin();
-		c != list_c.cend(); ++c) {
+		c != list_c.cend(); ++c)
+	{
 	for(list<double>::const_iterator d = list_d.cbegin();
-		d != list_d.cend(); ++d) {
+		d != list_d.cend(); ++d)
+	{
 
 		vector<double> init(nfit);
 		init[C] = *c;
@@ -111,8 +118,8 @@ void SymmetricNonresonantFitModel::append_default_guesses(
 }
 
 void SymmetricNonresonantFitModel::print_fit(std::ostream &out,
-	const std::vector<double> &fitparam) const {
-
+	const std::vector<double> &fitparam) const
+{
 	out << "c=" << scientific << setprecision(4) << fitparam[C] << ", d=" <<
 		scientific << setprecision(4) << fitparam[D] << ", norm=" << scientific
 		<< setprecision(4) << fitparam[NORM];

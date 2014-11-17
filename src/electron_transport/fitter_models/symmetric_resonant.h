@@ -61,14 +61,10 @@ protected:
 		const std::map<std::string, double> &values) const override;
 
 public:
-	/**
-	 * \brief Index for the gamma fitting parameter.
-	 */
+	/// Index for the gamma fitting parameter.
 	const static int GAMMA = 0;
 
-	/**
-	 * \brief Index for the norm fitting parameter.
-	 */
+	/// Index for the norm fitting parameter.
 	const static int NORM = 1;
 
 	SymmetricResonantFitModel() = delete;
@@ -118,32 +114,21 @@ public:
 	/* There is no redundency in calculating fit_function and jacobian, so we
 	 * can use the simple default resid_j function in FitModel<1>. */
 
-	/**
-	 * \brief Appends default initial guesses to a list.
-	 *
-	 * \param[in,out] guess A list of initial guesses.
-	 */
 	virtual void append_default_guesses(std::list<std::vector<double>> &guess)
 		const override;
 
-	/**
-	 * \brief Prints the fit variables from a gsl_vector.
-	 *
-	 * \param[in] out The output stream.
-	 * \param[in] fitparam The fitting parameters.
-	 */
 	virtual void print_fit(std::ostream &out, const std::vector<double> &fitparam)
 		const override;
 
 	/**
 	 * \brief Perform post-processing on a set of fit parameters.
 	 *
-	 * This basic implementation does nothing.
+	 * Makes sure `gamma` is positive.
 	 *
 	 * \param[in,out] fitparams The fitting parameters.
 	 */
 	virtual void process_fit_parameters(std::vector<double> &fitparams) const
-	override;
+		override;
 };
 
 } // namespace molstat
