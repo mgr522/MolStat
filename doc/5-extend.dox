@@ -4,6 +4,7 @@
 /**
 \page extend_molstat Extending MolStat
 
+\if fullref
 This chapter describes how to extend the functionality of MolStat. \ref sec_add_general describes how to add, e.g., random number distributions and histogram binning styles. \ref sec_add_simulate describes how to add simulator models and observables. \ref sec_add_fit_model describes how to add fitter models. The implementation and incorporation of any of these concepts into MolStat is designed to be straightforward.
 
 \section sec_style_guide MolStat Style Guidelines
@@ -88,4 +89,10 @@ Much of the fitting procedure is handled internally by the GSL, and the molstat:
    models["symmetricresonant"] = GetFitModelFactory<SymmetricResonantFitModel, 1>();
    \endverbatim
    The key string should be in lowercase in the code; it is case insensitive in the input file.
+
+\endif
+
+\if userman
+Please see the full reference for information on extending MolStat.
+\endif
 */
