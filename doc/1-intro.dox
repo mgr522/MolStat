@@ -95,18 +95,19 @@ MolStat (c) 2014, Northwestern University.
 You can cite this software by referencing, as appropriate, \cite reuter-2243 and \cite williams-5937. Thanks!
 
 \section acknowledgments Acknowledgments
-I thank the following people for their help, insight, and comments in the development of MolStat and the theories behind it.
-   - Prof.\ Mark Ratner (Northwestern University)
-   - Prof.\ Herre van der Zandt (Delft University of Technology)
+The following people have contributed to the code.
+   - Dr.\ Matthew G.\ Reuter (Northwestern University), 2012-present
+   
+     mgreuter@u.northwestern.edu
+   - Mr.\ Patrick D.\ Williams (Oak Ridge High School), 2012
+   - Mr.\ Gaibo Zhang (Oak Ridge High School), 2013
+
+We thank the following people for their help, insight, and comments in the development of MolStat and the theories behind it.
+   - Prof.\ Mark A.\ Ratner (Northwestern University)
+   - Prof.\ Herre S.\ J.\ van der Zandt (Delft University of Technology)
    - Prof.\ Latha Venkataraman (Columbia University)
-   - Mr.\ Patrick Williams (Oak Ridge High School)
-	- Mr.\ Gaibo Zhang (Oak Ridge High School)
    .
-I also gratefully acknowledge financial and computational support from
+Financial and computational support was graciously received from
    -# The Multidisciplinary University Research Initiative (MURI) program of the U.S.\ Air Force Office of Scientific Research (AFOSR), under grant FA9550-14-1-003. (Versions 1.0 -- 1.2.)
    -# The Wigner Fellowship program at the Oak Ridge National Laboratory, which is managed by UT-Batelle, LLC, for the US Department of Energy under contract DE-AC05-00OR22725. (Conception and pre-release versions of the code.)
-
-Matthew G.\ Reuter \n
-mgreuter@u.northwestern.edu \n
-November 2014
 */
