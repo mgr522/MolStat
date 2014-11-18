@@ -45,8 +45,8 @@ namespace transport {
  */
 class SymTwoSiteChannel : public Channel,
 	public DifferentialConductance,
-	public StaticConductance {
-
+	public StaticConductance
+{
 private:
 	/**
 	 * \internal
@@ -64,37 +64,22 @@ private:
 		const double gamma, const double beta);
 
 public:
-	/**
-	 * \brief Container index for the Fermi energy.
-	 */
+	/// Container index for the Fermi energy.
 	static const std::size_t Index_EF;
 
-	/**
-	 * \brief Container index for the applied bias.
-	 */
+	/// Container index for the applied bias.
 	static const std::size_t Index_V;
 
-	/**
-	 * \brief Container index for the site energy.
-	 */
+	/// Container index for the site energy.
 	static const std::size_t Index_epsilon;
 
-	/**
-	 * \brief Container index for the site-lead coupling.
-	 */
+	/// Container index for the site-lead coupling.
 	static const std::size_t Index_gamma;
 
-	/**
-	 * \brief Container index for the inter-site coupling.
-	 */
+	/// Container index for the inter-site coupling.
 	static const std::size_t Index_beta;
 
 protected:
-	/**
-	 * \brief Gets the names of model parameters for this channel.
-	 *
-	 * \return The names of model parameters.
-	 */
 	virtual std::vector<std::string> get_names() const override;
 
 public:
@@ -113,21 +98,7 @@ public:
 	static double transmission(const double e, const double v, const double eps,
 		const double gamma, const double beta);
 
-	/**
-	 * \brief Returns the differential conductance for a set of model
-	 *    parameters.
-	 * 
-	 * \param[in] params A set of model parameters.
-	 * \return The differential conductance.
-	 */
 	virtual double DiffG(const std::valarray<double> &params) const override;
-
-	/**
-	 * \brief Returns the static conductance for a set of model parameters.
-	 * 
-	 * \param[in] params A set of model parameters.
-	 * \return The static conductance.
-	 */
 	virtual double StaticG(const std::valarray<double> &params) const override;
 };
 

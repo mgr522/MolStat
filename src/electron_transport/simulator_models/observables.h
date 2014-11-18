@@ -18,14 +18,13 @@
 namespace molstat {
 namespace transport {
 
-/**
- * \brief Observable class for the applied bias.
- */
+/// Observable class for the applied bias.
 class AppliedBias : public Observable<AppliedBias>
 {
 public:
 	AppliedBias()
-		: Observable<AppliedBias>(&AppliedBias::AppBias) {}
+		: Observable<AppliedBias>(&AppliedBias::AppBias)
+	{}
 
 	virtual ~AppliedBias() = default;
 
@@ -38,14 +37,13 @@ public:
 	virtual double AppBias(const std::valarray<double> &params) const = 0;
 };
 
-/**
- * \brief Observable class for the static conductance.
- */
+/// Observable class for the static conductance.
 class StaticConductance : public Observable<StaticConductance>
 {
 public:
 	StaticConductance()
-		: Observable<StaticConductance>(&StaticConductance::StaticG) {}
+		: Observable<StaticConductance>(&StaticConductance::StaticG)
+	{}
 
 	virtual ~StaticConductance() = default;
 
@@ -58,14 +56,13 @@ public:
 	virtual double StaticG(const std::valarray<double> &params) const = 0;
 };
 
-/**
- * \brief Observable class for the differential conductance.
- */
+/// Observable class for the differential conductance.
 class DifferentialConductance : public Observable<DifferentialConductance>
 {
 public:
 	DifferentialConductance()
-		: Observable<DifferentialConductance>(&DifferentialConductance::DiffG) {}
+		: Observable<DifferentialConductance>(&DifferentialConductance::DiffG)
+	{}
 
 	virtual ~DifferentialConductance() = default;
 

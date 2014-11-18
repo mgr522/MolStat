@@ -31,10 +31,9 @@ namespace transport {
 class Channel : public virtual SimulateModel
 {
 protected:
-	/**
-	 * \brief Identifies this model as a channel.
-	 */
-	virtual SimulateModelType getModelType() const override {
+	/// Identifies this model as a channel.
+	virtual SimulateModelType getModelType() const override
+	{
 		return std::type_index{ typeid(Channel) };
 	}
 };
@@ -47,32 +46,15 @@ class TransportJunction :
 	public CompositeObservable<StaticConductance>,
 	public CompositeObservable<DifferentialConductance>
 {
-
 public:
-	/**
-	 * \brief Container index for the Fermi energy.
-	 */
+	/// Container index for the Fermi energy.
 	static const std::size_t Index_EF;
 
-	/**
-	 * \brief Container index for the applied bias.
-	 */
+	/// Container index for the applied bias.
 	static const std::size_t Index_V;
 
 protected:
-	/**
-	 * \brief Junctions require channels for submodels.
-	 *
-	 * \return The ID for a Channel submodel.
-	 */
 	virtual SimulateModelType getSubmodelType() const override;
-
-	/**
-	 * \brief Junctions inherently require the Fermi energy and the applied
-	 *    bias.
-	 *
-	 * \return A vector containing the names of these parameters.
-	 */
 	virtual std::vector<std::string> get_names() const override;
 
 public:
@@ -82,12 +64,6 @@ public:
 	 */
 	TransportJunction();
 
-	/**
-	 * \brief Calculates the applied bias, given a set of model parameters.
-	 *
-	 * \param[in] params A set of model parameters.
-	 * \return The applied bias.
-	 */
 	virtual double AppBias(const std::valarray<double> &params) const override;
 };
 

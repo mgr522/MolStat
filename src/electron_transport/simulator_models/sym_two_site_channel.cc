@@ -23,7 +23,8 @@ const std::size_t SymTwoSiteChannel::Index_epsilon = 2;
 const std::size_t SymTwoSiteChannel::Index_gamma = 3;
 const std::size_t SymTwoSiteChannel::Index_beta = 4;
 
-std::vector<std::string> SymTwoSiteChannel::get_names() const {
+std::vector<std::string> SymTwoSiteChannel::get_names() const
+{
 	std::vector<std::string> ret(3);
 
 	// subtract two because we expect 2 parameters from the TransportJunction
@@ -35,8 +36,8 @@ std::vector<std::string> SymTwoSiteChannel::get_names() const {
 }
 
 double SymTwoSiteChannel::transmission(const double e, const double V,
-	const double eps, const double gamma, const double beta) {
-
+	const double eps, const double gamma, const double beta)
+{
 	double temp = 4.*(e-eps)*(e-eps) - 4.*beta*beta - gamma*gamma;
 
 	return 16.*gamma*gamma*beta*beta /
@@ -44,14 +45,15 @@ double SymTwoSiteChannel::transmission(const double e, const double V,
 }
 
 double SymTwoSiteChannel::static_c_integral(const double z,
-	const double eps, const double gamma, const double beta) {
-
+	const double eps, const double gamma, const double beta)
+{
 	return 2.*beta*gamma / (4.*beta*beta + gamma*gamma) *
 		real(std::complex<double>(gamma, 2.*beta)
 		* atanh(2.*(z-eps) / std::complex<double>(2.*beta, gamma)));
 }
 
-double SymTwoSiteChannel::StaticG(const std::valarray<double> &params) const {
+double SymTwoSiteChannel::StaticG(const std::valarray<double> &params) const
+{
 	// unpack the parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];
@@ -63,7 +65,8 @@ double SymTwoSiteChannel::StaticG(const std::valarray<double> &params) const {
 		static_c_integral(ef - 0.5*V, eps, gamma, beta)) / V;
 }
 
-double SymTwoSiteChannel::DiffG(const std::valarray<double> &params) const {
+double SymTwoSiteChannel::DiffG(const std::valarray<double> &params) const
+{
 	// unpack the parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];

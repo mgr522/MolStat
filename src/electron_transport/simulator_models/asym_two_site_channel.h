@@ -48,8 +48,8 @@ namespace transport {
  */
 class AsymTwoSiteChannel : public Channel,
 	public DifferentialConductance,
-	public StaticConductance {
-
+	public StaticConductance
+{
 private:
 	/**
 	 * \internal
@@ -70,42 +70,25 @@ private:
 		const double gammal, const double gammar, const double beta);
 
 public:
-	/**
-	 * \brief Container index for the Fermi energy.
-	 */
+	/// Container index for the Fermi energy.
 	static const std::size_t Index_EF;
 
-	/**
-	 * \brief Container index for the applied bias.
-	 */
+	/// Container index for the applied bias.
 	static const std::size_t Index_V;
 
-	/**
-	 * \brief Container index for the site energy.
-	 */
+	/// Container index for the site energy.
 	static const std::size_t Index_epsilon;
 
-	/**
-	 * \brief Container index for the left site-lead coupling.
-	 */
+	/// Container index for the left site-lead coupling.
 	static const std::size_t Index_gammaL;
 
-	/**
-	 * \brief Container index for the right site-lead coupling.
-	 */
+	/// Container index for the right site-lead coupling.
 	static const std::size_t Index_gammaR;
 
-	/**
-	 * \brief Container index for the inter-site coupling.
-	 */
+	/// Container index for the inter-site coupling.
 	static const std::size_t Index_beta;
 
 protected:
-	/**
-	 * \brief Gets the names of model parameters for this channel.
-	 *
-	 * \return The names of model parameters.
-	 */
 	virtual std::vector<std::string> get_names() const override;
 
 public:
@@ -125,21 +108,7 @@ public:
 	static double transmission(const double e, const double v, const double eps,
 		const double gammal, const double gammar, const double beta);
 
-	/**
-	 * \brief Returns the static conductance for a set of model parameters.
-	 *
-	 * \param[in] params A set of model parameters.
-	 * \return The static conductance for this set of parameters.
-	 */
 	double StaticG(const std::valarray<double> &params) const override;
-
-	/**
-	 * \brief Returns the differential conductance for a set of model
-	 *    parameters.
-	 *
-	 * \param[in] params A set of model parameters.
-	 * \return The differential conductance for this set of parameters.
-	 */
 	double DiffG(const std::valarray<double> &params) const override;
 };
 

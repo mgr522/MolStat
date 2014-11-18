@@ -25,8 +25,8 @@ namespace transport {
 
 void load_models(
 	std::map<std::string,
-	         SimulateModelFactoryFunction> &models) {
-
+	         SimulateModelFactoryFunction> &models)
+{
 	models.emplace(
 		to_lower("TransportJunction"),
 		GetSimulateModelFactory<TransportJunction>() );
@@ -50,8 +50,8 @@ void load_models(
 
 void load_observables(
 	std::map<std::string,
-	         ObservableIndex> &observables) {
-
+	         ObservableIndex> &observables)
+{
 	observables.emplace(
 		to_lower("AppliedBias"),
 		GetObservableIndex<AppliedBias>() );

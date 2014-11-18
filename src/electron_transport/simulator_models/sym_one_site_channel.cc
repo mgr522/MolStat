@@ -22,7 +22,8 @@ const std::size_t SymOneSiteChannel::Index_epsilon = 2;
 const std::size_t SymOneSiteChannel::Index_gamma = 3;
 const std::size_t SymOneSiteChannel::Index_a = 4;
 
-std::vector<std::string> SymOneSiteChannel::get_names() const {
+std::vector<std::string> SymOneSiteChannel::get_names() const
+{
 	std::vector<std::string> ret(3);
 
 	// subtract two because we expect 2 parameters from the TransportJunction
@@ -34,12 +35,13 @@ std::vector<std::string> SymOneSiteChannel::get_names() const {
 }
 
 double SymOneSiteChannel::transmission(const double e, const double V,
-	const double eps, const double gamma, const double a) {
-
+	const double eps, const double gamma, const double a)
+{
 	return gamma*gamma / ((e - eps - a*V)*(e - eps - a*V) + gamma*gamma);
 }
 
-double SymOneSiteChannel::DiffG(const std::valarray<double> &params) const {
+double SymOneSiteChannel::DiffG(const std::valarray<double> &params) const
+{
 	// unpack the parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];
@@ -51,7 +53,8 @@ double SymOneSiteChannel::DiffG(const std::valarray<double> &params) const {
 		(0.5 + a) * transmission(ef-0.5*V, V, eps, gamma, a);
 }
 
-double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const {
+double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const
+{
 	// unpack the parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];

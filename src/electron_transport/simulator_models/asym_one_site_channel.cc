@@ -23,7 +23,8 @@ const std::size_t AsymOneSiteChannel::Index_gammaL = 3;
 const std::size_t AsymOneSiteChannel::Index_gammaR = 4;
 const std::size_t AsymOneSiteChannel::Index_a = 5;
 
-std::vector<std::string> AsymOneSiteChannel::get_names() const {
+std::vector<std::string> AsymOneSiteChannel::get_names() const
+{
 	std::vector<std::string> ret(4);
 
 	// subtract two because we expect 2 parameters from the TransportJunction
@@ -37,13 +38,14 @@ std::vector<std::string> AsymOneSiteChannel::get_names() const {
 
 double AsymOneSiteChannel::transmission(const double e, const double V,
 	const double eps, const double gammal, const double gammar,
-	const double a) {
-
+	const double a)
+{
 	return 4.*gammal*gammar / (4.*(e - eps - a*V)*(e - eps - a*V) +
 		(gammal + gammar)*(gammal + gammar));
 }
 
-double AsymOneSiteChannel::StaticG(const std::valarray<double> &params) const {
+double AsymOneSiteChannel::StaticG(const std::valarray<double> &params) const
+{
 	// unpack the model parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];
@@ -57,7 +59,8 @@ double AsymOneSiteChannel::StaticG(const std::valarray<double> &params) const {
 		- atan(2. * (ef-eps-(0.5+a)*V) / (gammal + gammar)));
 }
 
-double AsymOneSiteChannel::DiffG(const std::valarray<double> &params) const {
+double AsymOneSiteChannel::DiffG(const std::valarray<double> &params) const
+{
 	// unpack the model parameters
 	const double &ef = params[Index_EF];
 	const double &V = params[Index_V];
