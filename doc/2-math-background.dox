@@ -83,7 +83,9 @@ The implemented random distributions are
          - `b` is \f$b\f$, the scale factor.
       - Implemented by the class GammaDistribution.
 
+\if fullref
 Details on adding random distributions are found in \ref subsec_add_rnd.
+\endif
 
 \section sec_histograms Histograms
 The next mathematical concept we cover in this chapter is that of histograms. In an abstract sense, histograms estimate the probability density function of an observable by binning a set of data into ranges. The number of measurements in each bin is, assuming a sufficient number of measurements are included, proportional to the probability density function of the observable.
@@ -107,7 +109,9 @@ Accordingly, the binning style--that is, the mask (if any) applied to data value
   .
 .
 
+\if fullref
 Details on adding binning styles are found in \ref subsec_add_binstyle.
+\endif
 
 \section sec_fitting_mathematics Fitting Data to a Functional Form
 Fitting data to a functional form is generally a non-linear least-squares problem, which is formulated as an optimization process. Suppose our observed data set is \f$\{g_j, p_j\}\f$; perhaps, as is the case for 1D conductance histograms, \f$j\f$ is a bin, \f$g_j\f$ is the conductance of that bin, and \f$p_j\f$ is the bin count (an estimation of the probability density function). We ultimately seek to minimize the functional
