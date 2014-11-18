@@ -160,7 +160,8 @@ void SimulatorInputParse::readInput(std::istream &input, std::ostream &output)
 				printError(output, lineno, "No observable, number of bins, " \
 					"and/or binning style specified.");
 			}
-			else {
+			else
+			{
 				// store the name of the observable for later
 				string obsname = molstat::to_lower(tokens.front());
 				tokens.pop();

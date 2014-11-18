@@ -22,7 +22,7 @@
 
 #include <general/simulator_tools/simulator.h>
 
-// forward declaration
+// forward declarations
 namespace molstat {
 class RandomDistribution;
 class BinStyle;
@@ -40,26 +40,20 @@ class BinStyle;
  * This separation of responsibility is to provide the user with better error
  * messages, should there be problems.
  */
-class SimulatorInputParse {
+class SimulatorInputParse
+{
 private:
-	/**
-	 * \brief Data structure that stores information about models to be created.
-	 */
-	struct ModelInformation {
-		/**
-		 * \brief The name of the model to instantiate.
-		 */
+	/// Data structure that stores information about models to be created.
+	struct ModelInformation
+	{
+		/// The name of the model to instantiate.
 		std::string name;
 
-		/**
-		 * \brief The list of distributions for this model.
-		 */
+		/// The list of distributions for this model.
 		std::map<std::string,
 		          std::shared_ptr<const molstat::RandomDistribution>> dists;
 
-		/**
-		 * \brief A list of submodels to be created.
-		 */
+		/// A list of submodels to be created.
 		std::list<ModelInformation> submodels;
 
 		/**
@@ -72,9 +66,7 @@ private:
 		std::string to_string() const;
 	};
 
-	/**
-	 * \brief The top-level simulate model information.
-	 */
+	/// The top-level simulate model information.
 	ModelInformation top_model;
 
 	/**
@@ -85,14 +77,10 @@ private:
 	         std::pair<std::string, std::shared_ptr<molstat::BinStyle>>>
 		obs_bins;
 
-	/**
-	 * \brief File name for the histogram output.
-	 */
+	/// File name for the histogram output.
 	std::string histfilename{ "histogram.dat" };
 
-	/**
-	 * \brief The number of trials (i.e., data points to simulate).
-	 */
+	/// The number of trials (i.e., data points to simulate).
 	std::size_t trials{ 0 };
 
 	/**

@@ -117,7 +117,8 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	tokens = molstat::tokenize(line);
-	if(tokens.size() < 1) {
+	if(tokens.size() < 1)
+	{
 		cerr << "Error: file name expected in line 2." << endl;
 		return 0;
 	}
@@ -125,7 +126,8 @@ int main(int argc, char **argv)
 	// read in the data points from the specified file
 	{
 		ifstream f(tokens.front());
-		if(!f) {
+		if(!f)
+		{
 			cerr << "Error opening " << tokens.front() << " for input." << endl;
 			return 0;
 		}
@@ -141,11 +143,13 @@ int main(int argc, char **argv)
 	size_t nbin = data.size();
 
 	// set the model
-	try {
+	try
+	{
 		// models.at() returns a function for instantiating the model
 		model = models.at(molstat::to_lower(modelname))(data);
 	}
-	catch(const out_of_range &e) {
+	catch(const out_of_range &e)
+	{
 		fprintf(stderr, "Error: model \"%s\" not found.\n", modelname.c_str());
 		return 0;
 	}
@@ -256,7 +260,8 @@ int main(int argc, char **argv)
 	// use the bin type to "unmask", if necessary, the data so that we fit in
 	// g, not some function of g
 	for(list<pair<array<double, 1>, double>>::iterator iter = data.begin();
-		iter != data.end(); ++iter) {
+		iter != data.end(); ++iter)
+	{
 
 		// transform the independent variable back to g
 		(*iter).first[0] = binstyle->invmask((*iter).first[0]);
@@ -278,7 +283,8 @@ int main(int argc, char **argv)
 	hasfit = false;
 
 	// perform fits with all the initial values
-	for(initval = initvals.cbegin(); initval != initvals.cend(); ++initval) {
+	for(initval = initvals.cbegin(); initval != initvals.cend(); ++initval)
+	{
 		// load the initial values
 		for(i = 0; i < model->nfit; ++i)
 			gsl_vector_set(vec.get(), i, (*initval)[i]);
@@ -287,16 +293,19 @@ int main(int argc, char **argv)
 
 		// start iterating
 		iter = 0;
-		if(iterprint) {
+		if(iterprint)
+		{
 			cout << "Iter=" << setw(3) << iter << ", ";
 			model->print_fit(cout, molstat::gsl_to_std(solver->x));
 			cout << endl;
 		}
 
-		do {
+		do
+		{
 			++iter;
 			status = gsl_multifit_fdfsolver_iterate(solver.get());
-			if(iterprint) {
+			if(iterprint)
+			{
 				cout << "Iter=" << setw(3) << iter << ", ";
 				model->print_fit(cout, molstat::gsl_to_std(solver->x));
 				cout << endl;
@@ -309,15 +318,16 @@ int main(int argc, char **argv)
 				1.0e-4);
 		} while(status == GSL_CONTINUE && iter < 1000);
 
-		if(iterprint) {
+		if(iterprint)
+		{
 			if(status != GSL_CONTINUE && status != GSL_SUCCESS)
 				cout << "   " << gsl_strerror(status) << '\n' << endl;
 		}
 
 		// did we converge, iteration out, or error out?
 		if(status != GSL_CONTINUE && status != GSL_SUCCESS &&
-			status != GSL_ENOPROG) {
-
+			status != GSL_ENOPROG)
+		{
 			// errored out
 			continue; // try the next guess of initial values
 		}
@@ -328,7 +338,8 @@ int main(int argc, char **argv)
 			cout << "Residual = " << scientific << setprecision(6) << resid <<
 				'\n' << endl;
 
-		if(!hasfit || resid < bestresid) {
+		if(!hasfit || resid < bestresid)
+		{
 			// copy over the parameters
 			bestresid = resid;
 			for(i = 0; i < model->nfit; ++i)
@@ -339,10 +350,12 @@ int main(int argc, char **argv)
 	}
 
 	// did we get a fit?
-	if(!hasfit) {
+	if(!hasfit)
+	{
 		cerr << "Error fitting." << endl;
 	}
-	else {
+	else
+	{
 		// make sure the fit parameters are good
 		model->process_fit_parameters(bestfit);
 
