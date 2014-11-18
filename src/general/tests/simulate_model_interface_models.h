@@ -180,6 +180,7 @@ public:
  * \internal
  * \brief Failed submodel; used to test what happens when a submodel fails to
  *    implement a requested observable.
+ * \endinternal
  */
 class FailedSubModel : public TestSubmodelType
 {
