@@ -6,7 +6,7 @@
  * \brief Interface for the uniform distribution.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date November 2014
  */
 
 #ifndef __uniform_h__
@@ -15,7 +15,7 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include <gsl/gsl_rng.h>
+#include <random>
 #include "rng.h"
 
 namespace molstat {
@@ -24,12 +24,9 @@ namespace molstat {
 class UniformDistribution : public RandomDistribution
 {
 protected:
-	/// The lower bound of possible values.
-	double lower;
-
-	/// The upper bound of possible values.
-	double upper;
-
+	/// The C++11 uniform distribution
+	mutable std::uniform_real_distribution<double> dist;
+	
 public:
 	UniformDistribution() = delete;
 	~UniformDistribution() = default;
@@ -37,12 +34,15 @@ public:
 	/**
 	 * \brief Constructor specifying the range.
 	 *
+	 * \throw std::invalid_argument if the lower bound is not less than the
+	 *    upper bound.
+	 *
 	 * \param[in] low The lower bound.
 	 * \param[in] up The upper bound.
 	 */
 	UniformDistribution(const double low, const double up);
 
-	virtual double sample(gsl_rng_ptr &r) const override;
+	virtual double sample(Engine &engine) const override;
 
 	virtual std::string info() const override;
 };

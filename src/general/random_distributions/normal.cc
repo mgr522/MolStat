@@ -7,29 +7,31 @@
  * \brief Implementation of the normal distribution.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date November 2014
  * \endinternal
  */
 
-#include <gsl/gsl_randist.h>
 #include "normal.h"
 
 namespace molstat {
 
-NormalDistribution::NormalDistribution(const double mean_, const double stdev_)
-	: RandomDistribution(), mean(mean_), stdev(stdev_)
+NormalDistribution::NormalDistribution(const double mean, const double stdev)
+	: RandomDistribution(), dist(mean, stdev)
 {
+	if(stdev <= 0.)
+		throw std::invalid_argument("Normal Distribution: The standard " \
+			"deviation must be positive.");
 }
 
-double NormalDistribution::sample(gsl_rng_ptr &r) const
+double NormalDistribution::sample(Engine &engine) const
 {
-	return gsl_ran_gaussian(r.get(), stdev) + mean;
+	return dist(engine);
 }
 
 std::string NormalDistribution::info() const
 {
-	return "Normal: mean = " + std::to_string(mean) + " and stdev = " +
-		std::to_string(stdev) + ".";
+	return "Normal: mean = " + std::to_string(dist.mean()) + " and stdev = " +
+		std::to_string(dist.stddev()) + ".";
 }
 
 } // namespace molstat

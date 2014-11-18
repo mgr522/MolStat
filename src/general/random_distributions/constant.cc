@@ -11,7 +11,6 @@
  * \endinternal
  */
 
-#include <gsl/gsl_randist.h>
 #include "constant.h"
 
 namespace molstat {
@@ -21,7 +20,7 @@ ConstantDistribution::ConstantDistribution(const double val)
 {
 }
 
-double ConstantDistribution::sample(gsl_rng_ptr &r) const
+double ConstantDistribution::sample(Engine &engine) const
 {
 	return value;
 }

@@ -7,29 +7,31 @@
  * \brief Implementation of the uniform distribution.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date November 2014
  * \endinternal
  */
 
-#include <gsl/gsl_randist.h>
 #include "uniform.h"
 
 namespace molstat {
 
 UniformDistribution::UniformDistribution(const double low, const double up)
-	: RandomDistribution(), lower(low), upper(up)
+	: RandomDistribution(), dist(low, up)
 {
+	if(low >= up)
+		throw std::invalid_argument("Uniform distribution: The lower bound " \
+			"must be lower than the upper bound.");
 }
 
-double UniformDistribution::sample(gsl_rng_ptr &r) const
+double UniformDistribution::sample(Engine &engine) const
 {
-	return lower + (upper - lower) * gsl_rng_uniform(r.get());
+	return dist(engine);
 }
 
 std::string UniformDistribution::info() const
 {
-	return "Uniform between " + std::to_string(lower) + " and " +
-		std::to_string(upper) + ".";
+	return "Uniform between " + std::to_string(dist.a()) + " and " +
+		std::to_string(dist.b()) + ".";
 }
 
 } // namespace molstat

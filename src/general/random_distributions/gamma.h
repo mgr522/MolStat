@@ -6,7 +6,7 @@
  * \brief Interface for the gamma distribution.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date November 2014
  */
 
 #ifndef __gamma_h__
@@ -15,7 +15,7 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include <gsl/gsl_rng.h>
+#include <random>
 #include "rng.h"
 
 namespace molstat {
@@ -24,11 +24,8 @@ namespace molstat {
 class GammaDistribution : public RandomDistribution
 {
 protected:
-	/// The shape factor.
-	double shape;
-
-	/// The scale factor.
-	double scale;
+	/// The C++11 gamma distribution
+	mutable std::gamma_distribution<double> dist;
 
 public:
 	GammaDistribution() = delete;
@@ -37,12 +34,15 @@ public:
 	/**
 	 * \brief Constructor specifying the shape and scale factors.
 	 *
-	 * \param[in] shape_ The shape factor.
-	 * \param[in] scale_ The scale factor.
+	 * \throw std::invalid_argument if either the shape or scale factor is
+	 *    non-negative.
+	 *
+	 * \param[in] shape The shape factor.
+	 * \param[in] scale The scale factor.
 	 */
-	GammaDistribution(const double shape_, const double scale_);
+	GammaDistribution(const double shape, const double scale);
 
-	virtual double sample(gsl_rng_ptr &r) const override;
+	virtual double sample(Engine &engine) const override;
 
 	virtual std::string info() const override;
 };

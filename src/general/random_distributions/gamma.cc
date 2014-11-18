@@ -7,29 +7,31 @@
  * \brief Implementation of the gamma distribution.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date November 2014
  * \endinternal
  */
 
-#include <gsl/gsl_randist.h>
 #include "gamma.h"
 
 namespace molstat {
 
-GammaDistribution::GammaDistribution(const double shape_, const double scale_)
-	: RandomDistribution(), shape(shape_), scale(scale_)
+GammaDistribution::GammaDistribution(const double shape, const double scale)
+	: RandomDistribution(), dist(shape, scale)
 {
+	if(shape <= 0. || scale <= 0.)
+		throw std::invalid_argument("Gamma Distribution: The shape and scale " \
+			"factors must be positive.");
 }
 
-double GammaDistribution::sample(gsl_rng_ptr &r) const
+double GammaDistribution::sample(Engine &engine) const
 {
-	return gsl_ran_gamma(r.get(), shape, scale);
+	return dist(engine);
 }
 
 std::string GammaDistribution::info() const
 {
-	return "Gamma: shape = " + std::to_string(shape) + " and scale = " +
-		std::to_string(scale) + ".";
+	return "Gamma: shape = " + std::to_string(dist.alpha()) + " and scale = " +
+		std::to_string(dist.beta()) + ".";
 }
 
 } // namespace molstat

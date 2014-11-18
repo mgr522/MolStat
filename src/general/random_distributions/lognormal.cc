@@ -7,30 +7,32 @@
  * \brief Implementation of the lognormal distribution.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date November 2014
  * \endinternal
  */
 
-#include <gsl/gsl_randist.h>
 #include "lognormal.h"
 
 namespace molstat {
 
-LognormalDistribution::LognormalDistribution(const double zeta_,
-	const double sigma_)
-	: RandomDistribution(), zeta(zeta_), sigma(sigma_)
+LognormalDistribution::LognormalDistribution(const double zeta,
+	const double sigma)
+	: RandomDistribution(), dist(zeta, sigma)
 {
+	if(sigma <= 0.)
+		throw std::invalid_argument("Lognormal Distribution: The standard " \
+				"deviation (sigma) must be positive.");
 }
 
-double LognormalDistribution::sample(gsl_rng_ptr &r) const
+double LognormalDistribution::sample(Engine &engine) const
 {
-	return gsl_ran_lognormal(r.get(), zeta, sigma);
+	return dist(engine);
 }
 
 std::string LognormalDistribution::info() const
 {
-	return "Lognormal: mean = " + std::to_string(zeta) +
-		" and stdev = " + std::to_string(sigma) + " (log space).";
+	return "Lognormal: mean = " + std::to_string(dist.m()) +
+		" and stdev = " + std::to_string(dist.s()) + " (log space).";
 }
 
 } // namespace molstat

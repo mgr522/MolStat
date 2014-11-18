@@ -6,7 +6,7 @@
  * \brief Interface for the lognormal distribution.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date November 2014
  */
 
 #ifndef __lognormal_h__
@@ -15,7 +15,7 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include <gsl/gsl_rng.h>
+#include <random>
 #include "rng.h"
 
 namespace molstat {
@@ -24,11 +24,8 @@ namespace molstat {
 class LognormalDistribution : public RandomDistribution
 {
 protected:
-	/// The average, in log-space.
-	double zeta;
-
-	/// The standard deviation, in log-space.
-	double sigma;
+	/// The C++11 lognormal distribution.
+	mutable std::lognormal_distribution<double> dist;
 
 public:
 	LognormalDistribution() = delete;
@@ -37,12 +34,14 @@ public:
 	/**
 	 * \brief Constructor specifying the average and standard deviation.
 	 *
-	 * \param[in] zeta_ The average (in log-space).
-	 * \param[in] sigma_ The standard deviation (in log-space).
+	 * \throw std::invalid_argument if the standard deviation is non-positive.
+	 *
+	 * \param[in] zeta The average (in log-space).
+	 * \param[in] sigma The standard deviation (in log-space).
 	 */
-	LognormalDistribution(const double zeta_, const double sigma_);
+	LognormalDistribution(const double zeta, const double sigma);
 
-	virtual double sample(gsl_rng_ptr &r) const override;
+	virtual double sample(Engine &engine) const override;
 
 	virtual std::string info() const override;
 };

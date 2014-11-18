@@ -11,7 +11,6 @@
  */
 
 #include "rng.h"
-#include <gsl/gsl_randist.h>
 #include "constant.h"
 #include "uniform.h"
 #include "normal.h"
@@ -86,10 +85,6 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 				"Unable to convert \"upper\" to a numeric value.");
 		}
 
-		if(lower >= upper)
-			throw invalid_argument("Uniform Distribution: The lower bound must " \
-				"be lower than the upper bound.");
-
 		ret = unique_ptr<RandomDistribution>(
 			new UniformDistribution(lower, upper));
 	}
@@ -122,10 +117,6 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			throw invalid_argument(
 				"Unable to convert \"stdev\" to a numeric value.");
 		}
-
-		if(stdev <= 0.)
-			throw invalid_argument("Normal Distribution: The standard deviation" \
-				" must be positive.");
 
 		ret = unique_ptr<RandomDistribution>(
 			new NormalDistribution(mean, stdev));
@@ -160,10 +151,6 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 				"Unable to convert \"sigma\" to a numeric value.");
 		}
 
-		if(sigma <= 0.)
-			throw invalid_argument("Lognormal Distribution: The standard " \
-				"deviation (sigma) must be positive.");
-
 		ret = unique_ptr<RandomDistribution>(
 			new LognormalDistribution(zeta, sigma));
 	}
@@ -195,10 +182,6 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			throw invalid_argument(
 				"Unable to convert \"scale\" to a numeric value.");
 		}
-
-		if(shape <= 0. || scale <= 0.)
-			throw invalid_argument("Gamma Distribution: The shape and scale " \
-				"factors must be positive.");
 
 		ret = unique_ptr<RandomDistribution>(
 			new GammaDistribution(shape, scale));

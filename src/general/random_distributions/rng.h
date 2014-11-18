@@ -6,7 +6,7 @@
  * \brief Interface for random number generation.
  *
  * \author Matthew G.\ Reuter
- * \date May 2014
+ * \date November 2014
  */
 
 #ifndef __rng_h__
@@ -15,19 +15,13 @@
 #include <memory>
 #include <queue>
 #include <string>
-#include <gsl/gsl_rng.h>
+#include <random>
 #include <general/string_tools.h>
 
 namespace molstat {
 
-/**
- * \brief Shortcut for a handle for GSL random number generation.
- *
- * Need to specify the deleter for unique pointer; that is, the gsl_rng_free
- * function.
- */
-using gsl_rng_ptr =
-	std::unique_ptr<gsl_rng, decltype(&gsl_rng_free)>;
+/// The type of C++11 random number engine to use.
+using Engine = std::default_random_engine;
 
 /// Interface for random number generation.
 class RandomDistribution
@@ -39,10 +33,10 @@ public:
 	/**
 	 * \brief Samples from the random number distribution.
 	 *
-	 * \param[in] r The handle for GSL random number generation.
+	 * \param[in] engine The random number engine.
 	 * \return The random number.
 	 */
-	virtual double sample(gsl_rng_ptr &r) const = 0;
+	virtual double sample(Engine &engine) const = 0;
 
 	/**
 	 * \brief A description of this random number distribution.
@@ -66,7 +60,7 @@ public:
  *    specified distribution.
  *
  * \param[in] tokens The tokens.
- * \return The RandomDistribution.
+ * \return The molstat::RandomDistribution.
  */
 std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 	TokenContainer &&tokens);

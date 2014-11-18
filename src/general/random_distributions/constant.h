@@ -15,7 +15,7 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include <gsl/gsl_rng.h>
+#include <random>
 #include "rng.h"
 
 namespace molstat {
@@ -42,7 +42,7 @@ public:
 	 */
 	ConstantDistribution(const double val);
 
-	virtual double sample(gsl_rng_ptr &r) const override;
+	virtual double sample(Engine &engine) const override;
 
 	virtual std::string info() const override;
 };
