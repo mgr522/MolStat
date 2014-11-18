@@ -117,6 +117,8 @@ public:
 	 * molstat::SimulateModel. It may sometimes be necessary, however, to
 	 * restrict the types of models we want to consider, and this function
 	 * should be overriden.
+	 *
+	 * \return The type of model this class represents.
 	 */
 	virtual SimulateModelType getModelType() const;
 

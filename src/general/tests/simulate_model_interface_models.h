@@ -66,6 +66,8 @@ protected:
 	/**
 	 * \internal
 	 * \brief Identifies a derived model as a submodel.
+	 *
+	 * \return This submodel type.
 	 * \endinternal
 	 */
 	virtual molstat::SimulateModelType getModelType() const override
