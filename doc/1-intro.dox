@@ -6,9 +6,9 @@
 
 This software package provides tools for understanding and interpreting single-molecule behavior. Single-molecule experiments generally cannot determine, let alone control, the microscopic details of the system and, as such, are usually performed many times and interpreted statistically.
 
-The key idea to understand and interpret these single-molecule measurements is that each measurement samples from a distribution of possible microscopic configurations. The observed data is thus probabilistic---not deterministic---and a combination of probability theory and statistical mechanics can be used to provide meaning to the data.
+The key idea to understanding and interpreting these single-molecule measurements is that each measurement samples from a distribution of possible microscopic configurations. The observed data is thus probabilistic---not deterministic---and a combination of probability theory and statistical mechanics can be used to provide meaning to the data.
 
-For a particular single-molecule process, there are several physical variables that determine the observed behavior. For example, \"molecular conductance\" experiments depend on the level alignment, the electrode-molecule couplings, and the applied bias. This software assumes that each of these parameters is a random variable from some distribution and that each experimental measurement samples from their collective distributions. The combination of conventional physical theories and probability theory then relates these underlying physical parameters to the observed data. Instead of measuring, for instance, *the* single-molecule conductance, the multitude of experiments collectively measures the probability density function of the conductance observable, which is more well-defined. The goal of this software package is to understand how these microscopic physical parameters relate to observables, in this statistical sense.
+For a particular single-molecule process, there are several physical variables that determine the observed behavior. For example, \"molecular conductance\" experiments depend on the level alignment, the electrode-molecule couplings, and the applied bias. This software assumes that each of these parameters is a random variable with some distribution and that each experimental measurement samples from their collective distributions. The combination of conventional physical theories and probability theory then relates these underlying physical parameters to the observed data. Instead of measuring, for instance, *the* single-molecule conductance, the multitude of experiments collectively measures the probability density function of the conductance observable, which is more well-defined. The goal of this software package is to understand how these microscopic physical parameters relate to observables, in this statistical sense.
 
 More information can be found throughout this manual.
 
@@ -22,12 +22,17 @@ In both cases, the code was designed to be extensible and to accomodate new obse
 \section sec_install Installation
 MolStat requires
 - a C++11 compiler. Most modern `g++` and `clang++` compilers are sufficient. Note for Mac users (OS 10.8 and older): the default `libstdc++` does not support C++11. When you run the `configure` script below, specify the compiler using, e.g., `CXX="g++ -stdlib=libc++"`. (The configure script automatically checks for `-std=c++11`.)
-- the GNU autotools suite.
 - the GNU Scientific Library (GSL), which can be obtained at http://www.gnu.org/software/gsl/. MolStat has been tested with version 1.16 of GSL.
-- (optional) doxygen, if you want to produce the documentation manuals directly from the code. PDF versions for the latest release will be available on the MolStat website, https://bitbucket.org/mgreuter/molstat.
 - (optional) python. Some tests use python.
+.
+
+Extending MolStat (see \ref extend_molstat) also requires
+- the GNU autotools suite.
+- (optional) doxygen, if you want to produce the documentation manuals directly from the code. PDF versions for the latest release will be available on the MolStat website, https://bitbucket.org/mgreuter/molstat.
 
 \subsection build Building the Package
+\todo Update the build section once changes to the package/configure script are complete.
+
 An autotools configure setup is provided to make installation easy (we hope). The first step is to run
 \verbatim
 autoreconf --install
@@ -58,10 +63,12 @@ make check
 - Some tests use python. They have been tested with version 2.7 and may not run in python 3. The configure script only checks for python 2.* and should omit the tests if only python 3.* is found.
 
 \section changelog Version Changes
-\subsection v1_2 v1.2 (October 2014)
+\subsection v1_2 v1.2 (November 2014)
 - Added the `molstat` namespace to identify components of MolStat.
 - Reworked the simulator to allow more flexibility in input commands. Also added the idea of a \"composite\" simulator model for combining two (or more) models in the simulation.
-- Implemented models for vacuum tunneling and interference features.
+- Implemented an independent histogram class that is not tied to the GSL (for making histograms in the simulator).
+- Switched from the GSL random number generation tools in the simulator to those provided by C++11. The GSL is now unnecessary for compiling and linking the simulator.
+- Tweaked the configure script to provide more options and flexibility.
 
 \subsection v1_1 v1.1 (September 2014)
 - Reworked the simulator and fitter codes so that they are more general and easier to extend. The codes are no longer specifically designed for electron transport applications.
@@ -93,13 +100,13 @@ I thank the following people for their help, insight, and comments in the develo
    - Prof.\ Herre van der Zandt (Delft University of Technology)
    - Prof.\ Latha Venkataraman (Columbia University)
    - Mr.\ Patrick Williams (Oak Ridge High School)
-	 - Mr.\ Gaibo Zhang (Oak Ridge High School)
+	- Mr.\ Gaibo Zhang (Oak Ridge High School)
    .
 I also gratefully acknowledge financial and computational support from
-   -# The Wigner Fellowship program at the Oak Ridge National Laboratory, which is managed by UT-Batelle, LLC, for the US Department of Energy under contract DE-AC05-00OR22725. (Conception and pre-release versions of the code.)
    -# The Multidisciplinary University Research Initiative (MURI) program of the U.S.\ Air Force Office of Scientific Research (AFOSR), under grant FA9550-14-1-003. (Versions 1.0 -- 1.2.)
+   -# The Wigner Fellowship program at the Oak Ridge National Laboratory, which is managed by UT-Batelle, LLC, for the US Department of Energy under contract DE-AC05-00OR22725. (Conception and pre-release versions of the code.)
 
 Matthew G.\ Reuter \n
 mgreuter@u.northwestern.edu \n
-October 2014
+November 2014
 */
