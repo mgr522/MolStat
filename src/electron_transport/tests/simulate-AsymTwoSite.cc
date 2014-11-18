@@ -36,7 +36,8 @@ using ChannelType = molstat::transport::AsymTwoSiteChannel;
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
  * \endinternal
  */
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	const double thresh = 1.0e-6;
 
 	// use the factory to create a channel
