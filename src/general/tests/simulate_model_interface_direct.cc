@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 	molstat::SimulateModelFactory basic_factory 
 		{ molstat::SimulateModelFactory::makeFactory<BasicTestModel>() };
 
-	molstat::gsl_rng_ptr r{ nullptr, &gsl_rng_free }; // dummy rng
+	molstat::Engine engine; // dummy random number engine
 
 	// try to get the model. this should fail because we haven't specified
 	// a distribution for the parameter "a"
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 	// observables or distributions yet.
 	try
 	{
-		basic_sim.simulate(r);
+		basic_sim.simulate(engine);
 
 		assert(false);
 	}
@@ -110,20 +110,20 @@ int main(int argc, char **argv)
 	// now, let's actually set an observable
 	basic_sim.setObservable(0, type_index{ typeid(BasicObs1) });
 
-	valarray<double> data = basic_sim.simulate(r);
+	valarray<double> data = basic_sim.simulate(engine);
 	assert(abs(data[0] - distvalue1) < 1.e-6);
 
 	// set another observable
 	basic_sim.setObservable(1, type_index{ typeid(BasicObs2) });
 
 	// verify the set of observables generated...
-	data = basic_sim.simulate(r);
+	data = basic_sim.simulate(engine);
 	assert(abs(data[0] - distvalue1) < 1.e-6);
 	assert(abs(data[1] - BasicTestModel::obs2value) < 1.e-6);
 
 	// change an observable and recheck
 	basic_sim.setObservable(0, type_index{ typeid(BasicObs2) });
-	data = basic_sim.simulate(r);
+	data = basic_sim.simulate(engine);
 	assert(abs(data[0] - BasicTestModel::obs2value) < 1.e-6);
 	assert(abs(data[1] - BasicTestModel::obs2value) < 1.e-6);
 
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 	try
 	{
 		// Observable3 should throw an exception; make sure we catch it
-		basic_sim.simulate(r);
+		basic_sim.simulate(engine);
 		assert(false);
 	}
 	catch(int i)
@@ -253,7 +253,7 @@ int main(int argc, char **argv)
 		// add the observables
 		sim_add.setObservable(0, type_index{ typeid(BasicObs4) });
 		sim_add.setObservable(1, type_index{ typeid(BasicObs1) });
-		data = sim_add.simulate(r);
+		data = sim_add.simulate(engine);
 		assert(abs(data[0] - (distvalue1 + distvalue2)) < 1.e-6);
 		assert(abs(data[1] - (distvalue2 * (distvalue3 - distvalue4))) < 1.e-6);
 	}
@@ -287,11 +287,11 @@ int main(int argc, char **argv)
 	sim_mult.setObservable(1, type_index{ typeid(BasicObs1) });
 
 	// simulate data to test the combination of values
-	data = sim_add.simulate(r);
+	data = sim_add.simulate(engine);
 	assert(abs(data[0] - (distvalue1 + distvalue2)) < 1.e-6);
 	assert(abs(data[1] - (distvalue2 * (distvalue3 - distvalue4) + // sum
 	                      distvalue2 * (distvalue5 - distvalue6))) < 1.e-6);
-	data = sim_mult.simulate(r);
+	data = sim_mult.simulate(engine);
 	assert(abs(data[0] - (distvalue1 + distvalue2)) < 1.e-6);
 	assert(abs(data[1] - (distvalue2 * (distvalue3 - distvalue4) * // product
 	                      distvalue2 * (distvalue5 - distvalue6))) < 1.e-6);
@@ -326,7 +326,7 @@ int main(int argc, char **argv)
 	{
 		molstat::Simulator sim{ cfactory_bad.getModel() };
 		sim.setObservable(0, type_index{ typeid(BasicObs4) });
-		data = sim.simulate(r);
+		data = sim.simulate(engine);
 		assert(abs(data[0] - (distvalue1 + distvalue2)) < 1.e-6);
 
 		// setting BasicObs1 should fail because the submodel doesn't support it

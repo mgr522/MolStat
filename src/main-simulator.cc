@@ -101,11 +101,9 @@ int main(int argc, char **argv)
 	// print the simulator information
 	parser.printState(cout);
 
-	// initialize the GSL random number generator
-	gsl_rng_env_setup();
-	molstat::gsl_rng_ptr r(gsl_rng_alloc(gsl_rng_default), &gsl_rng_free);
-	//gsl_rng_set(r.get(), 0xFEEDFACE); // use this line for debugging
-	gsl_rng_set(r.get(), time(nullptr));
+	// initialize the random number engine
+	molstat::Engine engine{ 0xFEEDFACE }; // use this line for debugging
+	//molstat::Engine engine{ time(nullptr) };
 
 	// create the histogram object
 	// first need the bin styles to determine the dimensionality
@@ -123,7 +121,7 @@ int main(int argc, char **argv)
 	for (size_t j = 0; j < ntrials; ++j)
 	{
 		// add the data to the list
-		hist.add_data(sim->simulate(r));
+		hist.add_data(sim->simulate(engine));
 	}
 
 	// make the histogram

@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 	map<string, molstat::SimulateModelFactoryFunction> models;
 	map<string, molstat::ObservableIndex> observables;
 
-	molstat::gsl_rng_ptr r{ nullptr, &gsl_rng_free };
+	molstat::Engine engine; // dummy random number engine
 
 	// add the observables
 	// must use emplace to avoid calling the allocator for type_index
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 	// observables or distributions yet.
 	try
 	{
-		sim.simulate(r);
+		sim.simulate(engine);
 
 		assert(false);
 	}
@@ -122,20 +122,20 @@ int main(int argc, char **argv)
 	// now, let's actually set an observable
 	sim.setObservable(0, observables.at("obs1"));
 
-	valarray<double> data = sim.simulate(r);
+	valarray<double> data = sim.simulate(engine);
 	assert(abs(data[0] - distvalue) < 1.e-6);
 
 	// set another observable
 	sim.setObservable(1, observables.at("obs2"));
 
 	// verify the set of observables generated...
-	data = sim.simulate(r);
+	data = sim.simulate(engine);
 	assert(abs(data[0] - distvalue) < 1.e-6);
 	assert(abs(data[1] - BasicTestModel::obs2value) < 1.e-6);
 
 	// change an observable and recheck
 	sim.setObservable(0, observables.at("obs2"));
-	data = sim.simulate(r);
+	data = sim.simulate(engine);
 	assert(abs(data[0] - BasicTestModel::obs2value) < 1.e-6);
 	assert(abs(data[1] - BasicTestModel::obs2value) < 1.e-6);
 
@@ -145,7 +145,7 @@ int main(int argc, char **argv)
 	try
 	{
 		// Observable3 should throw an exception; make sure we catch it
-		sim.simulate(r);
+		sim.simulate(engine);
 		assert(false);
 	}
 	catch(int i)

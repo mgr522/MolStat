@@ -33,7 +33,7 @@ std::size_t CompositeSimulateModel::get_num_parameters() const
 }
 
 std::valarray<double> CompositeSimulateModel::generateParameters(
-	gsl_rng_ptr &r) const
+	Engine &engine) const
 {
 	std::size_t tally = get_num_composite_parameters();
 	std::valarray<double> ret(get_num_parameters());
@@ -41,7 +41,7 @@ std::valarray<double> CompositeSimulateModel::generateParameters(
 	// simulate the parameters for the composite model
 	for(std::size_t j = 0; j < tally; ++j)
 	{
-		ret[j] = dists[j]->sample(r);
+		ret[j] = dists[j]->sample(engine);
 	}
 
 	// go through the submodels, having them simulate parameters
@@ -50,7 +50,7 @@ std::valarray<double> CompositeSimulateModel::generateParameters(
 		std::size_t submodel_length = submodel->get_num_parameters();
 
 		ret[std::slice(tally, submodel_length, 1)]
-			= submodel->generateParameters(r);
+			= submodel->generateParameters(engine);
 
 		// move the tally index up for the next model
 		tally += submodel_length;

@@ -147,10 +147,10 @@ public:
 	 * \brief Generates a set of model parameters using the specified random
 	 *    distributions.
 	 *
-	 * \param[in] r Handle to the GSL random number generator.
+	 * \param[in] engine The C++11 random number engine.
 	 * \return A set of model parameters.
 	 */
-	virtual std::valarray<double> generateParameters(gsl_rng_ptr &r) const;
+	virtual std::valarray<double> generateParameters(Engine &engine) const;
 
 	// the factory needs to get at the internal details
 	friend class SimulateModelFactory;
@@ -208,10 +208,10 @@ public:
 	 * This override samples from the distributions required by the composite
 	 * model, as well as all distributions for the submodels.
 	 *
-	 * \param[in] r Handle to the GSL random number generator.
+	 * \param[in] engine The C++11 random number engine.
 	 * \return A set of model parameters.
 	 */
-	virtual std::valarray<double> generateParameters(gsl_rng_ptr &r) const
+	virtual std::valarray<double> generateParameters(Engine &engine) const
 		override final;
 
 	// the factory needs to get at the internal details

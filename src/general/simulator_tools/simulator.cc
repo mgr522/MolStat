@@ -26,7 +26,7 @@ Simulator::Simulator(std::shared_ptr<SimulateModel> model_)
 		throw FullModelRequired();
 }
 
-std::valarray<double> Simulator::simulate(gsl_rng_ptr &r) const
+std::valarray<double> Simulator::simulate(Engine &engine) const
 {
 	std::size_t num_obs{ obs_functions.size() };
 
@@ -36,7 +36,7 @@ std::valarray<double> Simulator::simulate(gsl_rng_ptr &r) const
 	std::valarray<double> ret( num_obs );
 
 	// get some parameters
-	const std::valarray<double> params{ model->generateParameters(r) };
+	const std::valarray<double> params{ model->generateParameters(engine) };
 
 	// calculate each of the observables
 	for(std::size_t j = 0; j < num_obs; ++j)

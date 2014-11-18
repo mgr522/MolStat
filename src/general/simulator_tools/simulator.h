@@ -63,10 +63,10 @@ public:
 	 * \throw molstat::MissingDistribution if any of the model's required
 	 *    distributions is unspecified.
 	 *
-	 * \param[in] r Handle to the GSL random number generator.
+	 * \param[in] engine The C++11 random number engine.
 	 * \return The simulated observables.
 	 */
-	std::valarray<double> simulate(gsl_rng_ptr &r) const;
+	std::valarray<double> simulate(Engine &engine) const;
 
 	/**
 	 * \brief Sets the `j`th observable for the simulator.

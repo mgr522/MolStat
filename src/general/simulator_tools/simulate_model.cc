@@ -43,14 +43,14 @@ ObservableFunction SimulateModel::getObservableFunction(
 	return obsfunc;
 }
 
-std::valarray<double> SimulateModel::generateParameters(gsl_rng_ptr &r) const
+std::valarray<double> SimulateModel::generateParameters(Engine &engine) const
 {
 	const std::size_t length = get_num_parameters();
 	std::valarray<double> ret(length);
 
 	for(std::size_t j = 0; j < length; ++j)
 	{
-		ret[j] = dists[j]->sample(r);
+		ret[j] = dists[j]->sample(engine);
 	}
 
 	return ret;
