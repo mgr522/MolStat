@@ -32,7 +32,7 @@
 #include "general/string_tools.h"
 #include "general/histogram_tools/bin_style.h"
 #include "general/histogram_tools/bin_linear.h"
-#include "electron_transport/fitter_models/transport_fit_models.h"
+#include "electron_transport/fitter_models/transport_fit_module.h"
 
 using namespace std;
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 
 	// load the models
 	// FitModelAdd calls appear here
-	molstat::load_transport_models(models);
+	molstat::transport::load_models(models);
 
 	// set up the fit -- read in parameters from stdin
 	// Line 1: One token specifying the model to use for fitting

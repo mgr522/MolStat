@@ -16,6 +16,7 @@
 #include <gsl/gsl_integration.h>
 
 namespace molstat {
+namespace transport {
 
 /**
  * \brief The fit model for resonant tunneling through a single site with
@@ -231,6 +232,7 @@ public:
 		override;
 };
 
+} // namespace molstat::transport
 } // namespace molstat
 
 #endif

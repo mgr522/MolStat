@@ -3,7 +3,7 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \internal
- * \file transport_fit_models.cc
+ * \file transport_fit_module.cc
  * \brief Function that loads transport fit models.
  *
  * \author Matthew G.\ Reuter
@@ -11,7 +11,7 @@
  * \endinternal
  */
 
-#include "transport_fit_models.h"
+#include "transport_fit_module.h"
 #include "symmetric_resonant.h"
 #include "symmetric_nonresonant.h"
 #include "asymmetric_resonant.h"
@@ -20,8 +20,9 @@
 using namespace std;
 
 namespace molstat {
+namespace transport {
 
-void load_transport_models(
+void load_models(
 	std::map<std::string, FitModelFactory<1>> &models)
 {
 	models["symmetricresonant"] =
@@ -34,4 +35,5 @@ void load_transport_models(
 		GetFitModelFactory<AsymmetricResonantFitModel, 1>();
 }
 
+} // namespace molstat::transport
 } // namespace molstat

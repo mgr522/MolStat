@@ -15,6 +15,7 @@
 #include <general/fitter_tools/fit_model_interface.h>
 
 namespace molstat {
+namespace transport {
 
 /**
  * \brief The fit model for nonresonant tunneling through a single site with
@@ -121,6 +122,7 @@ public:
 	 * function that does nothing. */
 };
 
+} // namespace molstat::transport
 } // namespace molstat
 
 #endif

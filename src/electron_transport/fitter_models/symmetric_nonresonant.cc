@@ -18,6 +18,7 @@
 using namespace std;
 
 namespace molstat {
+namespace transport {
 
 std::vector<double> SymmetricNonresonantFitModel::create_initial_guess(
 	const std::map<std::string, double> &values) const
@@ -125,4 +126,5 @@ void SymmetricNonresonantFitModel::print_fit(std::ostream &out,
 		<< setprecision(4) << fitparam[NORM];
 }
 
+} // namespace molstat::transport
 } // namespace molstat

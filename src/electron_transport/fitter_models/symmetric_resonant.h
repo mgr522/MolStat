@@ -15,6 +15,7 @@
 #include <general/fitter_tools/fit_model_interface.h>
 
 namespace molstat {
+namespace transport {
 
 /**
  * \brief The fit model for resonant tunneling through a single site with
@@ -131,6 +132,7 @@ public:
 		override;
 };
 
+} // namespace transport
 } // namespace molstat
 
 #endif

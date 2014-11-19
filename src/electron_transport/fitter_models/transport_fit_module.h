@@ -2,9 +2,8 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file transport_fit_models.h
- * \brief Specializations of the FitModel template for the 1-dimensional fit
- *    functions used to fit electron transport data.
+ * \file transport_fit_module.h
+ * \brief Loads transport models for fitting electron transport data.
  *
  * \author Matthew G.\ Reuter
  * \date September 2014
@@ -18,6 +17,7 @@
 #include <string>
 
 namespace molstat {
+namespace transport {
 
 /**
  * \brief Loads the transport models into the MolStat "database".
@@ -28,9 +28,10 @@ namespace molstat {
  * \param[in,out] models The map of models in MolStat. On output, the models
  *    for transport have been added to it.
  */
-void load_transport_models(
+void load_models(
 	std::map<std::string, FitModelFactory<1>> &models);
 
+} // namespace molstat::transport
 } // namespace molstat
 
 #endif
