@@ -43,82 +43,131 @@ The two operations supported by MolStat are
 Simulating conductance histograms is accomplished using the MolStat simulator; see \ref sec_molstat_simulate for details. Herein we list the observables and models for conductance histograms. Each model facilitate calculation of \f$T(E)\f$ through various parameters.
 
 \subsection subsec_transport_observables Electron Transport Observables
-Transport observables are defined in transport_observables.h.
+\if fullref
+Transport observables are defined in electron_transport/simulator_models/observables.h.
+\endif
+- Applied bias
+   - \f$ V. \f$
+   - Name (for use in input) is `%AppliedBias`.
+   \if fullref
+   - Implemented by the class molstat::transport::AppliedBias.
+   \endif
+
 - Differential conductance
    - \f$ G_\mathrm{d}(V) = \frac{\partial}{\partial V} I(V). \f$
-   - Name for input files is `%DifferentialConductance`.
-   - Implemented by the class molstat::DifferentialConductance.
+   - Name (for use in input) is `%DifferentialConductance`.
+   \if fullref
+   - Implemented by the class molstat::transport::DifferentialConductance.
+   \endif
+
 - Static conductance
    - \f$ G_\mathrm{s}(V) = \frac{I(V)}{V}. \f$
-   - Name for input files is `%StaticConductance`.
-   - Implemented by the class molstat::StaticConductance.
+   - Name (for use in input) is `%StaticConductance`.
+   \if fullref
+   - Implemented by the class molstat::transport::StaticConductance.
+   \endif
+
 - Zero-bias conductance
    - \f$ G_\mathrm{d}(0). \f$
    - Not implemented as its own observable. Use `%DifferentialConductance` and
      specify `V constant 0.` as the distribution for the bias.
 
 \subsection subsec_transport_simulate_models Models for Simulating Electron Transport
-Transport models are referenced in transport_models.cc.
+\if fullref
+Transport models are referenced in electron_transport/simulator_models/transport_simulate_module.cc.
+\endif
 
-- `SymmetricOneSite`
+There is only one top-level model for electron transport applications.
+
+- `TransportJunction`
+   - Top-level model for a system that transports electrons via conduction channels.
+   - Model parameters are
+      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
+      - `v` (\f$V\f$), the applied bias.
+   \if fullref
+   - Submodels are required, of type molstat::transport::Channel. Each submodel represents an independent channel through the junction and has its own set of physical/model parameters.
+   - Implemented by the class molstat::transport::TransportJunction; full details are presented there.
+   - Compatible with the molstat::transport::AppliedBias observable. If all submodels are compatible with the molstat::transport::StaticConductance or molstat::transport::DifferentialConductance observable, the transport junction will also be compatible with them.
+   \elseif userman
+   - Submodels are required, of type channel. Each submodel represents an independent channel through the junction and has its own set of physical/model parameters. Multiple submodels (channels) can be specified.
+   - Compatible with the AppliedBias observable. If all submodels are compatible with the StaticConductance or DifferentialConductance observables, the transport junction will also be compatible with them.
+   \endif
+.
+
+A variety of models for conduction channels are also available. These are submodels for use within a `TransportJunction` model.
+\if userman
+Complete details for each of these channel models can be found in the full reference manual.
+\endif
+
+- `SymmetricOneSiteChannel`
    - Single-site model with symmetric site/lead couplings.
-   - Implemented by the class molstat::SymOneSiteSimulateModel; full details are presented there.
-   - Compatible with the molstat::DifferentialConductance and molstat::StaticConductance observables.
    - Model parameters are
-      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
-      - `v` (\f$V\f$), the applied bias,
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
       - `gamma` (\f$\Gamma\f$), the site/lead coupling,
       - `a` (\f$a\f$), voltage drop through the channel.
+   - Transmission function is
+   \f[
+   T(E) = \frac{\Gamma^2}{(E-\varepsilon-aeV)^2 + \Gamma^2}.
+   \f]
+   \if fullref
+   - Implemented by the class molstat::transport::SymOneSiteChannel; full details are presented there.
+   - Compatible with the molstat::transport::DifferentialConductance and molstat::transport::StaticConductance observables.
+   \elseif userman
+   - Compatible with the DifferentialConductance and StaticConductance observables.
+   \endif
 
-- `AsymmetricOneSite`
+- `AsymmetricOneSiteChannel`
    - Single-site model with asymmetric site/lead couplings.
-   - Implemented by the class molstat::AsymOneSiteSimulateModel; full details are presented there.
-   - Compatible with the molstat::DifferentialConductance and molstat::StaticConductance observables.
    - Model parameters are
-      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
-      - `v` (\f$V\f$), the applied bias,
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
       - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
       - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
       - `a` (\f$a\f$), voltage drop through the channel.
+   - Transmission function is
+   \f[
+   T(E) = \frac{4\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{4(E-\varepsilon-aeV)^2 + (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})^2}.
+   \f]
+   \if fullref
+   - Implemented by the class molstat::transport::AsymOneSiteChannel; full details are presented there.
+   - Compatible with the molstat::transport::DifferentialConductance and molstat::transport::StaticConductance observables.
+   \elseif userman
+   - Compatible with the DifferentialConductance and StaticConductance observables.
+   \endif
 
-- `SymmetricTwoSite`
+- `SymmetricTwoSiteChannel`
    - Two-site model with symmetric site/lead couplings.
-   - Implemented by the class molstat::SymTwoSiteSimulateModel; full details are presented there.
-   - Compatible with the molstat::DifferentialConductance and molstat::StaticConductance observables.
    - Model parameters are
-      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
-      - `v` (\f$V\f$), the applied bias,
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
       - `gamma` (\f$\Gamma\f$), the site/lead coupling,
       - `beta` (\f$\beta\f$), the inter-site coupling.
+   - Transmission function is
+   \f[
+   T(E) = \frac{16 \Gamma^2 \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma^2\right]^2 + 16 \Gamma^2(E-\varepsilon)^2}.
+   \f]
+   \if fullref
+   - Implemented by the class molstat::transport::SymTwoSiteChannel; full details are presented there.
+   - Compatible with the molstat::transport::DifferentialConductance and molstat::transport::StaticConductance observables.
+   \elseif userman
+   - Compatible with the DifferentialConductance and StaticConductance observables.
+   \endif
 
-- `AsymmetricTwoSite`
+- `AsymmetricTwoSiteChannel`
    - Two-site model with asymmetric site/lead couplings.
-   - Implemented by the class molstat::AsymTwoSiteSimulateModel; full details are presented there.
-   - Compatible with the molstat::DifferentialConductance and molstat::StaticConductance observables.
    - Model parameters are
-      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
-      - `v` (\f$V\f$), the applied bias,
       - `epsilon` (\f$\varepsilon\f$), the site-energy,
       - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
       - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
       - `beta` (\f$\beta\f$), the inter-site coupling.
-
-- `IndependentTwoChannel`
-   - Sum of two independent channels, where each channel is described by the `SymmetricOneSite` model.
-   - Implemented by the class molstat::IndTwoChanSimulateModel; full details are presented there.
-   - Compatible with the molstat::DifferentialConductance and molstat::StaticConductance observables.
-   - Model parameters are
-      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
-      - `v` (\f$V\f$), the applied bias,
-      - `epsilon1` (\f$\varepsilon_1\f$), the site-energy for channel 1,
-      - `gamma1` (\f$\Gamma_1\f$), the site/lead coupling for channel 1,
-      - `a1` (\f$a_1\f$), the strength of the voltage dependence for channel 1,
-      - `epsilon2` (\f$\varepsilon_2\f$), the site-energy for channel 2,
-      - `gamma2` (\f$\Gamma_2\f$), the site/lead coupling for channel 2,
-      - `a2` (\f$a_2\f$), the strength of the voltage dependence for channel 2.
+   - Transmission function is
+   \f[
+   T(E) = \frac{16 \Gamma_\mathrm{L} \Gamma_\mathrm{R} \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma_\mathrm{L} \Gamma_\mathrm{R} \right]^2 + 4 (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})^2(E-\varepsilon)^2}.
+   \f]
+   \if fullref
+   - Implemented by the class molstat::transport::AsymTwoSiteChannel; full details are presented there.
+   - Compatible with the molstat::transport::DifferentialConductance and molstat::transport::StaticConductance observables.
+   \elseif userman
+   - Compatible with the DifferentialConductance and StaticConductance observables.
+   \endif
 
 \section sec_fit_electron_transport Fitting Electron Transport Properties
 The following list overviews that implemented fitter models for electron transport.
