@@ -24,10 +24,7 @@
 namespace molstat {
 namespace transport {
 
-/**
- * \brief Type representing the channel concept for transport through
- *    junctions.
- */
+/// Type representing a channel for transport through junctions.
 class Channel : public virtual SimulateModel
 {
 protected:
@@ -38,9 +35,7 @@ protected:
 	}
 };
 
-/**
- * \brief Composite model representing a junction.
- */
+/// Composite model representing a junction.
 class TransportJunction :
 	public AppliedBias,
 	public CompositeObservable<StaticConductance>,
