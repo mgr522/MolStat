@@ -10,32 +10,75 @@ This chapter deals with using MolStat to simulate or fit single-molecule data. T
 
 Simulating single-molecule behavior uses a physical model and random number distributions to calculate the statistics of many single-molecule measurements. The `molstat-simulator` program reads in all of the required information from an input file and outputs a simulated histogram from the specified distributions.
 
-`molstat-simulator` operates under the idea of pairing models with observables. The input file specifies a model to use, an observable to calculate, histogram information, and the random number distributions around each physical parameter. The distinction between the model and observable facilitates code reuse as one physical model may work with multiple observables. Of course, the models and observables depend on the application. As will be described in much more detail in \ref subsec_add_simulate_model, simulator models are described by the SimulateModel class; observables (see \ref subsec_add_simulate_observable) are intentionally less structured.
+`molstat-simulator` operates under the idea of pairing models with observables. The input file specifies a model to use, observables to calculate, histogram information, and the random number distributions behind each physical parameter. The distinction between the model and observable facilitates code reuse as one physical model may work with multiple observables. Of course, the models and observables depend on the application.
+\if fullref
+As will be described in much more detail in \ref subsec_add_simulate_model, simulator models are described by the molstat::SimulateModel class; observables (see \ref subsec_add_simulate_observable) are identified with the molstat::Observable template.
+\endif
 
-A `molstat-simulator` input file has the following structure. The line breaks are important, and the text is not case sensitive.
--# The model to use.
--# The observable to calculate.
--# The number of samples to simulate for constructing the histogram.
--# Binning information (see \ref sec_histograms).
--# (One per line) Random distributions for the physical parameters required by the model. Information on the random distributions can be found in \ref sec_rng.
-.
-A few notes regarding the input lines and MolStat behavior.
-- If the specified model does not implement the desired observable, MolStat will print an error message and exit without simulating data.
-- Regardless of the binning style used, the output values will be unmasked by the binning style. That is, the output estimates \f$P_{\hat{x}}(x)\f$ instead of the masked value.
-
-Following is an example input file for simulating a conductance histogram. The input file must be routed to standard in.
+Each line of a `molstat-simulator` input file issues a command to the program. Although only one command can be read from a line, the order of the commands does not matter. Commands are
+- `trials` -- The number of systems to simulate for constructing the histogram. Usage:
 \verbatim
-SymmetricOneSite
-DifferentialConductance
-100000
-100 log 10.
-ef constant 0.
-V uniform -2. 2.
-gamma normal 0.8 0.05
-epsilon normal -6. 0.05
-a constant 0.
+trials ntrials
 \endverbatim
+where `ntrials` is the number of systems.
+
+- `output` -- Output file for the histogram. Log messages will be displayed on standard out. Usage:
+\verbatim
+output filename
+\endverbatim
+where `filename` is the name of the output file. If the file exists, its contents will be overwritten. Defaults to `histogram.dat` if unspecified.
+
+- `observable` -- Specify an observable. `observable_x` and `observable_y` can also be used to specify the axis (x or y) for the particular observable. `observable` and `observable_x` are equivalent. Usage:
+\verbatim
+observable name nbin binstyle
+\endverbatim
+where `name` is the name of the observable, `nbin` is the number of histogram bins to use for this observable, and `binstyle` is the binning style (see \ref sec_histograms).
+
+- `model` -- Specify a model to use. Unlike the other commands, `model` begins a block that ends with `endmodel`. On the same line as the `model` command, the name of the model must be specified. Each subsequent line in the model block must issue one of the following commands
+   - `distribution` -- Specify the random distribution for one of this model's physical parameters. Usage:
+   \verbatim
+   distribution parameter-name distribution-name distribution-details
+   \endverbatim
+   where `parameter-name` is the name of the parameter, (as specified by the model), `distribution-name` is the name of the random distribution, and `distribution-details` are the distribution's parameters. Information on the random distributions can be found in \ref sec_rng.
+   - `model` -- Same command and usage as above. This model is a submodel nested within the higher-level model. (Only some models---called composite models---support submodels).
+   .
+A `model` block will look something like
+\verbatim
+model model-name
+   distribution ...
+   distribution ...
+   model submodel-name
+      ...
+   endmodel
+endmodel
+\endverbatim
+Only one top-level model command can be specified; however, multiple submodels may be specified at any level.
+.
+
+A few notes regarding the input lines and MolStat behavior.
+- If the specified model (and/or any submodels) is incompatible with the desired observable, MolStat will print an error message and exit without simulating data.
+- Regardless of the binning style(s) used, the output value(s) will be unmasked by the binning style. That is, the output estimates \f$P_{\hat{x}}(x)\f$ instead of the masked value.
+
+Following is an example input file for simulating a conductance histogram (see \ref page_conductance_histograms). The input file must be routed to standard in.
+\verbatim
+observable DifferentialConductance 100 log 10.
+trials 100000
+output my-histogram.dat
+model TransportJunction
+   ef constant 0.
+   V uniform -2. 2.
+   model SymmetricOneSiteChannel
+      gamma normal 0.8 0.05
+      epsilon normal -6. 0.05
+      a constant 0.
+   endmodel
+endmodel
+\endverbatim
+\if fullref
 Additional example inputs can be found in the tests; see, for example, fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or fit-symmetric-resonant.py.
+\elseif userman
+Additional example inputs can be found in the tests.
+\endif
 
 Finally, the histogram is output with one bin per line. A two-dimensional histogram is generally output, where each line is
 \verbatim
@@ -46,7 +89,9 @@ Depending on the random distributions, model, and observable, however, only a on
 x counts
 \endverbatim
 
+\if fullref
 Information on adding models and observables can be found in the \ref subsec_add_simulate_model and \ref subsec_add_simulate_observable sections, respectively.
+\endif
 
 \section sec_cond_hist_fit Fitting Single-Molecule Behavior
 The general procedure for fitting single-molecule data is as follows. Specify
@@ -54,7 +99,7 @@ The general procedure for fitting single-molecule data is as follows. Specify
 - the name of a file containing the single-molecule data.
 - additional options (if desired; none are required).
 
-From this information, the fitter reads in the single-molecule data and uses GSL's non-linear least-squares routines to fit the data to the desired line shape. Because non-linear least-squares fits are not guaranteed to find the best-fit solutions, we use multiple initial guesses and report the best fit across all guesses. This still doesn't guarantee the best fit, but seems to work well, in practice.
+From this information, the fitter reads in the single-molecule data and uses the GSL's non-linear least-squares routines to fit the data to the desired line shape. Because non-linear least-squares fits are not guaranteed to find the best-fit solutions, we use multiple initial guesses and report the best fit across all guesses. This still doesn't guarantee the best fit, but seems to work well, in practice.
 
 A `molstat-fitter` input file has the following structure. The line breaks are important, and the text (excluding the file name) is not case sensitive.
 -# The model to use when fitting the single-molecule data.
@@ -78,7 +123,11 @@ guess c 50. d 6. norm 10.
 guess default
 bin linear
 \endverbatim
+\if fullref
 Additional example inputs can be found in the tests; see fit-asymmetric-resonant.py, fit-symmetric-nonresonant.py, and/or fit-symmetric-resonant.py.
 
 Information on adding fitter models can be found in \ref sec_add_fit_model.
+\elseif userman
+Additional example inputs can be found in the tests.
+\endif
 */
