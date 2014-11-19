@@ -11,14 +11,14 @@ Before discussing how to extend MolStat, we introduce the style guidelines for M
 
 -# Every MolStat file should begin with a comment identifying the file as part of MolStat. This comment should include reference to the \ref sec_license. The copyright can be changed to reflect the authors' affiliation(s).
 
--# All files, classes, typedefs, functions, etc., should have doxygen comment blocks around them that provide meaningful documentation. The only exceptions to this rule are class member functions specified with the `default` or `delete` keywords. Any of these quantities that are meant for inclusion in MolStat should be placed in the `molstat` namespace.
+-# All files, classes, typedefs, functions, etc., should have doxygen comment blocks around them that provide meaningful documentation. The only exceptions to this rule are class member functions specified with the `default` or `delete` keywords, or override functions where the comments do not change from the parent class. Any of these quantities that are meant for inclusion in MolStat should be placed in the `molstat` namespace.
 
 -# Try not to include unnecessary files. Also avoid `using` declarations in header files.
 
 \section sec_add_general Adding General Mathematical Operations
 
 \subsection subsec_add_rnd Adding Random Number Distributions
-Random number distributions are computationally described by the molstat::RandomDistribution class. Adding a new random number distribution requires a class derived from RandomDistribution that implements the `sample` and `info` functions. `sample` takes in a `gsl_rng` construct from GSL and returns a random number from the distribution. `info` is used for debugging; it provides a string representation of the distribution.
+Random number distributions are computationally described by the molstat::RandomDistribution class. Adding a new random number distribution requires a class derived from molstat::RandomDistribution that implements the `sample` and `info` functions. `sample` takes in a `molstat::Engine` (a C++11 random number engine) and returns a random number from the distribution. `info` is used for output; it provides a string representation of the distribution.
 
 Finally, the new random number distribution needs to be added to the molstat::RandomDistributionFactory function so that it is processed from input. In this function, the `distribution` tag for the input deck is defined and the code for processing `[distribution-parameters]` is implemented. The implemented distributions should provide sufficient examples. Note that the name of the distribution should be in lowercase.
 
@@ -36,23 +36,34 @@ Finally, add the new binning style class to the molstat::BinStyleFactory functio
 \section sec_add_simulate Adding Simulator Models and Observables
 
 \subsection subsec_add_simulate_observable Adding Simulator Observables
-Unlike other concepts, simulator observables do not have an abstract class from which they inherit. If there were such a class, each observable would have to implement a function with the same name; a particular model would then only be able to implement one observable.
+Observables derive from the molstat::Observable template, in a \"curiously recurring template pattern". In other words, the code to create a new observable `MyObservable` looks like
+\verbatim
+class MyObservable : public molstat::Observable<MyObservable>
+{
+public:
+	MyObservable()
+		: molstat::Observable<MyObservable>(&MyObservable::ObservableFunction)
+	{}
 
-Instead, each observable is an abstract class (not necessarily derived from another class) that has a virtual function with the signature
-\verbatim
-std::array<double, N> observable_function(std::shared_ptr<gsl_rng>) const
+	virtual double ObservableFunction(const std::valarray<double> &vals) const = 0;
+};
 \endverbatim
-where `N` is the "dimensionality" of the observable (`N` = 1 or 2). (For example, differential conductance is a two-dimensional observable; both the applied bias and the conductance are returned.) A simulator model that calculates this observable will thus inherit from both SimulateModel (see \ref subsec_add_simulate_model) and the observable's class.
+There are two other notes about this boilerplate code:
+-# The observable is calculated via the `ObservableFunction` function. Any class that directly implements `MyObservable` (see below) needs to override `ObservableFunction`. Such an observable function must have the signature
+\verbatim
+double(const std::valarray<double> &) const
+\endverbatim
+The `valarray` argument is a set of model parameters, in the order specified by the molstat::SimulateModel::get_names member function.
 
-Finally, the observable needs to be added to MolStat's list of available observables (the `std::map` called `observables` in `main-simulator.cc`). The molstat::ObservableCheck template provides a wrapper for this operation. For a one-dimensional observable,
+-# The default constructor for molstat::Observable is explicitly deleted. A pointer to the member function for the observable must be provided in the constructor for `MyObservable`.
+.
+
+Finally, the observable needs to be added to MolStat's list of available observables (the `std::map` called `observables` in SimulatorInputParse::createSimulator). Boilerplate code is
 \verbatim
-observables["observablename"] = Obs2(ObservableCheck(&ObservableClass::observable_function));
+observables.emplace( molstat::to_lower("ObservableName"),
+   molstat::GetObservableIndex<MyObservable>() );
 \endverbatim
-and for a two-dimensional observable,
-\verbatim
-observables["observablename"] = ObservableCheck(&ObservableClass::observable_function);
-\endverbatim
-The name of the observable (for use in the input file) is the key `observablename`. This key should be in lowercase in the code; it is case insensitive in the input file. Note that the molstat::Obs2 function puts a wrapper around the one-dimensional observable so that a two-dimensional observable is produced (one of the two values is always `0.`).
+The name of the observable (for use in the input file) is the key `ObservableName`. This key should be in lowercase in the code (thus the call to molstat::to_lower); it is case insensitive in the input file.
 
 \subsection subsec_add_simulate_model Adding Simulator Models
 Simulator models are encapsulated by the molstat::SimulateModel class. This base class
