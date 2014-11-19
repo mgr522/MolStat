@@ -26,9 +26,11 @@ MolStat requires
 - (optional) python. Some tests use python.
 .
 
+\if fullref
 Extending MolStat (see \ref extend_molstat) also requires
 - the GNU autotools suite.
 - (optional) doxygen, if you want to produce the documentation manuals directly from the code. PDF versions for the latest release will be available on the MolStat website, https://bitbucket.org/mgreuter/molstat.
+\endif
 
 \subsection build Building the Package
 \todo Update the build section once changes to the package/configure script are complete.
