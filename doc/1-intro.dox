@@ -37,7 +37,6 @@ Extending MolStat (see \ref extend_molstat) also requires
 \todo Move documentation production to the `make pdf` option.
 \todo Add sed/awk to the configure script for the documentation, if the extra passes are still required.
 \todo Write better enable/disable tags for options (--disable-simulator, --disable-fitter, --disable-transport, etc.).
-\todo Make doxygen inherit the version number from the configure script.
 
 An autotools configure setup is provided to make installation easy (we hope). The first step is to run
 \verbatim
@@ -104,7 +103,7 @@ You can cite this software by referencing, as appropriate, \cite reuter-2243 and
 The following people have contributed to the code.
    - Dr.\ Matthew G.\ Reuter (Northwestern University), 2012-present
    
-     mgreuter@u.northwestern.edu
+     \email
    - Mr.\ Patrick D.\ Williams (Oak Ridge High School), 2012
    - Mr.\ Gaibo Zhang (Oak Ridge High School), 2013
 
