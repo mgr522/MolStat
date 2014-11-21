@@ -72,6 +72,9 @@ fi
 
 # check for the necessary packages
 
+# required for building static libraries
+AC_PROG_RANLIB
+
 # python is needed for some "make check" scripts
 AX_PYTHON
 AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != ":"])
@@ -89,8 +92,6 @@ if test x$need_gsl != xno; then
 	fi
 fi
 
-# required options for building static libraries
-AC_PROG_RANLIB
 
 
 # set flags for all of the options
@@ -99,6 +100,8 @@ AM_CONDITIONAL([TRANSPORT_FITTER], [test x$with_transport_fit = xyes])
 
 AM_CONDITIONAL([BUILD_SIMULATOR], [test x$build_simulator = xyes])
 AM_CONDITIONAL([TRANSPORT_SIMULATOR], [test x$with_transport_sim = xyes])
+
+
 
 # output for the config header file
 AC_CONFIG_HEADERS([src/config.h])
