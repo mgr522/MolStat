@@ -13,7 +13,9 @@ molstat_simulator_SOURCES = main-simulator.h \
 
 molstat_simulator_LDADD = \
 	electron_transport/simulator_models/libtransport_simulate.a \
-	general/libmolstat_general.a 
+	general/libmolstat_simulator.a \
+	general/libmolstat_general.a \
+	$(AM_LDADD)
 endif
 
 if BUILD_FITTER
@@ -21,7 +23,12 @@ bin_PROGRAMS += molstat-fitter
 
 molstat_fitter_SOURCES = main-fitter.cc
 
+# fitter requires GSL
+molstat_fitter_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)
+
 molstat_fitter_LDADD = \
 	electron_transport/fitter_models/libtransport_fit.a \
-	general/libmolstat_general.a 
+	general/libmolstat_fitter.a \
+	general/libmolstat_general.a \
+	$(GSL_LDFLAGS) $(AM_LDADD) $(GSL_LIBS) $(AM_LIBS)
 endif

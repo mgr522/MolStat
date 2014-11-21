@@ -9,4 +9,7 @@ libtransport_fit_a_SOURCES = transport_fit_module.h \
 	symmetric_nonresonant.cc \
 	asymmetric_resonant.h \
 	asymmetric_resonant.cc
+
+# transport fit module requires GSL
+libtransport_fit_a_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)
 endif

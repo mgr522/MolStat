@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
-noinst_LIBRARIES = libmolstat_general.a
+noinst_LIBRARIES = \
+	libmolstat_general.a
 
 SUBDIRS = random_distributions \
 	fitter_tools \
@@ -8,7 +9,8 @@ SUBDIRS = random_distributions \
 	simulator_tools \
 	tests
 
-libmolstat_general_a_SOURCES = string_tools.h \
+libmolstat_general_a_SOURCES = \
+	string_tools.h \
 	string_tools.cc \
 	histogram_tools/counterindex.h \
 	histogram_tools/counterindex.cc \
@@ -22,7 +24,9 @@ libmolstat_general_a_SOURCES = string_tools.h \
 	histogram_tools/histogram.cc
 
 if BUILD_SIMULATOR
-libmolstat_general_a_SOURCES += \
+noinst_LIBRARIES += libmolstat_simulator.a
+
+libmolstat_simulator_a_SOURCES = \
 	random_distributions/rng.h \
 	random_distributions/rng.cc \
 	random_distributions/constant.h \
@@ -47,7 +51,12 @@ libmolstat_general_a_SOURCES += \
 endif
 
 if BUILD_FITTER
-libmolstat_general_a_SOURCES += \
+noinst_LIBRARIES += libmolstat_fitter.a
+
+libmolstat_fitter_a_SOURCES = \
 	fitter_tools/fit_model_interface.h \
 	fitter_tools/fit_model_interface.cc
+
+# fitter requires GSL
+libmolstat_fitter_a_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)
 endif

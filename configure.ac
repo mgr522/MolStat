@@ -77,8 +77,16 @@ AX_PYTHON
 AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != ":"])
 
 # look for GSL, if necessary
-if test x$need_gsl = xyes; then
+if test x$need_gsl != xno; then
 	ACX_WITH_GSL
+	if test x$acx_with_gsl = xno; then
+		if test x$need_gsl = xyes; then
+			AC_MSG_ERROR([Unable to find GSL.])
+		fi
+		if test x$need_gsl = xmaybe; then
+			AC_MSG_WARN([Unable to find GSL. Requested parts of MolStat that do not require GSL will still be built.])
+		fi
+	fi
 fi
 
 # required options for building static libraries
