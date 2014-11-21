@@ -17,12 +17,69 @@ AM_PROG_AR
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
+
+
+# check the options.
+# by default, build both the simulator and the fitter
+AC_ARG_ENABLE([fitter],
+	[AS_HELP_STRING([--disable-fitter],
+		[disable compilation of the fitter @<:@default: no@:>@])],
+	[build_fitter=${enableval}], [build_fitter=yes])
+AC_ARG_ENABLE([simulator],
+	[AS_HELP_STRING([--disable-simulator],
+		[disable compilation of the simulator @<:@default: no@:>@])],
+	[build_simulator=${enableval}], [build_simulator=yes])
+
+# by default, include the transport modules
+AC_ARG_ENABLE([transport-fitter],
+	[AS_HELP_STRING([--disable-transport-fitter],
+		[disable the transport module for the fitter @<:@default: no@:>@])],
+	[with_transport_fit=${enableval}], [with_transport_fit=yes])
+# disable the transport module if we're not building the fitter
+if test x$build_fitter = xno; then
+	with_transport_fit=no
+fi
+
+AC_ARG_ENABLE([transport-simulator],
+	[AS_HELP_STRING([--disable-transport-simulator],
+		[disable the transport module for the simulator @<:@default: no@:>@])],
+	[with_transport_sim=${enableval}], [with_transport_sim=yes])
+# disable the transport module if we're not building the simulator
+if test x$build_simulator = xno; then
+	with_transport_sim=no
+fi
+
+
+
+# figure out what software packages we require
+need_gsl=no
+
+# the simulator requires nothing
+
+# the fitter requires GSL
+if test x$build_fitter = xyes; then
+	need_gsl=yes
+fi
+
+# simulator transport module requires nothing
+
+# fitter transport module requires GSL
+if test x$with_transport_fit = xyes; then
+	need_gsl=yes
+fi
+
+
+
+# check for the necessary packages
+
 # python is needed for some "make check" scripts
 AX_PYTHON
 AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != ":"])
 
-# look for GSL
-ACX_WITH_GSL
+# look for GSL, if necessary
+if test x$need_gsl = xyes; then
+	ACX_WITH_GSL
+fi
 
 # required options for building static libraries
 AC_PROG_RANLIB
@@ -31,13 +88,13 @@ AC_PROG_RANLIB
 AC_CONFIG_HEADERS([src/config.h])
 
 # We need these to build the documentation
-AC_CHECK_PROG([HAVE_DOXYGEN],[doxygen],[YES],[NO])
+AC_CHECK_PROG([HAVE_DOXYGEN], [doxygen], [YES], [NO])
 if test $HAVE_DOXYGEN = YES; then
-   AC_PATH_PROG(DOXYGEN,doxygen)
+   AC_PATH_PROG(DOXYGEN, doxygen)
 fi
-AC_CHECK_PROG([HAVE_PDFLATEX],[pdflatex],[YES],[NO])
+AC_CHECK_PROG([HAVE_PDFLATEX], [pdflatex], [YES], [NO])
 if test $HAVE_PDFLATEX = YES; then
-   AC_PATH_PROG(PDFLATEX,pdflatex)
+   AC_PATH_PROG(PDFLATEX, pdflatex)
 fi
 AM_CONDITIONAL([CAN_BUILD_DOC], [test $HAVE_DOXYGEN = YES && test $HAVE_PDFLATEX = YES])
 
