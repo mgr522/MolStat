@@ -1,21 +1,19 @@
-TESTS = simulate-SymOneSite \
+TESTS =
+check_PROGRAMS =
+
+TEST_EXTENSIONS = .py
+PY_LOG_COMPILER = $(PYTHON_BIN)
+
+if TRANSPORT_SIMULATOR
+TESTS += \
+	simulate-SymOneSite \
 	simulate-AsymOneSite \
 	simulate-SymTwoSite \
 	simulate-AsymTwoSite \
 	simulate-CompositeJunction
 
-if HAVE_PYTHON
-TESTS += fit-symmetric-resonant.py \
-	fit-symmetric-nonresonant.py \
-   fit-symmetric-nonresonant-binlog.py \
-	fit-options.py \
-	fit-asymmetric-resonant.py
-endif
-
-TEST_EXTENSIONS = .py
-PY_LOG_COMPILER = $(PYTHON_BIN)
-
-check_PROGRAMS = simulate-SymOneSite \
+check_PROGRAMS += \
+	simulate-SymOneSite \
 	simulate-AsymOneSite \
 	simulate-SymTwoSite \
 	simulate-AsymTwoSite \
@@ -40,3 +38,15 @@ simulate_AsymTwoSite_LDADD = ../simulator_models/libtransport_simulate.a \
 simulate_CompositeJunction_SOURCES = simulate-CompositeJunction.cc
 simulate_CompositeJunction_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_general.a 
+endif
+
+if TRANSPORT_FITTER
+if HAVE_PYTHON
+TESTS += \
+	fit-symmetric-resonant.py \
+	fit-symmetric-nonresonant.py \
+   fit-symmetric-nonresonant-binlog.py \
+	fit-options.py \
+	fit-asymmetric-resonant.py
+endif
+endif

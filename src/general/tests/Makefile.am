@@ -5,9 +5,7 @@ TESTS = string_tools \
 	histogram1d_log \
 	histogram2d_linear \
 	histogram2d_mixed \
-	histogram2d_log \
-	simulate_model_interface_direct \
-	simulate_model_interface_indirect
+	histogram2d_log
 
 check_PROGRAMS = string_tools \
 	gsl_std_vector \
@@ -16,9 +14,7 @@ check_PROGRAMS = string_tools \
 	histogram1d_log \
 	histogram2d_linear \
 	histogram2d_mixed \
-	histogram2d_log \
-	simulate_model_interface_direct \
-	simulate_model_interface_indirect
+	histogram2d_log
 
 string_tools_SOURCES = string_tools.cc
 string_tools_LDADD = ../libmolstat_general.a
@@ -44,6 +40,15 @@ histogram2d_mixed_LDADD = ../libmolstat_general.a
 histogram2d_log_SOURCES = histogram2d_log.cc
 histogram2d_log_LDADD = ../libmolstat_general.a
 
+if BUILD_SIMULATOR
+TESTS += \
+	simulate_model_interface_direct \
+	simulate_model_interface_indirect
+
+check_PROGRAMS += \
+	simulate_model_interface_direct \
+	simulate_model_interface_indirect
+
 simulate_model_interface_direct_SOURCES = \
 	simulate_model_interface_observables.h \
 	simulate_model_interface_models.h \
@@ -55,3 +60,4 @@ simulate_model_interface_indirect_SOURCES = \
 	simulate_model_interface_models.h \
 	simulate_model_interface_indirect.cc
 simulate_model_interface_indirect_LDADD = ../libmolstat_general.a
+endif

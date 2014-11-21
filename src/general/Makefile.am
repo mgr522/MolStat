@@ -10,6 +10,19 @@ SUBDIRS = random_distributions \
 
 libmolstat_general_a_SOURCES = string_tools.h \
 	string_tools.cc \
+	histogram_tools/counterindex.h \
+	histogram_tools/counterindex.cc \
+	histogram_tools/bin_style.h \
+	histogram_tools/bin_style.cc \
+	histogram_tools/bin_linear.h \
+	histogram_tools/bin_linear.cc \
+	histogram_tools/bin_log.h \
+	histogram_tools/bin_log.cc \
+	histogram_tools/histogram.h \
+	histogram_tools/histogram.cc
+
+if BUILD_SIMULATOR
+libmolstat_general_a_SOURCES += \
 	random_distributions/rng.h \
 	random_distributions/rng.cc \
 	random_distributions/constant.h \
@@ -22,18 +35,6 @@ libmolstat_general_a_SOURCES = string_tools.h \
 	random_distributions/lognormal.cc \
 	random_distributions/gamma.h \
 	random_distributions/gamma.cc \
-	fitter_tools/fit_model_interface.h \
-	fitter_tools/fit_model_interface.cc \
-	histogram_tools/counterindex.h \
-	histogram_tools/counterindex.cc \
-	histogram_tools/bin_style.h \
-	histogram_tools/bin_style.cc \
-	histogram_tools/bin_linear.h \
-	histogram_tools/bin_linear.cc \
-	histogram_tools/bin_log.h \
-	histogram_tools/bin_log.cc \
-	histogram_tools/histogram.h \
-	histogram_tools/histogram.cc \
 	simulator_tools/simulator_exceptions.h \
 	simulator_tools/simulator.h \
 	simulator_tools/simulator.cc \
@@ -43,3 +44,10 @@ libmolstat_general_a_SOURCES = string_tools.h \
 	simulator_tools/simulate_model_factory.cc \
 	simulator_tools/identity_tools.h \
 	simulator_tools/identity_tools.cc
+endif
+
+if BUILD_FITTER
+libmolstat_general_a_SOURCES += \
+	fitter_tools/fit_model_interface.h \
+	fitter_tools/fit_model_interface.cc
+endif

@@ -1,7 +1,9 @@
 TESTS =
 
+if BUILD_SIMULATOR
 if HAVE_PYTHON
 TESTS += simulator-dists.py
+endif
 endif
 
 TEST_EXTENSIONS = .py
