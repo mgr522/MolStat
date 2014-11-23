@@ -55,3 +55,11 @@ TESTS += \
 	fit-asymmetric-resonant.py
 endif
 endif
+
+# make sure automake includes the script in a distribution
+dist_check_SCRIPTS = \
+	fit-symmetric-resonant.py \
+	fit-symmetric-nonresonant.py \
+	fit-symmetric-nonresonant-binlog.py \
+	fit-options.py \
+	fit-asymmetric-resonant.py

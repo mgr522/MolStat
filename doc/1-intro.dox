@@ -83,7 +83,7 @@ make check
 - Conductance histogram (single-molecule conductance) tools: simulator and fitter. The simulator produces zero-bias, static, or differential conductance histograms for a variety of model systems. The fitter can fit zero-bias conductance histogram peaks against three forms for resonant or nonresonant tunneling.
 
 \section sec_license License
-MolStat is distributed under the Creative Commons Attribution-NonCommercial 4.0 International Public License. A full version of the license is provided in the `LICENSE` file in the top-level directory, and can be found online at http://creativecommons.org/licenses/by-nc/4.0/legalcode. In \"human-readable\" terms, this license allows you to
+MolStat is distributed under the Creative Commons Attribution-NonCommercial 4.0 International Public License. A full version of the license is provided in the `COPYING` file in the top-level directory, and can be found online at http://creativecommons.org/licenses/by-nc/4.0/legalcode. In \"human-readable\" terms, this license allows you to
 - _Share_ -- copy and redistribute MolStat in any medium or format
 - _Adapt_ -- remix, transform, and built upon MolStat
 .
