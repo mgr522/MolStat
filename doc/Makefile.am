@@ -1,6 +1,6 @@
 if CAN_BUILD_DOC
-.PHONY: all
-all:
+.PHONY: pdf
+pdf:
 	$(DOXYGEN) fullref.doxygen
 	sed -i.bak -e 's/latex_count=5/latex_count=8/g' latex/Makefile
 	rm -f latex/Makefile.bak
@@ -26,7 +26,7 @@ install::
 
 install_devel::
 
-else
-all:
-	doxygen is not available; cannot build the documentation
+#else
+#pdf:
+#	echo "doxygen is not available; cannot build the documentation"
 endif
