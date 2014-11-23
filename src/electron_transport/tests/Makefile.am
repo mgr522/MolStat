@@ -63,3 +63,9 @@ dist_check_SCRIPTS = \
 	fit-symmetric-nonresonant-binlog.py \
 	fit-options.py \
 	fit-asymmetric-resonant.py
+
+dist_check_DATA = \
+	asymmetric-resonant.dat	\
+	symmetric-nonresonant.dat \
+	symmetric-nonresonant-binlog.dat \
+	symmetric-resonant.dat

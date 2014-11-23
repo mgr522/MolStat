@@ -43,6 +43,7 @@ libmolstat_simulator_a_SOURCES = \
 	simulator_tools/simulator.h \
 	simulator_tools/simulator.cc \
 	simulator_tools/simulate_model.h \
+	simulator_tools/observable.h \
 	simulator_tools/simulate_model.cc \
 	simulator_tools/composite_simulate_model.cc \
 	simulator_tools/simulate_model_factory.cc \
