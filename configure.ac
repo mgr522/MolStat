@@ -148,6 +148,7 @@ AC_CONFIG_HEADERS([src/config.h])
 
 # files to be generated
 AC_CONFIG_FILES([
+	README
 	Makefile
 		src/Makefile
 			src/general/Makefile

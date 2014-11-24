@@ -2,6 +2,8 @@ if BUILD_DOC
 
 doc_DATA = userman.pdf fullref.pdf
 
+.PHONY: FORCE
+
 fullref.pdf: FORCE
 	$(DOXYGEN) fullref.doxygen
 	cd latex; make

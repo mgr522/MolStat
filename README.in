@@ -11,7 +11,7 @@ userman.pdf -- a Users' manual for the standard installation.
 fullref.pdf -- a full code reference.
 
 These files can be created from the code using doxygen or downloaded from
-the MolStat website, https://bitbucket.org/mgreuter/molstat.
+the MolStat website, @PACKAGE_URL@.
 Note that the versions on the MolStat
 website will correspond to versioned releases.
 

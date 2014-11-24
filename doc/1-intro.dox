@@ -82,6 +82,8 @@ The documentation is \b not automatically built from the top directory. Finally,
 make dist
 \endverbatim
 from the top MolStat directory.
+
+Full information on extending MolStat can be found in \ref extend_molstat.
 \endif
 
 \subsection check_install Verifying the Installation
