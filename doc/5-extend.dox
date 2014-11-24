@@ -36,53 +36,124 @@ Finally, add the new binning style class to the molstat::BinStyleFactory functio
 \section sec_add_simulate Adding Simulator Models and Observables
 
 \subsection subsec_add_simulate_observable Adding Simulator Observables
-Observables derive from the molstat::Observable template, in a \"curiously recurring template pattern". In other words, the code to create a new observable `MyObservable` looks like
-\verbatim
+Observables derive from the molstat::Observable template, in a \"curiously recurring template pattern". In other words, the code to create a new observable, called `MyObservable`, looks like
+\code{.cpp}
 class MyObservable : public molstat::Observable<MyObservable>
 {
 public:
 	MyObservable()
-		: molstat::Observable<MyObservable>(&MyObservable::ObservableFunction)
+		: molstat::Observable<MyObservable>(&MyObservable::MyObservableFunction)
 	{}
 
-	virtual double ObservableFunction(const std::valarray<double> &vals) const = 0;
+	virtual double MyObservableFunction(const std::valarray<double> &vals) const = 0;
 };
-\endverbatim
-There are two other notes about this boilerplate code:
--# The observable is calculated via the `ObservableFunction` function. Any class that directly implements `MyObservable` (see below) needs to override `ObservableFunction`. Such an observable function must have the signature
-\verbatim
+\endcode
+There are two things to note about this boilerplate code:
+-# The observable is calculated via the `MyObservableFunction` function. Any class that directly implements `MyObservable` (see below) needs to override `MyObservableFunction`. Such an observable function must have the signature
+\code{.cpp}
 double(const std::valarray<double> &) const
-\endverbatim
+\endcode
 The `valarray` argument is a set of model parameters, in the order specified by the molstat::SimulateModel::get_names member function.
 
 -# The default constructor for molstat::Observable is explicitly deleted. A pointer to the member function for the observable must be provided in the constructor for `MyObservable`.
 .
 
 Finally, the observable needs to be added to MolStat's list of available observables (the `std::map` called `observables` in SimulatorInputParse::createSimulator). Boilerplate code is
-\verbatim
+\code{.cpp}
 observables.emplace( molstat::to_lower("ObservableName"),
    molstat::GetObservableIndex<MyObservable>() );
-\endverbatim
+\endcode
 The name of the observable (for use in the input file) is the key `ObservableName`. This key should be in lowercase in the code (thus the call to molstat::to_lower); it is case insensitive in the input file.
 
 \subsection subsec_add_simulate_model Adding Simulator Models
-Simulator models are encapsulated by the molstat::SimulateModel class. This base class
-- stores a list of the random number distributions, as specified by the derived class.
-- samples from all of the random number distributions, given a GSL random number generator.
-.
-The derived class for a new simulator model needs to specify the names of its parameters when calling the constructor for molstat::SimulateModel. The order of the parameters is important, the `std::vector<double>` produced by molstat::SimulateModel::sample will be ordered the same way. (Implemented models have the `unpack_parameters` function to aid in this process.) A constant, static member of each class usually lists the names, in order. The new class must have a constructor with the signature
-\verbatim
-NewSimulateModel(const std::map<std::string, std::shared_ptr<RandomDistribution>> &)
-\endverbatim
-This function passes the list of available random distributions to the molstat::SimulateModel constructor, along with the list of required parameters.
+Models for the simulator are a bit more varied than observables, and thus there are several things to keep in mind when adding a simulator model. This guide will start with a simple example and add complexity, demonstrating how simulator models work.
 
-Although the above steps are all that is necessary for making a simulator model, the resulting model would not be very useful. A simulator model should also inherit from one or more observable classes and implement each observable's function (see \ref subsec_add_simulate_observable). To this end, implemented simulator models usually have a static member function that calculates the observable for a specific set of parameters. (Recall that the observable's function will randomly generate data *and* subsequently calculate the observable.)
+At the highest level, models need to derive from the molstat::SimulateModel class. In most cases, the model will not directly derive from molstat::SimulateModel; instead, the model will derive from a subclass of molstat::SimulateModel. For example, molstat::Observable (the base template for an observable) itself derives from molstat::SimulateModel.
+\attention Should a model (or another class) need to inherit directly from molstat::SimulateModel, the inheritance must be virtual. That is, the class declaration line should look like
+\code
+class MyModel : public virtual molstat::SimulateModel
+\endcode
 
-Finally, the new simulator model needs to be added to to the simulator's `models` list in `main-simulator.cc`. The molstat::GetSimulateModelFactory template provides a wrapper for this operation; using molstat::SymOneSiteSimulateModel as an example, the code would be
-\verbatim
-models["symmetriconesite"] = GetSimulateModelFactory<SymOneSiteSimulateModel>();
-\endverbatim
-The name of the model (for use in the input file) is the key for `models`. This key should be in lowercase in the code; it is case insensitive in the input file.
+\subsubsection subsubsec_add_simulate_model_simple A Simple Model
+Let's work through a simple example that uses the `MyObservable` observable introduced above. The declaration for a simple model looks like
+\code{.cpp}
+class MyModel : public MyObservable
+{
+public:
+	virtual std::vector<std::string> get_names() const override
+	{
+		return { "param0", "param1" };
+	}
+
+	virtual double MyObservableFunction(const std::valarray<double> &params) const override
+	{
+		return params[0]; // simply return the parameter in this example
+	}
+};
+\endcode
+
+The two functions do the following:
+- `get_names` returns the names (in lowercase) of the parameters for this model. The order of the parameters will be preserved.
+- `MyObservableFunction` takes a set of model parameters, ordered as in `get_names` and calculates the value of the observable.
+
+Finally, the new simulator model needs to be added to the list of available simulator models (the `std::map` called `models` in SimulatorInputParse::createSimulator). Boilerplate code is
+\code{.cpp}
+models.emplace( molstat::to_lower("ModelName"),
+   molstat::GetSimulateModelFactory<MyModel>() );
+\endcode
+The name of the model (for use in the input file) is the key `ModelName`. This key should be in lowercase in the code (thus the call to molstat::to_lower); it is case insensitive in the input file.
+
+\subsubsection subsubsec_add_simulate_model_composite Composite Models
+
+More complicated models fall under the idea of a \"composite\" model. This type was motivated by applications in electron transport (\ref page_conductance_histograms), but is more general. The idea is that the model may rely on some number of submodels, and the observable is the composition of the observable for all of the submodels. In electron transport, the model is a transport junction and the submodels are channels.
+
+The first step is to define a type for the submodel. This is one of the few times when you may directly derive from molstat::SimulateModel (remember to use virtual inheritance).
+\code{.cpp}
+class MySubmodelType : public virtual molstat::SimulateModel
+{
+protected:
+	virtual molstat::SimulateModelType getModelType() const override
+	{
+		return std::type_index{ typeid(MySubmodelType) };
+	}
+};
+\endcode
+All such submodels should then derive from this type. Note that the top-level model in a MolStat input command \b must be of type `molstat::SimulateModel` (the default). A `model` command specifying a submodel type must be inside another `model` command.
+\todo Consider adding a \"Submodel\" template that just templates the above code.
+
+Next we create a class for the composite model. Such a class must derive from molstat::CompositeSimulateModel; as before, the inheritance is usually not direct, and must be virtual.
+\code{.cpp}
+class MyCompositeModel : public molstat::CompositeObservable<MyObservable>
+{
+protected:
+	// specify the type of submodel
+	virtual molstat::SimulateModelType getSubmodelType() const override
+	{
+		return std::type_index{ typeid(MySubmodelType) };
+	}
+
+	// specify any parameters that originating in the composite model
+	virtual std::vector<std::string> get_names() const override
+	{
+		...
+	}
+
+public:
+	MyCompositeModel() : molstat::CompositeObservable<MyObservable>(
+		[] (double a, double b) -> double { return a + b; }
+	) {}
+}
+\endcode
+
+Let's digest this code.
+- The `molstat::CompositeObservable` template inherits from `molstat::CompositeSimulateModel`, fulfilling that requirement.
+- The `getSubmodelType` function specifies that any submodels should be of the `MySubmodelType` type. Combined with the `getModelType` function in the submodel, these functions provide runtime error checking.
+- The `get_names` function works just as before. The composite model can specify parameters (perhaps the Fermi energy in the case of an electron transport junction) that get passed to all submodels. Submodels can then specify their own parameters. Regarding ordering, the composite parameters will always appear \b before those of the submodels.
+- The default constructor for molstat::CompositeObservable is explicitly deleted. Instead, our model has to provide a function of type `double(double, double)` for combining the observables from submodels. It is anticipated that this function is both associative and commutative. Note that, unlike the simpler `MyModel`, `MyCompositeModel` does not implement `MyObservableFunction`.
+
+Another comment on the nature of a `molstat::CompositeObservable` must be made. A composite observable simply means that the results from the submodels should be combined (in the specified way). A submodel is \b not required to implement the particular observable. MolStat will only check for this if the user requests that observable in the input file. In this way, a submodel does not need to implement every observable that can be combined, but only the one(s) requested by the user.
+
+Finally, if the function combining results from the submodels is more complicated than a simple `double(double, double)` function, the composite model should simply treat the observable regularly (`molstat::Observable`) and override the observable's function.
 
 \section sec_add_fit_model Adding Fitter Models
 
