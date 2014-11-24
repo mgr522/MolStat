@@ -22,40 +22,70 @@ In both cases, the code was designed to be extensible and to accomodate new obse
 \section sec_install Installation
 MolStat requires
 - a C++11 compiler. Most modern `g++` and `clang++` compilers are sufficient. Note for Mac users (OS 10.8 and older): the default `libstdc++` does not support C++11. When you run the `configure` script below, specify the compiler using, e.g., `CXX="g++ -stdlib=libc++"`. (The configure script automatically checks for `-std=c++11`.)
-- the GNU Scientific Library (GSL), which can be obtained at http://www.gnu.org/software/gsl/. MolStat has been tested with version 1.16 of GSL.
+- (for some functionality) the GNU Scientific Library (GSL), which can be obtained at http://www.gnu.org/software/gsl/. MolStat has been tested with version 1.16 of the GSL.
 - (optional) python. Some tests use python.
 .
 
+\if userman
+\note Information on extending MolStat to have new functionality is available in the full reference manual, which can be downloaded from \website.
+\endif
 \if fullref
 Extending MolStat (see \ref extend_molstat) also requires
 - the GNU autotools suite.
-- (optional) `doxygen` and `pdflatex`, if you want to produce the documentation manuals directly from the code. PDF versions for the latest release will be available on the MolStat website, https://bitbucket.org/mgreuter/molstat.
+- (optional) `doxygen` and `pdflatex`, if you want to produce the documentation manuals directly from the code. PDF versions for the latest release will be available on the MolStat website, \website.
 \endif
 
-\subsection build Building the Package
-\todo Update the build section.
+\subsection build_molstat Building MolStat
 
-An autotools configure setup is provided to make installation easy (we hope). The first step is to run
+A configure script is provided to make installation straightforward. From the command-line, move to the top MolStat directory and use
 \verbatim
-autoreconf --install
+./configure
 \endverbatim
-from the package's base directory. In addition to any of the usual options for configure, the `--with-gsl` option should specify the location of the GSL. For example, on a Mac using GSL from MacPorts, the configure script would be
-\verbatim
-./configure --with-gsl=/opt/local
-\endverbatim
-The `--prefix` command may be useful if you plan to \"install\" the executables (see the standard options for the GNU autotools suite). Finally,
+The command `configure --help` will display options for `configure`. By default, all modules are built into MolStat, which may require additional software packages. The following options disable this behavior.
+- `--disable-simulator` -- Do not build the `molstat-simulator` program, any of its modules, or any of its tests.
+- `--disable-fitter` -- Do not build the `molstat-fitter` program, any of its modules, or any of its tests. `molstat-fitter` requires the GSL.
+- `--disable-module` -- Disable a particular module. Available modules are (replace `module` with the name listed below)
+   - `transport-simulator` -- Simulating electron transport behavior, as described in \ref page_conductance_histograms.
+   - `transport-fitter` -- Fitting electron transport behavior, as described in \ref page_conductance_histograms. This module requires the GSL.
+.
+Finally, should other packages be required (depending on the above options), they are specified with the following options to `configure`:
+- `--with-gsl=<PATH>` -- Location of GSL headers and libraries. Ignored if the GSL is not required (per the other `configure` options).
+
+After a successful configuration with `configure`, simply use
 \verbatim
 make
 \endverbatim
-and, optionally,
+to build the code.
+
+\subsection build_extend_molstat Extending MolStat
+
+\if userman
+Details on how to extend MolStat can be found in the full reference manual, available at \website.
+\endif
+
+\if fullref
+We encourage you to encourage MolStat to have new functionality and hope that you would consider contributing your work into MolStat. The full MolStat code is available at \website and uses `git` to manage the repository. There are additional files in the repository that are not included in the distribution tarball (such as scripts for building the documentation).
+
+Once you checkout the repository, first run autoconf to produce the `configure` script
 \verbatim
-make install
+autoreconf --install
 \endverbatim
+This must be done from MolStat's base directory. Then, follow the above instructions for configuring MolStat. One additional `configure` option that is not listed above is `--enable-documentation`, which produces scripts for building the documentation. This requires your system to have both `doxygen` and `pdflatex` in your path.
 
-\note The full autotools build setup is included so that you can, at your option, extend MolStat to have new functionalities.
+Building and testing the code is the same as described elsewhere. To build the documentation, do the following from the base MolStat directory.
+\verbatim
+cd doc
+make
+\endverbatim
+The documentation is \b not automatically built from the top directory. Finally, to make a tarball of the code (for a release), make sure the documentation is up to date and run
+\verbatim
+make dist
+\endverbatim
+from the top MolStat directory.
+\endif
 
-\subsection checkfitter Verifying the Installation
-Several tests are also provided to verify a successful compilation, and can be run using
+\subsection check_install Verifying the Installation
+Several tests are also provided to verify a successful build, and can be run using
 \verbatim
 make check
 \endverbatim
