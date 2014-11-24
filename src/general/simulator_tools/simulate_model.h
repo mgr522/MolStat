@@ -182,6 +182,26 @@ public:
 };
 
 /**
+ * \brief Specifies that a class is a "submodel" of the specified type.
+ *
+ * This class, similar to molstat::Observable uses a curiosuly recurring
+ * template pattern to override the molstat::SimulateModel::getModelType
+ * funtion.
+ *
+ * \tparam T The type of the submodel.
+ */
+template<typename T>
+class SimulateSubmodel
+	: public virtual SimulateModel
+{
+protected:
+	virtual SimulateModelType getModelType() const override
+	{
+		return std::type_index{ typeid(T) };
+	}
+};
+
+/**
  * \brief Base class for a composite model that uses both model parameters
  *    and other independent models to calculate observables.
  *

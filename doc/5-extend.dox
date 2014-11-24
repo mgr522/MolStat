@@ -107,19 +107,14 @@ The name of the model (for use in the input file) is the key `ModelName`. This k
 
 More complicated models fall under the idea of a \"composite\" model. This type was motivated by applications in electron transport (\ref page_conductance_histograms), but is more general. The idea is that the model may rely on some number of submodels, and the observable is the composition of the observable for all of the submodels. In electron transport, the model is a transport junction and the submodels are channels.
 
-The first step is to define a type for the submodel. This is one of the few times when you may directly derive from molstat::SimulateModel (remember to use virtual inheritance).
+The first step is to define a type for the submodel.
 \code{.cpp}
-class MySubmodelType : public virtual molstat::SimulateModel
+class MySubmodelType : public molstat::SimulateSubmodel<MySubmodelType>
 {
-protected:
-	virtual molstat::SimulateModelType getModelType() const override
-	{
-		return std::type_index{ typeid(MySubmodelType) };
-	}
+	...
 };
 \endcode
 All such submodels should then derive from this type. Note that the top-level model in a MolStat input command \b must be of type `molstat::SimulateModel` (the default). A `model` command specifying a submodel type must be inside another `model` command.
-\todo Consider adding a \"Submodel\" template that just templates the above code.
 
 Next we create a class for the composite model. Such a class must derive from molstat::CompositeSimulateModel; as before, the inheritance is usually not direct, and must be virtual.
 \code{.cpp}

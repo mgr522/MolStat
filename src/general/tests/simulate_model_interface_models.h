@@ -60,20 +60,9 @@ public:
  * \brief Type of submodel used in the test.
  * \endinternal
  */
-class TestSubmodelType : public virtual molstat::SimulateModel
+class TestSubmodelType
+	: public molstat::SimulateSubmodel<TestSubmodelType>
 {
-protected:
-	/**
-	 * \internal
-	 * \brief Identifies a derived model as a submodel.
-	 *
-	 * \return This submodel type.
-	 * \endinternal
-	 */
-	virtual molstat::SimulateModelType getModelType() const override
-	{
-		return std::type_index{ typeid(TestSubmodelType) };
-	}
 };
 
 /**
@@ -120,7 +109,8 @@ public:
  * \brief Dummy composite model class using addition to combine submodels.
  * \endinternal
  */
-class CompositeTestModelAdd : public CompositeTestModel
+class CompositeTestModelAdd
+	: public CompositeTestModel
 {
 public:
 	/**
@@ -141,7 +131,8 @@ public:
  * \brief Dummy composite model class using multiplication to combine submodels.
  * \endinternal
  */
-class CompositeTestModelMultiply : public CompositeTestModel
+class CompositeTestModelMultiply
+	: public CompositeTestModel
 {
 public:
 	/**
@@ -162,8 +153,9 @@ public:
  * \brief Dummy submodel type.
  * \endinternal
  */
-class CompositeSubModel : public TestSubmodelType,
-	public BasicObs1
+class CompositeSubModel
+	: public TestSubmodelType,
+	  public BasicObs1
 {
 protected:
 	virtual vector<string> get_names() const override
@@ -184,7 +176,8 @@ public:
  *    implement a requested observable.
  * \endinternal
  */
-class FailedSubModel : public TestSubmodelType
+class FailedSubModel
+	: public TestSubmodelType
 {
 protected:
 	virtual vector<string> get_names() const override

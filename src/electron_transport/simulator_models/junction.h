@@ -25,14 +25,9 @@ namespace molstat {
 namespace transport {
 
 /// Type representing a channel for transport through junctions.
-class Channel : public virtual SimulateModel
+class Channel
+	: public SimulateSubmodel<Channel>
 {
-protected:
-	/// Identifies this model as a channel.
-	virtual SimulateModelType getModelType() const override
-	{
-		return std::type_index{ typeid(Channel) };
-	}
 };
 
 /// Composite model representing a junction.
