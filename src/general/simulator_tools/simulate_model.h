@@ -195,6 +195,11 @@ class SimulateSubmodel
 	: public virtual SimulateModel
 {
 protected:
+	/**
+	 * \brief Sets the type of this model to be itself.
+	 *
+	 * \return The type of submodel this class represents.
+	 */
 	virtual SimulateModelType getModelType() const override
 	{
 		return std::type_index{ typeid(T) };
