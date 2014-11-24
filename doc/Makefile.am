@@ -1,32 +1,22 @@
 if CAN_BUILD_DOC
-.PHONY: pdf
-pdf:
+
+doc_DATA = userman.pdf fullref.pdf
+
+fullref.pdf: FORCE
 	$(DOXYGEN) fullref.doxygen
-	sed -i.bak -e 's/latex_count=5/latex_count=8/g' latex/Makefile
-	rm -f latex/Makefile.bak
 	cd latex; make
 	mv -f latex/refman.pdf fullref.pdf
+	rm -rf latex
+
+userman.pdf: 1-intro.dox 2-math-background.dox 3-run-molstat.dox 4-electron-transport.dox
 	$(DOXYGEN) userman.doxygen
-	sed -i.bak -e 's/latex_count=5/latex_count=8/g' latex/Makefile
-	rm -f latex/Makefile.bak
 	cd latex; make
 	mv -f latex/refman.pdf userman.pdf
+	rm -rf latex
 
-.PHONY: clean
-clean::
-	/bin/rm -rf latex
+FORCE:
+	-rm -f fullref.pdf userman.pdf
 
-veryclean: clean
+CLEANFILES = warn-fullref.log warn-userman.log
 
-distclean: clean
-
-install::
-	-mkdir -p $(installroot)$(prefix)/doc
-	-cp -r latex $(installroot)$(prefix)/doc
-
-install_devel::
-
-#else
-#pdf:
-#	echo "doxygen is not available; cannot build the documentation"
 endif
