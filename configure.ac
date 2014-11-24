@@ -1,5 +1,5 @@
 # boilerplate initialization
-AC_INIT([MolStat], [1.2], [mgreuter@u.northwestern.edu])
+AC_INIT([MolStat], [1.2], [mgreuter@u.northwestern.edu], , [https://bitbucket.org/mgreuter/molstat])
 AC_CONFIG_SRCDIR([configure.ac])
 
 # this is where autoconf-generated files go
@@ -25,6 +25,7 @@ AC_ARG_ENABLE([fitter],
 	[AS_HELP_STRING([--disable-fitter],
 		[disable compilation of the fitter @<:@default: no@:>@])],
 	[build_fitter=${enableval}], [build_fitter=yes])
+
 AC_ARG_ENABLE([simulator],
 	[AS_HELP_STRING([--disable-simulator],
 		[disable compilation of the simulator @<:@default: no@:>@])],
@@ -103,26 +104,51 @@ AM_CONDITIONAL([TRANSPORT_SIMULATOR], [test x$with_transport_sim = xyes])
 
 
 
+# configure the documentation
+# by default, do NOT build the documentation
+AC_ARG_ENABLE([documentation],
+	[AS_HELP_STRING([--enable-documentation],
+		[enable building the documentation (for developers only) @<:@default: no@:>@])],
+	[build_documentation=${enableval}], [build_documentation=no])
+
+# check for configuration files, doxygen, and pdflatex, if necessary
+if test x$build_documentation = xyes; then
+	AC_CHECK_FILE([doc/Makefile.am], ,
+		[AC_MSG_WARN([Unable to build documentation: Cannot find doc/Makefile.am])
+		build_documentation=no])
+
+	AC_CHECK_FILE([doc/userman.doxygen.in], ,
+		[AC_MSG_WARN([Unable to build documentation: Cannot find doc/userman.doxygen.in])
+		build_documentation=no])
+
+	AC_CHECK_FILE([doc/fullref.doxygen.in], ,
+		[AC_MSG_WARN([Unable to build documentation: Cannot find doc/fullref.doxygen.in])
+		build_documentation=no])
+
+	AC_CHECK_PROG([have_doxygen], [doxygen], [yes], [no])
+	if test x$have_doxygen = xyes; then
+	   AC_PATH_PROG(DOXYGEN, doxygen)
+	else
+		AC_MSG_WARN([Unable to build documentation: Cannot find doxygen.])
+	   build_documentation=no
+	fi
+
+	AC_CHECK_PROG([have_pdflatex], [pdflatex], [yes], [no])
+	if test x$have_pdflatex = xyes; then
+   	AC_PATH_PROG(PDFLATEX, pdflatex)
+   else
+   	AC_MSG_WARN([Unable to build documentation: Cannot find pdflatex.])
+   	build_documentation=no
+   fi
+fi
+AM_CONDITIONAL([BUILD_DOC], [test x$build_documentation = xyes])
+
 # output for the config header file
 AC_CONFIG_HEADERS([src/config.h])
-
-# We need these to build the documentation
-AC_CHECK_PROG([HAVE_DOXYGEN], [doxygen], [YES], [NO])
-if test $HAVE_DOXYGEN = YES; then
-   AC_PATH_PROG(DOXYGEN, doxygen)
-fi
-AC_CHECK_PROG([HAVE_PDFLATEX], [pdflatex], [YES], [NO])
-if test $HAVE_PDFLATEX = YES; then
-   AC_PATH_PROG(PDFLATEX, pdflatex)
-fi
-AM_CONDITIONAL([CAN_BUILD_DOC], [test $HAVE_DOXYGEN = YES && test $HAVE_PDFLATEX = YES])
 
 # files to be generated
 AC_CONFIG_FILES([
 	Makefile
-		doc/Makefile
-		doc/fullref.doxygen
-		doc/userman.doxygen
 		src/Makefile
 			src/general/Makefile
 				src/general/fitter_tools/Makefile
@@ -136,6 +162,14 @@ AC_CONFIG_FILES([
 				src/electron_transport/tests/Makefile
 			src/tests/Makefile
 ])
+
+if test x$build_documentation = xyes; then
+	AC_CONFIG_FILES([
+		doc/Makefile
+			doc/fullref.doxygen
+			doc/userman.doxygen
+	])
+fi
 
 # finish up
 AC_OUTPUT
