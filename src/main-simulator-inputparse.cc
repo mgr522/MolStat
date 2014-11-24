@@ -3,10 +3,28 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file main-simulator-inputparse.cc
- * \brief Definition of the SimulatorInputParse class for parsing the simulator
- *    input deck.
+ * \brief Definition of the molstat::SimulatorInputParse class for parsing the
+ *    simulator input deck.
  *
- * \todo Document how this code works.
+ * There are a couple steps to parsing the input deck. First, the user invokes
+ * molstat::SimulatorInputParse::readInput(), which reads in the input deck
+ * and performs some processing. This pass does not attempt to create the
+ * models, but instead creates a tree of the models (with their names and 
+ * distributions). Some runtime-error checking can be performed here, and also
+ * makes it easy for the commands to appear in an arbitrary order.
+ *
+ * In the end, this first pass checks the syntax of the input file, but does
+ * not verify that model, observable, or binning style names are correct (or
+ * logical). The molstat::SimulatorInputParse::ModelInformation class stores
+ * the unprocessed information on each model/submodel.
+ *
+ * The second step invokes molstat::SimulatorInputParse::createSimulator(),
+ * which traverses the model/submodel tree and builds the actual
+ * molstat::SimulateModel objects. At this point the names and model types are
+ * checked.
+ *
+ * There are several output functions to help diagnose problems at the various
+ * stages of input processing.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014

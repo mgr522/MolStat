@@ -33,7 +33,7 @@ class BinStyle;
  *    object.
  *
  * Preliminary error checking is done in the SimulatorInputParse::readInput()
- * function. This function only process the lines and stores them for later
+ * function. This function only processes the lines and stores them for later
  * use. The SimulatorInputParse::create() function actually builds the
  * molstat::Simulator object, performing additional runtime error checking.
  *
