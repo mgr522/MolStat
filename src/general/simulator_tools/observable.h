@@ -29,23 +29,25 @@ namespace molstat {
 /**
  * \brief Base class for an observable.
  *
- * Any observable that can be simulated should, in some way derive from this
+ * Any observable that can be simulated should, in some way, derive from this
  * class. The derived class will have a function of signature
- * \verbatim
+ * \code{.cpp}
  * double DerivedClass::function_name(const std::valarray<double> &) const
- * \endverbatim
+ * \endcode
  * that calculates the observable, given a set of model parameters.
  *
  * The default constructor of molstat::Observable is intentionally deleted; the
- * deriving class must tell molstat::Observable the name of the function.
- * molstat::Observable then registers the observable function with the
- * molstat::SimulateModel, letting the runtime know that the model and
+ * deriving class must tell molstat::Observable the name of the observable
+ * function. molstat::Observable then registers the observable function with
+ * the molstat::SimulateModel, letting the runtime know that the model and
  * observable are \"compatible\".
  *
- * \tparam T The derived class for a specific observable.
+ * \tparam T The derived class for a specific observable. This is designed to
+ *    be a \"curiously recurring template pattern\".
  */
 template<typename T>
-class Observable : public virtual SimulateModel
+class Observable
+	: public virtual SimulateModel
 {
 public:
 	Observable() = delete;
@@ -106,10 +108,12 @@ public:
  * specify a function that combines two values from submodels into the
  * value of the composite observable.
  *
- * \tparam T The derived class for a specific observable.
+ * \tparam T The derived class for a specific observable. `T` should be a
+ *    derived class of molstat::Observable.
  */
 template<typename T>
-class CompositeObservable : public virtual CompositeSimulateModel
+class CompositeObservable
+	: public virtual CompositeSimulateModel
 {
 private:
 	/**

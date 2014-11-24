@@ -5,7 +5,19 @@
  * \file simulator.h
  * \brief Defines the molstat::Simulator class for simulating histograms.
  *
- * \todo Write a better description of how all these classes work together.
+ * A fairly high-level introduction to the classes for simulating histograms
+ * can be found in \ref sec_add_simulate. Here we expand on this a little bit.
+ *
+ * The molstat::Simulator class is the interface for the whole package. A
+ * molstat::Simulator contains the model (and the possible hierarchy of
+ * submodels therein) and the list of functions for calculating the desired
+ * observables. The molstat::SimulateModel (top-level model) must be specified
+ * when constructing the molstat::Simulator. The molstat::Simulator::simulate
+ * function then simulates a random set of model parameters and calculates the
+ * requested observables.
+ *
+ * Details for the molstat::SimulateModel class and molstat::Observable
+ * template are found in the documentation of simulate_model.h.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014

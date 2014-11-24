@@ -8,6 +8,25 @@
  *    the molstat::SimulateModelFactory class for creating models at runtime,
  *    and other auxiliary types/aliases for the simulator interface.
  *
+ * These classes work closely with molstat::Simulator for simulating
+ * single-molecule behavior. Here is a rundown of the various classes in this
+ * file, and how they work together.
+ *
+ * molstat::SimulateModel -- the main/base class for a model system. As
+ * described in \ref sec_add_simulate, this class specifies the names of the
+ * model's physical parameters and provides the interface for simulating data.
+ * Any model deriving from this class \b must use virtual inheritance.
+ *
+ * molstat::CompositeSimulateModel -- the base class for a composite model
+ * system (i.e., a model that is built upon some number of submodels). A
+ * submodel type must be specified (see \ref sec_add_simulate), as well as a
+ * mechanism for combining the observables together.
+ * 
+ * molstat::SimulateModelFactory -- a factory class for constructing a
+ * molstat::SimulateModel. By separating out construction from usage, we can
+ * provide better error messages/diagnostics during construction and spend less
+ * time checking the internal state of the simulator model.
+ *
  * \author Matthew G.\ Reuter
  * \date October 2014
  */
@@ -70,11 +89,15 @@ using SimulateModelType = std::type_index;
  * \brief Base class for a model that uses model parameters to calculate
  *    observables.
  *
- * All models for simulating data should derive from this class. Derived
- * classes must implement functions that provide the number of model parameters
- * needed, as well as a name for each parameter. Derived classes should also
- * probably derive from molstat::Observable so that the MolStat simulator knows
- * that this model is compatible with that observable.
+ * All models for simulating data should derive (\b virtual inheritance) from
+ * this class. Derived classes must implement functions that provide the number
+ * of model parameters needed, as well as a name for each parameter. Derived
+ * classes should also probably derive from molstat::Observable so that the
+ * MolStat simulator knows that this model is compatible with that observable.
+ *
+ * Note: the reason for virtual inheritance is that the compatible_observables
+ * map needs to be unique. The constructor in the molstat::Observable template
+ * registers the function with this map.
  *
  * Construction via the molstat::SimulateModelFactory interface ensures that
  * all required random number distributions are specified before using the
@@ -166,14 +189,13 @@ public:
  * observables. Composite models that require a specific type of submodel
  * should override the getModelType function to return the submodel type.
  */
-class CompositeSimulateModel : public virtual SimulateModel
+class CompositeSimulateModel
+	: public virtual SimulateModel
 {
 protected:
 	CompositeSimulateModel() = default;
 
-	/**
-	 * \brief List of the underlying submodels.
-	 */
+	/// List of the underlying submodels.
 	std::list<std::shared_ptr<SimulateModel>> submodels;
 
 public:
@@ -221,7 +243,7 @@ public:
 };
 
 /**
- * \brief Factory class for creating molstat::SimulateModels at runtime.
+ * \brief Factory class for creating a molstat::SimulateModel at runtime.
  *
  * This class instantiates models at runtime, making sure the model is in a
  * valid state before giving the user access to it.
