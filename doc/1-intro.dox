@@ -33,8 +33,7 @@ Extending MolStat (see \ref extend_molstat) also requires
 \endif
 
 \subsection build Building the Package
-\todo Update the build section once changes to the package/configure script are complete.
-\todo Add sed/awk to the configure script for the documentation, if the extra passes are still required.
+\todo Update the build section.
 
 An autotools configure setup is provided to make installation easy (we hope). The first step is to run
 \verbatim
