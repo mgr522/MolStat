@@ -25,6 +25,7 @@
 #include <utility>
 #include <map>
 #include <string>
+#include <limits>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multifit_nlin.h>
@@ -279,8 +280,10 @@ int main(int argc, char **argv)
 		gsl_multifit_fdfsolver_alloc(gsl_multifit_fdfsolver_lmsder, nbin,
 			model->nfit));
 
-	// we don't have a successful fit at the start
+	// we don't have a successful fit at the start... set the residual as high
+	// as possible
 	hasfit = false;
+	bestresid = std::numeric_limits<double>::max();
 
 	// perform fits with all the initial values
 	for(initval = initvals.cbegin(); initval != initvals.cend(); ++initval)
