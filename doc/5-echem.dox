@@ -32,7 +32,7 @@ k_\mathrm{f}(t)=A_\mathrm{f}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})+\lambda]^2
 \f[
 k_\mathrm{b}(t)=A_\mathrm{b}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})-\lambda]^2}{4\lambda k_\mathrm{B}T}\right].
 \f]
-The initial condition \f$\left{P_\mathrm{O}(0)=1,P_\mathrm{R}(0)=0\right}\f$ or \f$\left{P_\mathrm{O}(0)=0,P_\mathrm{R}(0)=1\right}\f$ is 
+The initial condition \f$\left\{ P_\mathrm{O}(0) = 1, P_\mathrm{R}(0)= 0 \right\} \f$ or \f$\left\{ P_\mathrm{O}(0) = 0, P_\mathrm{R}(0) = 1 \right\}\f$ is 
 also assumed. The physical parameters involved in this model are
    - \f$E_\mathrm{Ref}\f$, the reference potential,
    - \f$\lambda\f$, the reorganization energy,
