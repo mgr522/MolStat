@@ -15,6 +15,12 @@
 
 namespace molstat {
 
+const std::list<std::shared_ptr<SimulateModel>> &
+	CompositeSimulateModel::getSubmodels() const
+{
+	return submodels;
+}
+
 std::size_t CompositeSimulateModel::get_num_composite_parameters() const
 {
 	return get_names().size();
