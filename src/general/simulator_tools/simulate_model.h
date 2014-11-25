@@ -234,6 +234,13 @@ public:
 	virtual SimulateModelType getSubmodelType() const = 0;
 
 	/**
+	 * \brief Get access to the submodels.
+	 *
+	 * \return The list of submodels.
+	 */
+	const std::list<std::shared_ptr<SimulateModel>> &getSubmodels() const;
+
+	/**
 	 * \brief Gets the number of model parameters needed directly by the
 	 *    composite model.
 	 */
