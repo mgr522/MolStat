@@ -182,7 +182,7 @@ public:
 				// verify that the model is a composite model and has submodels
 				if(cmodel == nullptr)
 					throw NotCompositeSimulateModel();
-				if(cmodel->submodels.size() == 0)
+				if(cmodel->getNumSubmodels() == 0)
 					throw NoSubmodels();
 
 				// construct a list of submodel information; that is, the list of

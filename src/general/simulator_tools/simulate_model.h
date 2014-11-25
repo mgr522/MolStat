@@ -234,6 +234,13 @@ public:
 	virtual SimulateModelType getSubmodelType() const = 0;
 
 	/**
+	 * \brief Get the number of submodels.
+	 *
+	 * \return The number of submodels.
+	 */
+	std::size_t getNumSubmodels() const;
+
+	/**
 	 * \brief Gets the number of model parameters needed directly by the
 	 *    composite model.
 	 */
