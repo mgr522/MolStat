@@ -55,7 +55,7 @@ public:
 	 *
 	 * \return The incremented counter.
 	 */
-	CounterIndex operator++();
+	CounterIndex &operator++();
 
 	/**
 	 * \brief Set the index for a specified dimension.

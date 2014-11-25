@@ -25,7 +25,7 @@ CounterIndex::CounterIndex(const std::vector<std::size_t> &max_index_)
 			throw std::invalid_argument("0 max index detected.");
 }
 
-CounterIndex CounterIndex::operator++()
+CounterIndex &CounterIndex::operator++()
 {
 	if(!at_end()) // nothing to do if we're at the end
 	{
