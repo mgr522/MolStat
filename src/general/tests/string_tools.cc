@@ -18,6 +18,7 @@
 #include <cassert>
 #include <string>
 #include <general/string_tools.h>
+#include <cmath>
 
 using namespace std;
 
