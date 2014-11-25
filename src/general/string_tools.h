@@ -14,6 +14,7 @@
 
 #include <string>
 #include <queue>
+#include <typeinfo>
 
 /**
  * \namespace molstat
