@@ -182,7 +182,7 @@ public:
 				// verify that the model is a composite model and has submodels
 				if(cmodel == nullptr)
 					throw NotCompositeSimulateModel();
-				if(cmodel->getNumSubmodels() == 0)
+				if(cmodel->getSubmodels().size() == 0)
 					throw NoSubmodels();
 
 				// construct a list of submodel information; that is, the list of
@@ -203,7 +203,7 @@ public:
 				size_t tally { cparams };
 
 				// go through all of the submodels
-				for(const auto submodel : cmodel->submodels)
+				for(const auto submodel : cmodel->getSubmodels())
 				{
 					const size_t sub_nparam{ submodel->get_num_parameters() };
 

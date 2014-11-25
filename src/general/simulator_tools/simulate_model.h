@@ -234,11 +234,11 @@ public:
 	virtual SimulateModelType getSubmodelType() const = 0;
 
 	/**
-	 * \brief Get the number of submodels.
+	 * \brief Get access to the submodels.
 	 *
-	 * \return The number of submodels.
+	 * \return The list of submodels.
 	 */
-	std::size_t getNumSubmodels() const;
+	const std::list<std::shared_ptr<SimulateModel>> &getSubmodels() const;
 
 	/**
 	 * \brief Gets the number of model parameters needed directly by the
