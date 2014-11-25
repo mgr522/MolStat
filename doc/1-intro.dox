@@ -37,6 +37,9 @@ Extending MolStat (see \ref extend_molstat) also requires
 
 \subsection build_molstat Building MolStat
 
+\todo Add configure options for electrochemistry options.
+\todo Verify ACX CVODE script.
+
 A configure script is provided to make installation straightforward. From the command-line, move to the top MolStat directory and use
 \verbatim
 ./configure

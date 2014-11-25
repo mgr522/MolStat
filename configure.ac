@@ -93,6 +93,9 @@ if test x$need_gsl != xno; then
 	fi
 fi
 
+# look for CVODE, if necessary
+ACX_WITH_CVODE
+
 
 
 # set flags for all of the options
