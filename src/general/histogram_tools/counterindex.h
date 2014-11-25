@@ -14,6 +14,7 @@
 #define __counter_index_h__
 
 #include <vector>
+#include <stdexcept>
 
 namespace molstat {
 
