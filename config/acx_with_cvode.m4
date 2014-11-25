@@ -11,10 +11,15 @@ AC_DEFUN([ACX_WITH_CVODE],
     ]
   )
   
-  if test "$acx_with_cvode" != no; then
+  if test x"$acx_with_cvode" != xno; then
+    # store the existing CPPFLAGS and LDFLAGS
+    my_CPPFLAGS=$CPPFLAGS
+    my_LDFLAGS=$LDFLAGS
+    my_LIBS=$LIBS
+
+    # append the CVODE information and perform the tests
     CPPFLAGS="$CVODE_INCLUDE $CPPFLAGS"
     LDFLAGS="$CVODE_LDFLAGS $LDFLAGS"
-    LIBS="$CVODE_LIBS $LIBS"
 
     # Check for the pressence of the necessary CVODE headers.
     AC_CHECK_HEADER([cvode/cvode.h], [],
@@ -32,7 +37,16 @@ AC_DEFUN([ACX_WITH_CVODE],
     AC_CHECK_LIB([m], [cos])
     AC_CHECK_LIB([sundials_cvode], [CVodeCreate])
     AC_CHECK_LIB([sundials_nvecserial], [main])
-  else
-    AC_MSG_ERROR([Unable to find CVODE.])
+
+    # revert the CPPFLAGS and LDFLAGS
+    CPPFLAGS=$my_CPPFLAGS
+    LDFLAGS=$my_LDFLAGS
+    LIBS=$my_LIBS
+  fi
+
+  if test x"$acx_with_cvode" != xno; then
+    AC_SUBST([CVODE_INCLUDE], [$CVODE_INCLUDE])
+    AC_SUBST([CVODE_LDFLAGS], [$CVODE_LDFLAGS])
+    AC_SUBST([CVODE_LIBS], [$CVODE_LIBS])
   fi
 ])

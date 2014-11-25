@@ -1,4 +1,5 @@
 SUBDIRS = general \
+	echem \
 	electron_transport \
 	tests
 

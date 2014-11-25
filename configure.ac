@@ -50,10 +50,21 @@ if test x$build_simulator = xno; then
 	with_transport_sim=no
 fi
 
+# by default, include the electrochemistry modules
+AC_ARG_ENABLE([echem-simulator],
+	[AS_HELP_STRING([--disable-echem-simulator],
+		[disable the electrochemistry module for the simulator @<:@default: no@:>@])],
+	[with_echem_sim=${enableval}], [with_echem_sim=yes])
+# disable the electrochemistry module if we're not building the simulator
+if test x$build_simulator = xno; then
+	with_echem_sim=no
+fi
+
 
 
 # figure out what software packages we require
 need_gsl=no
+need_cvode=no
 
 # the simulator requires nothing
 
@@ -67,6 +78,11 @@ fi
 # fitter transport module requires GSL
 if test x$with_transport_fit = xyes; then
 	need_gsl=yes
+fi
+
+# simulator electrochemistry requires CVODE
+if test x$with_echem_sim = xyes; then
+	need_cvode=yes
 fi
 
 
@@ -94,7 +110,17 @@ if test x$need_gsl != xno; then
 fi
 
 # look for CVODE, if necessary
-ACX_WITH_CVODE
+if test x$need_cvode != xno; then
+	ACX_WITH_CVODE
+	if test x$acx_with_cvode = xno; then
+		if test x$need_cvode = xyes; then
+			AC_MSG_ERROR([Unable to find CVODE.])
+		fi
+		if test x$acx_with_cvode = xmaybe; then
+			AC_MSG_WARN([Unable to find CVODE. Requested parts of MolStat that do not require CVODE will still be built.])
+		fi
+	fi
+fi
 
 
 
@@ -104,6 +130,7 @@ AM_CONDITIONAL([TRANSPORT_FITTER], [test x$with_transport_fit = xyes])
 
 AM_CONDITIONAL([BUILD_SIMULATOR], [test x$build_simulator = xyes])
 AM_CONDITIONAL([TRANSPORT_SIMULATOR], [test x$with_transport_sim = xyes])
+AM_CONDITIONAL([ECHEM_SIMULATOR], [test x$with_echem_sim = xyes])
 
 
 
@@ -160,6 +187,9 @@ AC_CONFIG_FILES([
 				src/general/random_distributions/Makefile
 				src/general/simulator_tools/Makefile
 				src/general/tests/Makefile
+			src/echem/Makefile
+				src/echem/simulator_models/Makefile
+				src/echem/tests/Makefile
 			src/electron_transport/Makefile
 				src/electron_transport/fitter_models/Makefile
 				src/electron_transport/simulator_models/Makefile
