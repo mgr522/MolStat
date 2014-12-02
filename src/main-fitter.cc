@@ -30,10 +30,16 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multifit_nlin.h>
 
+#include <config.h>
+
 #include "general/string_tools.h"
 #include "general/histogram_tools/bin_style.h"
 #include "general/histogram_tools/bin_linear.h"
+#include "general/fitter_tools/fit_model_interface.h"
+
+#if BUILD_TRANSPORT_FITTER
 #include "electron_transport/fitter_models/transport_fit_module.h"
+#endif
 
 using namespace std;
 
@@ -87,7 +93,9 @@ int main(int argc, char **argv)
 
 	// load the models
 	// FitModelAdd calls appear here
+	#if BUILD_TRANSPORT_FITTER
 	molstat::transport::load_models(models);
+	#endif
 
 	// set up the fit -- read in parameters from stdin
 	// Line 1: One token specifying the model to use for fitting
