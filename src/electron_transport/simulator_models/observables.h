@@ -37,6 +37,25 @@ public:
 	virtual double AppBias(const std::valarray<double> &params) const = 0;
 };
 
+/// Observable class for the electric current.
+class ElectricCurrent : public Observable<ElectricCurrent>
+{
+public:
+	ElectricCurrent()
+		: Observable<ElectricCurrent>(&ElectricCurrent::ECurrent)
+	{}
+
+	virtual ~ElectricCurrent() = default;
+
+	/**
+	 * \brief Returns the electric current for a set of model parameters.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The electric current for the model parameters.
+	 */
+	virtual double ECurrent(const std::valarray<double> &params) const = 0;
+};
+
 /// Observable class for the static conductance.
 class StaticConductance : public Observable<StaticConductance>
 {
