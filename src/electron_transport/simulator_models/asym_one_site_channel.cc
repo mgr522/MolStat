@@ -44,7 +44,7 @@ double AsymOneSiteChannel::transmission(const double e, const double V,
 		(gammal + gammar)*(gammal + gammar));
 }
 
-double AsymOneSiteChannel::StaticG(const std::valarray<double> &params) const
+double AsymOneSiteChannel::ECurrent(const std::valarray<double> &params) const
 {
 	// unpack the model parameters
 	const double &ef = params[Index_EF];
@@ -54,9 +54,17 @@ double AsymOneSiteChannel::StaticG(const std::valarray<double> &params) const
 	const double &gammar = params[Index_gammaR];
 	const double &a = params[Index_a];
 
-	return 2.*gammal*gammar / (V*(gammal + gammar)) *
+	return 2.*gammal*gammar / (gammal + gammar) *
 		(atan(2. * (ef-eps+(0.5-a)*V) / (gammal + gammar))
 		- atan(2. * (ef-eps-(0.5+a)*V) / (gammal + gammar)));
+}
+
+double AsymOneSiteChannel::StaticG(const std::valarray<double> &params) const
+{
+	// unpack the model parameters
+	const double &V = params[Index_V];
+
+	return ECurrent(params) / V;
 }
 
 double AsymOneSiteChannel::DiffG(const std::valarray<double> &params) const

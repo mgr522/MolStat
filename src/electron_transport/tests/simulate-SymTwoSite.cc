@@ -64,6 +64,8 @@ int main(int argc, char **argv)
 	// get the observable functions
 	auto AppBias = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::AppliedBias) } );
+	auto ECurrent = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::ElectricCurrent) } );
 	auto StaticG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::StaticConductance) } );
 	auto DiffG = junction->getObservableFunction(
@@ -80,6 +82,7 @@ int main(int argc, char **argv)
 	assert(abs(0.101007 - channel->transmission
 		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
 		 params[ChannelType::Index_gamma], params[ChannelType::Index_beta])) < thresh);
+	assert(abs(0.127042 - ECurrent(params)) < thresh);
 	assert(abs(0.127042 - StaticG(params)) < thresh);
 	assert(abs(0.186815 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -92,6 +95,7 @@ int main(int argc, char **argv)
 	assert(abs(0.000431590 - channel->transmission
 		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
 		 params[ChannelType::Index_gamma], params[ChannelType::Index_beta])) < thresh);
+	assert(abs(-0.000174208 - ECurrent(params)) < thresh);
 	assert(abs(0.000435520 - StaticG(params)) < thresh);
 	assert(abs(0.000443426 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -104,6 +108,7 @@ int main(int argc, char **argv)
 	assert(abs(0.459683 - channel->transmission
 		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
 		 params[ChannelType::Index_gamma], params[ChannelType::Index_beta])) < thresh);
+	assert(abs(0.673107 - ECurrent(params)) < thresh);
 	assert(abs(0.480791 - StaticG(params)) < thresh);
 	assert(abs(0.294527 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);

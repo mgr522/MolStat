@@ -43,6 +43,7 @@ namespace transport {
  *   \f[ G_\mathrm{s}(V) = \frac{2e^2}{h} \frac{2\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{eV(\Gamma_\mathrm{L} +\Gamma_\mathrm{R})} \left[ \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon + (1/2-a) eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) - \arctan\left( \frac{2[E_\mathrm{F} - \varepsilon - (1/2+a)eV]}{\Gamma_\mathrm{L} + \Gamma_\mathrm{R}} \right) \right]. \f]
  */
 class AsymOneSiteChannel : public Channel,
+	public ElectricCurrent,
 	public DifferentialConductance,
 	public StaticConductance
 {
@@ -85,6 +86,7 @@ public:
 	static double transmission(const double e, const double v, const double eps,
 		const double gammal, const double gammar, const double a);
 
+	virtual double ECurrent(const std::valarray<double> &params) const override;
 	virtual double DiffG(const std::valarray<double> &params) const override;
 	virtual double StaticG(const std::valarray<double> &params) const override;
 };

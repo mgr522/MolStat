@@ -44,14 +44,15 @@ namespace transport {
  *   && -\frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+\Gamma^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon - eV/2)}{2\beta + i\Gamma} \right) \right]. \f}
  */
 class SymTwoSiteChannel : public Channel,
+	public ElectricCurrent,
 	public DifferentialConductance,
 	public StaticConductance
 {
 private:
 	/**
 	 * \internal
-	 * \brief Calculates the antiderivative needed for the static
-	 *    conductance (fixed values of the model parameters).
+	 * \brief Calculates the antiderivative needed for the electric current
+	 *    (fixed values of the model parameters).
 	 *
 	 * \param[in] z The limit of integration.
 	 * \param[in] eps The channel energy, epsilon.
@@ -60,7 +61,7 @@ private:
 	 * \return The antiderivative needed for the static conductance.
 	 * \endinternal
 	 */
-	static double static_c_integral(const double z, const double eps,
+	static double current_integral(const double z, const double eps,
 		const double gamma, const double beta);
 
 public:
@@ -98,6 +99,7 @@ public:
 	static double transmission(const double e, const double v, const double eps,
 		const double gamma, const double beta);
 
+	virtual double ECurrent(const std::valarray<double> &params) const override;
 	virtual double DiffG(const std::valarray<double> &params) const override;
 	virtual double StaticG(const std::valarray<double> &params) const override;
 };
