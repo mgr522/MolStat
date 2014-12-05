@@ -37,6 +37,9 @@ namespace transport {
  * \hat{\Sigma}_\mathrm{R} = \left[ \begin{array}{cc} 0 & 0 \\ 0 & -i\Gamma/2 \end{array} \right], \f]
  * the transmission function is
  * \f[ T(E) = \frac{16 \Gamma^2 \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma^2\right]^2 + 16 \Gamma^2(E-\varepsilon)^2}. \f]
+ * - Electric current:
+ *   \f{eqnarray*}{ G_\mathrm{s}(V) & = & \frac{2e}{h} \frac{2\beta\Gamma}{4\beta^2+\Gamma^2} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon + eV/2)}{2\beta + i\Gamma} \right) \right] \\
+ *   && -\frac{2e}{h} \frac{2\beta\Gamma}{4\beta^2+\Gamma^2} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon - eV/2)}{2\beta + i\Gamma} \right) \right]. \f}
  * - Differential conductance:
  *   \f[ G_\mathrm{d}(V) = \frac{2e^2}{h} \frac{1}{2} \left[ T(E_\mathrm{F} + eV/2) + T(E_\mathrm{F} - eV/2) \right]. \f]
  * - Static conductance:

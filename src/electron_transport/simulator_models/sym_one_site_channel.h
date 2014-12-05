@@ -36,6 +36,8 @@ namespace transport {
  * \f$ \hat{\Sigma}_\mathrm{L/R} = \left[ -i\Gamma/2 \right] \f$, the
  * transmission function is
  * \f[ T(E) = \frac{\Gamma^2}{(E-\varepsilon-aeV)^2 + \Gamma^2}. \f]
+ * - Electric current:
+ *   \f[ I(V) = \frac{2e}{h} \Gamma \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (1/2-a) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon - (1/2+a) eV}{\Gamma} \right) \right]. \f]
  * - Differential conductance (with intermediate quantities):
  *   \f[ \frac{\partial}{\partial V}T(E) = \frac{2ea\Gamma^2(E - \varepsilon-aeV)}{[(E-\varepsilon-aeV)^2+\Gamma^2]^2}; \f]
  *   \f[ \frac{2e}{h} \int\limits_{E_\mathrm{F}-eV/2}^{E_\mathrm{F}+eV/2} \mathrm{d}E \frac{\partial}{\partial V} T(E) = \frac{2e^2a}{h} T(E_\mathrm{F}-eV/2) - \frac{2e^2a}{h}T(E_\mathrm{F}+eV/2); \f]
