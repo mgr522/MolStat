@@ -67,12 +67,31 @@ public:
 	virtual ~DifferentialConductance() = default;
 
 	/**
-	 * \brief Returns the static conductance for a set of model parameters.
+	 * \brief Returns the differential conductance for a set of model parameters.
 	 *
 	 * \param[in] params A set of model parameters.
 	 * \return The differential conductance for the model parameters.
 	 */
 	virtual double DiffG(const std::valarray<double> &params) const = 0;
+};
+
+/// Observable class for the peak potential.
+class PeakPotential : public Observable<PeakPotential>
+{
+public:
+	PeakPotential()
+		: Observable<PeakPotential>(&PeakPotential::PeakV)
+	{}
+
+	virtual ~PeakPotential() = default;
+
+	/**
+	 * \brief Returns the static conductance for a set of model parameters.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The differential conductance for the model parameters.
+	 */
+	virtual double PeakV(const std::valarray<double> &params) const = 0;
 };
 
 } // namespace molstat::transport
