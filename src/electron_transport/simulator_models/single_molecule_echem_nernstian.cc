@@ -19,11 +19,11 @@
 namespace molstat {
 namespace transport {
 
-const std::size_t SymOneSiteChannel::Index_E0 = 0;
-const std::size_t SymOneSiteChannel::Index_Af = 1;
-const std::size_t SymOneSiteChannel::Index_Ab = 2;
-const std::size_t SymOneSiteChannel::Index_T = 3;
-const std::size_t SymOneSiteChannel::Index_n = 4;
+const std::size_t SingleMoleculeEchemNernstian::Index_E0 = 0;
+const std::size_t SingleMoleculeEchemNernstian::Index_Af = 1;
+const std::size_t SingleMoleculeEchemNernstian::Index_Ab = 2;
+const std::size_t SingleMoleculeEchemNernstian::Index_T = 3;
+const std::size_t SingleMoleculeEchemNernstian::Index_n = 4;
 
 std::vector<std::string> SingleMoleculeEchemNernstian::get_names() const
 {
@@ -48,7 +48,7 @@ double SingleMoleculeEchemNernstian::PeakV(const std::valarray<double> &params) 
 	const double &T = params[Index_T];
 	const double &n = params[Index_n];
 	
-	return e0 - (kB * T / (n * e_charge )) * std::log(Ab / Af); 
+	return e0 - (kB * T / (n * e_charge )) * std::log(ab / af); 
 }
 
 
