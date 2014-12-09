@@ -19,6 +19,7 @@
 #include "asym_one_site_channel.h"
 #include "sym_two_site_channel.h"
 #include "asym_two_site_channel.h"
+#include "single_molecule_echem_nernstian.h"
 
 namespace molstat {
 namespace transport {
@@ -46,6 +47,10 @@ void load_models(
 	models.emplace(
 		to_lower("AsymmetricTwoSiteChannel"),
 		GetSimulateModelFactory<AsymTwoSiteChannel>() );
+	models.emplace(
+		to_lower("SingleMoleculeElectrochemistryNernstian"),
+		GetSimulateModelFactory<SingleMoleculeEchemNernstian>() );
+
 }
 
 void load_observables(
@@ -63,6 +68,9 @@ void load_observables(
 	observables.emplace(
 		to_lower("DifferentialConductance"),
 		GetObservableIndex<DifferentialConductance>() );
+	observables.emplace(
+		to_lower("PeakPotential"),
+		GetObservableIndex<PeakPotential>() );
 }
 
 } // namespace molstat::transport
