@@ -1,0 +1,10 @@
+observable PeakPotential 1000 linear
+trials 100000
+output cv_test.dat
+model SingleMoluculeEchemNernstian
+	E0 normal 1.1 0.05
+	Af normal 1.0e6 1.0e3
+	Ab normal 1.0e6 1.0e3
+	T constant 300
+	n constant 1.0
+endmodel
