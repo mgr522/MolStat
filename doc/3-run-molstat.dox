@@ -65,12 +65,12 @@ observable DifferentialConductance 100 log 10.
 trials 100000
 output my-histogram.dat
 model TransportJunction
-   ef constant 0.
-   V uniform -2. 2.
+   distribution ef constant 0.
+   distribution V uniform -2. 2.
    model SymmetricOneSiteChannel
-      gamma normal 0.8 0.05
-      epsilon normal -6. 0.05
-      a constant 0.
+      distribution gamma normal 0.8 0.05
+      distribution epsilon normal -6. 0.05
+      distribution a constant 0.
    endmodel
 endmodel
 \endverbatim
