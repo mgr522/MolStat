@@ -29,10 +29,10 @@ std::vector<std::string> SingleMoleculeEchemNernstian::get_names() const
 {
 	std::vector<std::string> ret(5);
 
-	ret[Index_E0] = "E0";
-	ret[Index_Af] = "Af";
-	ret[Index_Ab] = "Ab";
-	ret[Index_T] = "T";
+	ret[Index_E0] = "e0";
+	ret[Index_Af] = "af";
+	ret[Index_Ab] = "ab";
+	ret[Index_T] = "temp";
 	ret[Index_n] = "n";
 
 	return ret;
