@@ -33,7 +33,7 @@ CounterIndex &CounterIndex::operator++()
 		++index[0];
 
 		// look for overflows, and keep propagating up the indices if detected
-		for(std::size_t j = 0; j < index.size(); ++j)
+		for(std::size_t j = 0; j < max_index.size(); ++j)
 		{
 			if(index[j] == max_index[j])
 			{

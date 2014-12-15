@@ -53,7 +53,7 @@ double SymOneSiteChannel::DiffG(const std::valarray<double> &params) const
 		(0.5 + a) * transmission(ef-0.5*V, V, eps, gamma, a);
 }
 
-double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const
+double SymOneSiteChannel::ECurrent(const std::valarray<double> & params) const
 {
 	// unpack the parameters
 	const double &ef = params[Index_EF];
@@ -62,8 +62,16 @@ double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const
 	const double &gamma = params[Index_gamma];
 	const double &a = params[Index_a];
 
-	return gamma / V *
+	return gamma *
 		(atan((ef-eps+(0.5-a)*V) / gamma) - atan((ef-eps-(0.5+a)*V) / gamma));
+}
+
+double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const
+{
+	// unpack the parameters
+	const double &V = params[Index_V];
+	
+	return ECurrent(params) / V;
 }
 
 } // namespace molstat::transport

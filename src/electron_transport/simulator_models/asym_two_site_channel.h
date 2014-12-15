@@ -47,14 +47,15 @@ namespace transport {
  *   && \left. - \frac{\mathrm{arctan}\left[ \frac{\sqrt{8}(E-\varepsilon)}{\sqrt{\Gamma_\mathrm{L}^2 + \Gamma_\mathrm{R}^2 - 8\beta^2 + (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})\sqrt{(\Gamma_\mathrm{L} - \Gamma_\mathrm{R})^2 - 16\beta^2}}} \right]}{\sqrt{\Gamma_\mathrm{L}^2 + \Gamma_\mathrm{R}^2 -8\beta^2 + (\Gamma_\mathrm{L} + \Gamma_\mathrm{R}) \sqrt{(\Gamma_\mathrm{L} - \Gamma_\mathrm{R})^2-16\beta^2}}} \right\}. \f}
  */
 class AsymTwoSiteChannel : public Channel,
+	public ElectricCurrent,
 	public DifferentialConductance,
 	public StaticConductance
 {
 private:
 	/**
 	 * \internal
-	 * \brief Calculates the antiderivative needed for the static
-	 *    conductance (fixed values of the model parameters).
+	 * \brief Calculates the antiderivative needed for the electric current
+	 *    (fixed values of the model parameters).
 	 *
 	 * \param[in] z The limit of integration.
 	 * \param[in] eps The channel energy, \f$\varepsilon\f$.
@@ -66,7 +67,7 @@ private:
 	 * \return The antiderivative needed for the static conductance.
 	 * \endinternal
 	 */
-	static double static_c_integral(const double z, const double eps,
+	static double current_integral(const double z, const double eps,
 		const double gammal, const double gammar, const double beta);
 
 public:
@@ -108,6 +109,7 @@ public:
 	static double transmission(const double e, const double v, const double eps,
 		const double gammal, const double gammar, const double beta);
 
+	double ECurrent(const std::valarray<double> &params) const override;
 	double StaticG(const std::valarray<double> &params) const override;
 	double DiffG(const std::valarray<double> &params) const override;
 };

@@ -44,7 +44,7 @@ double SymTwoSiteChannel::transmission(const double e, const double V,
 		(temp*temp + 16.*gamma*gamma*(e-eps)*(e-eps));
 }
 
-double SymTwoSiteChannel::static_c_integral(const double z,
+double SymTwoSiteChannel::current_integral(const double z,
 	const double eps, const double gamma, const double beta)
 {
 	return 2.*beta*gamma / (4.*beta*beta + gamma*gamma) *
@@ -52,7 +52,7 @@ double SymTwoSiteChannel::static_c_integral(const double z,
 		* atanh(2.*(z-eps) / std::complex<double>(2.*beta, gamma)));
 }
 
-double SymTwoSiteChannel::StaticG(const std::valarray<double> &params) const
+double SymTwoSiteChannel::ECurrent(const std::valarray<double> &params) const
 {
 	// unpack the parameters
 	const double &ef = params[Index_EF];
@@ -61,8 +61,16 @@ double SymTwoSiteChannel::StaticG(const std::valarray<double> &params) const
 	const double &gamma = params[Index_gamma];
 	const double &beta = params[Index_beta];
 	
-	return (static_c_integral(ef + 0.5*V, eps, gamma, beta) -
-		static_c_integral(ef - 0.5*V, eps, gamma, beta)) / V;
+	return (current_integral(ef + 0.5*V, eps, gamma, beta) -
+		current_integral(ef - 0.5*V, eps, gamma, beta));
+}
+
+double SymTwoSiteChannel::StaticG(const std::valarray<double> &params) const
+{
+	// unpack the parameters
+	const double &V = params[Index_V];
+	
+	return ECurrent(params) / V;
 }
 
 double SymTwoSiteChannel::DiffG(const std::valarray<double> &params) const

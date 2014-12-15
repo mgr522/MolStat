@@ -127,10 +127,27 @@ fi
 # set flags for all of the options
 AM_CONDITIONAL([BUILD_FITTER], [test x$build_fitter = xyes])
 AM_CONDITIONAL([TRANSPORT_FITTER], [test x$with_transport_fit = xyes])
+if test x$with_transport_fit = xyes; then
+	AC_DEFINE([BUILD_TRANSPORT_FITTER], [1],
+		[Include the transport fitter module.])
+else
+	AC_DEFINE([BUILD_TRANSPORT_FITTER], [0],
+		[Include the transport fitter module.])
+fi
 
 AM_CONDITIONAL([BUILD_SIMULATOR], [test x$build_simulator = xyes])
 AM_CONDITIONAL([TRANSPORT_SIMULATOR], [test x$with_transport_sim = xyes])
 AM_CONDITIONAL([ECHEM_SIMULATOR], [test x$with_echem_sim = xyes])
+
+if test x$with_transport_sim = xyes; then
+	AC_DEFINE([BUILD_TRANSPORT_SIMULATOR], [1],
+		[Include the transport simulator module.])
+else
+	AC_DEFINE([BUILD_TRANSPORT_SIMULATOR], [0],
+		[Include the transport simulator module.])
+fi
+
+####### set flags (and propagate down to the Makefiles for echem)
 
 
 

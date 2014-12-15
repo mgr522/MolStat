@@ -102,8 +102,8 @@ int main(int argc, char **argv)
 	parser.printState(cout);
 
 	// initialize the random number engine
-	molstat::Engine engine{ 0xFEEDFACE }; // use this line for debugging
-	//molstat::Engine engine{ time(nullptr) };
+	//molstat::Engine engine{ 0xFEEDFACE }; // use this line for debugging
+	molstat::Engine engine{ static_cast<unsigned int>(time(nullptr)) };
 
 	// create the histogram object
 	// first need the bin styles to determine the dimensionality

@@ -4,7 +4,7 @@
 /**
 \page page_conductance_histograms Electron Transport
 
-This chapter deals with using MolStat to simulate and fit electron transport data; specifically conductance histograms. We begin with the theory behind electron transport, introduce conductance histograms, and then detail the implemented MolStat models.
+This chapter deals with using MolStat to simulate and fit electron transport data; in most cases, conductance histograms. We begin with the theory behind electron transport, introduce conductance histograms, and then detail the implemented MolStat models.
 
 \section sec_landauer Landauer Theory
 All of the tools are based on the Landauer-B&uuml;ttiker-Imry theory of conductance through quantum systems \cite buttiker-6207, \cite imry-s306. Within this theory, the zero-temperature current is given as
@@ -20,7 +20,8 @@ where
    .
 The transmission function depends on the specific model system used, and gives the aggregate transmission probability for an electron with energy \f$E\f$ to tunnel from one electrode to the other.
 
-Several types of conductance can be considered:
+Several types of transport observables can be considered:
+   -# Electric current, \f$I(V)\f$
    -# Zero-bias conductance
       \f[ \left. \left( \frac{\partial}{\partial V} I(V) \right) \right|_{V=0} = \frac{2e^2}{h} T(E_\mathrm{F}). \f]
    -# Differential conductance
@@ -60,6 +61,13 @@ Transport observables are defined in electron_transport/simulator_models/observa
    - Implemented by the class molstat::transport::DifferentialConductance.
    \endif
 
+- Electric current
+   - \f$ I(V). \f$
+   - Name (for use in input) is `%ElectricCurrent`.
+   \if fullref
+   - Implemented by the class molstat::transport::ElectricCurrent.
+   \endif
+
 - Static conductance
    - \f$ G_\mathrm{s}(V) = \frac{I(V)}{V}. \f$
    - Name (for use in input) is `%StaticConductance`.
@@ -87,10 +95,10 @@ There is only one top-level model for electron transport applications.
    \if fullref
    - Submodels are required, of type molstat::transport::Channel. Each submodel represents an independent channel through the junction and has its own set of physical/model parameters.
    - Implemented by the class molstat::transport::TransportJunction; full details are presented there.
-   - Compatible with the molstat::transport::AppliedBias observable. If all submodels are compatible with the molstat::transport::StaticConductance or molstat::transport::DifferentialConductance observable, the transport junction will also be compatible with them.
+   - Compatible with the molstat::transport::AppliedBias observable. If all submodels are compatible with the molstat::transport::ElectricCurrent, molstat::transport::StaticConductance, or molstat::transport::DifferentialConductance observables, the transport junction will also be compatible with them.
    \elseif userman
    - Submodels are required, of type channel. Each submodel represents an independent channel through the junction and has its own set of physical/model parameters. Multiple submodels (channels) can be specified.
-   - Compatible with the AppliedBias observable. If all submodels are compatible with the StaticConductance or DifferentialConductance observables, the transport junction will also be compatible with them.
+   - Compatible with the AppliedBias observable. If all submodels are compatible with the ElectricCurrent, StaticConductance, or DifferentialConductance observables, the transport junction will also be compatible with them.
    \endif
 .
 
@@ -111,9 +119,9 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::SymOneSiteChannel; full details are presented there.
-   - Compatible with the molstat::transport::DifferentialConductance and molstat::transport::StaticConductance observables.
+   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, and molstat::transport::StaticConductance observables.
    \elseif userman
-   - Compatible with the DifferentialConductance and StaticConductance observables.
+   - Compatible with the ElectricCurrent, DifferentialConductance, and StaticConductance observables.
    \endif
 
 - `AsymmetricOneSiteChannel`
@@ -129,9 +137,9 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::AsymOneSiteChannel; full details are presented there.
-   - Compatible with the molstat::transport::DifferentialConductance and molstat::transport::StaticConductance observables.
+   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, and molstat::transport::StaticConductance observables.
    \elseif userman
-   - Compatible with the DifferentialConductance and StaticConductance observables.
+   - Compatible with the ElectricCurrent, DifferentialConductance, and StaticConductance observables.
    \endif
 
 - `SymmetricTwoSiteChannel`
@@ -146,9 +154,9 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::SymTwoSiteChannel; full details are presented there.
-   - Compatible with the molstat::transport::DifferentialConductance and molstat::transport::StaticConductance observables.
+   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, and molstat::transport::StaticConductance observables.
    \elseif userman
-   - Compatible with the DifferentialConductance and StaticConductance observables.
+   - Compatible with the ElectricCurrent, DifferentialConductance, and StaticConductance observables.
    \endif
 
 - `AsymmetricTwoSiteChannel`
@@ -164,9 +172,9 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::AsymTwoSiteChannel; full details are presented there.
-   - Compatible with the molstat::transport::DifferentialConductance and molstat::transport::StaticConductance observables.
+   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, and molstat::transport::StaticConductance observables.
    \elseif userman
-   - Compatible with the DifferentialConductance and StaticConductance observables.
+   - Compatible with the ElectricCurrent, DifferentialConductance, and StaticConductance observables.
    \endif
 
 \section sec_fit_electron_transport Fitting Electron Transport Properties

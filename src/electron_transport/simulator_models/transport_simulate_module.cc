@@ -57,6 +57,10 @@ void load_observables(
 		GetObservableIndex<AppliedBias>() );
 
 	observables.emplace(
+		to_lower("ElectricCurrent"),
+		GetObservableIndex<ElectricCurrent>() );
+
+	observables.emplace(
 		to_lower("StaticConductance"),
 		GetObservableIndex<StaticConductance>() );
 

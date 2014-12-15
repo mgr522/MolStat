@@ -33,6 +33,7 @@ class Channel
 /// Composite model representing a junction.
 class TransportJunction :
 	public AppliedBias,
+	public CompositeObservable<ElectricCurrent>,
 	public CompositeObservable<StaticConductance>,
 	public CompositeObservable<DifferentialConductance>
 {

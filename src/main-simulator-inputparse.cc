@@ -32,11 +32,17 @@
 
 #include "main-simulator.h"
 #include <iomanip>
+
+#include <config.h>
+
 #include <general/simulator_tools/simulator_exceptions.h>
 #include <general/random_distributions/rng.h>
 #include <general/histogram_tools/bin_style.h>
 #include <general/simulator_tools/identity_tools.h>
+
+#if BUILD_TRANSPORT_SIMULATOR
 #include <electron_transport/simulator_models/transport_simulate_module.h>
+#endif
 
 using namespace std;
 
@@ -68,9 +74,11 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator(
 	observables.emplace( molstat::to_lower("Identity"),
 		molstat::GetObservableIndex<molstat::IdentityObservable>() );
 
+	#if BUILD_TRANSPORT_SIMULATOR
 	// load transport models
 	molstat::transport::load_models(models);
 	molstat::transport::load_observables(observables);
+	#endif
 
 	// make the model
 	// if there are exceptions, let them pass up to the caller
