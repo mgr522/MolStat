@@ -13,5 +13,7 @@ libtransport_simulate_a_SOURCES = transport_simulate_module.h \
 	sym_two_site_channel.h \
 	sym_two_site_channel.cc \
 	asym_two_site_channel.h \
-	asym_two_site_channel.cc
+	asym_two_site_channel.cc \
+	single_molecule_echem_nernstian.h \
+	single_molecule_echem_nernstian.cc 
 endif
