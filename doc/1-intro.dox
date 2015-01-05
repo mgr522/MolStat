@@ -97,7 +97,7 @@ make check
 - Some tests use python. They have been tested with version 2.7 and may not run in python 3. The configure script only checks for python 2.* and should omit the tests if only python 3.* is found.
 
 \section changelog Version Changes
-\subsection v1_2 v1.2 (November 2014)
+\subsection v1_2 v1.2 (January 2015)
 - Added the `molstat` namespace to identify components of MolStat.
 - Reworked the simulator to allow more flexibility in input commands. Also added the idea of a \"composite\" simulator model for combining two (or more) models in the simulation.
 - Implemented an independent histogram class that is not tied to the GSL (for making histograms in the simulator).
