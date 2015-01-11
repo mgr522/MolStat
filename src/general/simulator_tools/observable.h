@@ -42,6 +42,12 @@ namespace molstat {
  * the molstat::SimulateModel, letting the runtime know that the model and
  * observable are \"compatible\".
  *
+ * The observable function of the subclass may throw
+ * molstat::NoObservableProduced if the specified set of model parameters does
+ * not result in the observable being emitted by the system. (Not all models
+ * will need this feature.) The main MolStat simulator will report the number
+ * of trials that do not result in an observable.
+ *
  * \tparam T The derived class for a specific observable. This is designed to
  *    be a \"curiously recurring template pattern\".
  */

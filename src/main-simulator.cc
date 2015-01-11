@@ -25,6 +25,7 @@
 #include <general/histogram_tools/counterindex.h>
 #include <general/histogram_tools/histogram.h>
 #include <general/histogram_tools/bin_linear.h>
+#include <general/simulator_tools/simulator_exceptions.h>
 
 #include "main-simulator.h"
 
@@ -118,11 +119,26 @@ int main(int argc, char **argv)
 	molstat::Histogram hist(bstyles.size());
 
 	// Get the requested number of samples
+	// count the number of trials that don't emit the observable
+	size_t no_obs { 0 };
 	for (size_t j = 0; j < ntrials; ++j)
 	{
-		// add the data to the list
-		hist.add_data(sim->simulate(engine));
+		try
+		{
+			// add the data to the list
+			hist.add_data(sim->simulate(engine));
+		}
+		catch(const molstat::NoObservableProduced &e)
+		{
+			// one of the observables was not emitted for the randomly generated
+			// parameters
+			++no_obs;
+		}
 	}
+
+	// print out the number of trials that did not produce an observable
+	cout << '\n' << no_obs << " of the " << ntrials << " trials (" <<
+		(100. * no_obs / ntrials) << "%) did not produce an observable." << endl;
 
 	// make the histogram
 	// if we encounter a bad dimension -- specifically, one where there is no

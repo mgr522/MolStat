@@ -19,7 +19,7 @@ namespace molstat {
 
 /**
  * \brief Exception thrown when a model is missing one of its required
- *    {molstat::RandomDistribution}s.
+ *    distributions.
  */
 class MissingDistribution : public std::logic_error
 {
@@ -110,6 +110,23 @@ class FullModelRequired : public std::logic_error
 public:
 	FullModelRequired() :
 		std::logic_error("Simulators cannot directly use submodels.")
+	{
+	}
+};
+
+/**
+ * \brief Exception thrown if an observable is not found for a specific set of
+ *    parameters.
+ *
+ * Some models may not emit an observable for some parameters. This exception
+ * is meant to convey such an occurance to the simulator.
+ */
+class NoObservableProduced : public std::logic_error
+{
+public:
+	NoObservableProduced() :
+		std::logic_error("No observable found for this set of model " \
+			"parameters.")
 	{
 	}
 };
