@@ -55,6 +55,9 @@ class RandomDistribution;
 
 /**
  * \brief The signature of a function that calculates an observable.
+ *
+ * A molstat::ObservableFunction may throw molstat::NoObservableProduced if
+ * the specified set of model parameters does not result in the observable.
  */
 using ObservableFunction =
 	std::function<double(const std::valarray<double> &)>;
