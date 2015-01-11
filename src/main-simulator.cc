@@ -138,7 +138,10 @@ int main(int argc, char **argv)
 
 	// print out the number of trials that did not produce an observable
 	cout << '\n' << no_obs << " of the " << ntrials << " trials (" <<
-		(100. * no_obs / ntrials) << "%) did not produce an observable." << endl;
+		(100. * no_obs / ntrials) << "%) did not produce an observable.\n" <<
+		(ntrials - no_obs) << " of the " << ntrials << " trials (" <<
+		(100. * (ntrials - no_obs) / ntrials) <<
+		"%) were binned into a histogram." << endl;
 
 	// make the histogram
 	// if we encounter a bad dimension -- specifically, one where there is no
