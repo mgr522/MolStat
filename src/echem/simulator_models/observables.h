@@ -20,7 +20,7 @@ namespace echem {
 
 /**
  * \brief Observable class for the potential where electron transfer occurs in
- *    the forward sweep of a voltammogram.
+ *    the forward sweep of a cyclic voltammogram.
  */
 class ForwardETPotential : public Observable<ForwardETPotential>
 {
@@ -34,6 +34,9 @@ public:
     /**
      * \brief Returns the electron transfer potential for the forward sweep.
      *
+     * \throw molstat::NoObservableProduced if the specified model parameters
+     *    do not lead to such a potential.
+     *
      * \param[in] params A set of model parameters.
      * \return The forward electron transfer potential.
      */
@@ -42,7 +45,7 @@ public:
 
 /**
  * \brief Observable class for the potential where electron transfer occurs in
- *    the backward sweep of a voltammogram.
+ *    the backward sweep of a cyclic voltammogram.
  */
 class BackwardETPotential : public Observable<BackwardETPotential>
 {
@@ -55,6 +58,9 @@ public:
 
     /**
      * \brief Returns the electron transfer potential for the backward sweep.
+     *
+     * \throw molstat::NoObservableProduced if the specified model parameters
+     *    do not lead to such a potential.
      *
      * \param[in] params A set of model parameters.
      * \return The backward electron transfer potential.

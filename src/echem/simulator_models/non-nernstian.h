@@ -2,12 +2,11 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file single_molecle_cv_simulate_model.h
- * \brief Single molecule cyclic voltammetry.
- *    both electrodes.
+ * \file non-nernstian.h
+ * \brief Simulator model for electron transfer with a non-Nernstian reaction.
  *
- * \author Matthew G.\ Reuter
- * \date September 2014
+ * \author Bo Fu, Matthew G.\ Reuter
+ * \date December 2014, January 2015
  */
 
 #ifndef __single_molecule_cv_simulate_model_h__
@@ -19,7 +18,7 @@
 #include <map>
 #include <general/random_distributions/rng.h>
 #include <general/simulator_tools/simulate_model_interface.h>
-#include "transport_observables.h"
+#include "observables.h"
 
 #include <sundials/sundials_types.h>
 #include <sundials/sundials_dense.h>
@@ -31,21 +30,19 @@
 #include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_sf_log.h>
-using std::shared_ptr;
 
 /**
- * \brief Simulator model for single molecule cyclic voltammogram.
+ * \brief Simulator model for single molecule electron transfer using a
+ *    non-Nernstian reaction with \f$n\f$ electrons transferred.
  *
  * Model parameters are
- * - `e0` (\f$E_\mathrm{0}\f$), the initial applied potential at \f$t=0\f$,
- * - `eref` (\f$E_\mathrm{Ref}\f$), the reference potential,
+ * - `eref` (\f$E_\mathrm{ref}\f$), the reference potential,
  * - `lambda` (\f$\lambda\f$), the reorganization energy,
  * - `af` (\f$A_\mathrm{f}\f$), the prefactor for forward half-reaction rate constant,
  * - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant,
- * - `v` (\f$v\f$), the sweeping rate of the applied potential,
- * - `temperature` (\f$T\f$), the temperature,
- * - `n` (\f$n\f$), the number of electrons involved in the half-reaction,
- * - `tlimit` (\f$t_\mathrm{lim}\f$), the time when the applied potential inverts.
+ * - `e0` (\f$E_\mathrm{0}\f$), the initial applied potential at \f$t=0\f$,
+ * - `v` (\f$v\f$), the sweep rate of the applied potential,
+ * - `tinv` (\f$t_\mathrm{lim}\f$), the time where the backward sweep begins.
  *
  * The probabilities \f$P_\mathrm{O}(t)\f$ and \f$P_\mathrm{R}(t)\f$ for oxidized species \f$O\f$ and reduced species \f$R\f$ in the
  * electrochemical half-reaction
