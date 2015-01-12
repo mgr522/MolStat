@@ -15,7 +15,7 @@
 #define Ith(v,i)    NV_Ith_S(v,i-1)
 #define IJth(A,i,j) DENSE_ELEM(A,i-1,j-1)
 
-#define NEQ 2
+#define NEQ 1
 #define RTOL 1.0e-8
 #define ATOL1 1.0e-6
 #define ATOL2 1.0e-6
@@ -101,14 +101,12 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
 
   // initialize y
   Ith(y,1) = poinitial;
-  Ith(y,2) = 1.0 - poinitial;
 
   // set the scalar relative tolerance
   reltol = RTOL;
 
   // set the vector absolute tolerance
   Ith(abstol,1) = ATOL1;
-  Ith(abstol,2) = ATOL2;
 
   // call CVodeCreate to create the solver memory and specify the 
   // Backward Differentiation Formula and the use of a Newton iteration.
@@ -153,7 +151,7 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   while(1) {
 
     flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
-    //PrintOutput(t, Ith(y,1), Ith(y,2));
+    //PrintOutput(t, Ith(y,1), 1.0 - Ith(y,1));
 
     if (flag == CV_ROOT_RETURN) {
       flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
@@ -238,15 +236,13 @@ double SingleMoleculeCV::E_applied(double t,
 int SingleMoleculeCV::f(double t, N_Vector y, N_Vector ydot, 
   void *user_data) {
 
-  double y1, y2;
+  double y1;
   std::vector<double> *p;
   p = (std::vector<double> *) user_data;
 
   y1 = Ith(y,1);
-  y2 = Ith(y,2);
 
-  Ith(ydot,1) = - kf(t, *p) * y1 + kb(t, *p) *y2;
-  Ith(ydot,2) =   kf(t, *p) * y1 - kb(t, *p) *y2;
+  Ith(ydot,1) = - ( kf(t, *p)  + kb(t, *p) ) * y1 + kb(t, *p);
 
   //PrintOutput(t, y1,y2);
   
@@ -271,10 +267,7 @@ int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
 
   p = (std::vector<double> *) user_data;
 
-  IJth(J,1,1) = - kf(t, *p);
-  IJth(J,1,2) =   kb(t, *p);
-  IJth(J,2,1) =   kf(t, *p);
-  IJth(J,2,2) = - kb(t, *p);
+  IJth(J,1,1) = - kf(t, *p - kb(t, *p);
 
   return 0;
 }
