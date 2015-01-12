@@ -12,24 +12,19 @@
 #ifndef __non_nernstian_reaction_h__
 #define __non_nernstian_reaction_h__
 
-#include <memory>
 #include <string>
 #include <vector>
-#include <map>
-#include <general/random_distributions/rng.h>
+#include <valarray>
 #include <general/simulator_tools/simulate_model_interface.h>
 #include "observables.h"
 
+#if 0
 #include <sundials/sundials_types.h>
 #include <sundials/sundials_dense.h>
 #include <cvode/cvode.h>
 #include <nvector/nvector_serial.h>
 #include <cvode/cvode_dense.h>
-
-#include <gsl/gsl_const_mksa.h>
-#include <gsl/gsl_sf_exp.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_sf_log.h>
+#endif
 
 namespace molstat {
 namespace echem {
@@ -108,7 +103,7 @@ public:
 	static const std::size_t Index_v;
 
 	/// Container index for the potential turn-around time.
-	static const std::size_t tlim;
+	static const std::size_t Index_tlim;
 
 protected:
 	virtual std::vector<std::string> get_names() const override;
@@ -190,16 +185,6 @@ public:
 	 */
   static int Jac(long int N, double t, N_Vector y, N_Vector fy, DlsMat J, void *user_data, 
     N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
- 
-  /**
-	 * \brief Display all the model parameters in the current run.
-	 *
-   * \param[in] vec The vector of model parameters. 
-   * \return 0 
-	 */
-  static int display_parameters(const std::vector<double> &vec);
-
-  static int PrintOutput(double t, double y1, double y2);
  #endif
 };
 

@@ -2,14 +2,14 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file single_molecule_cv_simulate_model.cc
- * \brief Single molecule cyclic voltammetry.
+ * \file non-nernstian.cc
+ * \brief Simulator model for electron transfer with a non-Nernstian reaction.
  *
- * \author Matthew G.\ Reuter
- * \date September 2014
+ * \author Bo Fu, Matthew G.\ Reuter
+ * \date December 2014, January 2015
  */
 
-#include "single_molecule_cv_simulate_model.h"
+#include "non-nernstian.h"
 #include <cmath>
 
 #define Ith(v,i)    NV_Ith_S(v,i-1)
@@ -21,60 +21,89 @@
 #define ATOL2 1.0e-6
 #define T0 0.0
 
-using namespace std;
+namespace molstat {
+namespace echem {
 
-// if the order of the following list is changed, the unpack_parameters
-// function MUST also be updated
-const vector<string> SingleMoleculeCV::parameters =
-    {"e0", "eref", "lambda", "af", "ab", "v", "n",
-    "poinitial", "temperature", "tlimit", "direction"};
+const std::size_t NonNernstianReaction::Index_lambda = 0;
+const std::size_t NonNernstianReaction::Index_Af = 1;
+const std::size_t NonNernstianReaction::Index_Ab = 2;
+const std::size_t NonNernstianReaction::Index_Eref = 3;
+const std::size_t NonNernstianReaction::Index_E0 = 4;
+const std::size_t NonNernstianReaction::Index_v = 5;
+const std::size_t NonNernstianReaction::Index_tlim = 6;
 
-void SingleMoleculeCV::unpack_parameters(const std::vector<double> &vec,
-  double &e0, double &eref, double &lambda, double &af,
-  double &ab, double &v, double &n, double &poinitial,
-  double &temperature, double &tlimit, double &direction) {
+std::vector<std::string> NonNernstianReaction::get_names() const
+{
+	std::vector<std::string> ret(7);
 
-  e0 = vec[0];
-  eref = vec[1];
-  lambda = vec[2];
-  af = vec[3];
-  ab = vec[4];
-  v = vec[5];
-  n = vec[6];
-  poinitial = vec[7];
-  temperature = vec[8];
-  tlimit = vec[9];
-  direction = vec[10];
+	ret[Index_lambda] = "lambda";
+	ret[Index_Af] = "af";
+	ret[Index_Ab] = "ab";
+	ret[Index_Eref] = "eref";
+	ret[Index_E0] = "e0";
+	ret[Index_v] = "v";
+	ret[Index_tlim] = "tlim";
+
+	return ret;
+};
+
+double NonNernstianReaction::kf(double t, const std::valarray<double> &params)
+{
+	// unpack the parameters
+	const double &eref = params[Index_Eref];
+	const double &lambda = params[Index_lambda];
+	const double &af = params[Index_Af];
+	
+	double exponential = E_applied(t, params) - eref + lambda;
+	exponential *= -0.25 * exponential / lambda;
+
+	double log_kf = e + log(af);
+	if(log_kf < -650.)
+		return 0.;
+	else
+		return exp(log_kf);
 }
 
-SingleMoleculeCV::SingleMoleculeCV(
-	const std::map<std::string, shared_ptr<RandomDistribution>> &avail)
-	: SimulateModel(avail, parameters) {
+double NonNernstianReaction::kb(double t, const std::valarray<double> &params)
+{
+	// unpack the parameters
+	const double &eref = params[Index_Eref];
+	const double &lambda = params[Index_lambda];
+	const double &ab = params[Index_Ab];
+	
+	double exponential = E_applied(t, params) - eref - lambda;
+	exponential *= -0.25 * exponential / lambda;
+
+	double log_kb = e + log(ab);
+	if(log_kb < -650.)
+		return 0.;
+	else
+		return exp(log_kb);
 }
 
+double NonNernstianReaction::E_applied(double t,
+	const std::valarray<double> &params)
+{
+	// unpack the parameters
+	const double &e0 = params[Index_E0];
+	const double &v = params[Index_v];
+	const double &tlim = params[Index_tlim];
 
+	double E;
 
-std::array<double, 2> SingleMoleculeCV::PeakPotentials(shared_ptr<gsl_rng> r)
-	const {
+	if(t >= 0. && t <= tlim)
+      E = e0 + v * t;
+	else if(t > tlim && t <= 2.*tlim)
+      E = e0 + 2.0 * v * tlimit - v * t;
+	else
+      throw molstat::NoObservableProduced();
 
-	vector<double> params(11);
-	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
-
-	// generate and unpack the parameters
-	sample(r, params);
-	unpack_parameters(params, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
-
-	return {{1.0 , peak_potentials(params)}};
+   return E;
 }
 
-double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
-
-  //display_parameters(vec);
-
+double NernstianReaction::ForwardETP(const std::valarray<double> &params)
+{
   double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
-
-  // unpack the model parameters
-  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
 
   double reltol, t, tout;
   N_Vector y, abstol;
@@ -178,61 +207,7 @@ double SingleMoleculeCV::peak_potentials(const std::vector<double> &vec) {
   return 0;
 }
 
-double SingleMoleculeCV::kf( double t,
-	const std::vector<double> &vec) {
-
-	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
-
-	// unpack the model parameters
-	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
-
-  double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) + lambda * GSL_CONST_MKSA_ELECTRON_CHARGE ) 
-      / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
-
-  double log_kf = e + gsl_sf_log(af);
-  if (log_kf < -650) {
-      return 0;
-  }
-	return gsl_sf_exp( log_kf );
-}
-
-double SingleMoleculeCV::kb( double t,
-	const std::vector<double> &vec) {
-
-	double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
-
-	// unpack the model parameters
-	unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
-
-  double e = - gsl_pow_2( n * GSL_CONST_MKSA_ELECTRON_CHARGE * (E_applied(t, vec) - eref) - lambda * GSL_CONST_MKSA_ELECTRON_CHARGE ) 
-    / (4.0 * lambda * GSL_CONST_MKSA_ELECTRON_CHARGE * GSL_CONST_MKSA_BOLTZMANN * temperature);
-  double log_kb = e + gsl_sf_log(ab);
-
-  if (log_kb < -650) {
-      return 0;
-  }
-	return gsl_sf_exp( log_kb );
-}
-
-double SingleMoleculeCV::E_applied(double t,
-  const std::vector<double> &vec) {
-
-  double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
-
-  //upack the model paramters
-  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
-
-  double E;
-
-  if (t >= 0 && t <= tlimit)
-      E = e0 + v * t;
-  if (t > tlimit && t <= 2.0 * tlimit)
-      E = e0 + 2.0 * v * tlimit - v * t;
-  if (t > 2.0 * tlimit)
-      E = 2000;
-  return E;
-}
-
+#if 0
 int SingleMoleculeCV::f(double t, N_Vector y, N_Vector ydot, 
   void *user_data) {
 
@@ -271,30 +246,8 @@ int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
 
   return 0;
 }
-int SingleMoleculeCV::display_parameters(const std::vector<double> &vec) {
-    double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
 
-  //upack the model paramters
-  unpack_parameters(vec, e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction);
-  
-  printf("e0             = %14.9e\n", e0);
-  printf("eref           = %14.9e\n", eref);
-  printf("lambda         = %14.9e\n", lambda);
-  printf("af             = %14.9e\n", af);
-  printf("ab             = %14.9e\n", ab);
-  printf("v              = %14.9e\n", v);
-  printf("n              = %14.9e\n", n);
-  printf("poinitial      = %14.9e\n", poinitial);
-  printf("temperature    = %14.9e\n", temperature);
-  printf("tlimit         = %14.9e\n", tlimit);
-  printf("direction      = %14.9e\n", direction);
+#endif
 
-  return 0;
-}
-
-int SingleMoleculeCV::PrintOutput(double t, double y1, double y2)
-{
-  printf("At t = %0.4e   PO = %14.6e  PR = %14.6e\n", t, y1, y2);
-
-  return 0;
-}
+} // namespace molstat::echem
+} // namespace molstat
