@@ -51,12 +51,12 @@ namespace echem {
  * - Electric potential is measured in \f$ k_\mathrm{B} T / (ne)\f$.
  *
  * Model parameters are
- * - `eref` (\f$E_\mathrm{ref}\f$), the reference potential,
  * - `lambda` (\f$\lambda\f$), the reorganization energy,
  * - `af` (\f$A_\mathrm{f}\f$), prefactor for the forward half-reaction rate
  *   constant,
  * - `ab` (\f$A_\mathrm{b}\f$), prefactor for the backward half-reaction rate
  *   constant,
+ * - `eref` (\f$E_\mathrm{ref}\f$), the reference potential,
  * - `e0` (\f$E_\mathrm{0}\f$), the initial potential at \f$t=0\f$,
  * - `v` (\f$v\f$), the sweep rate of the applied potential,
  * - `tinv` (\f$t_\mathrm{lim}\f$), the time where the backward sweep begins.
@@ -84,94 +84,76 @@ namespace echem {
  * (if such a \f$t\f$ exists). The backward potential is similarly defined for
  * \f$ t_\mathrm{lim} < t \le 2 t_\mathrm{lim} \f$.
  */
-class SingleMoleculeCV : public SimulateModel, public SingMolCVPeak {
-private:
-	/**
-	 * \brief Ordered list (vector) of the parameters needed for this model.
-	 *
-	 * If this order is changed, SingleMoleculeCV::unpack_parameters
-	 * also needs to be updated.
-	 */
-	static const std::vector<std::string> parameters;
+class NonNernstianReaction :
+	public ForwardETPotential,
+	public BackwardETPotential
+{
+public:
+	/// Container index for the reorganization energy.
+	static const std::size_t Index_lambda;
 
-	/**
-	 * \brief Unpack a set of parameters from a vector to doubles.
-	 *
-	 * \param[in] vec The vector containing a set of parameters.
-	 * \param[out] e0 The initial applied potential.
-	 * \param[out] eref The reference potential(V).
-	 * \param[out] lambda The reorganization energy(eV).
-	 * \param[out] af The prefactor for forward half-reaction rate constant.
-   * \param[out] ab The prefactor for backward half-reaction rate constant.
-	 * \param[out] v The sweeping rate of the applied potential.
-	 * \param[out] temperature The temperature of the environment.
-   * \param[out] n The number of electrons involved in the half-reaction.
-   * \param[out] tlimit The time when the applied potential inverts.
-   * \param[out] direction The switch that determine which peak will be returned.
-	 */
-  static void unpack_parameters(const std::vector<double> &vec, double &e0,
-      double &eref, double &lambda, double &af, double &ab, double &v,
-      double &n, double &poinitial, double &temperature, double &tlimit, double &direction);
+	/// Container index for the forward half-reaction rate constant.
+	static const std::size_t Index_Af;
+
+	/// Container index for the backward half-reaction rate constant.
+	static const std::size_t Index_Ab;
+
+	/// Container index for the reference potential.
+	static const std::size_t Index_Eref;
+
+	/// Container index for the initial potential.
+	static const std::size_t Index_E0;
+
+	/// Container index for the potential sweep speed.
+	static const std::size_t Index_v;
+
+	/// Container index for the potential turn-around time.
+	static const std::size_t tlim;
+
+protected:
+	virtual std::vector<std::string> get_names() const override;
 
 public:
-	SingleMoleculeCV() = delete;
-	virtual ~SingleMoleculeCV() = default;
+	virtual ~NonNernstianReaction() = default;
 
 	/**
-	 * \internal
-	 * \brief Constructor specifying the required parameters.
+ 	 * \brief The forward half-reaction rate constant for a set of model
+	 *    parameters.
 	 *
-	 * \param[in] avail The available distributions, keyed by name.
-	 * \endinternal
+	 * \param[in] t The time
+	 * \param[in] params The set of model parameters.
+	 * \return The forward half-reaction rate constant for this set of model
+	 *    parameters.
 	 */
-	SingleMoleculeCV(
-		const std::map<std::string, shared_ptr<RandomDistribution>> &avail);
+	static double kf(double t, const std::valarray<double> &params);
 
 	/**
-	 * \brief Returns current peak potentials for a randomly-generated set of model parameters.
-	 *    model parameters.
-	 * 
-	 * \param[in] r The GSL random number generator handle.
-	 * \return The static conductance.
+ 	 * \brief The backward half-reaction rate constant for a set of model
+	 *    parameters.
+	 *
+	 * \param[in] t The time
+	 * \param[in] params The set of model parameters.
+	 * \return The backward half-reaction rate constant for this set of model
+	 *    parameters.
 	 */
-	virtual std::array<double, 2> PeakPotentials(shared_ptr<gsl_rng> r) const
-		override;
-
-  /**
-   * \brief Return the forward half-reaction rate constant for a set of model parameters.
-   *
-   * \param[in] t The time
-   * \param[in] vec The vector of model parameters.
-   * \return The forward half-reaction rate constant for this set of model parameters.
-   */
-  static double kf(double t, const std::vector<double> &vec);
-
-  /**
-   * \brief Return the backward half-reaction rate constant for a set of model parameters.
-   *
-   * \param[in] t The time
-   * \param[in] vec The vector of model parameters.
-   * \return The forward half-reaction rate constant for this set of model parameters.
-   */
-  static double kb(double t, const std::vector<double> &vec);
+	static double kb(double t, const std::valarray<double> &params);
 
 	/**
-	 * \brief Returns current peak potentials for a set of model parameters.
+	 * \brief The applied potential at the specified time (for a set of model
+	 *    parameters).
 	 * 
-	 * \param[in] vec The vector of model parameters.
-	 * \return The peak potentials.
-	 */
-  static double peak_potentials(const std::vector<double> &vec);
-
-	/**
-	 * \brief Returns the applied potential for a set of model parameters at time \f$t\f$.
-	 * 
-   * \param[in] t The time.
-   * \param[in] vec The vecotr of model parameter.
+	 * \param[in] t The time.
+	 * \param[in] params The set of model parameters.
 	 * \return The applied potential.
 	 */
-  static double E_applied(double t, const std::vector<double> &vec);
+	static double E_applied(double t, const std::valarray<double> &params);
 
+	virtual double ForwardETP(const std::valarray<double> &params) const
+		override;
+	virtual double BackwardETP(const std::valarray<double> &params) const
+		override;
+
+#if 0
 	/**
 	 * \brief Callable function by CVODE. Defines the right side of the differential equations \f$y'=f(t,y)\f$
    * where \f$y=(P_\mathrm{O}(t),P_\mathrm{R}(t)\f$.
@@ -218,6 +200,7 @@ public:
   static int display_parameters(const std::vector<double> &vec);
 
   static int PrintOutput(double t, double y1, double y2);
+ #endif
 };
 
 } // namespace molstat::echem
