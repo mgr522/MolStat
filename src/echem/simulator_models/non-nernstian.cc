@@ -267,7 +267,7 @@ int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
 
   p = (std::vector<double> *) user_data;
 
-  IJth(J,1,1) = - kf(t, *p - kb(t, *p);
+  IJth(J,1,1) = - kf(t, *p) - kb(t, *p);
 
   return 0;
 }
