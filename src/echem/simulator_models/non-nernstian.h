@@ -9,8 +9,8 @@
  * \date December 2014, January 2015
  */
 
-#ifndef __single_molecule_cv_simulate_model_h__
-#define __single_molecule_cv_simulate_model_h__
+#ifndef __non_nernstian_reaction_h__
+#define __non_nernstian_reaction_h__
 
 #include <memory>
 #include <string>
@@ -31,36 +31,60 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_sf_log.h>
 
+namespace molstat {
+namespace echem {
+
 /**
  * \brief Simulator model for single molecule electron transfer using a
  *    non-Nernstian reaction with \f$n\f$ electrons transferred.
  *
+ * Physical parameters include
+ * - \f$T\f$, the temperature,
+ * - \f$n\f$, the number of electrons transferred in the reaction.
+ * .
+ * Note that these physical parameters are not directly used by the model
+ * (i.e., they do not need to be specified in the input file), but they are
+ * used in the following reduced unit system employed by the model and model
+ * parameters.
+ * - Time is measured in seconds.
+ * - Energy is measured in \f$ k_\mathrm{B} T\f$.
+ * - Electric potential is measured in \f$ k_\mathrm{B} T / (ne)\f$.
+ *
  * Model parameters are
  * - `eref` (\f$E_\mathrm{ref}\f$), the reference potential,
  * - `lambda` (\f$\lambda\f$), the reorganization energy,
- * - `af` (\f$A_\mathrm{f}\f$), the prefactor for forward half-reaction rate constant,
- * - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant,
- * - `e0` (\f$E_\mathrm{0}\f$), the initial applied potential at \f$t=0\f$,
+ * - `af` (\f$A_\mathrm{f}\f$), prefactor for the forward half-reaction rate
+ *   constant,
+ * - `ab` (\f$A_\mathrm{b}\f$), prefactor for the backward half-reaction rate
+ *   constant,
+ * - `e0` (\f$E_\mathrm{0}\f$), the initial potential at \f$t=0\f$,
  * - `v` (\f$v\f$), the sweep rate of the applied potential,
  * - `tinv` (\f$t_\mathrm{lim}\f$), the time where the backward sweep begins.
  *
- * The probabilities \f$P_\mathrm{O}(t)\f$ and \f$P_\mathrm{R}(t)\f$ for oxidized species \f$O\f$ and reduced species \f$R\f$ in the
+ * The probabilities \f$P_\mathrm{O}(t)\f$ and \f$P_\mathrm{R}(t)\f$ that the
+ * molecule is in its oxidized (O) or reduced species (R), respectively, in the
  * electrochemical half-reaction
  * \f[ O +ne^-\rightleftharpoons R \f]
- * evolve with time by the following master equations
- * \f[P_\mathrm{O}'(t)=-k_\mathrm{f}(t)P_\mathrm{O}(t) + k_\mathrm{b}(t)P_\mathrm{R}(t)\f]
- * \f[P_\mathrm{R}'(t)= k_\mathrm{f}(t)P_\mathrm{O}(t) - k_\mathrm{b}(t)P_\mathrm{R}(t)\f]
- * \f[P_\mathrm{O}+P_\mathrm{R}=1\f]
- * with initial conditions \f$P_\mathrm{O}=1.0\f$ or \f$P_\mathrm{O}=0\f$, the rate constants of forward and backward half-reactions described using Marcus theory
- * \f[k_\mathrm{f}(t)=A_\mathrm{f} e^{-\frac{[ne(E(t)-E_\mathrm{Ref})+\lambda]^2}{4\lambda k_\mathrm{B}T}}\f]
- * \f[k_\mathrm{f}(t)=A_\mathrm{f} e^{-\frac{[ne(E(t)-E_\mathrm{Ref})+\lambda]^2}{4\lambda k_\mathrm{B}T}}\f]
- * and the potential wave form \f$E(t)\f$ which is \f$E_0+vt\f$ for \f$0\leq t \leq t_\mathrm{lim}\f$ and \f$E_0+2vt_\mathrm{lim}-vt\f$ for \f$t_\mathrm{lim}\leq t\leq 2t_\mathrm{lim}\f$.
- * - Peak potentials:
- *   The current in single molecule electrochemistry is non-zero only at \f$t_\mathrm{P}\f$ when the half-reaction takes place. We assume that \f$t_\mathrm{P}\f$ are the roots of the 
- *   following equations:
- *   \f[P_\mathrm{O}(t)=0.5\f] 
+ * evolve with time by the following master equation
+ * \f[P_\mathrm{O}'(t)=-k_\mathrm{f}(t)P_\mathrm{O}(t) + k_\mathrm{b}(t)P_\mathrm{R}(t),\f]
+ * \f[P_\mathrm{R}'(t)= k_\mathrm{f}(t)P_\mathrm{O}(t) - k_\mathrm{b}(t)P_\mathrm{R}(t),\f]
+ * \f[P_\mathrm{O}+P_\mathrm{R}=1.\f]
+ * The initial conditions may be \f$P_\mathrm{O}=1\f$ and \f$P_\mathrm{R}=0\f$.
+ *
+ * The rate constants of the forward and backward half-reactions are described
+ * using Marcus theory,
+ * \f[k_\mathrm{f}(t)=A_\mathrm{f} e^{-\frac{[ne(E(t)-E_\mathrm{ref})+\lambda]^2}{4\lambda k_\mathrm{B}T}}\f]
+ * \f[k_\mathrm{f}(t)=A_\mathrm{f} e^{-\frac{[ne(E(t)-E_\mathrm{ref})+\lambda]^2}{4\lambda k_\mathrm{B}T}}\f]
+ * and the potential wave form \f$E(t)\f$ is taken here as \f$E_0+vt\f$ for
+ * \f$0\leq t \leq t_\mathrm{lim}\f$ and \f$E_0+2vt_\mathrm{lim}-vt\f$ for
+ * \f$t_\mathrm{lim}\leq t\leq 2t_\mathrm{lim}\f$.
+ *
+ * The forward electron transfer potential is \f$E(t)\f$ for the
+ * \f$ 0 \le t \le t_\mathrm{lim} \f$ satisfying \f$P_\mathrm{O}(t)=1/2\f$
+ * (if such a \f$t\f$ exists). The backward potential is similarly defined for
+ * \f$ t_\mathrm{lim} < t \le 2 t_\mathrm{lim} \f$.
  */
-class SingleMoleculeCV: public SimulateModel, public SingMolCVPeak {
+class SingleMoleculeCV : public SimulateModel, public SingMolCVPeak {
 private:
 	/**
 	 * \brief Ordered list (vector) of the parameters needed for this model.
@@ -195,5 +219,8 @@ public:
 
   static int PrintOutput(double t, double y1, double y2);
 };
+
+} // namespace molstat::echem
+} // namespace molstat
 
 #endif
