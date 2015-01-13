@@ -11,15 +11,22 @@
 
 #include "non-nernstian.h"
 #include <cmath>
+#include <memory>
+#include <general/simulator_tools/simulator_exceptions.h>
+
+// CVODE headers
+#include <sundials/sundials_types.h>
+#include <sundials/sundials_dense.h>
+#include <cvode/cvode.h>
+#include <nvector/nvector_serial.h>
+#include <cvode/cvode_dense.h>
 
 #define Ith(v,i)    NV_Ith_S(v,i-1)
 #define IJth(A,i,j) DENSE_ELEM(A,i-1,j-1)
 
-#define NEQ 1
-#define RTOL 1.0e-8
-#define ATOL1 1.0e-6
-#define ATOL2 1.0e-6
-#define T0 0.0
+#define RTOL 1.e-8
+#define ATOL 1.e-6
+#define MAXSTEPS 2000
 
 namespace molstat {
 namespace echem {
@@ -45,7 +52,7 @@ std::vector<std::string> NonNernstianReaction::get_names() const
 	ret[Index_tlim] = "tlim";
 
 	return ret;
-};
+}
 
 double NonNernstianReaction::kf(double t, const std::valarray<double> &params)
 {
@@ -103,108 +110,93 @@ double NonNernstianReaction::E_applied(double t,
 
 double NernstianReaction::ForwardETP(const std::valarray<double> &params)
 {
-  double e0, eref, lambda, af, ab, v, n, poinitial, temperature, tlimit, direction;
+	// unpack the parameters
+	const double &tlim = params[Index_tlim];
 
-  double reltol, t, tout;
-  N_Vector y, abstol;
-  void *cvode_mem;
-  int flag, flagr, iout;
-  int rootsfound[2];
+	double t, tmax;
+	std::unique_ptr<N_Vector, typeof(&N_VDestroy_Serial)>
+		po { nullptr, &N_VDestroy_Serial },
+		abstol { nullptr, &N_VDestroy_Serial };
+	void *cvode_mem { nullptr };
 
-  //set the maximum steps for ODE solver
-  int mxsteps = 2000;
+	// set the maximum step size
+	const double dtmax = 4. * tlim / MAXSTEPS;
 
-  //set the maximum step size
-  double hmax = 4.0 * tlimit / mxsteps;
-  //double hmin = tlimit * 1.0e-12;
+	std::valarray<double> params_copy { params };
 
-  std::vector<double> vec_cvode;
-  vec_cvode = vec;
+	// Create serial vectors for the initial condition and for abstol
+	po = N_VNew_Serial(1);
+	abstol = N_VNew_Serial(1);
 
-  y = abstol = NULL;
-  cvode_mem = NULL;
+	// initialize y (initial condition)
+	Ith(y, 1) = 1.;
 
-  //Create serial vector of length NEG for I.C and abstol
-  y = N_VNew_Serial(NEQ);
-  abstol = N_VNew_Serial(NEQ);
+	// set the scalar relative tolerance
+	reltol = RTOL;
 
-  // initialize y
-  Ith(y,1) = poinitial;
+	// set the vector absolute tolerance
+	Ith(abstol, 1) = ATOL;
 
-  // set the scalar relative tolerance
-  reltol = RTOL;
+	// create the solver memory and specify the Backward Differentiation Formula
+	// and the use of a Newton iteration.
+	cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
 
-  // set the vector absolute tolerance
-  Ith(abstol,1) = ATOL1;
+	// initialize the integrator memory and specify the right hand side function
+	// in po'=f(t, po), the initial time T0, and the initial dependent variable
+	// vector, po.
+	CVodeInit(cvode_mem, f, 0., po);
 
-  // call CVodeCreate to create the solver memory and specify the 
-  // Backward Differentiation Formula and the use of a Newton iteration.
-  cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
+	// specify the scalar relative tolerance and vector absolute tolerance
+	CVodeSVtolerances(cvode_mem, RTOL, ATOL);
 
-  // call CVodeInit to initialize the integrator memory and specify the
-  // user's right hand side function in y'=f(t,y), the initial time T0, and
-  // the initial dependent variable vector y.
-  CVodeInit(cvode_mem, f, T0, y);
+	// pass model parameters to the CVODE functions
+	CVodeSetUserData(cvode_mem, &params_copy);
 
-  // call CVodeSVtolerances to specify the scalar relative tolerance
-  // and vector absolute  tolerance
-  CVodeSVtolerances(cvode_mem, reltol, abstol);
+	// specify the maximum number of steps to take
+	CVodeSetMaxNumSteps(cvode_mem, MAXSTEPS);
 
-  // call CVodeSetUserData to pass parameters to user_data;
-  CVodeSetUserData(cvode_mem, &vec_cvode);
+	// specify the maximum step size
+	CVodeSetMaxStep(cvode_mem, dtmax);
 
-  // call CVodeSetMaxNumSteps to specify the maximun number of steps to be taken.
-  CVodeSetMaxNumSteps(cvode_mem, mxsteps);
+	// specify the maximum number of error test failures permitted in attempting
+	// one step
+	CVodeSetMaxErrTestFails(cvode_mem, 20);
 
-  // call CVodeSetMaxStep to specify the maximum step size.
-  CVodeSetMaxStep(cvode_mem, hmax);
+	// specify the root function g with 1 component
+	CVodeRootInit(cvode_mem, 1, g);
 
-  // Call CVodeSetMaxErrTestFails to specify the maximun number of error test failures
-  // permitted in attempting one step
-  CVodeSetMaxErrTestFails(cvode_mem, 20);
+	// specify the CVDENSE dense linear solver
+	CVDense(cvode_mem, 1);
 
-  // call CVodeRootInit to specify the root function g with 1 component
-  CVodeRootInit(cvode_mem, 1, g);
+	// set the Jacobian routine to Jac
+	CVDlsSetDenseJacFn(cvode_mem, Jac);
 
-  // call CVDense to specify the CVDENSE dense linear solver
-  CVDense(cvode_mem, NEQ);
+	// set the maximum time for propagation
+	tmax = 2. * tlim;
 
-  // set the Jacobian routine to Jac
-  CVDlsSetDenseJacFn(cvode_mem, Jac);
+	while(true)
+	{
+		int flag = CVode(cvode_mem, tmax, po, &t, CV_NORMAL);
 
-  // define a vector to store roots.
-  std::vector<double> root(1);
-  
-  tout = 2.0 * tlimit;
+		if(flag == CV_ROOT_RETURN)
+		{
+			int flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
+			// free the integrator memory
+			CVodeFree(&cvode_mem);
+			return E_applied(t, params);
+		}
+		else if(flag == CV_SUCCESS)
+		{
+			// made it all the way to the maximum time and didn't find the
+			// potential
+			CVodeFree(&cvode_mem);
+			throw molstat::NoObservableProduced();
+		}
+	}
 
-  while(1) {
-
-    flag = CVode(cvode_mem, tout, y, &t, CV_NORMAL);
-    //PrintOutput(t, Ith(y,1), 1.0 - Ith(y,1));
-
-    if (flag == CV_ROOT_RETURN) {
-      flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
-      root.push_back( E_applied(t, vec) );
-    }
-    if (flag == CV_SUCCESS) break;
-    //if (flag == CV_TOO_MUCH_WORK) exit(-1);
-  }
-  
-  // free y and abstol vectors
-  N_VDestroy_Serial(y);
-  N_VDestroy_Serial(abstol);
-
-  // free integrator memory
-  CVodeFree(&cvode_mem);
-
-  //printf("the size of the vector is %4d\n", root.size());
-  //printf("the first root is %14.8e\n", root[1]);
-  //printf("the second root is %14.8e\n", root[2]);
-
-  if (direction == 1.0) return root[1];
-  if (direction == 2.0) return root[2];
-
-  return 0;
+	// should not ever be here
+	throw molstat::NoObservableProduced();
+	return 0.;
 }
 
 #if 0
@@ -218,8 +210,6 @@ int SingleMoleculeCV::f(double t, N_Vector y, N_Vector ydot,
   y1 = Ith(y,1);
 
   Ith(ydot,1) = - ( kf(t, *p)  + kb(t, *p) ) * y1 + kb(t, *p);
-
-  //PrintOutput(t, y1,y2);
   
   return 0;
 }

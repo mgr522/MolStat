@@ -15,16 +15,7 @@
 #include <string>
 #include <vector>
 #include <valarray>
-#include <general/simulator_tools/simulate_model_interface.h>
 #include "observables.h"
-
-#if 0
-#include <sundials/sundials_types.h>
-#include <sundials/sundials_dense.h>
-#include <cvode/cvode.h>
-#include <nvector/nvector_serial.h>
-#include <cvode/cvode_dense.h>
-#endif
 
 namespace molstat {
 namespace echem {
