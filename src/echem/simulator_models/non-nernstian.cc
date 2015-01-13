@@ -11,7 +11,6 @@
 
 #include "non-nernstian.h"
 #include <cmath>
-#include <memory>
 #include <general/simulator_tools/simulator_exceptions.h>
 
 // CVODE headers
@@ -64,7 +63,7 @@ double NonNernstianReaction::kf(double t, const std::valarray<double> &params)
 	double exponential = E_applied(t, params) - eref + lambda;
 	exponential *= -0.25 * exponential / lambda;
 
-	double log_kf = e + log(af);
+	double log_kf = exponential + log(af);
 	if(log_kf < -650.)
 		return 0.;
 	else
@@ -81,7 +80,7 @@ double NonNernstianReaction::kb(double t, const std::valarray<double> &params)
 	double exponential = E_applied(t, params) - eref - lambda;
 	exponential *= -0.25 * exponential / lambda;
 
-	double log_kb = e + log(ab);
+	double log_kb = exponential + log(ab);
 	if(log_kb < -650.)
 		return 0.;
 	else
@@ -101,22 +100,20 @@ double NonNernstianReaction::E_applied(double t,
 	if(t >= 0. && t <= tlim)
       E = e0 + v * t;
 	else if(t > tlim && t <= 2.*tlim)
-      E = e0 + 2.0 * v * tlimit - v * t;
+      E = e0 + 2.0 * v * tlim - v * t;
 	else
       throw molstat::NoObservableProduced();
 
    return E;
 }
 
-double NernstianReaction::ForwardETP(const std::valarray<double> &params)
+double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
+	const
 {
 	// unpack the parameters
 	const double &tlim = params[Index_tlim];
 
 	double t, tmax;
-	std::unique_ptr<N_Vector, typeof(&N_VDestroy_Serial)>
-		po { nullptr, &N_VDestroy_Serial },
-		abstol { nullptr, &N_VDestroy_Serial };
 	void *cvode_mem { nullptr };
 
 	// set the maximum step size
@@ -125,14 +122,12 @@ double NernstianReaction::ForwardETP(const std::valarray<double> &params)
 	std::valarray<double> params_copy { params };
 
 	// Create serial vectors for the initial condition and for abstol
+	N_Vector po, abstol;
 	po = N_VNew_Serial(1);
 	abstol = N_VNew_Serial(1);
-
+	
 	// initialize y (initial condition)
-	Ith(y, 1) = 1.;
-
-	// set the scalar relative tolerance
-	reltol = RTOL;
+	Ith(po, 1) = 1.;
 
 	// set the vector absolute tolerance
 	Ith(abstol, 1) = ATOL;
@@ -147,7 +142,7 @@ double NernstianReaction::ForwardETP(const std::valarray<double> &params)
 	CVodeInit(cvode_mem, f, 0., po);
 
 	// specify the scalar relative tolerance and vector absolute tolerance
-	CVodeSVtolerances(cvode_mem, RTOL, ATOL);
+	CVodeSVtolerances(cvode_mem, RTOL, abstol);
 
 	// pass model parameters to the CVODE functions
 	CVodeSetUserData(cvode_mem, &params_copy);
@@ -180,16 +175,23 @@ double NernstianReaction::ForwardETP(const std::valarray<double> &params)
 
 		if(flag == CV_ROOT_RETURN)
 		{
-			int flagr = CVodeGetRootInfo(cvode_mem, rootsfound);
-			// free the integrator memory
+			// free CVODE memory
+			N_VDestroy_Serial(po);
+			N_VDestroy_Serial(abstol);
 			CVodeFree(&cvode_mem);
+
 			return E_applied(t, params);
 		}
 		else if(flag == CV_SUCCESS)
 		{
 			// made it all the way to the maximum time and didn't find the
 			// potential
+
+			// free CVODE memory
+			N_VDestroy_Serial(po);
+			N_VDestroy_Serial(abstol);
 			CVodeFree(&cvode_mem);
+
 			throw molstat::NoObservableProduced();
 		}
 	}
