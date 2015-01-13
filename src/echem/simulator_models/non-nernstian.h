@@ -17,6 +17,13 @@
 #include <valarray>
 #include "observables.h"
 
+// CVODE headers
+#include <sundials/sundials_types.h>
+#include <sundials/sundials_dense.h>
+#include <cvode/cvode.h>
+#include <nvector/nvector_serial.h>
+#include <cvode/cvode_dense.h>
+
 namespace molstat {
 namespace echem {
 
@@ -139,44 +146,50 @@ public:
 	virtual double BackwardETP(const std::valarray<double> &params) const
 		override;
 
-#if 0
+private:
 	/**
-	 * \brief Callable function by CVODE. Defines the right side of the differential equations \f$y'=f(t,y)\f$
-   * where \f$y=(P_\mathrm{O}(t),P_\mathrm{R}(t)\f$.
+	 * \brief Function for CVODE that specifies the right-hand side of the
+	 *    differential equation for \f$P_\mathrm{O}(t)\f$.
 	 * 
-   * \param[in] t The current value of time.
-	 * \param[in] y The current value of vector \f$[P_\mathrm{O}(t),P_\mathrm{R}(t)]\f$.
-   * \param[out] ydot The output vector \f$[P'_\mathrm{O}(t),P'_\mathrm{R}(t)\]f$.
-	 * \param[in] user_data The pointer passed to CVodeSetUserData.
-   * \return 0 if successful or a non-zero value if an error occured.
+	 * \param[in] t The current time.
+	 * \param[in] po The current \f$P_\mathrm{O}(t)\f$ (as a `N_Vector`).
+	 * \param[out] podot The value \f$P'_\mathrm{O}(t)\f$ (as a `N_Vector`).
+	 * \param[in] voidparams The model parameters, in `void*` form (per CVODE).
+	 * \return 0 if successful, or a non-zero value if an error occured.
 	 */
-  static int f(double t, N_Vector y, N_Vector ydot, void *user_data);
+  static int ode(double t, N_Vector po, N_Vector podot, void *voidparams);
 
-  /**
-	 * \brief Callable function by CVODE. Defines the roots to search for.
+	/**
+	 * \brief Function for CVODE that defines the roots to search for; that is,
+	 *    times where \f$P_\mathrm{O}(t)=1/2\f$.
 	 * 
-   * \param[in] t The current value of time.
-	 * \param[in] y The current value of vector \f$[P_\mathrm{O}(t),P_\mathrm{R}(t)]\f$.
-   * \param[out] gout The output vector of roots.
-	 * \param[in] user_data The pointer passed to CVodeSetUserData.
-   * \return 0 if successful or a non-zero value if an error occured.
+	 * \param[in] t The current time.
+	 * \param[in] po The current \f$P_\mathrm{O}(t)\f$ (as a `N_Vector`).
+	 * \param[out] rootvals The value \f$P_\mathrm{O}(t)-1/2\f$, in search of a
+	 *    root.
+	 * \param[in] voidparams The model parameters, in `void*` form (per CVODE).
+	 * \return 0 if successful, or a non-zero value if an error occured.
 	 */
-  static int g(double t, N_Vector y, double *gout, void *user_data);
+	static int half_finder(double t, N_Vector po, double *rootvals,
+		void *voidparams);
  
-  /**
-	 * \brief Callable function by CVODE. Computes the dense Jacobian \f$J=\partial f/\partial y\f$.
+	/**
+	 * \brief Function for CVODE that computes the Jacobian, for the ODE.
 	 *
-   * \param[in] N The number of differential equations.
-   * \param[in] t The current value of time.
-	 * \param[in] y The current value of vector \f$[P_\mathrm{O}(t),P_\mathrm{R}(t)]\f$.
-   * \param[in] fy The current value of vector \f$f(t,y)\f$.
-   * \param[out] Jac The dense Jacobian matrix.
-	 * \param[in] user_data The pointer passed to CVodeSetUserData.
-   * \return 0 if successful or a non-zero value if an error occured.
+	 * \param[in] N The number of differential equations, should be 1 in this
+	 *    case.
+	 * \param[in] t The current time.
+	 * \param[in] po The current \f$P_\mathrm{O}(t)\f$ (as a `N_Vector`).
+	 * \param[in] podot The current \f$P_\mathrm{O}'(t)\f$ (as a `N_Vector`).
+	 * \param[out] J The dense Jacobian matrix.
+	 * \param[in] voidparams The model parameters, in `void*` form (per CVODE).
+	 * \param tmp1 A temporary workspace.
+	 * \param tmp2 A temporary workspace.
+	 * \param tmp3 A temporary workspace.
+	 * \return 0 if successful, or a non-zero value if an error occured.
 	 */
-  static int Jac(long int N, double t, N_Vector y, N_Vector fy, DlsMat J, void *user_data, 
-    N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
- #endif
+ 	static int jac(long int N, double t, N_Vector po, N_Vector podot, DlsMat J,
+ 		void *voidparams, N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
 };
 
 } // namespace molstat::echem

@@ -13,13 +13,6 @@
 #include <cmath>
 #include <general/simulator_tools/simulator_exceptions.h>
 
-// CVODE headers
-#include <sundials/sundials_types.h>
-#include <sundials/sundials_dense.h>
-#include <cvode/cvode.h>
-#include <nvector/nvector_serial.h>
-#include <cvode/cvode_dense.h>
-
 #define Ith(v,i)    NV_Ith_S(v,i-1)
 #define IJth(A,i,j) DENSE_ELEM(A,i-1,j-1)
 
@@ -139,7 +132,7 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 	// initialize the integrator memory and specify the right hand side function
 	// in po'=f(t, po), the initial time T0, and the initial dependent variable
 	// vector, po.
-	CVodeInit(cvode_mem, f, 0., po);
+	CVodeInit(cvode_mem, ode, 0., po);
 
 	// specify the scalar relative tolerance and vector absolute tolerance
 	CVodeSVtolerances(cvode_mem, RTOL, abstol);
@@ -157,14 +150,14 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 	// one step
 	CVodeSetMaxErrTestFails(cvode_mem, 20);
 
-	// specify the root function g with 1 component
-	CVodeRootInit(cvode_mem, 1, g);
+	// specify the root function, where we search for 1 root
+	CVodeRootInit(cvode_mem, 1, half_finder);
 
 	// specify the CVDENSE dense linear solver
 	CVDense(cvode_mem, 1);
 
-	// set the Jacobian routine to Jac
-	CVDlsSetDenseJacFn(cvode_mem, Jac);
+	// set the Jacobian routine
+	CVDlsSetDenseJacFn(cvode_mem, jac);
 
 	// set the maximum time for propagation
 	tmax = 2. * tlim;
@@ -201,45 +194,41 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 	return 0.;
 }
 
-#if 0
-int SingleMoleculeCV::f(double t, N_Vector y, N_Vector ydot, 
-  void *user_data) {
+int NonNernstianReaction::ode(double t, N_Vector po, N_Vector podot, 
+	void *voidparams)
+{
+	const std::valarray<double> &params =
+		*(const std::valarray<double> *)voidparams;
 
-  double y1;
-  std::vector<double> *p;
-  p = (std::vector<double> *) user_data;
+	const double poval = Ith(po, 1);
+	const double kfval = kf(t, params);
+	const double kbval = kb(t, params);
 
-  y1 = Ith(y,1);
+	Ith(podot, 1) = kbval - (kfval  + kbval) * poval;
 
-  Ith(ydot,1) = - ( kf(t, *p)  + kb(t, *p) ) * y1 + kb(t, *p);
-  
-  return 0;
+	return 0;
 }
 
-int SingleMoleculeCV::g(double t, N_Vector y, double *gout, 
-  void *user_data) {
+int NonNernstianReaction::half_finder(double t, N_Vector po, double *rootvals, 
+	void *voidparams)
+{
+	const double poval = Ith(po, 1);
+	rootvals[0] = poval - 0.5;
 
-  double y1;
-
-  y1 = Ith(y,1);
-  gout [0] = y1 - 0.5;
-
-  return 0;
+	return 0;
 }
 
-int SingleMoleculeCV::Jac(long int N, double t, N_Vector y,
-              N_Vector fy, DlsMat J, void *user_data,
-              N_Vector tmp1, N_Vector tmp2, N_Vector tmp3) {
-  std::vector<double> *p;
+int NonNernstianReaction::jac(long int N, double t, N_Vector po,
+	N_Vector podot, DlsMat J, void *voidparams, N_Vector tmp1, N_Vector tmp2,
+	N_Vector tmp3)
+{
+	const  std::valarray<double> &params =
+		*(const std::valarray<double> *)voidparams;
 
-  p = (std::vector<double> *) user_data;
+	IJth(J, 1, 1) = - kf(t, params) - kb(t, params);
 
-  IJth(J,1,1) = - kf(t, *p) - kb(t, *p);
-
-  return 0;
+	return 0;
 }
-
-#endif
 
 } // namespace molstat::echem
 } // namespace molstat
