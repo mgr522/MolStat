@@ -32,6 +32,7 @@ AC_ARG_ENABLE([simulator],
 	[build_simulator=${enableval}], [build_simulator=yes])
 
 # by default, include the transport modules
+# fitter
 AC_ARG_ENABLE([transport-fitter],
 	[AS_HELP_STRING([--disable-transport-fitter],
 		[disable the transport module for the fitter @<:@default: no@:>@])],
@@ -41,6 +42,7 @@ if test x$build_fitter = xno; then
 	with_transport_fit=no
 fi
 
+# simulator
 AC_ARG_ENABLE([transport-simulator],
 	[AS_HELP_STRING([--disable-transport-simulator],
 		[disable the transport module for the simulator @<:@default: no@:>@])],
@@ -51,6 +53,18 @@ if test x$build_simulator = xno; then
 fi
 
 # by default, include the electrochemistry modules
+# fitter
+AC_ARG_ENABLE([echem-fitter],
+	[AS_HELP_STRING([--disable-echem-fitter],
+		[disable the electrochemistry module for the fitter @<:@default: no@:>@]
+		)],
+	[with_echem_fit=${enableval}], [with_echem_fit=yes])
+# disable the electrochemistry module if we're not building the fitter
+if test x$build_fitter = xno; then
+	with_echem_fit=no
+fi
+
+# simulator
 AC_ARG_ENABLE([echem-simulator],
 	[AS_HELP_STRING([--disable-echem-simulator],
 		[disable the electrochemistry module for the simulator @<:@default: no@:>@])],
@@ -127,6 +141,8 @@ fi
 # set flags for all of the options
 AM_CONDITIONAL([BUILD_FITTER], [test x$build_fitter = xyes])
 AM_CONDITIONAL([TRANSPORT_FITTER], [test x$with_transport_fit = xyes])
+AM_CONDITIONAL([ECHEM_FITTER], [test x$with_echem_fit = xyes])
+
 if test x$with_transport_fit = xyes; then
 	AC_DEFINE([BUILD_TRANSPORT_FITTER], [1],
 		[Include the transport fitter module.])

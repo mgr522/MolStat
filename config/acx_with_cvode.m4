@@ -1,3 +1,8 @@
+# Check for CVODE.
+#
+# Sets $acx_with_cvode to yes if CVODE is found and in working order; no otherwise
+#
+# If CVODE is found, sets CVODE_INCLUDE, CVODE_LDFLAGS, and CVODE_LIBS
 AC_DEFUN([ACX_WITH_CVODE],
 [
   acx_with_cvode=no
