@@ -2,22 +2,21 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file sym_one_site_channel.cc
- * \brief Tight-binding channel with one site that couples symmetrically to
- *    both electrodes.
+ * \file nernstian.cc
+ * \brief Simulator model for electron transfer with a Nernstian reaction.
  *
- * \author Matthew G.\ Reuter
- * \date October 2014
+ * \author Bo Fu
+ * \date December 2014
  */
 
-#include "single_molecule_echem_nernstian.h"
+#include "nernstian.h"
 #include <cmath>
 
 #define kB 1.38066e-23
 #define e_charge 1.602189e-19 
 
 namespace molstat {
-namespace transport {
+namespace echem {
 
 const std::size_t SingleMoleculeEchemNernstian::Index_E0 = 0;
 const std::size_t SingleMoleculeEchemNernstian::Index_Af = 1;
@@ -52,5 +51,5 @@ double SingleMoleculeEchemNernstian::PeakV(const std::valarray<double> &params) 
 }
 
 
-} // namespace molstat::transport
+} // namespace molstat::echem
 } // namespace molstat

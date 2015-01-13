@@ -2,20 +2,20 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file single_molecule_echem_nernstian.h
- * \brief Nernstian limit of single molecule electrochemistry model.
+ * \file nernstian.h
+ * \brief Simulator model for electron transfer with a Nernstian reaction.
  *
  * \author Bo Fu
  * \date December 2014
  */
 
-#ifndef __single_molecule_echem_nernstian_h__
-#define __single_molecule_echem_nernstian_h__
+#ifndef __nernstian_reaction_h__
+#define __nernstian_reaction_h__
 
 #include "observables.h"
 
 namespace molstat {
-namespace transport {
+namespace echem {
 
 /**
  * \brief Simulator model (molstat::transport) for single molecule electrochemistry
@@ -71,7 +71,7 @@ public:
 	virtual double PeakV(const std::valarray<double> &params) const override;
 };
 
-} // namespace molstat::transport
+} // namespace molstat::echem
 } // namespace molstat
 
 #endif
