@@ -135,6 +135,13 @@ if test x$need_gsl != xno; then
 fi
 AM_CONDITIONAL([HAVE_GSL],
 	[test x$need_gsl != no && test x$acx_with_gsl = xyes])
+if test x$need_gsl != no && test x$acx_with_gsl = xyes; then
+	AC_DEFINE([HAVE_GSL], [1],
+		[We can build and link with GSL.])
+else
+	AC_DEFINE([HAVE_GSL], [0],
+		[We can build and link with GSL.])
+fi
 
 # look for CVODE, if necessary
 if test x$need_cvode != xno; then
@@ -150,6 +157,13 @@ if test x$need_cvode != xno; then
 fi
 AM_CONDITIONAL([HAVE_CVODE],
 	[test x$need_cvode != no && test x$acx_with_cvode = xyes])
+if test x$need_cvode != no && test x$acx_with_cvode = xyes; then
+	AC_DEFINE([HAVE_CVODE], [1],
+		[We can build and link with CVODE.])
+else
+	AC_DEFINE([HAVE_CVODE], [0],
+		[We can build and link with CVODE.])
+fi
 
 
 # set flags for all of the options
