@@ -10,11 +10,11 @@
  * \date November 2014
  */
 
+#include <config.h>
 #include <general/string_tools.h>
-//#include "transport_simulate_module.h"
 #include "observables.h"
-
-//#include "asym_two_site_channel.h"
+ 
+#include "non-nernstian.h"
 
 namespace molstat {
 namespace echem {
@@ -23,10 +23,11 @@ void load_models(
 	std::map<std::string,
 	         SimulateModelFactoryFunction> &models)
 {
-#if 0
+#if HAVE_CVODE
+	// models that require the optional CVODE package
 	models.emplace(
-		to_lower("TransportJunction"),
-		GetSimulateModelFactory<TransportJunction>() );
+		to_lower("NonNernstianReaction"),
+		GetSimulateModelFactory<NonNernstianReaction>() );
 #endif
 }
 
