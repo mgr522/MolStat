@@ -13,7 +13,6 @@
 #include "symmetric_resonant.h"
 #include "symmetric_nonresonant.h"
 #include "asymmetric_resonant.h"
-#include <exception>
 
 using namespace std;
 
