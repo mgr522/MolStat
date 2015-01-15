@@ -272,6 +272,7 @@ AC_CONFIG_FILES([
 				src/general/tests/Makefile
 			src/echem/Makefile
 				src/echem/simulator_models/Makefile
+				src/echem/fitter_models/Makefile
 				src/echem/tests/Makefile
 			src/electron_transport/Makefile
 				src/electron_transport/fitter_models/Makefile
