@@ -7,13 +7,13 @@
  *    MolStat.
  *
  * \author Bo Fu, Matthew G.\ Reuter
- * \date November 2014
+ * \date January 2015
  */
 
 #include <config.h>
 #include <general/string_tools.h>
 #include "observables.h"
- 
+
 #include "non-nernstian.h"
 
 namespace molstat {
