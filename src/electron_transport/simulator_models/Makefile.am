@@ -1,4 +1,6 @@
 if TRANSPORT_SIMULATOR
+# transport simulator module requires no external packages
+
 noinst_LIBRARIES = libtransport_simulate.a
 
 libtransport_simulate_a_SOURCES = transport_simulate_module.h \

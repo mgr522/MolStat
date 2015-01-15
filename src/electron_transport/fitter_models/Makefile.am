@@ -1,4 +1,6 @@
 if TRANSPORT_FITTER
+# transport fitter module requires GSL
+
 noinst_LIBRARIES = libtransport_fit.a
 
 libtransport_fit_a_SOURCES = transport_fit_module.h \

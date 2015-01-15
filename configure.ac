@@ -169,7 +169,7 @@ if test x$with_transport_fit = xyes; then
 		[Include the transport fitter module.])
 else
 	AC_DEFINE([BUILD_TRANSPORT_FITTER], [0],
-		[Do not include the transport fitter module.])
+		[Include the transport fitter module.])
 fi
 
 if test x$with_transport_sim = xyes; then
@@ -177,7 +177,7 @@ if test x$with_transport_sim = xyes; then
 		[Include the transport simulator module.])
 else
 	AC_DEFINE([BUILD_TRANSPORT_SIMULATOR], [0],
-		[Do not include the transport simulator module.])
+		[Include the transport simulator module.])
 fi
 
 
@@ -191,7 +191,7 @@ if test x$with_echem_fit = xyes; then
 		[Include the electrochemistry fitter module.])
 else
 	AC_DEFINE([BUILD_ECHEM_FITTER], [0],
-		[Do not include the electrochemistry fitter module.])
+		[Include the electrochemistry fitter module.])
 fi
 
 if test x$with_echem_sim = xyes; then
@@ -199,7 +199,7 @@ if test x$with_echem_sim = xyes; then
 		[Include the electrochemistry simulator module.])
 else
 	AC_DEFINE([BUILD_ECHEM_SIMULATOR], [0],
-		[Do not include the electrochemistry simulator module.])
+		[Include the electrochemistry simulator module.])
 fi
 
 

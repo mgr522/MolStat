@@ -56,7 +56,7 @@ TESTS += \
 endif
 endif
 
-# make sure automake includes the script in a distribution
+# make sure automake includes the scripts in a distribution
 dist_check_SCRIPTS = \
 	fit-symmetric-resonant.py \
 	fit-symmetric-nonresonant.py \
