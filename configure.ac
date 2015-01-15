@@ -17,6 +17,13 @@ AM_PROG_AR
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 
+# required for building static libraries
+AC_PROG_RANLIB
+
+# python is needed for some "make check" scripts
+AX_PYTHON
+AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != ":"])
+
 
 
 # check the options.
@@ -30,6 +37,7 @@ AC_ARG_ENABLE([simulator],
 	[AS_HELP_STRING([--disable-simulator],
 		[disable compilation of the simulator @<:@default: no@:>@])],
 	[build_simulator=${enableval}], [build_simulator=yes])
+
 
 # by default, include the transport modules
 # fitter
@@ -51,6 +59,7 @@ AC_ARG_ENABLE([transport-simulator],
 if test x$build_simulator = xno; then
 	with_transport_sim=no
 fi
+
 
 # by default, include the electrochemistry modules
 # fitter
@@ -80,35 +89,37 @@ fi
 need_gsl=no
 need_cvode=no
 
-# the simulator requires nothing
+# the simulator itself requires nothing
 
-# the fitter requires GSL
+# the fitter itself requires GSL
 if test x$build_fitter = xyes; then
 	need_gsl=yes
 fi
 
-# simulator transport module requires nothing
 
-# fitter transport module requires GSL
+# transport simulator module requires nothing
+
+
+# transport fitter module requires GSL
 if test x$with_transport_fit = xyes; then
 	need_gsl=yes
 fi
 
-# simulator electrochemistry requires CVODE
+
+# parts of the electrochemistry simulator module require CVODE
+# include them if CVODE is specified, but skip them otherwise
 if test x$with_echem_sim = xyes; then
-	need_cvode=yes
+	need_cvode=maybe
+fi
+
+# electrochemistry fitter module requires GSL
+if test x$with_echem_fit = xyes; then
+	need_gsl=yes
 fi
 
 
 
 # check for the necessary packages
-
-# required for building static libraries
-AC_PROG_RANLIB
-
-# python is needed for some "make check" scripts
-AX_PYTHON
-AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != ":"])
 
 # look for GSL, if necessary
 if test x$need_gsl != xno; then
@@ -122,6 +133,8 @@ if test x$need_gsl != xno; then
 		fi
 	fi
 fi
+AM_CONDITIONAL([HAVE_GSL],
+	[test x$need_gsl != no && test x$acx_with_gsl = xyes])
 
 # look for CVODE, if necessary
 if test x$need_cvode != xno; then
@@ -130,12 +143,13 @@ if test x$need_cvode != xno; then
 		if test x$need_cvode = xyes; then
 			AC_MSG_ERROR([Unable to find CVODE.])
 		fi
-		if test x$acx_with_cvode = xmaybe; then
+		if test x$need_cvode = xmaybe; then
 			AC_MSG_WARN([Unable to find CVODE. Requested parts of MolStat that do not require CVODE will still be built.])
 		fi
 	fi
 fi
-
+AM_CONDITIONAL([HAVE_CVODE],
+	[test x$need_cvode != no && test x$acx_with_cvode = xyes])
 
 
 # set flags for all of the options
