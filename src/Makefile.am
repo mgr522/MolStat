@@ -19,10 +19,24 @@ molstat_simulator_LDADD += \
 	electron_transport/simulator_models/libtransport_simulate.a
 endif
 
+if ECHEM_SIMULATOR
+molstat_simulator_LDADD += \
+	echem/simulator_models/libechem_simulate.a
+endif
+
 molstat_simulator_LDADD += \
 	general/libmolstat_simulator.a \
-	general/libmolstat_general.a \
-	$(AM_LDADD)
+	general/libmolstat_general.a
+
+if ECHEM_SIMULATOR
+if HAVE_CVODE
+molstat_simulator_LDADD += \
+	$(CVODE_LDFLAGS) $(CVODE_LIBS)
+endif
+endif
+
+molstat_simulator_LDADD += \
+	$(AM_LDADD) $(AM_LIBS)
 endif
 
 if BUILD_FITTER
@@ -38,6 +52,10 @@ molstat_fitter_LDADD =
 if TRANSPORT_FITTER
 molstat_fitter_LDADD += \
 	electron_transport/fitter_models/libtransport_fit.a
+endif
+
+if ECHEM_FITTER
+molstat_fitter_LDADD +=
 endif
 
 molstat_fitter_LDADD += \

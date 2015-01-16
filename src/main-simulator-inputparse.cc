@@ -44,6 +44,10 @@
 #include <electron_transport/simulator_models/transport_simulate_module.h>
 #endif
 
+#if BUILD_ECHEM_SIMULATOR
+#include <echem/simulator_models/echem_simulate_module.h>
+#endif
+
 using namespace std;
 
 inline void SimulatorInputParse::printError(std::ostream &output,
@@ -78,6 +82,12 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator(
 	// load transport models
 	molstat::transport::load_models(models);
 	molstat::transport::load_observables(observables);
+	#endif
+
+	#if BUILD_ECHEM_SIMULATOR
+	// load electrochemistry models
+	molstat::echem::load_models(models);
+	molstat::echem::load_observables(observables);
 	#endif
 
 	// make the model
