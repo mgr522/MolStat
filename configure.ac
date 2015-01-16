@@ -44,27 +44,8 @@ ACX_MODULE_OPTIONS([transport], [transport])
 
 
 
-# by default, include the electrochemistry modules
-# fitter
-AC_ARG_ENABLE([echem-fitter],
-	[AS_HELP_STRING([--disable-echem-fitter],
-		[disable the electrochemistry module for the fitter @<:@default: no@:>@]
-		)],
-	[with_echem_fit=${enableval}], [with_echem_fit=yes])
-# disable the electrochemistry module if we're not building the fitter
-if test x$build_fitter = xno; then
-	with_echem_fit=no
-fi
-
-# simulator
-AC_ARG_ENABLE([echem-simulator],
-	[AS_HELP_STRING([--disable-echem-simulator],
-		[disable the electrochemistry module for the simulator @<:@default: no@:>@])],
-	[with_echem_sim=${enableval}], [with_echem_sim=yes])
-# disable the electrochemistry module if we're not building the simulator
-if test x$build_simulator = xno; then
-	with_echem_sim=no
-fi
+# electrochemistry module
+ACX_MODULE_OPTIONS([electrochemistry], [echem])
 
 
 
