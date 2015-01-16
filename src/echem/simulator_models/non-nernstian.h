@@ -157,7 +157,7 @@ private:
 	 * \param[out] cvode_mem The cvode_memory block.
 	 * \param[out] po The initial condition for \f$P_\mathrm{O}\f$.
 	 */
-	static void initialize_CVODE(void *&cvode_mem, N_Vector &po, N_Vector &abstol);
+	static void initialize_CVODE(void *&cvode_mem, N_Vector &po);
 
 	/**
 	 * \brief Function for CVODE that specifies the right-hand side of the

@@ -100,18 +100,13 @@ double NonNernstianReaction::E_applied(double t,
    return E;
 }
 
-void NonNernstianReaction::initialize_CVODE(void *&cvode_mem, N_Vector &po,
-	N_Vector &abstol)
+void NonNernstianReaction::initialize_CVODE(void *&cvode_mem, N_Vector &po)
 {
 	// create serial vectors for the initial condition and for abstol
 	po = N_VNew_Serial(1);
-	abstol = N_VNew_Serial(1);
 
 	// initialize po (initial condition)
 	Ith(po, 1) = 1.;
-
-	// set the vector absolute tolerance
-	Ith(abstol, 1) = ATOL;
 
 	// create the solver memory and specify the Backward Differentiation Formula
 	// and the use of a Newton iteration.
@@ -123,7 +118,7 @@ void NonNernstianReaction::initialize_CVODE(void *&cvode_mem, N_Vector &po,
 	CVodeInit(cvode_mem, ode, 0., po);
 
 	// specify the scalar relative tolerance and vector absolute tolerance
-	CVodeSVtolerances(cvode_mem, RTOL, abstol);
+	CVodeSStolerances(cvode_mem, RTOL, ATOL);
 
 	// specify the maximum number of steps to take
 	CVodeSetMaxNumSteps(cvode_mem, MAXSTEPS);
@@ -153,11 +148,11 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 
 	std::valarray<double> params_copy { params };
 
-	// vector storing the value of P_O(t) and the absolute tolerances
-	N_Vector po, abstol;
+	// vector storing the value of P_O(t)
+	N_Vector po;
 
 	// set up the CVODE work space
-	initialize_CVODE(cvode_mem, po, abstol);
+	initialize_CVODE(cvode_mem, po);
 
 	// pass model parameters to the CVODE functions
 	CVodeSetUserData(cvode_mem, &params_copy);
@@ -179,7 +174,6 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 		{
 			// free CVODE memory
 			N_VDestroy_Serial(po);
-			N_VDestroy_Serial(abstol);
 			CVodeFree(&cvode_mem);
 
 			return E_applied(t, params);
@@ -191,7 +185,6 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 
 			// free CVODE memory
 			N_VDestroy_Serial(po);
-			N_VDestroy_Serial(abstol);
 			CVodeFree(&cvode_mem);
 
 			throw molstat::NoObservableProduced();
@@ -217,11 +210,11 @@ double NonNernstianReaction::BackwardETP(const std::valarray<double> &params)
 
 	std::valarray<double> params_copy { params };
 
-	// Create serial vectors for the initial condition and for abstol
-	N_Vector po, abstol;
+	// Create serial vectors for the initial condition
+	N_Vector po;
 	
 	// set up the CVODE work space
-	initialize_CVODE(cvode_mem, po, abstol);
+	initialize_CVODE(cvode_mem, po);
 
 	// pass model parameters to the CVODE functions
 	CVodeSetUserData(cvode_mem, &params_copy);
@@ -243,7 +236,6 @@ double NonNernstianReaction::BackwardETP(const std::valarray<double> &params)
 		{
 			// free CVODE memory
 			N_VDestroy_Serial(po);
-			N_VDestroy_Serial(abstol);
 			CVodeFree(&cvode_mem);
 
 			return E_applied(t, params);
@@ -255,7 +247,6 @@ double NonNernstianReaction::BackwardETP(const std::valarray<double> &params)
 
 			// free CVODE memory
 			N_VDestroy_Serial(po);
-			N_VDestroy_Serial(abstol);
 			CVodeFree(&cvode_mem);
 
 			throw molstat::NoObservableProduced();
