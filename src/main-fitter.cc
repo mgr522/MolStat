@@ -41,6 +41,10 @@
 #include "electron_transport/fitter_models/transport_fit_module.h"
 #endif
 
+#if BUILD_ECHEM_FITTER
+#include "echem/fitter_models/echem_fit_module.h"
+#endif
+
 using namespace std;
 
 /**
@@ -95,6 +99,10 @@ int main(int argc, char **argv)
 	// FitModelAdd calls appear here
 	#if BUILD_TRANSPORT_FITTER
 	molstat::transport::load_models(models);
+	#endif
+
+	#if BUILD_ECHEM_FITTER
+	molstat::echem::load_models(models);
 	#endif
 
 	// set up the fit -- read in parameters from stdin

@@ -55,7 +55,8 @@ molstat_fitter_LDADD += \
 endif
 
 if ECHEM_FITTER
-molstat_fitter_LDADD +=
+molstat_fitter_LDADD += \
+	echem/fitter_models/libechem_fit.a
 endif
 
 molstat_fitter_LDADD += \
