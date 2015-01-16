@@ -1,5 +1,5 @@
 # boilerplate initialization
-AC_INIT([MolStat], [1.2], [mgreuter@u.northwestern.edu], , [https://bitbucket.org/mgreuter/molstat])
+AC_INIT([MolStat], [1.2], [matthew.reuter@stonybrook.edu], , [https://bitbucket.org/mgreuter/molstat])
 AC_CONFIG_SRCDIR([configure.ac])
 
 # this is where autoconf-generated files go
@@ -27,38 +27,21 @@ AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != ":"])
 
 
 # check the options.
-# by default, build both the simulator and the fitter
+# by default, build the fitter
 AC_ARG_ENABLE([fitter],
 	[AS_HELP_STRING([--disable-fitter],
 		[disable compilation of the fitter @<:@default: no@:>@])],
 	[build_fitter=${enableval}], [build_fitter=yes])
 
+# by default, build the simulator
 AC_ARG_ENABLE([simulator],
 	[AS_HELP_STRING([--disable-simulator],
 		[disable compilation of the simulator @<:@default: no@:>@])],
 	[build_simulator=${enableval}], [build_simulator=yes])
 
+# transport module
+ACX_MODULE_OPTIONS([transport], [transport])
 
-# by default, include the transport modules
-# fitter
-AC_ARG_ENABLE([transport-fitter],
-	[AS_HELP_STRING([--disable-transport-fitter],
-		[disable the transport module for the fitter @<:@default: no@:>@])],
-	[with_transport_fit=${enableval}], [with_transport_fit=yes])
-# disable the transport module if we're not building the fitter
-if test x$build_fitter = xno; then
-	with_transport_fit=no
-fi
-
-# simulator
-AC_ARG_ENABLE([transport-simulator],
-	[AS_HELP_STRING([--disable-transport-simulator],
-		[disable the transport module for the simulator @<:@default: no@:>@])],
-	[with_transport_sim=${enableval}], [with_transport_sim=yes])
-# disable the transport module if we're not building the simulator
-if test x$build_simulator = xno; then
-	with_transport_sim=no
-fi
 
 
 # by default, include the electrochemistry modules
@@ -121,49 +104,13 @@ fi
 
 # check for the necessary packages
 
-# look for GSL, if necessary
-if test x$need_gsl != xno; then
-	ACX_WITH_GSL
-	if test x$acx_with_gsl = xno; then
-		if test x$need_gsl = xyes; then
-			AC_MSG_ERROR([Unable to find GSL.])
-		fi
-		if test x$need_gsl = xmaybe; then
-			AC_MSG_WARN([Unable to find GSL. Requested parts of MolStat that do not require GSL will still be built.])
-		fi
-	fi
-fi
-AM_CONDITIONAL([HAVE_GSL],
-	[test x$need_gsl != no && test x$acx_with_gsl = xyes])
-if test x$need_gsl != no && test x$acx_with_gsl = xyes; then
-	AC_DEFINE([HAVE_GSL], [1],
-		[We can build and link with GSL.])
-else
-	AC_DEFINE([HAVE_GSL], [0],
-		[We can build and link with GSL.])
-fi
+# look for GSL
+ACX_WITH_GSL
+ACX_SET_PACKAGE([gsl], [GSL])
 
 # look for CVODE, if necessary
-if test x$need_cvode != xno; then
-	ACX_WITH_CVODE
-	if test x$acx_with_cvode = xno; then
-		if test x$need_cvode = xyes; then
-			AC_MSG_ERROR([Unable to find CVODE.])
-		fi
-		if test x$need_cvode = xmaybe; then
-			AC_MSG_WARN([Unable to find CVODE. Requested parts of MolStat that do not require CVODE will still be built.])
-		fi
-	fi
-fi
-AM_CONDITIONAL([HAVE_CVODE],
-	[test x$need_cvode != no && test x$acx_with_cvode = xyes])
-if test x$need_cvode != no && test x$acx_with_cvode = xyes; then
-	AC_DEFINE([HAVE_CVODE], [1],
-		[We can build and link with CVODE.])
-else
-	AC_DEFINE([HAVE_CVODE], [0],
-		[We can build and link with CVODE.])
-fi
+ACX_WITH_CVODE
+ACX_SET_PACKAGE([cvode], [CVODE])
 
 
 # set flags for all of the options
