@@ -194,6 +194,100 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 	return 0.;
 }
 
+double NonNernstianReaction::BackwardETP(const std::valarray<double> &params)
+	const
+{
+	// unpack the parameters
+	const double &tlim = params[Index_tlim];
+
+	double t, tmax;
+	void *cvode_mem { nullptr };
+
+	// set the maximum step size
+	const double dtmax = 4. * tlim / MAXSTEPS;
+
+	std::valarray<double> params_copy { params };
+
+	// Create serial vectors for the initial condition and for abstol
+	N_Vector po, abstol;
+	po = N_VNew_Serial(1);
+	abstol = N_VNew_Serial(1);
+	
+	// initialize y (initial condition)
+	Ith(po, 1) = 1.;
+
+	// set the vector absolute tolerance
+	Ith(abstol, 1) = ATOL;
+
+	// create the solver memory and specify the Backward Differentiation Formula
+	// and the use of a Newton iteration.
+	cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
+
+	// initialize the integrator memory and specify the right hand side function
+	// in po'=f(t, po), the initial time T0, and the initial dependent variable
+	// vector, po.
+	CVodeInit(cvode_mem, ode, 0., po);
+
+	// specify the scalar relative tolerance and vector absolute tolerance
+	CVodeSVtolerances(cvode_mem, RTOL, abstol);
+
+	// pass model parameters to the CVODE functions
+	CVodeSetUserData(cvode_mem, &params_copy);
+
+	// specify the maximum number of steps to take
+	CVodeSetMaxNumSteps(cvode_mem, MAXSTEPS);
+
+	// specify the maximum step size
+	CVodeSetMaxStep(cvode_mem, dtmax);
+
+	// specify the maximum number of error test failures permitted in attempting
+	// one step
+	CVodeSetMaxErrTestFails(cvode_mem, 20);
+
+	// specify the root function, where we search for 1 root
+	CVodeRootInit(cvode_mem, 1, half_finder);
+
+	// specify the CVDENSE dense linear solver
+	CVDense(cvode_mem, 1);
+
+	// set the Jacobian routine
+	CVDlsSetDenseJacFn(cvode_mem, jac);
+
+	// set the maximum time for propagation
+	tmax = 2. * tlim;
+
+	while(true)
+	{
+		int flag = CVode(cvode_mem, tmax, po, &t, CV_NORMAL);
+
+		if(flag == CV_ROOT_RETURN)
+		{
+			// free CVODE memory
+			N_VDestroy_Serial(po);
+			N_VDestroy_Serial(abstol);
+			CVodeFree(&cvode_mem);
+
+			return E_applied(t, params);
+		}
+		else if(flag == CV_SUCCESS)
+		{
+			// made it all the way to the maximum time and didn't find the
+			// potential
+
+			// free CVODE memory
+			N_VDestroy_Serial(po);
+			N_VDestroy_Serial(abstol);
+			CVodeFree(&cvode_mem);
+
+			throw molstat::NoObservableProduced();
+		}
+	}
+
+	// should not ever be here
+	throw molstat::NoObservableProduced();
+	return 0.;
+}
+
 int NonNernstianReaction::ode(double t, N_Vector po, N_Vector podot, 
 	void *voidparams)
 {
