@@ -68,49 +68,13 @@ fi
 
 # check for the necessary packages
 
-# look for GSL, if necessary
-if test x$need_gsl != xno; then
-	ACX_WITH_GSL
-	if test x$acx_with_gsl = xno; then
-		if test x$need_gsl = xyes; then
-			AC_MSG_ERROR([Unable to find GSL.])
-		fi
-		if test x$need_gsl = xmaybe; then
-			AC_MSG_WARN([Unable to find GSL. Requested parts of MolStat that do not require GSL will still be built.])
-		fi
-	fi
-fi
-AM_CONDITIONAL([HAVE_GSL],
-	[test x$need_gsl != no && test x$acx_with_gsl = xyes])
-if test x$need_gsl != no && test x$acx_with_gsl = xyes; then
-	AC_DEFINE([HAVE_GSL], [1],
-		[We can build and link with GSL.])
-else
-	AC_DEFINE([HAVE_GSL], [0],
-		[We can build and link with GSL.])
-fi
+# look for GSL
+ACX_WITH_GSL
+ACX_SET_PACKAGE([gsl], [GSL])
 
 # look for CVODE, if necessary
-if test x$need_cvode != xno; then
-	ACX_WITH_CVODE
-	if test x$acx_with_cvode = xno; then
-		if test x$need_cvode = xyes; then
-			AC_MSG_ERROR([Unable to find CVODE.])
-		fi
-		if test x$need_cvode = xmaybe; then
-			AC_MSG_WARN([Unable to find CVODE. Requested parts of MolStat that do not require CVODE will still be built.])
-		fi
-	fi
-fi
-AM_CONDITIONAL([HAVE_CVODE],
-	[test x$need_cvode != no && test x$acx_with_cvode = xyes])
-if test x$need_cvode != no && test x$acx_with_cvode = xyes; then
-	AC_DEFINE([HAVE_CVODE], [1],
-		[We can build and link with CVODE.])
-else
-	AC_DEFINE([HAVE_CVODE], [0],
-		[We can build and link with CVODE.])
-fi
+ACX_WITH_CVODE
+ACX_SET_PACKAGE([cvode], [CVODE])
 
 
 # set flags for all of the options
