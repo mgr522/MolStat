@@ -107,7 +107,11 @@ protected:
 	virtual std::vector<std::string> get_names() const override;
 
 public:
-	virtual ~NonNernstianReaction() = default;
+	/// Constructor that initializes the CVODE memory.
+	NonNernstianReaction();
+
+	/// Destructor that frees the CVODE memory.
+	virtual ~NonNernstianReaction();
 
 	/**
  	 * \brief The forward half-reaction rate constant for a set of model
@@ -147,17 +151,11 @@ public:
 		override;
 
 private:
-	/**
-	 * \brief Initializes CVODE data and workspace.
-	 *
-	 * This helper function appears because NonNernstianReaction::ForwardETP
-	 * and NonNernstianReaction::BackwardETP both need the workspace and
-	 * should be initialized in the same way. This prevents code duplication.
-	 *
-	 * \param[out] cvode_mem The cvode_memory block.
-	 * \param[out] po The initial condition for \f$P_\mathrm{O}\f$.
-	 */
-	static void initialize_CVODE(void *&cvode_mem, N_Vector &po);
+	/// CVODE integration workspace.
+	void *cvode_mem;
+
+	/// CVODE vector for storing \f$P_\mathrm{O}(t)\f$ (for some \f$t\f$).
+	N_Vector po;
 
 	/**
 	 * \brief Function for CVODE that specifies the right-hand side of the

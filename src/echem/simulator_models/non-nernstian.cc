@@ -100,7 +100,8 @@ double NonNernstianReaction::E_applied(double t,
    return E;
 }
 
-void NonNernstianReaction::initialize_CVODE(void *&cvode_mem, N_Vector &po)
+NonNernstianReaction::NonNernstianReaction()
+	: cvode_mem{nullptr}, po{}
 {
 	// create serial vectors for the initial condition and for abstol
 	po = N_VNew_Serial(1);
@@ -134,128 +135,128 @@ void NonNernstianReaction::initialize_CVODE(void *&cvode_mem, N_Vector &po)
 	CVDlsSetDenseJacFn(cvode_mem, jac);
 }
 
+NonNernstianReaction::~NonNernstianReaction()
+{
+	N_VDestroy_Serial(po);
+	CVodeFree(&cvode_mem);
+}
+
 double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 	const
 {
 	// unpack the parameters
-	const double &tlim = params[Index_tlim];
-
+	const double &tlim = params[Index_tlim]; // sweep turnaround time
 	double t, tmax;
-	void *cvode_mem { nullptr };
 
 	// set the maximum step size
-	const double dtmax = 4. * tlim / MAXSTEPS;
-
-	std::valarray<double> params_copy { params };
-
-	// vector storing the value of P_O(t)
-	N_Vector po;
-
-	// set up the CVODE work space
-	initialize_CVODE(cvode_mem, po);
+	CVodeSetMaxStep(cvode_mem, 4. * tlim / MAXSTEPS);
 
 	// pass model parameters to the CVODE functions
-	CVodeSetUserData(cvode_mem, &params_copy);
+	std::valarray<double> params_copy { params };
+	CVodeSetUserData(cvode_mem, &params_copy);	
 
-	// specify the maximum step size
-	CVodeSetMaxStep(cvode_mem, dtmax);
-
-	// specify the root function, where we search for 1 root
-	CVodeRootInit(cvode_mem, 1, half_finder);
+	// forward sweep
+	// reinitialize the integrator
+	Ith(po, 1) = 1.;
+	CVodeReInit(cvode_mem, 0., po);
 
 	// set the maximum time for propagation
-	tmax = 2. * tlim;
+	tmax = tlim;
 
-	while(true)
+	// specify the root function, where we search for the time when po=0.5
+	CVodeRootInit(cvode_mem, 1, half_finder);
+
+	int flag;
+	do
 	{
-		int flag = CVode(cvode_mem, tmax, po, &t, CV_NORMAL);
+		flag = CVode(cvode_mem, tmax, po, &t, CV_NORMAL);
 
 		if(flag == CV_ROOT_RETURN)
 		{
-			// free CVODE memory
-			N_VDestroy_Serial(po);
-			CVodeFree(&cvode_mem);
+			// found the time!
 
+			// clean up the integrator
+			CVodeSetUserData(cvode_mem, nullptr);
+			CVodeRootInit(cvode_mem, 0, nullptr);
+
+			// return the potential
 			return E_applied(t, params);
 		}
-		else if(flag == CV_SUCCESS)
-		{
-			// made it all the way to the maximum time and didn't find the
-			// potential
+	} while(flag != CV_SUCCESS);
 
-			// free CVODE memory
-			N_VDestroy_Serial(po);
-			CVodeFree(&cvode_mem);
+	// we made it to the end of the forward sweep and didn't find a time
+	// when po = 0.5 -- no observable to report
 
-			throw molstat::NoObservableProduced();
-		}
-	}
+	// clean up the integrator
+	CVodeSetUserData(cvode_mem, nullptr);
+	CVodeRootInit(cvode_mem, 0, nullptr);
 
-	// should not ever be here
 	throw molstat::NoObservableProduced();
-	return 0.;
+
+	// we don't care about the backward sweep
 }
 
 double NonNernstianReaction::BackwardETP(const std::valarray<double> &params)
 	const
 {
 	// unpack the parameters
-	const double &tlim = params[Index_tlim];
-
+	const double &tlim = params[Index_tlim]; // sweep turnaround time
 	double t, tmax;
-	void *cvode_mem { nullptr };
 
 	// set the maximum step size
-	const double dtmax = 4. * tlim / MAXSTEPS;
-
-	std::valarray<double> params_copy { params };
-
-	// Create serial vectors for the initial condition
-	N_Vector po;
-	
-	// set up the CVODE work space
-	initialize_CVODE(cvode_mem, po);
+	CVodeSetMaxStep(cvode_mem, 4. * tlim / MAXSTEPS);
 
 	// pass model parameters to the CVODE functions
-	CVodeSetUserData(cvode_mem, &params_copy);
+	std::valarray<double> params_copy { params };
+	CVodeSetUserData(cvode_mem, &params_copy);	
 
-	// specify the maximum step size
-	CVodeSetMaxStep(cvode_mem, dtmax);
+	// forward sweep
+	// reinitialize the integrator
+	Ith(po, 1) = 1.;
+	CVodeReInit(cvode_mem, 0., po);
 
-	// specify the root function, where we search for 1 root
+	// set the maximum time for propagation
+	tmax = tlim;
+
+	int flag;
+	do
+	{
+		flag = CVode(cvode_mem, tmax, po, &t, CV_NORMAL);
+	} while(flag != CV_SUCCESS);
+
+	// now do the backward sweep
+
+	// specify the root function, where we search for the time when po=0.5
 	CVodeRootInit(cvode_mem, 1, half_finder);
 
 	// set the maximum time for propagation
-	tmax = 2. * tlim;
+	tmax = 2.*tlim;
 
-	while(true)
+	do
 	{
-		int flag = CVode(cvode_mem, tmax, po, &t, CV_NORMAL);
+		flag = CVode(cvode_mem, tmax, po, &t, CV_NORMAL);
 
 		if(flag == CV_ROOT_RETURN)
 		{
-			// free CVODE memory
-			N_VDestroy_Serial(po);
-			CVodeFree(&cvode_mem);
+			// found the time!
 
+			// clean up the integrator
+			CVodeSetUserData(cvode_mem, nullptr);
+			CVodeRootInit(cvode_mem, 0, nullptr);
+
+			// return the potential
 			return E_applied(t, params);
 		}
-		else if(flag == CV_SUCCESS)
-		{
-			// made it all the way to the maximum time and didn't find the
-			// potential
+	} while(flag != CV_SUCCESS);
 
-			// free CVODE memory
-			N_VDestroy_Serial(po);
-			CVodeFree(&cvode_mem);
+	// we made it to the end of the backward sweep and didn't find a time
+	// when po = 0.5 -- no observable to report
 
-			throw molstat::NoObservableProduced();
-		}
-	}
+	// clean up the integrator
+	CVodeSetUserData(cvode_mem, nullptr);
+	CVodeRootInit(cvode_mem, 0, nullptr);
 
-	// should not ever be here
 	throw molstat::NoObservableProduced();
-	return 0.;
 }
 
 int NonNernstianReaction::ode(double t, N_Vector po, N_Vector podot, 
