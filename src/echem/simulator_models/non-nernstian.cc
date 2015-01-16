@@ -100,6 +100,45 @@ double NonNernstianReaction::E_applied(double t,
    return E;
 }
 
+void NonNernstianReaction::initialize_CVODE(void *&cvode_mem, N_Vector &po,
+	N_Vector &abstol)
+{
+	// create serial vectors for the initial condition and for abstol
+	po = N_VNew_Serial(1);
+	abstol = N_VNew_Serial(1);
+
+	// initialize po (initial condition)
+	Ith(po, 1) = 1.;
+
+	// set the vector absolute tolerance
+	Ith(abstol, 1) = ATOL;
+
+	// create the solver memory and specify the Backward Differentiation Formula
+	// and the use of a Newton iteration.
+	cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
+
+	// initialize the integrator memory and specify the right hand side function
+	// in po'=f(t, po), the initial time 0, and the initial dependent variable
+	// vector, po.
+	CVodeInit(cvode_mem, ode, 0., po);
+
+	// specify the scalar relative tolerance and vector absolute tolerance
+	CVodeSVtolerances(cvode_mem, RTOL, abstol);
+
+	// specify the maximum number of steps to take
+	CVodeSetMaxNumSteps(cvode_mem, MAXSTEPS);
+
+	// specify the maximum number of error test failures permitted in attempting
+	// one step
+	CVodeSetMaxErrTestFails(cvode_mem, 20);
+
+	// specify the CVDENSE dense linear solver
+	CVDense(cvode_mem, 1);
+
+	// set the Jacobian routine
+	CVDlsSetDenseJacFn(cvode_mem, jac);
+}
+
 double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 	const
 {
@@ -114,50 +153,20 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 
 	std::valarray<double> params_copy { params };
 
-	// Create serial vectors for the initial condition and for abstol
+	// vector storing the value of P_O(t) and the absolute tolerances
 	N_Vector po, abstol;
-	po = N_VNew_Serial(1);
-	abstol = N_VNew_Serial(1);
-	
-	// initialize y (initial condition)
-	Ith(po, 1) = 1.;
 
-	// set the vector absolute tolerance
-	Ith(abstol, 1) = ATOL;
-
-	// create the solver memory and specify the Backward Differentiation Formula
-	// and the use of a Newton iteration.
-	cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
-
-	// initialize the integrator memory and specify the right hand side function
-	// in po'=f(t, po), the initial time T0, and the initial dependent variable
-	// vector, po.
-	CVodeInit(cvode_mem, ode, 0., po);
-
-	// specify the scalar relative tolerance and vector absolute tolerance
-	CVodeSVtolerances(cvode_mem, RTOL, abstol);
+	// set up the CVODE work space
+	initialize_CVODE(cvode_mem, po, abstol);
 
 	// pass model parameters to the CVODE functions
 	CVodeSetUserData(cvode_mem, &params_copy);
 
-	// specify the maximum number of steps to take
-	CVodeSetMaxNumSteps(cvode_mem, MAXSTEPS);
-
 	// specify the maximum step size
 	CVodeSetMaxStep(cvode_mem, dtmax);
 
-	// specify the maximum number of error test failures permitted in attempting
-	// one step
-	CVodeSetMaxErrTestFails(cvode_mem, 20);
-
 	// specify the root function, where we search for 1 root
 	CVodeRootInit(cvode_mem, 1, half_finder);
-
-	// specify the CVDENSE dense linear solver
-	CVDense(cvode_mem, 1);
-
-	// set the Jacobian routine
-	CVDlsSetDenseJacFn(cvode_mem, jac);
 
 	// set the maximum time for propagation
 	tmax = 2. * tlim;
@@ -210,48 +219,18 @@ double NonNernstianReaction::BackwardETP(const std::valarray<double> &params)
 
 	// Create serial vectors for the initial condition and for abstol
 	N_Vector po, abstol;
-	po = N_VNew_Serial(1);
-	abstol = N_VNew_Serial(1);
 	
-	// initialize y (initial condition)
-	Ith(po, 1) = 1.;
-
-	// set the vector absolute tolerance
-	Ith(abstol, 1) = ATOL;
-
-	// create the solver memory and specify the Backward Differentiation Formula
-	// and the use of a Newton iteration.
-	cvode_mem = CVodeCreate(CV_BDF, CV_NEWTON);
-
-	// initialize the integrator memory and specify the right hand side function
-	// in po'=f(t, po), the initial time T0, and the initial dependent variable
-	// vector, po.
-	CVodeInit(cvode_mem, ode, 0., po);
-
-	// specify the scalar relative tolerance and vector absolute tolerance
-	CVodeSVtolerances(cvode_mem, RTOL, abstol);
+	// set up the CVODE work space
+	initialize_CVODE(cvode_mem, po, abstol);
 
 	// pass model parameters to the CVODE functions
 	CVodeSetUserData(cvode_mem, &params_copy);
 
-	// specify the maximum number of steps to take
-	CVodeSetMaxNumSteps(cvode_mem, MAXSTEPS);
-
 	// specify the maximum step size
 	CVodeSetMaxStep(cvode_mem, dtmax);
 
-	// specify the maximum number of error test failures permitted in attempting
-	// one step
-	CVodeSetMaxErrTestFails(cvode_mem, 20);
-
 	// specify the root function, where we search for 1 root
 	CVodeRootInit(cvode_mem, 1, half_finder);
-
-	// specify the CVDENSE dense linear solver
-	CVDense(cvode_mem, 1);
-
-	// set the Jacobian routine
-	CVDlsSetDenseJacFn(cvode_mem, jac);
 
 	// set the maximum time for propagation
 	tmax = 2. * tlim;
