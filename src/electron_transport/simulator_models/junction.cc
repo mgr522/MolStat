@@ -24,11 +24,6 @@ namespace transport {
 const std::size_t TransportJunction::Index_EF = 0;
 const std::size_t TransportJunction::Index_V = 1;
 
-SimulateModelType TransportJunction::getSubmodelType() const
-{
-	return std::type_index{ typeid(Channel) };
-}
-
 std::vector<std::string> TransportJunction::get_names() const
 {
 	std::vector<std::string> ret(2);

@@ -278,6 +278,27 @@ public:
 };
 
 /**
+ * \brief Indicates that the composite model requires submodels of the
+ *    templated type.
+ *
+ * \tparam T The type of submodel.
+ */
+template<typename T>
+class UseSubmodelType
+	: public virtual CompositeSimulateModel
+{
+	/**
+	 * \brief Returns the type of submodels for this composite model.
+	 *
+	 * \return The molstat::SimulateModelType.
+	 */
+	virtual SimulateModelType getSubmodelType() const override
+	{
+		return std::type_index{ typeid(T) };
+	}
+};
+
+/**
  * \brief Factory class for creating a molstat::SimulateModel at runtime.
  *
  * This class instantiates models at runtime, making sure the model is in a

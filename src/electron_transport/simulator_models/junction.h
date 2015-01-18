@@ -32,6 +32,7 @@ class Channel
 
 /// Composite model representing a junction.
 class TransportJunction :
+	public UseSubmodelType<Channel>,
 	public AppliedBias,
 	public CompositeObservable<ElectricCurrent>,
 	public CompositeObservable<StaticConductance>,
@@ -46,7 +47,6 @@ public:
 	static const std::size_t Index_V;
 
 protected:
-	virtual SimulateModelType getSubmodelType() const override;
 	virtual std::vector<std::string> get_names() const override;
 
 public:
