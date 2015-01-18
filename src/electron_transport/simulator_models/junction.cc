@@ -47,6 +47,9 @@ TransportJunction::TransportJunction() :
 	CompositeObservable<StaticConductance>(
 		[] (double g1, double g2) -> double { return g1 + g2; }
 	),
+	CompositeObservable<ZeroBiasConductance>(
+		[] (double g1, double g2) -> double { return g1 + g2; }
+	),
 	CompositeObservable<DifferentialConductance>(
 		[] (double g1, double g2) -> double { return g1 + g2; }
 	)

@@ -35,6 +35,7 @@ class TransportJunction :
 	public AppliedBias,
 	public CompositeObservable<ElectricCurrent>,
 	public CompositeObservable<StaticConductance>,
+	public CompositeObservable<ZeroBiasConductance>,
 	public CompositeObservable<DifferentialConductance>
 {
 public:
