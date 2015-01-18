@@ -48,6 +48,7 @@ namespace transport {
  */
 class AsymTwoSiteChannel : public Channel,
 	public ElectricCurrent,
+	public ZeroBiasConductance,
 	public DifferentialConductance,
 	public StaticConductance
 {
@@ -109,9 +110,11 @@ public:
 	static double transmission(const double e, const double v, const double eps,
 		const double gammal, const double gammar, const double beta);
 
-	double ECurrent(const std::valarray<double> &params) const override;
-	double StaticG(const std::valarray<double> &params) const override;
-	double DiffG(const std::valarray<double> &params) const override;
+	virtual double ECurrent(const std::valarray<double> &params) const override;
+	virtual double ZeroBiasG(const std::valarray<double> &params) const
+		override;
+	virtual double StaticG(const std::valarray<double> &params) const override;
+	virtual double DiffG(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::transport
