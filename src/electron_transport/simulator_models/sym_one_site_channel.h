@@ -46,8 +46,8 @@ namespace transport {
  *   \f[ G_\mathrm{s}(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (1/2-a) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon - (1/2+a) eV}{\Gamma} \right) \right]. \f]
  */
 class SymOneSiteChannel : public Channel,
-	public ZeroBiasConductance,
 	public ElectricCurrent,
+	public ZeroBiasConductance,
 	public DifferentialConductance,
 	public StaticConductance
 {
@@ -86,8 +86,8 @@ public:
 	static double transmission(const double e, const double V, const double eps,
 		const double gamma, const double a);
 	
-	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
 	virtual double ECurrent(const std::valarray<double> &params) const override;
+	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
 	virtual double DiffG(const std::valarray<double> &params) const override;
 	virtual double StaticG(const std::valarray<double> &params) const override;
 };
