@@ -77,8 +77,10 @@ Transport observables are defined in electron_transport/simulator_models/observa
 
 - Zero-bias conductance
    - \f$ G_\mathrm{d}(0). \f$
-   - Not implemented as its own observable. Use `%DifferentialConductance` and
-     specify `V constant 0.` as the distribution for the bias.
+   - Name (for use in input) is `%ZeroBiasConductance`.
+   \if fullref
+   - Implemented by the class molstat::transport::ZeroBiasConductance.
+   \endif
 
 \subsection subsec_transport_simulate_models Models for Simulating Electron Transport
 \if fullref

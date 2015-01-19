@@ -47,6 +47,7 @@ namespace transport {
  */
 class SymOneSiteChannel : public Channel,
 	public ElectricCurrent,
+	public ZeroBiasConductance,
 	public DifferentialConductance,
 	public StaticConductance
 {
@@ -86,6 +87,7 @@ public:
 		const double gamma, const double a);
 	
 	virtual double ECurrent(const std::valarray<double> &params) const override;
+	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
 	virtual double DiffG(const std::valarray<double> &params) const override;
 	virtual double StaticG(const std::valarray<double> &params) const override;
 };
