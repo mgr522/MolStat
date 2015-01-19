@@ -28,7 +28,8 @@ namespace transport {
  * - `v` (\f$V\f$), the applied bias.
  *
  * Submodel parameters are
- * - `height` (\f$h\f$), the energy height of the barrier (in eV),
+ * - `height` (\f$h\f$), the energy height of the barrier (in eV). It is
+ *   assumed that \f$0 < E_\mathrm{F} < h\f$.
  * - `width` (\f$w\f$), the width of the barrier (in nm).
  *
  * Note that, if this submodel is used, all energies in other submodels (and
