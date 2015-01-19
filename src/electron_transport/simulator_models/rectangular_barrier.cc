@@ -35,9 +35,10 @@ double RectangularBarrier::transmission(const double e, const double h,
 	const double w)
 {
 	// sqrt(2m (eV)) / hbar = 5.12317 / nm
-	const double sinhval = std::sinh(5.12317 * w) * h;
+	const double sinhval = std::sinh(5.12317 * sqrt(h - e) * w) * h;
+	const double intermed = 4. * e * (h - e);
 
-	return 1. / (1. + 0.25 * sinhval * sinhval / (e * (h - e)));
+	return intermed / (intermed + sinhval * sinhval);
 }
 
 double RectangularBarrier::ZeroBiasG(const std::valarray<double> &params) const

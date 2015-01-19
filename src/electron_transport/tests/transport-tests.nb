@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       145,          7]
-NotebookDataLength[     77467,       2246]
-NotebookOptionsPosition[     70532,       2004]
-NotebookOutlinePosition[     70968,       2021]
-CellTagsIndexPosition[     70925,       2018]
+NotebookDataLength[     82823,       2395]
+NotebookOptionsPosition[     75578,       2142]
+NotebookOutlinePosition[     76013,       2159]
+CellTagsIndexPosition[     75970,       2156]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -1999,13 +1999,151 @@ Cell[BoxData["\<\"Current: 0.00431719\"\>"], "Print",
    3.6192853032134523`*^9, 3.626618122380974*^9}]
 }, Open  ]]
 }, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Rectangular Barrier", "Subsection",
+ CellChangeTimes->{{3.630671151697523*^9, 3.63067115429486*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"hbar", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{
+        RowBox[{"1", "/", 
+         RowBox[{"(", 
+          RowBox[{"2", "Pi"}], ")"}]}], ",", "\"\<PlanckConstant\>\""}], 
+       "]"}]}], ",", 
+     RowBox[{"m", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"1", ",", "\"\<ElectronMass\>\""}], "]"}]}], ",", 
+     RowBox[{"EF", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"0.2", ",", "\"\<ElectronVolt\>\""}], "]"}]}], ",", 
+     RowBox[{"h", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"1.4", ",", "\"\<ElectronVolt\>\""}], "]"}]}], ",", 
+     RowBox[{"w", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"1.", ",", "\"\<Nanometer\>\""}], "]"}]}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"With", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"n", "=", 
+        RowBox[{
+         RowBox[{"Sqrt", "[", 
+          RowBox[{"2", " ", "m", " ", 
+           RowBox[{"(", 
+            RowBox[{"h", "-", "EF"}], ")"}]}], "]"}], "/", "hbar"}]}], ",", 
+       RowBox[{"inter", "=", 
+        RowBox[{"4", "EF", 
+         RowBox[{"(", 
+          RowBox[{"h", "-", "EF"}], ")"}]}]}]}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{"inter", "/", 
+      RowBox[{"(", 
+       RowBox[{"inter", "+", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Sinh", "[", 
+           RowBox[{"n", " ", "w"}], "]"}], "^", "2"}], " ", 
+         RowBox[{"h", "^", "2"}]}]}], ")"}]}]}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.630671264215328*^9, 3.630671296987607*^9}, {
+  3.6306713859026003`*^9, 3.630671401117845*^9}, {3.630671444296795*^9, 
+  3.630671447804523*^9}, {3.63067149808097*^9, 3.630671509449554*^9}, {
+  3.6306715804132*^9, 3.630671710992697*^9}, {3.630671745215275*^9, 
+  3.630671874370304*^9}, {3.630671908724132*^9, 3.630671945935577*^9}, {
+  3.630671978933895*^9, 3.6306720933030157`*^9}, {3.6306721573581343`*^9, 
+  3.630672167109138*^9}, {3.6306722081158857`*^9, 3.6306722082115498`*^9}, {
+  3.630672470585649*^9, 3.6306725223771687`*^9}}],
+
+Cell[BoxData["0.000026147190058598195`"], "Output",
+ CellChangeTimes->{
+  3.630671297790822*^9, {3.630671394276537*^9, 3.6306714014834223`*^9}, 
+   3.63067144831358*^9, {3.6306718187438173`*^9, 3.6306718358834467`*^9}, 
+   3.63067187488876*^9, 3.630671911185503*^9, 3.6306719473565683`*^9, {
+   3.630671997909395*^9, 3.6306720938809357`*^9}, 3.630672168297689*^9, 
+   3.6306722086623707`*^9, {3.630672491494013*^9, 3.6306725233781643`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"hbar", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{
+        RowBox[{"1", "/", 
+         RowBox[{"(", 
+          RowBox[{"2", "Pi"}], ")"}]}], ",", "\"\<PlanckConstant\>\""}], 
+       "]"}]}], ",", 
+     RowBox[{"m", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"1", ",", "\"\<ElectronMass\>\""}], "]"}]}], ",", 
+     RowBox[{"EF", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"0.3", ",", "\"\<ElectronVolt\>\""}], "]"}]}], ",", 
+     RowBox[{"h", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"0.6", ",", "\"\<ElectronVolt\>\""}], "]"}]}], ",", 
+     RowBox[{"w", "=", 
+      RowBox[{"Quantity", "[", 
+       RowBox[{"0.5", ",", "\"\<Nanometer\>\""}], "]"}]}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"With", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"n", "=", 
+        RowBox[{
+         RowBox[{"Sqrt", "[", 
+          RowBox[{"2", " ", "m", " ", 
+           RowBox[{"(", 
+            RowBox[{"h", "-", "EF"}], ")"}]}], "]"}], "/", "hbar"}]}], ",", 
+       RowBox[{"inter", "=", 
+        RowBox[{"4", "EF", 
+         RowBox[{"(", 
+          RowBox[{"h", "-", "EF"}], ")"}]}]}]}], "}"}], ",", 
+     "\[IndentingNewLine]", 
+     RowBox[{"inter", "/", 
+      RowBox[{"(", 
+       RowBox[{"inter", "+", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Sinh", "[", 
+           RowBox[{"n", " ", "w"}], "]"}], "^", "2"}], " ", 
+         RowBox[{"h", "^", "2"}]}]}], ")"}]}]}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.630671264215328*^9, 3.630671296987607*^9}, {
+  3.6306713859026003`*^9, 3.630671401117845*^9}, {3.630671444296795*^9, 
+  3.630671447804523*^9}, {3.63067149808097*^9, 3.630671509449554*^9}, {
+  3.6306715804132*^9, 3.630671710992697*^9}, {3.630671745215275*^9, 
+  3.630671874370304*^9}, {3.630671908724132*^9, 3.630671945935577*^9}, {
+  3.630671978933895*^9, 3.6306720933030157`*^9}, {3.6306721573581343`*^9, 
+  3.630672167109138*^9}, {3.6306722081158857`*^9, 3.6306722082115498`*^9}, {
+  3.630672470585649*^9, 3.6306725223771687`*^9}, {3.630673228399827*^9, 
+  3.6306732358940983`*^9}}],
+
+Cell[BoxData["0.21499270367076634`"], "Output",
+ CellChangeTimes->{3.630673236326239*^9}]
+}, Open  ]]
 }, Closed]]
 }, Open  ]]
 },
 WindowSize->{640, 750},
 WindowMargins->{{Automatic, 40}, {-4, Automatic}},
 PrivateNotebookOptions->{"VersionedStylesheet"->{"Default.nb"[8.] -> False}},
-FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (September 9, \
+FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (December 4, \
 2014)",
 StyleDefinitions->"Default.nb"
 ]
@@ -2245,6 +2383,17 @@ Cell[69882, 1985, 195, 3, 21, "Print"],
 Cell[70080, 1990, 201, 3, 21, "Print"],
 Cell[70284, 1995, 196, 3, 21, "Print"]
 }, Open  ]]
+}, Open  ]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[70541, 2005, 106, 1, 36, "Subsection"],
+Cell[CellGroupData[{
+Cell[70672, 2010, 2121, 55, 131, "Input"],
+Cell[72796, 2067, 440, 6, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[73273, 2078, 2173, 56, 131, "Input"],
+Cell[75449, 2136, 89, 1, 28, "Output"]
 }, Open  ]]
 }, Closed]]
 }, Open  ]]

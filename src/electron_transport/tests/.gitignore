@@ -18,6 +18,9 @@ simulate-AsymTwoSite.trs
 simulate-CompositeJunction
 simulate-CompositeJunction.log
 simulate-CompositeJunction.trs
+simulate-RectBarrier
+simulate-RectBarrier.log
+simulate-RectBarrier.trs
 simulate-SymOneSite
 simulate-SymOneSite.log
 simulate-SymOneSite.trs

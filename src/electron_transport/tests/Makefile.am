@@ -10,14 +10,16 @@ TESTS += \
 	simulate-AsymOneSite \
 	simulate-SymTwoSite \
 	simulate-AsymTwoSite \
-	simulate-CompositeJunction
+	simulate-CompositeJunction \
+	simulate-RectBarrier
 
 check_PROGRAMS += \
 	simulate-SymOneSite \
 	simulate-AsymOneSite \
 	simulate-SymTwoSite \
 	simulate-AsymTwoSite \
-	simulate-CompositeJunction
+	simulate-CompositeJunction \
+	simulate-RectBarrier
 
 simulate_SymOneSite_SOURCES = simulate-SymOneSite.cc
 simulate_SymOneSite_LDADD = ../simulator_models/libtransport_simulate.a \
@@ -41,6 +43,11 @@ simulate_AsymTwoSite_LDADD = ../simulator_models/libtransport_simulate.a \
 
 simulate_CompositeJunction_SOURCES = simulate-CompositeJunction.cc
 simulate_CompositeJunction_LDADD = ../simulator_models/libtransport_simulate.a \
+	../../general/libmolstat_simulator.a \
+	../../general/libmolstat_general.a 
+
+simulate_RectBarrier_SOURCES = simulate-RectBarrier.cc
+simulate_RectBarrier_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_simulator.a \
 	../../general/libmolstat_general.a 
 endif
