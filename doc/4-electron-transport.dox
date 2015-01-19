@@ -121,7 +121,7 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::SymOneSiteChannel; full details are presented there.
-   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, and molstat::transport::StaticConductance observables.
+   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, molstat::transport::StaticConductance, and molstat::transport::ZeroBiasConductance observables.
    \elseif userman
    - Compatible with the ElectricCurrent, DifferentialConductance, StaticConductance, and ZeroBiasConductance observables.
    \endif
@@ -139,7 +139,7 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::AsymOneSiteChannel; full details are presented there.
-   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, and molstat::transport::StaticConductance observables.
+   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, molstat::transport::StaticConductance, and molstat::transport::ZeroBiasConductance observables.
    \elseif userman
    - Compatible with the ElectricCurrent, DifferentialConductance, StaticConductance, and ZeroBiasConductance observables.
    \endif
@@ -156,7 +156,7 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::SymTwoSiteChannel; full details are presented there.
-   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, and molstat::transport::StaticConductance observables.
+   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, molstat::transport::StaticConductance, and molstat::transport::ZeroBiasConductance observables.
    \elseif userman
    - Compatible with the ElectricCurrent, DifferentialConductance, StaticConductance, and ZeroBiasConductance observables.
    \endif
@@ -174,7 +174,7 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::AsymTwoSiteChannel; full details are presented there.
-   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, and molstat::transport::StaticConductance observables.
+   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, molstat::transport::StaticConductance, and molstat::transport::ZeroBiasConductance observables.
    \elseif userman
    - Compatible with the ElectricCurrent, DifferentialConductance, StaticConductance, and ZeroBiasConductance observables.
    \endif
