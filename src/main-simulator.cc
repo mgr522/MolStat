@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 
 	// create the simulator
 	// this will make sure model names are good, all distributions are
-	// specified, etc.
+	// specified, all observables are valid, etc.
 	unique_ptr<molstat::Simulator> sim{ nullptr };
 	try
 	{

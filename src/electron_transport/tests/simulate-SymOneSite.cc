@@ -66,6 +66,8 @@ int main(int argc, char **argv)
 		type_index{ typeid(molstat::transport::AppliedBias) } );
 	auto ECurrent = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::ElectricCurrent) } );
+	auto ZeroBiasG = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::ZeroBiasConductance) } );
 	auto StaticG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::StaticConductance) } );
 	auto DiffG = junction->getObservableFunction(
@@ -79,9 +81,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_epsilon] = -4.;
 	params[ChannelType::Index_gamma] = 0.8;
 	params[ChannelType::Index_a] = 0.;
-	assert(abs(0.0384615 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gamma], params[ChannelType::Index_a])) < thresh);
+	assert(abs(0.0384615 - ZeroBiasG(params)) < thresh);
 	assert(abs(0.0390172 - ECurrent(params)) < thresh);
 	assert(abs(0.0390172 - StaticG(params)) < thresh);
 	assert(abs(0.0401438 - DiffG(params)) < thresh);
@@ -92,9 +92,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_epsilon] = -9.;
 	params[ChannelType::Index_gamma] = 0.4;
 	params[ChannelType::Index_a] = 0.;
-	assert(abs(0.00159744 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gamma], params[ChannelType::Index_a])) < thresh);
+	assert(abs(0.00159744 - ZeroBiasG(params)) < thresh);
 	assert(abs(-0.000639232 - ECurrent(params)) < thresh);
 	assert(abs(0.00159808 - StaticG(params)) < thresh);
 	assert(abs(0.00159936 - DiffG(params)) < thresh);
@@ -105,9 +103,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_epsilon] = -17.;
 	params[ChannelType::Index_gamma] = 0.67;
 	params[ChannelType::Index_a] = 0.;
-	assert(abs(0.00112099 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gamma], params[ChannelType::Index_a])) < thresh);
+	assert(abs(0.00112099 - ZeroBiasG(params)) < thresh);
 	assert(abs(0.00157131 - ECurrent(params)) < thresh);
 	assert(abs(0.00112236 - StaticG(params)) < thresh);
 	assert(abs(0.00112511 - DiffG(params)) < thresh);
@@ -118,9 +114,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_epsilon] = -4.;
 	params[ChannelType::Index_gamma] = 0.8;
 	params[ChannelType::Index_a] = -0.1;
-	assert(abs(0.0384615 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gamma], params[ChannelType::Index_a])) < thresh);
+	assert(abs(0.0384615 - ZeroBiasG(params)) < thresh);
 	assert(abs(0.0371825 - ECurrent(params)) < thresh);
 	assert(abs(0.0371825 - StaticG(params)) < thresh);
 	assert(abs(0.0364382 - DiffG(params)) < thresh);
@@ -131,9 +125,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_epsilon] = -9.;
 	params[ChannelType::Index_gamma] = 0.4;
 	params[ChannelType::Index_a] = 1.;
-	assert(abs(0.00159744 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gamma], params[ChannelType::Index_a])) < thresh);
+	assert(abs(0.00159744 - ZeroBiasG(params)) < thresh);
 	assert(abs(-0.000591060 - ECurrent(params)) < thresh);
 	assert(abs(0.00147765 - StaticG(params)) < thresh);
 	assert(abs(0.00136520 - DiffG(params)) < thresh);
@@ -144,9 +136,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_epsilon] = -17.;
 	params[ChannelType::Index_gamma] = 0.67;
 	params[ChannelType::Index_a] = 0.24;
-	assert(abs(0.00112099 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gamma], params[ChannelType::Index_a])) < thresh);
+	assert(abs(0.00112099 - ZeroBiasG(params)) < thresh);
 	assert(abs(0.00162547 - ECurrent(params)) < thresh);
 	assert(abs(0.00116105 - StaticG(params)) < thresh);
 	assert(abs(0.00120367 - DiffG(params)) < thresh);
@@ -157,9 +147,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_epsilon] = -17.;
 	params[ChannelType::Index_gamma] = 0.67;
 	params[ChannelType::Index_a] = -0.05;
-	assert(abs(0.00112099 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gamma], params[ChannelType::Index_a])) < thresh);
+	assert(abs(0.00112099 - ZeroBiasG(params)) < thresh);
 	assert(abs(0.00156037 - ECurrent(params)) < thresh);
 	assert(abs(0.00111445 - StaticG(params)) < thresh);
 	assert(abs(0.00110948 - DiffG(params)) < thresh);

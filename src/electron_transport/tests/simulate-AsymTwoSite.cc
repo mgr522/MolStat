@@ -67,6 +67,8 @@ int main(int argc, char **argv)
 		type_index{ typeid(molstat::transport::AppliedBias) } );
 	auto ECurrent = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::ElectricCurrent) } );
+	auto ZeroBiasG = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::ZeroBiasConductance) } );
 	auto StaticG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::StaticConductance) } );
 	auto DiffG = junction->getObservableFunction(
@@ -81,10 +83,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gammaL] = 0.8;
 	params[ChannelType::Index_gammaR] = 1.;
 	params[ChannelType::Index_beta] = -3.;
-	assert(abs(0.121622 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gammaL], params[ChannelType::Index_gammaR],
-		 params[ChannelType::Index_beta])) < thresh);
+	assert(abs(0.121622 - ZeroBiasG(params)) < thresh);
 	assert(abs(0.149936 - ECurrent(params)) < thresh);
 	assert(abs(0.149936 - StaticG(params)) < thresh);
 	assert(abs(0.213248 - DiffG(params)) < thresh);
@@ -96,10 +95,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gammaL] = 0.4;
 	params[ChannelType::Index_gammaR] = 0.2;
 	params[ChannelType::Index_beta] = -0.8;
-	assert(abs(0.000216257 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gammaL], params[ChannelType::Index_gammaR],
-		 params[ChannelType::Index_beta])) < thresh);
+	assert(abs(0.000216257 - ZeroBiasG(params)) < thresh);
 	assert(abs(-0.0000872925 - ECurrent(params)) < thresh);
 	assert(abs(0.000218231 - StaticG(params)) < thresh);
 	assert(abs(0.000222203 - DiffG(params)) < thresh);
@@ -111,10 +107,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gammaL] = 0.67;
 	params[ChannelType::Index_gammaR] = 1.98;
 	params[ChannelType::Index_beta] = -1.6;
-	assert(abs(0.00292927 - channel->transmission
-		(params[ChannelType::Index_EF], 0., params[ChannelType::Index_epsilon],
-		 params[ChannelType::Index_gammaL], params[ChannelType::Index_gammaR],
-		 params[ChannelType::Index_beta])) < thresh);
+	assert(abs(0.00292927 - ZeroBiasG(params)) < thresh);
 	assert(abs(0.00431719 - ECurrent(params)) < thresh);
 	assert(abs(0.00308371 - StaticG(params)) < thresh);
 	assert(abs(0.00340305 - DiffG(params)) < thresh);
