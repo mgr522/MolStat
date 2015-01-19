@@ -179,6 +179,22 @@ Complete details for each of these channel models can be found in the full refer
    - Compatible with the ElectricCurrent, DifferentialConductance, StaticConductance, and ZeroBiasConductance observables.
    \endif
 
+- `RectangularBarrierChannel`
+   - Rectangular barrier model for simulating direct, electrode-electrode tunneling.
+   - Model parameters are
+      - `height` (\f$h\f$), the energy height of the barrier (in eV),
+      - `width` (\f$w\f$), the width (distance) of the barrier (in nm).
+   - Transmission function is
+   \f[
+   T(E) = \frac{1}{ 1 + \frac{1}{\sinh^2( \sqrt{2m(h-E)} w / \hbar ) h^2} {4E(h-E)} }.
+   \f]
+   \if fullref
+   - Implemented by the class molstat::transport::RectangularBarrier; full details are presented there.
+   - Compatible with the molstat::transport::ZeroBiasConductance observable.
+   \elseif userman
+   - Compatible with the ZeroBiasConductance observable.
+   \endif
+
 \section sec_fit_electron_transport Fitting Electron Transport Properties
 The following list overviews the implemented fitter models for electron transport.
 \if userman
