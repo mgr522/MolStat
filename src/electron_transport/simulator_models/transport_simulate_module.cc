@@ -19,6 +19,7 @@
 #include "asym_one_site_channel.h"
 #include "sym_two_site_channel.h"
 #include "asym_two_site_channel.h"
+#include "rectangular_barrier.h"
 
 namespace molstat {
 namespace transport {
@@ -46,6 +47,10 @@ void load_models(
 	models.emplace(
 		to_lower("AsymmetricTwoSiteChannel"),
 		GetSimulateModelFactory<AsymTwoSiteChannel>() );
+
+	models.emplace(
+		to_lower("RectangularBarrierChannel"),
+		GetSimulateModelFactory<RectangularBarrier>() );
 }
 
 void load_observables(
