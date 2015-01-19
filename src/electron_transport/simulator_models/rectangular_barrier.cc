@@ -31,8 +31,8 @@ std::vector<std::string> RectangularBarrier::get_names() const
 	return ret;
 }
 
-double RectangularBarrier::transmission(const double e, const double V,
-	const double h, const double w)
+double RectangularBarrier::transmission(const double e, const double h,
+	const double w)
 {
 	// sqrt(2m (eV)) / hbar = 5.12317 / nm
 	const double sinhval = std::sinh(5.12317 * w) * h;
@@ -40,15 +40,14 @@ double RectangularBarrier::transmission(const double e, const double V,
 	return 1. / (1. + 0.25 * sinhval * sinhval / (e * (h - e)));
 }
 
-double RectangularBarrier::DiffG(const std::valarray<double> &params) const
+double RectangularBarrier::ZeroBiasG(const std::valarray<double> &params) const
 {
 	// unpack the parameters
 	const double &ef = params[Index_EF];
-	const double &V = params[Index_V];
 	const double &h = params[Index_h];
 	const double &w = params[Index_w];
 	
-	return transmission(ef, V, h, w);
+	return transmission(ef, h, w);
 }
 
 } // namespace molstat::transport

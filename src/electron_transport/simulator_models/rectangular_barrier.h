@@ -28,7 +28,7 @@ namespace transport {
  * - `v` (\f$V\f$), the applied bias.
  *
  * Submodel parameters are
- * - `height` (\f$\h\f$), the energy height of the barrier (in eV),
+ * - `height` (\f$h\f$), the energy height of the barrier (in eV),
  * - `width` (\f$w\f$), the width of the barrier (in nm).
  *
  * Note that, if this submodel is used, all energies in other submodels (and
@@ -45,19 +45,16 @@ namespace transport {
  * transmission for Landauer-B\"uttiker theory. The equation is
  * \f[
  * T(E) = \frac{1}{ 1 + \frac{1}{\sinh^2( \sqrt{2m(h-E)} w / \hbar ) h^2} {4E(h-E)} }.
- *
- * This model does not take the applied bias directly into account, and should
- * only be used for zero-bias simulations.
  * \f]
  */
 class RectangularBarrier : public Channel,
-	public DifferentialConductance
+	public ZeroBiasConductance
 {
 public:
 	/// Container index for the Fermi energy.
 	static const std::size_t Index_EF;
 
-	/// Container index for the applied bias.
+	/// Container index for the applied bias (required by Channel).
 	static const std::size_t Index_V;
 
 	/// Container index for the height (energy) of the barrier.
@@ -76,15 +73,13 @@ public:
 	 * \brief Calculates the transmission for a set of model parameters.
 	 *
 	 * \param[in] e The energy of the incident electron.
-	 * \param[in] V The applied bias.
 	 * \param[in] h The height of the barrier (energy, in eV).
 	 * \param[in] w The width of the barrier (distance, in nm).
 	 * \return The transmission for this set of parameters.
 	 */
-	static double transmission(const double e, const double V, const double h,
-		const double w);
+	static double transmission(const double e, const double h, const double w);
 	
-	virtual double DiffG(const std::valarray<double> &params) const override;
+	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::transport
