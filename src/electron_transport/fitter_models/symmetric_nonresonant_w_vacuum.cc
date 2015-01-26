@@ -77,7 +77,7 @@ double SymmetricNonresonantPlusVacuumFitModel::resid(
 	gsl_integration_qags(&func, fitparam[GMINUS], g, 0.0, 1.0e-7, nquad,
 		w.get(), &integral, &error);
 
-	return integral * fitparam[NORM];
+	return integral * fitparam[NORM] - f;
 }
 
 std::vector<double> SymmetricNonresonantPlusVacuumFitModel::jacobian(
@@ -166,14 +166,15 @@ std::pair<double, std::vector<double>> SymmetricNonresonantPlusVacuumFitModel::r
 		&intd, &error);
 
 	// set the residual and derivatives
-	ret.first = norm * integral;
+	ret.first = norm * integral - f;
 
 	ret.second[C] = norm * intc;
 
 	ret.second[D] = norm * intd;
 
 	error = c * sqrt(g-gminus) - d * sqrt(1.-g+gminus);
-	ret.second[GMINUS] = -norm / (gminus * sqrt((g-gminus) * (1.-g+gminus)))
+	ret.second[GMINUS] = -norm
+		/ (gminus * sqrt((g-gminus) * (1.-g+gminus)*(1.-g+gminus)*(1.-g+gminus)))
 		* exp(-0.5*error*error / (1.-g+gminus));
 
 	ret.second[NORM] = integral;
