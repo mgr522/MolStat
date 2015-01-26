@@ -80,7 +80,6 @@ protected:
 		const std::map<std::string, double> &values) const override;
 
 	/**
-	 * \internal
 	 * \brief GSL integrand function for the fit function integral.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
@@ -91,12 +90,10 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of \f$g'\f$.
-	 * \endinternal
 	 */
 	static double int_p(double gp, void *params);
 
 	/**
-	 * \internal
 	 * \brief GSL integrand function for the derivative of the fit function
 	 *    integral with respect to \f$c\f$.
 	 *
@@ -108,12 +105,10 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of \f$g'\f$.
-	 * \endinternal
 	 */
 	static double int_dp_dc(double gp, void *params);
 
 	/**
-	 * \internal
 	 * \brief GSL integrand function for the derivative of the fit function
 	 *    integral with respect to \f$d\f$.
 	 *
@@ -125,7 +120,6 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of \f$g'\f$.
-	 * \endinternal
 	 */
 	static double int_dp_dd(double gp, void *params);
 
