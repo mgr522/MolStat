@@ -57,11 +57,9 @@ private:
 		std::list<ModelInformation> submodels;
 
 		/**
-		 * \internal
 		 * \brief Gets a string representation of the model information.
 		 *
 		 * \return The string.
-		 * \endinternal
 		 */
 		std::string to_string() const;
 	};
@@ -164,13 +162,11 @@ public:
 	std::size_t numTrials() const noexcept;
 
 	/**
-	 * \internal
 	 * \brief Prints the state of the input parser.
 	 *
 	 * For debugging purposes, only.
 	 *
 	 * \param[in,out] output The output stream.
-	 * \endinternal
 	 */
 	void printState(std::ostream &output) const;
 

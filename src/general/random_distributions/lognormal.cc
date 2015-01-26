@@ -2,13 +2,11 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file lognormal.cc
  * \brief Implementation of the lognormal distribution.
  *
  * \author Matthew G.\ Reuter
  * \date November 2014
- * \endinternal
  */
 
 #include "lognormal.h"

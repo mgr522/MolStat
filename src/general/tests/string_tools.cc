@@ -2,7 +2,6 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file tests/string_tools.cc
  * \brief Test suite for the string functions.
  *
@@ -10,7 +9,6 @@
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
- * \endinternal
  */
 
 #include <list>
@@ -23,7 +21,6 @@
 using namespace std;
 
 /**
- * \internal
  * \brief Auxiliary function that makes sure the tokens are the same.
  *
  * The containers are destroyed on exit. q2 is a list because a queue
@@ -31,7 +28,6 @@ using namespace std;
  *
  * \param[in] q1 A queue of tokens (presumably from molstat::tokenize).
  * \param[in] q2 A list of tokens to compare against.
- * \endinternal
  */
 static void assert_tokens_same(queue<string> &&q1,
 	list<string> &&q2)
@@ -47,13 +43,11 @@ static void assert_tokens_same(queue<string> &&q1,
 }
 
 /**
- * \internal
  * \brief Main function for testing the various string functions.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
- * \endinternal
  */
 int main(int argc, char **argv)
 {

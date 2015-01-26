@@ -2,13 +2,11 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file transport_fit_module.cc
  * \brief Function that loads transport fit models.
  *
  * \author Matthew G.\ Reuter
  * \date September 2014
- * \endinternal
  */
 
 #include "transport_fit_module.h"

@@ -2,7 +2,6 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file histogram2d_mixed.cc
  * \brief Test suite for a 2D Histogram class (mixed linear and logarithmic
  *    binning).
@@ -12,7 +11,6 @@
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
- * \endinternal
  */
 
 #include <cassert>
@@ -26,14 +24,12 @@
 using namespace std;
 
 /**
- * \internal
  * \brief Main function for testing the Histogram (2D) class with mixed linear
  *    and logarithmic binning.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
- * \endinternal
  */
 int main(int argc, char **argv)
 {

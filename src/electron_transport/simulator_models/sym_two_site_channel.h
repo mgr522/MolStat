@@ -54,7 +54,6 @@ class SymTwoSiteChannel : public Channel,
 {
 private:
 	/**
-	 * \internal
 	 * \brief Calculates the antiderivative needed for the electric current
 	 *    (fixed values of the model parameters).
 	 *
@@ -63,7 +62,6 @@ private:
 	 * \param[in] gamma The channel-lead coupling, gamma.
 	 * \param[in] beta The site-site coupling, beta.
 	 * \return The antiderivative needed for the static conductance.
-	 * \endinternal
 	 */
 	static double current_integral(const double z, const double eps,
 		const double gamma, const double beta);

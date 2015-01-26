@@ -2,13 +2,11 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file bin_linear.cc
  * \brief Implements linear binning.
  *
  * \author Matthew G.\ Reuter
  * \date June 2014
- * \endinternal
  */
 
 #include "bin_linear.h"

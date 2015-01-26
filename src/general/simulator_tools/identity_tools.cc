@@ -2,14 +2,12 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file identity_tools.cc
  * \brief Implementations of an observable and model used to test the
  *    simulator.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
- * \endinternal
  */
 
 #include "identity_tools.h"

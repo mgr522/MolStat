@@ -65,7 +65,6 @@ protected:
 		const std::map<std::string, double> &values) const override;
 
 	/**
-	 * \internal
 	 * \brief GSL integrand function for the fit function integral.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
@@ -76,12 +75,10 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of x.
-	 * \endinternal
 	 */
 	static double int_p(double x, void *params);
 
 	/**
-	 * \internal
 	 * \brief GSL integrand function for the derivative of the fit function
 	 *    integral with respect to \f$\gamma_\mathrm{L}\f$.
 	 *
@@ -94,12 +91,10 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of x.
-	 * \endinternal
 	 */
 	static double int_dp_dgammaL(double x, void *params);
 
 	/**
-	 * \internal
 	 * \brief GSL integrand function for the derivative of the fit function
 	 *    integral with respect to \f$\gamma_\mathrm{R}\f$.
 	 *
@@ -112,12 +107,10 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of x.
-	 * \endinternal
 	 */
 	static double int_dp_dgammaR(double x, void *params);
 
 	/**
-	 * \internal
 	 * \brief GSL integrand function for the derivative of the fit function
 	 *    integral with respect to \f$r\f$.
 	 *
@@ -129,7 +122,6 @@ protected:
 	 * \param[in] params The fit parameters, assumed to be in vector<double>
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of x.
-	 * \endinternal
 	 */
 	static double int_dp_dr(double x, void *params);
 
