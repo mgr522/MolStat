@@ -54,6 +54,19 @@ TESTS += \
 	fit-options.py \
 	fit-asymmetric-resonant.py
 endif
+
+TESTS += \
+	fit-SymResonant
+
+check_PROGRAMS += \
+	fit-SymResonant
+
+fit_SymResonant_SOURCES = fit-SymResonant.cc
+fit_SymResonant_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)
+fit_SymResonant_LDADD = ../fitter_models/libtransport_fit.a \
+	../../general/libmolstat_fitter.a \
+	../../general/libmolstat_general.a \
+	$(GSL_LDFLAGS) $(AM_LDADD) $(GSL_LIBS) $(AM_LIBS)
 endif
 
 # make sure automake includes the script in a distribution
