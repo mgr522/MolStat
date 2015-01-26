@@ -56,10 +56,19 @@ TESTS += \
 endif
 
 TESTS += \
+	fit-SymNonresonant \
 	fit-SymResonant
 
 check_PROGRAMS += \
+	fit-SymNonresonant \
 	fit-SymResonant
+
+fit_SymNonresonant_SOURCES = fit-SymNonresonant.cc
+fit_SymNonresonant_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)
+fit_SymNonresonant_LDADD = ../fitter_models/libtransport_fit.a \
+	../../general/libmolstat_fitter.a \
+	../../general/libmolstat_general.a \
+	$(GSL_LDFLAGS) $(AM_LDADD) $(GSL_LIBS) $(AM_LIBS)
 
 fit_SymResonant_SOURCES = fit-SymResonant.cc
 fit_SymResonant_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)
