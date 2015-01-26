@@ -2,13 +2,11 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file fit_model_interface.cc
  * \brief Implementations for non-templated functions in fit_model.h.
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
- * \endinternal
  */
 
 #include "fit_model_interface.h"

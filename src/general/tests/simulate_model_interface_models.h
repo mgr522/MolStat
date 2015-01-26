@@ -16,11 +16,7 @@
 #include <general/simulator_tools/simulate_model.h>
 #include "simulate_model_interface_observables.h"
 
-/**
- * \internal
- * \brief Dummy model class.
- * \endinternal
- */
+/// Dummy model class.
 class BasicTestModel :
 	public BasicObs1,
 	public BasicObs2,
@@ -55,23 +51,17 @@ public:
 	}
 };
 
-/**
- * \internal
- * \brief Type of submodel used in the test.
- * \endinternal
- */
+/// Type of submodel used in the test.
 class TestSubmodelType
 	: public molstat::SimulateSubmodel<TestSubmodelType>
 {
 };
 
 /**
- * \internal
  * \brief Dummy composite model class.
  *
  * This is intended to be a base class; derived classes must specify the
  * operation used to combine observables from the submodels.
- * \endinternal
  */
 class CompositeTestModel :
 	public BasicObs4,
@@ -104,20 +94,12 @@ public:
 	}
 };
 
-/**
- * \internal
- * \brief Dummy composite model class using addition to combine submodels.
- * \endinternal
- */
+/// Dummy composite model class using addition to combine submodels.
 class CompositeTestModelAdd
 	: public CompositeTestModel
 {
 public:
-	/**
-	 * \internal
-	 * \brief Constructor that specifies how to combine two submodels.
-	 * \endinternal
-	 */
+	/// Constructor that specifies how to combine two submodels.
 	CompositeTestModelAdd() :
 		CompositeTestModel(
 			/// \cond
@@ -126,20 +108,12 @@ public:
 		) {}
 };
 
-/**
- * \internal
- * \brief Dummy composite model class using multiplication to combine submodels.
- * \endinternal
- */
+/// Dummy composite model class using multiplication to combine submodels.
 class CompositeTestModelMultiply
 	: public CompositeTestModel
 {
 public:
-	/**
-	 * \internal
-	 * \brief Constructor that specifies how to combine two submodels.
-	 * \endinternal
-	 */
+	/// Constructor that specifies how to combine two submodels.
 	CompositeTestModelMultiply() :
 		CompositeTestModel(
 			/// \cond
@@ -148,11 +122,7 @@ public:
 		) {}
 };
 
-/**
- * \internal
- * \brief Dummy submodel type.
- * \endinternal
- */
+/// Dummy submodel type.
 class CompositeSubModel
 	: public TestSubmodelType,
 	  public BasicObs1
@@ -171,10 +141,8 @@ public:
 };
 
 /**
- * \internal
  * \brief Failed submodel; used to test what happens when a submodel fails to
  *    implement a requested observable.
- * \endinternal
  */
 class FailedSubModel
 	: public TestSubmodelType

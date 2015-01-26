@@ -2,7 +2,6 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file counter_index_functionality.cc
  * \brief Test suite for the histogram counter/index class.
  *
@@ -10,7 +9,6 @@
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
- * \endinternal
  */
 
 #include <cassert>
@@ -20,7 +18,6 @@
 using namespace std;
 
 /**
- * \internal
  * \brief Helper function for checking the increment properties of
  *    molstat::CounterIndex.
  *
@@ -34,13 +31,11 @@ static void testIndex(const molstat::CounterIndex &ci,
 	const vector<size_t> &index, const size_t offset);
 
 /**
- * \internal
  * \brief Main function for testing the molstat::CounterIndex class.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
- * \endinternal
  */
 int main(int argc, char **argv)
 {

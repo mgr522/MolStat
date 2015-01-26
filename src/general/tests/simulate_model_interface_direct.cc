@@ -22,14 +22,12 @@
 #include <general/simulator_tools/simulate_model.h>
 
 /**
- * \internal
  * \brief Main function for testing the various MolStat classes for
  *    simulating data.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status; 0 for normal.
- * \endinternal
  */
 int main(int argc, char **argv)
 {

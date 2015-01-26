@@ -2,13 +2,11 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file src/general/string_tools.cc
  * \brief Functions for processing strings, useful in I/O.
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
- * \endinternal
  */
 
 #include "string_tools.h"
@@ -21,14 +19,12 @@ using namespace std;
 namespace molstat {
 
 /**
- * \internal
  * \brief Gets the next token in the string.
  *
  * \param[in,out] next The next character to examine (via iterator).
  * \param[in] end The end of the string.
  * \param[out] tok The token, if a valid token exists.
  * \return True if a token is found, false otherwise.
- * \endinternal
  */
 static bool next_token(string::const_iterator &next,
 	string::const_iterator end, string &tok)

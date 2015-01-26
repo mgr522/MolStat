@@ -20,21 +20,15 @@
 
 using namespace std;
 
-/**
- * \internal
- * \brief Shortcut for the type of channel used in this test.
- * \endinternal
- */
+/// Shortcut for the type of channel used in this test.
 using ChannelType = molstat::transport::AsymOneSiteChannel;
 
 /**
- * \internal
  * \brief Main function for testing the asymmetric-coupling, one-site model.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
- * \endinternal
  */
 int main(int argc, char **argv)
 {
