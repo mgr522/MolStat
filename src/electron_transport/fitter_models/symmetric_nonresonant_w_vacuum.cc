@@ -4,7 +4,7 @@
 /**
  * \file symmetric_nonresonant_w_vacuum.cc
  * \brief Implementation of the fitting model for nonresonant tunneling
- *        (ssymmetric coupling) combined with background \"vacuum\" tunneling.
+ *        (symmetric coupling) combined with background \"vacuum\" tunneling.
  *
  * \author Matthew G.\ Reuter
  * \date January 2015

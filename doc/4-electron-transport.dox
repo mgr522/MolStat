@@ -213,6 +213,19 @@ Complete details for each of these models can be found in the full reference man
    - Implemented by the class molstat::transport::SymmetricNonresonantFitModel; full details are presented there.
    \endif
 
+- `%SymmetricNonresonantPlusVacuum`
+   - Nonresonant tunneling through a single channel that is symmetrically connected to the two leads combined with direct tunneling between the electrodes. This model was derived with electron transport through molecules in mind.
+   - Fitting parameters (dimensionless) are
+       - \f$c\f$, the average level alignment relative to the standard deviation in channel-electrode coupling.
+       - \f$d\f$, the average channel-electrode coupling relative to its standard deviation.
+       - \f$g_-\f$, the lower bound for conductance from direct, electrode-electrode tunneling.
+       - \f$ N \f$, a scale parameter (since the histogram is probably unnormalized).
+   - Fits may be unreliable if the conductance histogram peak occurs at \f$ g \gtrsim 0.01 \f$ \f$\mathrm{G}_0\f$.
+   %- Detailed in \cite williams-5937.
+   \if fullref
+   - Implemented by the class molstat::transport::SymmetricNonresonantPlusVacuumFitModel; full details are presented there.
+   \endif
+
 - `%SymmetricResonant`
    - Resonant tunneling through a single channel that is symmetrically connected to the two leads.
    - Fitting parameters (dimensionless) are
