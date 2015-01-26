@@ -23,9 +23,11 @@ namespace transport {
  *    asymmetric electrode/site couplings.
  *
  * The line shape for resonant tunneling through a single site with asymmetric
- * coupling to the leads is \f[
+ * coupling to the leads is
+ * \f[
  * \hat{P}(g) = \frac{N}{g^{3/2}} \int\limits_{(2-g-2\sqrt{1-g})/g}^{(2-g+2\sqrt{1-g})/g} \mathrm{d}x \frac{x(1+x^2)^{-3/2}}{\sqrt{4x-g(1+x)^2}} \left( 1 + \frac{(\gamma_\mathrm{L} + x\gamma_\mathrm{R})^2}{1+x^2} \right) \exp\left[ - \frac{(x\gamma_\mathrm{L} - \gamma_\mathrm{R})^2}{2(1+x^2)} - \frac{r^2(\gamma_\mathrm{L}^2 + \gamma_\mathrm{R}^2) [4x-g(1+x)^2]}{8g(1+x^2)} \right],
- * \f] where \f$g\f$ is the conductance in atomic units. The fitting parameters
+ * \f]
+ * where \f$g\f$ is the conductance in atomic units. The fitting parameters
  * are \f$\gamma_\mathrm{L/R}\f$, the average channel couplings (to the
  * left/right electrode) relative to the standard deviation in the coupling;
  * \f$r\f$, the standard deviation in the coupling relative to the standard

@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     61021,       1998]
-NotebookOptionsPosition[     51368,       1652]
-NotebookOutlinePosition[     51802,       1669]
-CellTagsIndexPosition[     51759,       1666]
+NotebookDataLength[     95195,       2926]
+NotebookOptionsPosition[     83569,       2516]
+NotebookOutlinePosition[     84005,       2533]
+CellTagsIndexPosition[     83962,       2530]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -626,6 +626,870 @@ Cell[CellGroupData[{
 
 Cell["Tests for the Fitter Models", "Section",
  CellChangeTimes->{{3.631284108433666*^9, 3.631284112826126*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Asymmetric, Resonant Model", "Subsection",
+ CellChangeTimes->{{3.631284115938067*^9, 3.6312841200099773`*^9}, {
+  3.631291538842259*^9, 3.631291539913288*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Pdf", "[", 
+    RowBox[{"g_", ",", "gammal_", ",", "gammar_", ",", "r_", ",", "norm_"}], 
+    "]"}], ":=", 
+   RowBox[{
+    RowBox[{"norm", "/", 
+     RowBox[{"g", "^", 
+      RowBox[{"(", 
+       RowBox[{"3", "/", "2"}], ")"}]}]}], 
+    RowBox[{"NIntegrate", "[", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"x", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"1", "+", 
+           RowBox[{"x", "^", "2"}]}], ")"}], "^", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"-", "3"}], "/", "2"}], "}"}]}], "/", 
+        RowBox[{"Sqrt", "[", 
+         RowBox[{
+          RowBox[{"4", "x"}], "-", 
+          RowBox[{"g", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"1", "+", "x"}], ")"}], "^", "2"}]}]}], "]"}]}], 
+       RowBox[{"(", 
+        RowBox[{"1", "+", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"gammal", "+", 
+             RowBox[{"x", " ", "gammar"}]}], ")"}], "^", "2"}], "/", 
+          RowBox[{"(", 
+           RowBox[{"1", "+", 
+            RowBox[{"x", "^", "2"}]}], ")"}]}]}], ")"}], 
+       RowBox[{"Exp", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"-", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"x", " ", "gammal"}], "-", "gammar"}], ")"}], "^", 
+            "2"}]}], "/", 
+          RowBox[{"(", 
+           RowBox[{"2", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", 
+              RowBox[{"x", "^", "2"}]}], ")"}]}], ")"}]}], "-", 
+         RowBox[{
+          RowBox[{"r", "^", "2"}], 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"gammal", "^", "2"}], "+", 
+            RowBox[{"gammar", "^", "2"}]}], ")"}], 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"4", "x"}], "-", 
+             RowBox[{"g", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"1", "+", "x"}], ")"}], "^", "2"}]}]}], ")"}], "/", 
+           RowBox[{"(", 
+            RowBox[{"8", "g", 
+             RowBox[{"(", 
+              RowBox[{"1", "+", 
+               RowBox[{"x", "^", "2"}]}], ")"}]}], ")"}]}]}]}], "]"}]}], 
+      "\[IndentingNewLine]", ",", 
+      RowBox[{"{", 
+       RowBox[{"x", ",", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"2", "-", "g", "-", 
+           RowBox[{"2", 
+            RowBox[{"Sqrt", "[", 
+             RowBox[{"1", "-", "g"}], "]"}]}]}], ")"}], "/", "g"}], ",", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"2", "-", "g", "+", 
+           RowBox[{"2", 
+            RowBox[{"Sqrt", "[", 
+             RowBox[{"1", "-", "g"}], "]"}]}]}], ")"}], "/", "g"}]}], "}"}]}],
+      "]"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.631284318277574*^9, 3.631284371776548*^9}, {
+  3.631284417924788*^9, 3.631284420114925*^9}, {3.631284581414112*^9, 
+  3.631284602870356*^9}, {3.63129162982366*^9, 3.631291797430183*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"gval", "=", "0.8"}], ",", 
+     RowBox[{"obs", "=", "0.1"}], ",", 
+     RowBox[{"gammalval", "=", "10."}], ",", 
+     RowBox[{"gammarval", "=", "10."}], ",", 
+     RowBox[{"rval", "=", "1."}], ",", 
+     RowBox[{"normval", "=", "1."}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Residual: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"Pdf", "[", 
+          RowBox[{
+          "gval", ",", "gammalval", ",", "gammarval", ",", "rval", ",", 
+           "normval"}], "]"}], "-", "obs"}], ")"}], "]"}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammal: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammal"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammar: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammar"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial r: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "r"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial norm: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "norm"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.631284383767921*^9, 3.631284456401692*^9}, {
+  3.631284541894969*^9, 3.631284586829994*^9}, {3.631284647813532*^9, 
+  3.631284650496955*^9}, {3.631284954288871*^9, 3.6312850193323298`*^9}, {
+  3.631285758304174*^9, 3.631285786221754*^9}, {3.631291808091487*^9, 
+  3.631291909950335*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Residual: {-0.0996992}\"\>"], "Print",
+ CellChangeTimes->{{3.631284568462335*^9, 3.631284613570835*^9}, 
+   3.6312846509124393`*^9, 3.6312850203545837`*^9, {3.6312857627454653`*^9, 
+   3.631285786688671*^9}, 3.631291910382516*^9}],
+
+Cell[BoxData["\<\"Partial gammal: {-0.000362109}\"\>"], "Print",
+ CellChangeTimes->{{3.631284568462335*^9, 3.631284613570835*^9}, 
+   3.6312846509124393`*^9, 3.6312850203545837`*^9, {3.6312857627454653`*^9, 
+   3.631285786688671*^9}, 3.631291931858663*^9}],
+
+Cell[BoxData["\<\"Partial gammar: {-0.000362109}\"\>"], "Print",
+ CellChangeTimes->{{3.631284568462335*^9, 3.631284613570835*^9}, 
+   3.6312846509124393`*^9, 3.6312850203545837`*^9, {3.6312857627454653`*^9, 
+   3.631285786688671*^9}, 3.6312919537781897`*^9}],
+
+Cell[BoxData["\<\"Partial r: {-0.00655443}\"\>"], "Print",
+ CellChangeTimes->{{3.631284568462335*^9, 3.631284613570835*^9}, 
+   3.6312846509124393`*^9, 3.6312850203545837`*^9, {3.6312857627454653`*^9, 
+   3.631285786688671*^9}, 3.631291967895574*^9}],
+
+Cell[BoxData["\<\"Partial norm: {0.000300764}\"\>"], "Print",
+ CellChangeTimes->{{3.631284568462335*^9, 3.631284613570835*^9}, 
+   3.6312846509124393`*^9, 3.6312850203545837`*^9, {3.6312857627454653`*^9, 
+   3.631285786688671*^9}, 3.631291979731236*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"gval", "=", "0.9"}], ",", 
+     RowBox[{"obs", "=", "0.1"}], ",", 
+     RowBox[{"gammalval", "=", "10."}], ",", 
+     RowBox[{"gammarval", "=", "10."}], ",", 
+     RowBox[{"rval", "=", "1."}], ",", 
+     RowBox[{"normval", "=", "1."}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Residual: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"Pdf", "[", 
+          RowBox[{
+          "gval", ",", "gammalval", ",", "gammarval", ",", "rval", ",", 
+           "normval"}], "]"}], "-", "obs"}], ")"}], "]"}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammal: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammal"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammar: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammar"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial r: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "r"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial norm: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "norm"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.631284383767921*^9, 3.631284456401692*^9}, {
+  3.631284541894969*^9, 3.631284586829994*^9}, {3.631284647813532*^9, 
+  3.631284650496955*^9}, {3.631284954288871*^9, 3.6312850193323298`*^9}, {
+  3.631285758304174*^9, 3.631285786221754*^9}, {3.631291808091487*^9, 
+  3.631291909950335*^9}, {3.631292267292838*^9, 3.63129226733139*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Residual: {0.208156}\"\>"], "Print",
+ CellChangeTimes->{3.631292313948473*^9}],
+
+Cell[BoxData["\<\"Partial gammal: {-0.158045}\"\>"], "Print",
+ CellChangeTimes->{3.631292335900076*^9}],
+
+Cell[BoxData["\<\"Partial gammar: {-0.158045}\"\>"], "Print",
+ CellChangeTimes->{3.6312923579366207`*^9}],
+
+Cell[BoxData["\<\"Partial r: {-2.87374}\"\>"], "Print",
+ CellChangeTimes->{3.631292371851637*^9}],
+
+Cell[BoxData["\<\"Partial norm: {0.308156}\"\>"], "Print",
+ CellChangeTimes->{3.63129238378484*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"gval", "=", "0.96"}], ",", 
+     RowBox[{"obs", "=", "0.3"}], ",", 
+     RowBox[{"gammalval", "=", "10."}], ",", 
+     RowBox[{"gammarval", "=", "10."}], ",", 
+     RowBox[{"rval", "=", "1."}], ",", 
+     RowBox[{"normval", "=", "1."}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Residual: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"Pdf", "[", 
+          RowBox[{
+          "gval", ",", "gammalval", ",", "gammarval", ",", "rval", ",", 
+           "normval"}], "]"}], "-", "obs"}], ")"}], "]"}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammal: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammal"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammar: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammar"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial r: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "r"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial norm: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "norm"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.631284383767921*^9, 3.631284456401692*^9}, {
+  3.631284541894969*^9, 3.631284586829994*^9}, {3.631284647813532*^9, 
+  3.631284650496955*^9}, {3.631284954288871*^9, 3.6312850193323298`*^9}, {
+  3.631285758304174*^9, 3.631285786221754*^9}, {3.631291808091487*^9, 
+  3.631291909950335*^9}, {3.631292267292838*^9, 3.63129226733139*^9}, {
+  3.6312924462118673`*^9, 3.631292448243156*^9}, {3.6312924945158854`*^9, 
+  3.631292498873893*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Residual: {13.7398}\"\>"], "Print",
+ CellChangeTimes->{3.6312924991902847`*^9}],
+
+Cell[BoxData["\<\"Partial gammal: {-2.24408}\"\>"], "Print",
+ CellChangeTimes->{3.631292521495925*^9}],
+
+Cell[BoxData["\<\"Partial gammar: {-2.24408}\"\>"], "Print",
+ CellChangeTimes->{3.631292543303111*^9}],
+
+Cell[BoxData["\<\"Partial r: {-41.5747}\"\>"], "Print",
+ CellChangeTimes->{3.6312925573048058`*^9}],
+
+Cell[BoxData["\<\"Partial norm: {14.0398}\"\>"], "Print",
+ CellChangeTimes->{3.631292570299861*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"gval", "=", "0.8"}], ",", 
+     RowBox[{"obs", "=", "0.1"}], ",", 
+     RowBox[{"gammalval", "=", "5."}], ",", 
+     RowBox[{"gammarval", "=", "9."}], ",", 
+     RowBox[{"rval", "=", "1.4"}], ",", 
+     RowBox[{"normval", "=", "3."}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Residual: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"Pdf", "[", 
+          RowBox[{
+          "gval", ",", "gammalval", ",", "gammarval", ",", "rval", ",", 
+           "normval"}], "]"}], "-", "obs"}], ")"}], "]"}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammal: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammal"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammar: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammar"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial r: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "r"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial norm: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "norm"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.631284383767921*^9, 3.631284456401692*^9}, {
+  3.631284541894969*^9, 3.631284586829994*^9}, {3.631284647813532*^9, 
+  3.631284650496955*^9}, {3.631284954288871*^9, 3.6312850193323298`*^9}, {
+  3.631285758304174*^9, 3.631285786221754*^9}, {3.631291808091487*^9, 
+  3.631291909950335*^9}, {3.631292660271592*^9, 3.63129266778976*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Residual: {10.4476}\"\>"], "Print",
+ CellChangeTimes->{3.631292668088118*^9}],
+
+Cell[BoxData["\<\"Partial gammal: {-13.0172}\"\>"], "Print",
+ CellChangeTimes->{3.631292690681794*^9}],
+
+Cell[BoxData["\<\"Partial gammar: {5.80338}\"\>"], "Print",
+ CellChangeTimes->{3.631292712756463*^9}],
+
+Cell[BoxData["\<\"Partial r: {-10.4825}\"\>"], "Print",
+ CellChangeTimes->{3.6312927266334047`*^9}],
+
+Cell[BoxData["\<\"Partial norm: {3.51585}\"\>"], "Print",
+ CellChangeTimes->{3.631292738563016*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"gval", "=", "0.9"}], ",", 
+     RowBox[{"obs", "=", "0.1"}], ",", 
+     RowBox[{"gammalval", "=", "5."}], ",", 
+     RowBox[{"gammarval", "=", "9."}], ",", 
+     RowBox[{"rval", "=", "1.4"}], ",", 
+     RowBox[{"normval", "=", "3."}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Residual: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"Pdf", "[", 
+          RowBox[{
+          "gval", ",", "gammalval", ",", "gammarval", ",", "rval", ",", 
+           "normval"}], "]"}], "-", "obs"}], ")"}], "]"}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammal: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammal"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammar: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammar"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial r: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "r"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial norm: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "norm"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.631284383767921*^9, 3.631284456401692*^9}, {
+  3.631284541894969*^9, 3.631284586829994*^9}, {3.631284647813532*^9, 
+  3.631284650496955*^9}, {3.631284954288871*^9, 3.6312850193323298`*^9}, {
+  3.631285758304174*^9, 3.631285786221754*^9}, {3.631291808091487*^9, 
+  3.631291909950335*^9}, {3.631292267292838*^9, 3.63129226733139*^9}, {
+  3.631292688124041*^9, 3.631292693475566*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Residual: {41.3249}\"\>"], "Print",
+ CellChangeTimes->{3.631292769716708*^9}],
+
+Cell[BoxData["\<\"Partial gammal: {-2.96429}\"\>"], "Print",
+ CellChangeTimes->{3.631292791817271*^9}],
+
+Cell[BoxData["\<\"Partial gammar: {5.48431}\"\>"], "Print",
+ CellChangeTimes->{3.631292813653646*^9}],
+
+Cell[BoxData["\<\"Partial r: {-31.9057}\"\>"], "Print",
+ CellChangeTimes->{3.631292827585889*^9}],
+
+Cell[BoxData["\<\"Partial norm: {13.8083}\"\>"], "Print",
+ CellChangeTimes->{3.631292839393235*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"gval", "=", "0.96"}], ",", 
+     RowBox[{"obs", "=", "0.3"}], ",", 
+     RowBox[{"gammalval", "=", "5."}], ",", 
+     RowBox[{"gammarval", "=", "9."}], ",", 
+     RowBox[{"rval", "=", "1.4"}], ",", 
+     RowBox[{"normval", "=", "3."}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Residual: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"Pdf", "[", 
+          RowBox[{
+          "gval", ",", "gammalval", ",", "gammarval", ",", "rval", ",", 
+           "normval"}], "]"}], "-", "obs"}], ")"}], "]"}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammal: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammal"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial gammar: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "gammar"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial r: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "r"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"\"\<Partial norm: \>\"", "<>", 
+      RowBox[{"ToString", "[", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"D", "[", 
+          RowBox[{
+           RowBox[{"Pdf", "[", 
+            RowBox[{
+            "g", ",", "gammal", ",", "gammar", ",", "r", ",", "norm"}], "]"}],
+            ",", "norm"}], "]"}], ")"}], "/.", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"g", "\[Rule]", "gval"}], ",", 
+          RowBox[{"gammal", "\[Rule]", "gammalval"}], ",", 
+          RowBox[{"gammar", "\[Rule]", "gammarval"}], ",", 
+          RowBox[{"r", "\[Rule]", "rval"}], ",", 
+          RowBox[{"norm", "\[Rule]", "normval"}]}], "}"}]}], "]"}]}], "]"}], 
+    ";"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.631284383767921*^9, 3.631284456401692*^9}, {
+  3.631284541894969*^9, 3.631284586829994*^9}, {3.631284647813532*^9, 
+  3.631284650496955*^9}, {3.631284954288871*^9, 3.6312850193323298`*^9}, {
+  3.631285758304174*^9, 3.631285786221754*^9}, {3.631291808091487*^9, 
+  3.631291909950335*^9}, {3.631292267292838*^9, 3.63129226733139*^9}, {
+  3.6312924462118673`*^9, 3.631292448243156*^9}, {3.6312924945158854`*^9, 
+  3.631292498873893*^9}, {3.6312927038617897`*^9, 3.631292708707162*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Residual: {40.9437}\"\>"], "Print",
+ CellChangeTimes->{3.631292861298455*^9}],
+
+Cell[BoxData["\<\"Partial gammal: {37.4447}\"\>"], "Print",
+ CellChangeTimes->{3.631292883274654*^9}],
+
+Cell[BoxData["\<\"Partial gammar: {-19.7985}\"\>"], "Print",
+ CellChangeTimes->{3.6312929053373938`*^9}],
+
+Cell[BoxData["\<\"Partial r: {-19.6519}\"\>"], "Print",
+ CellChangeTimes->{3.631292919171605*^9}],
+
+Cell[BoxData["\<\"Partial norm: {13.7479}\"\>"], "Print",
+ CellChangeTimes->{3.6312929309923573`*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Closed]],
 
 Cell[CellGroupData[{
 
@@ -1651,7 +2515,7 @@ Cell[BoxData["\<\"Partial norm: 0.0000237842\"\>"], "Print",
 }, Closed]]
 },
 WindowSize->{640, 750},
-WindowMargins->{{Automatic, 39}, {Automatic, 0}},
+WindowMargins->{{Automatic, -15}, {-2, Automatic}},
 PrivateNotebookOptions->{"VersionedStylesheet"->{"Default.nb"[8.] -> False}},
 FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (December 4, \
 2014)",
@@ -1899,103 +2763,167 @@ Cell[13854, 615, 196, 3, 21, "Print"]
 Cell[CellGroupData[{
 Cell[14123, 626, 112, 1, 50, "Section"],
 Cell[CellGroupData[{
-Cell[14260, 631, 115, 1, 44, "Subsection"],
-Cell[14378, 634, 744, 23, 46, "Input"],
+Cell[14260, 631, 165, 2, 44, "Subsection"],
+Cell[14428, 635, 2987, 90, 114, "Input"],
 Cell[CellGroupData[{
-Cell[15147, 661, 2178, 57, 182, "Input"],
+Cell[17440, 729, 4036, 102, 386, "Input"],
 Cell[CellGroupData[{
-Cell[17350, 722, 223, 3, 21, "Print"],
-Cell[17576, 727, 231, 3, 22, "Print"],
-Cell[17810, 732, 229, 3, 21, "Print"]
+Cell[21501, 835, 248, 3, 21, "Print"],
+Cell[21752, 840, 256, 3, 22, "Print"],
+Cell[22011, 845, 258, 3, 22, "Print"],
+Cell[22272, 850, 250, 3, 21, "Print"],
+Cell[22525, 855, 253, 3, 21, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[18088, 741, 2229, 58, 182, "Input"],
+Cell[22827, 864, 4081, 102, 386, "Input"],
 Cell[CellGroupData[{
-Cell[20342, 803, 95, 1, 21, "Print"],
-Cell[20440, 806, 102, 1, 22, "Print"],
-Cell[20545, 809, 100, 1, 21, "Print"]
+Cell[26933, 970, 96, 1, 21, "Print"],
+Cell[27032, 973, 103, 1, 22, "Print"],
+Cell[27138, 976, 105, 1, 22, "Print"],
+Cell[27246, 979, 97, 1, 21, "Print"],
+Cell[27346, 982, 99, 1, 21, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[20694, 816, 2230, 58, 182, "Input"],
+Cell[27494, 989, 4184, 104, 386, "Input"],
 Cell[CellGroupData[{
-Cell[22949, 878, 95, 1, 21, "Print"],
-Cell[23047, 881, 100, 1, 22, "Print"],
-Cell[23150, 884, 98, 1, 21, "Print"]
+Cell[31703, 1097, 97, 1, 21, "Print"],
+Cell[31803, 1100, 102, 1, 22, "Print"],
+Cell[31908, 1103, 102, 1, 22, "Print"],
+Cell[32013, 1106, 99, 1, 21, "Print"],
+Cell[32115, 1109, 99, 1, 21, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[23297, 891, 2230, 58, 182, "Input"],
+Cell[32263, 1116, 4080, 102, 386, "Input"],
 Cell[CellGroupData[{
-Cell[25552, 953, 243, 3, 21, "Print"],
-Cell[25798, 958, 251, 3, 22, "Print"],
-Cell[26052, 963, 249, 3, 21, "Print"]
+Cell[36368, 1222, 95, 1, 21, "Print"],
+Cell[36466, 1225, 102, 1, 22, "Print"],
+Cell[36571, 1228, 101, 1, 22, "Print"],
+Cell[36675, 1231, 99, 1, 21, "Print"],
+Cell[36777, 1234, 99, 1, 21, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[26350, 972, 2274, 58, 182, "Input"],
+Cell[36925, 1241, 4129, 103, 386, "Input"],
 Cell[CellGroupData[{
-Cell[28649, 1034, 115, 1, 21, "Print"],
-Cell[28767, 1037, 121, 1, 22, "Print"],
-Cell[28891, 1040, 119, 1, 21, "Print"]
+Cell[41079, 1348, 95, 1, 21, "Print"],
+Cell[41177, 1351, 102, 1, 22, "Print"],
+Cell[41282, 1354, 101, 1, 22, "Print"],
+Cell[41386, 1357, 97, 1, 21, "Print"],
+Cell[41486, 1360, 99, 1, 21, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[29059, 1047, 2274, 58, 216, "Input"],
+Cell[41634, 1367, 4231, 104, 420, "Input"],
 Cell[CellGroupData[{
-Cell[31358, 1109, 93, 1, 21, "Print"],
-Cell[31454, 1112, 99, 1, 22, "Print"],
-Cell[31556, 1115, 95, 1, 21, "Print"]
+Cell[45890, 1475, 95, 1, 21, "Print"],
+Cell[45988, 1478, 101, 1, 22, "Print"],
+Cell[46092, 1481, 104, 1, 22, "Print"],
+Cell[46199, 1484, 97, 1, 21, "Print"],
+Cell[46299, 1487, 101, 1, 21, "Print"]
 }, Open  ]]
 }, Open  ]]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[31712, 1123, 167, 2, 36, "Subsection"],
-Cell[31882, 1127, 1062, 31, 63, "Input"],
+Cell[46461, 1495, 115, 1, 36, "Subsection"],
+Cell[46579, 1498, 744, 23, 46, "Input"],
 Cell[CellGroupData[{
-Cell[32969, 1162, 2978, 75, 233, "Input"],
+Cell[47348, 1525, 2178, 57, 182, "Input"],
 Cell[CellGroupData[{
-Cell[35972, 1241, 323, 4, 21, "Print"],
-Cell[36298, 1247, 321, 4, 21, "Print"],
-Cell[36622, 1253, 320, 4, 21, "Print"],
-Cell[36945, 1259, 323, 4, 21, "Print"]
+Cell[49551, 1586, 223, 3, 21, "Print"],
+Cell[49777, 1591, 231, 3, 22, "Print"],
+Cell[50011, 1596, 229, 3, 21, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[37317, 1269, 2979, 75, 233, "Input"],
+Cell[50289, 1605, 2229, 58, 182, "Input"],
 Cell[CellGroupData[{
-Cell[40321, 1348, 93, 1, 21, "Print"],
-Cell[40417, 1351, 95, 1, 21, "Print"],
-Cell[40515, 1354, 95, 1, 21, "Print"],
-Cell[40613, 1357, 99, 1, 21, "Print"]
+Cell[52543, 1667, 95, 1, 21, "Print"],
+Cell[52641, 1670, 102, 1, 22, "Print"],
+Cell[52746, 1673, 100, 1, 21, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[40761, 1364, 3029, 76, 233, "Input"],
+Cell[52895, 1680, 2230, 58, 182, "Input"],
 Cell[CellGroupData[{
-Cell[43815, 1444, 94, 1, 21, "Print"],
-Cell[43912, 1447, 98, 1, 21, "Print"],
-Cell[44013, 1450, 95, 1, 21, "Print"],
-Cell[44111, 1453, 98, 1, 21, "Print"]
+Cell[55150, 1742, 95, 1, 21, "Print"],
+Cell[55248, 1745, 100, 1, 22, "Print"],
+Cell[55351, 1748, 98, 1, 21, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[44258, 1460, 3026, 76, 233, "Input"],
+Cell[55498, 1755, 2230, 58, 182, "Input"],
 Cell[CellGroupData[{
-Cell[47309, 1540, 120, 1, 21, "Print"],
-Cell[47432, 1543, 123, 1, 21, "Print"],
-Cell[47558, 1546, 123, 1, 21, "Print"],
-Cell[47684, 1549, 128, 1, 21, "Print"]
+Cell[57753, 1817, 243, 3, 21, "Print"],
+Cell[57999, 1822, 251, 3, 22, "Print"],
+Cell[58253, 1827, 249, 3, 21, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[47861, 1556, 3027, 76, 233, "Input"],
+Cell[58551, 1836, 2274, 58, 182, "Input"],
 Cell[CellGroupData[{
-Cell[50913, 1636, 94, 1, 21, "Print"],
-Cell[51010, 1639, 99, 1, 21, "Print"],
-Cell[51112, 1642, 99, 1, 21, "Print"],
-Cell[51214, 1645, 102, 1, 21, "Print"]
+Cell[60850, 1898, 115, 1, 21, "Print"],
+Cell[60968, 1901, 121, 1, 22, "Print"],
+Cell[61092, 1904, 119, 1, 21, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[61260, 1911, 2274, 58, 216, "Input"],
+Cell[CellGroupData[{
+Cell[63559, 1973, 93, 1, 21, "Print"],
+Cell[63655, 1976, 99, 1, 22, "Print"],
+Cell[63757, 1979, 95, 1, 21, "Print"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[63913, 1987, 167, 2, 36, "Subsection"],
+Cell[64083, 1991, 1062, 31, 63, "Input"],
+Cell[CellGroupData[{
+Cell[65170, 2026, 2978, 75, 233, "Input"],
+Cell[CellGroupData[{
+Cell[68173, 2105, 323, 4, 21, "Print"],
+Cell[68499, 2111, 321, 4, 21, "Print"],
+Cell[68823, 2117, 320, 4, 21, "Print"],
+Cell[69146, 2123, 323, 4, 21, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[69518, 2133, 2979, 75, 233, "Input"],
+Cell[CellGroupData[{
+Cell[72522, 2212, 93, 1, 21, "Print"],
+Cell[72618, 2215, 95, 1, 21, "Print"],
+Cell[72716, 2218, 95, 1, 21, "Print"],
+Cell[72814, 2221, 99, 1, 21, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[72962, 2228, 3029, 76, 233, "Input"],
+Cell[CellGroupData[{
+Cell[76016, 2308, 94, 1, 21, "Print"],
+Cell[76113, 2311, 98, 1, 21, "Print"],
+Cell[76214, 2314, 95, 1, 21, "Print"],
+Cell[76312, 2317, 98, 1, 21, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[76459, 2324, 3026, 76, 233, "Input"],
+Cell[CellGroupData[{
+Cell[79510, 2404, 120, 1, 21, "Print"],
+Cell[79633, 2407, 123, 1, 21, "Print"],
+Cell[79759, 2410, 123, 1, 21, "Print"],
+Cell[79885, 2413, 128, 1, 21, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[80062, 2420, 3027, 76, 233, "Input"],
+Cell[CellGroupData[{
+Cell[83114, 2500, 94, 1, 21, "Print"],
+Cell[83211, 2503, 99, 1, 21, "Print"],
+Cell[83313, 2506, 99, 1, 21, "Print"],
+Cell[83415, 2509, 102, 1, 21, "Print"]
 }, Open  ]]
 }, Open  ]]
 }, Closed]]
