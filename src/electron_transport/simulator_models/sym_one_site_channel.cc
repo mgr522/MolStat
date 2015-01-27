@@ -40,6 +40,17 @@ double SymOneSiteChannel::transmission(const double e, const double V,
 	return gamma*gamma / ((e - eps - a*V)*(e - eps - a*V) + gamma*gamma);
 }
 
+double SymOneSiteChannel::ZeroBiasG(const std::valarray<double> &params) const
+{
+	// unpack the parameters
+	const double &ef = params[Index_EF];
+	const double &eps = params[Index_epsilon];
+	const double &gamma = params[Index_gamma];
+	const double &a = params[Index_a];
+	
+	return transmission(ef, 0., eps, gamma, a);
+}
+
 double SymOneSiteChannel::DiffG(const std::valarray<double> &params) const
 {
 	// unpack the parameters

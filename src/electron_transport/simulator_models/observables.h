@@ -75,7 +75,33 @@ public:
 	virtual double StaticG(const std::valarray<double> &params) const = 0;
 };
 
-/// Observable class for the differential conductance.
+/// Observable class for the zero-bias conductance.
+class ZeroBiasConductance : public Observable<ZeroBiasConductance>
+{
+public:
+	ZeroBiasConductance()
+		: Observable<ZeroBiasConductance>(&ZeroBiasConductance::ZeroBiasG)
+	{}
+
+	virtual ~ZeroBiasConductance() = default;
+
+	/**
+	 * \brief Returns the zero-bias conductance for a set of model parameters.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The zero-bias conductance for the model parameters.
+	 */
+	virtual double ZeroBiasG(const std::valarray<double> &params) const = 0;
+};
+
+/**
+ * \brief Observable class for the differential conductance.
+ *
+ * This observable supercedes the molstat::transport::ZeroBiasConductance by
+ * also providing a bias-dependent conductance. The differential conductance,
+ * evaluated at an applied bias of 0, should be identical to the zero-bias
+ * conductance.
+ */
 class DifferentialConductance : public Observable<DifferentialConductance>
 {
 public:

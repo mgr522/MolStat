@@ -65,6 +65,10 @@ void load_observables(
 		GetObservableIndex<StaticConductance>() );
 
 	observables.emplace(
+		to_lower("ZeroBiasConductance"),
+		GetObservableIndex<ZeroBiasConductance>() );
+
+	observables.emplace(
 		to_lower("DifferentialConductance"),
 		GetObservableIndex<DifferentialConductance>() );
 }

@@ -2,13 +2,11 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file gamma.cc
  * \brief Implementation of the gamma distribution.
  *
  * \author Matthew G.\ Reuter
  * \date November 2014
- * \endinternal
  */
 
 #include "gamma.h"
