@@ -1,23 +1,19 @@
 TESTS =
 check_PROGRAMS =
 
+
 if ECHEM_SIMULATOR
-#TESTS += \
-#	simulate-SymOneSite \
-#	simulate-AsymOneSite \
-#	simulate-SymTwoSite \
-#	simulate-AsymTwoSite \
-#	simulate-CompositeJunction
+TESTS += \
+	simulate-NonNernstian 
 
-#check_PROGRAMS += \
-#	simulate-SymOneSite \
-#	simulate-AsymOneSite \
-#	simulate-SymTwoSite \
-#	simulate-AsymTwoSite \
-#	simulate-CompositeJunction
+check_PROGRAMS += \
+	simulate-NonNernstian 
 
-#simulate_SymOneSite_SOURCES = simulate-SymOneSite.cc
-#simulate_SymOneSite_LDADD = ../simulator_models/libtransport_simulate.a \
-#	../../general/libmolstat_simulator.a \
-#	../../general/libmolstat_general.a 
+
+simulate_NonNernstian_SOURCES = simulate-NonNernstian.cc 
+
+simulate_NonNernstian_LDADD = ../simulator_models/libechem_simulate.a \
+	../../general/libmolstat_simulator.a \
+	../../general/libmolstat_general.a \
+	$(CVODE_LIBS) 
 endif
