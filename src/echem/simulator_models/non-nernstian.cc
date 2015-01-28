@@ -1,4 +1,5 @@
-/* This file is a part of MolStat, which is distributed under the Creative
+/* This fil eis a part of MolStat, which is distributed under the Creative
+nential =  - pow(E_applied(t, params) - eref + lambda, 2.0) / (4.0 * lambda * Boltzmann_Constant * 300.0);
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
@@ -19,6 +20,7 @@
 #define RTOL 1.e-8
 #define ATOL 1.e-6
 #define MAXSTEPS 2000
+#define Boltzmann_Constant 8.6173324e-5
 
 namespace molstat {
 namespace echem {
@@ -53,8 +55,8 @@ double NonNernstianReaction::kf(double t, const std::valarray<double> &params)
 	const double &lambda = params[Index_lambda];
 	const double &af = params[Index_Af];
 	
-	double exponential = E_applied(t, params) - eref + lambda;
-	exponential *= -0.25 * exponential / lambda;
+	double exponential =  E_applied(t, params) - eref + lambda;
+	exponential *= -0.25 * exponential / (lambda * Boltzmann_Constant * 300.0);
 
 	double log_kf = exponential + log(af);
 	if(log_kf < -650.)
@@ -71,7 +73,7 @@ double NonNernstianReaction::kb(double t, const std::valarray<double> &params)
 	const double &ab = params[Index_Ab];
 	
 	double exponential = E_applied(t, params) - eref - lambda;
-	exponential *= -0.25 * exponential / lambda;
+	exponential *= -0.25 * exponential / (lambda * Boltzmann_Constant * 300.0);
 
 	double log_kb = exponential + log(ab);
 	if(log_kb < -650.)
@@ -107,7 +109,7 @@ NonNernstianReaction::NonNernstianReaction()
 	po = N_VNew_Serial(1);
 
 	// initialize po (initial condition)
-	Ith(po, 1) = 1.;
+	Ith(po, 1) = 0.;
 
 	// create the solver memory and specify the Backward Differentiation Formula
 	// and the use of a Newton iteration.
@@ -151,13 +153,15 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 	// set the maximum step size
 	CVodeSetMaxStep(cvode_mem, 4. * tlim / MAXSTEPS);
 
+	//printf("kf at t=1.0s is %14.6e \n", kf(1.0, params));
+
 	// pass model parameters to the CVODE functions
 	std::valarray<double> params_copy { params };
 	CVodeSetUserData(cvode_mem, &params_copy);	
 
 	// forward sweep
 	// reinitialize the integrator
-	Ith(po, 1) = 1.;
+	Ith(po, 1) = 0.;
 	CVodeReInit(cvode_mem, 0., po);
 
 	// set the maximum time for propagation
@@ -212,7 +216,7 @@ double NonNernstianReaction::BackwardETP(const std::valarray<double> &params)
 
 	// forward sweep
 	// reinitialize the integrator
-	Ith(po, 1) = 1.;
+	Ith(po, 1) = 0.;
 	CVodeReInit(cvode_mem, 0., po);
 
 	// set the maximum time for propagation
