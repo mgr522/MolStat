@@ -2,7 +2,6 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file gsl_std_vector.cc
  * \brief Test suite for interconverting gsl and std vector types.
  *
@@ -10,7 +9,6 @@
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
- * \endinternal
  */
 
 #include <cstdio>
@@ -21,13 +19,11 @@
 using namespace std;
 
 /**
- * \internal
  * \brief Main function for testing the molstat::gsl_to_std function.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
- * \endinternal
  */
 int main(int argc, char **argv)
 {

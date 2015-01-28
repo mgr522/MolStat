@@ -22,9 +22,11 @@ namespace transport {
  *    symmetric electrode/site couplings.
  *
  * The line shape for resonant tunneling through a single site with symmetric
- * coupling to the leads is \f[
+ * coupling to the leads is
+ * \f[
  * \hat{P}(g) = \frac{N}{\sqrt{g^3(1-g)}} \exp\left[ -\gamma^2 \frac{1-g}{2g} \right],
- * \f] where \f$g\f$ is the conductance in atomic units. The fitting parameters
+ * \f]
+ * where \f$g\f$ is the conductance in atomic units. The fitting parameters
  * are \f$\gamma\f$, the average channel coupling relative to the standard
  * deviation in the level alignment, and \f$N\f$, the normalization constant.
  *

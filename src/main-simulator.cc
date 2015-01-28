@@ -32,7 +32,6 @@
 using namespace std;
 
 /**
- * \internal
  * \brief Main function for simulating a histogram.
  *
  * Parses the input parameters and outputs randomly generated data
@@ -41,7 +40,6 @@ using namespace std;
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status; 0 for normal.
- * \endinternal
  */
 int main(int argc, char **argv)
 {

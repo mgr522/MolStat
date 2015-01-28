@@ -2,7 +2,6 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file histogram1d_log.cc
  * \brief Test suite for the 1D histogram1D, logarithmic binning.
  *
@@ -11,7 +10,6 @@
  *
  * \author Matthew G.\ Reuter
  * \date October 2014
- * \endinternal
  */
 
 #include <cassert>
@@ -24,14 +22,12 @@
 using namespace std;
 
 /**
- * \internal
  * \brief Main function for testing the Histogram (1D) class with logarithmic
  *    binning.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
- * \endinternal
  */
 int main(int argc, char **argv)
 {
