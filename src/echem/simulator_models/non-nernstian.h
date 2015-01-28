@@ -167,7 +167,7 @@ private:
 	 * \param[in] voidparams The model parameters, in `void*` form (per CVODE).
 	 * \return 0 if successful, or a non-zero value if an error occured.
 	 */
-  static int ode(double t, N_Vector po, N_Vector podot, void *voidparams);
+  	static int ode(double t, N_Vector po, N_Vector podot, void *voidparams);
 
 	/**
 	 * \brief Function for CVODE that defines the roots to search for; that is,
