@@ -32,7 +32,7 @@ namespace echem {
  * \f[ P_\mathrm{O}(E)_{\mathrm{Nernstian}} = \frac{k_b(E)}{k_f(E)+k_b(E)}\f]
  * Then the peak potential can be solved from \f$ P_\mathrm{O}(\epsilon_P)_{\mathrm{Nernstian}}=0.5\f$. 
  * \f[ \epsilon_P=E^0 - \frac{k_B T}{ne}\log\frac{A_b}{A_f}\f]
- * - Peak Potential:
+ * - Redox Potential:
  *   \f[ \epsilon_P=E^0 - \frac{k_B T}{ne}\log\frac{A_b}{A_f}\f]
  */
 class NernstianReaction : 
