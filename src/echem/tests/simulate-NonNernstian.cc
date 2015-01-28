@@ -2,15 +2,15 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file tests/simulate-AsymTwoSite.cc
- * \brief Test suite for the asymmetric-coupling, two-site tight-binding
- *     channel.
+ * \file tests/simulate-NonNernstian.cc
+ * \brief Test suite for non-Nernstian model of single molecule redox  
+ *     potential.
  *
- * \test Test suite for the asymmetric-coupling, two-site tight-binding
- *     channel.
+ * \test Test suite for non-Nernstian model of single molecule redox  
+ *     potential.
  *
- * \author Matthew G.\ Reuter
- * \date October 2014
+ * \author Bo Fu, Matthew G.\ Reuter
+ * \date January 2015
  */
 
 #include <cassert>
