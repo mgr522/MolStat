@@ -5,7 +5,9 @@ noinst_LIBRARIES = libechem_simulate.a
 libechem_simulate_a_SOURCES = \
 	echem_simulate_module.h \
 	echem_simulate_module.cc \
-	observables.h
+	observables.h \
+	nernstian.h \
+	nernstian.cc 
 
 libechem_simulate_a_CPPFLAGS =
 

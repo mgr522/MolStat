@@ -6,7 +6,7 @@
  * \brief Simulator model for electron transfer with a Nernstian reaction.
  *
  * \author Bo Fu
- * \date December 2014
+ * \date January 2015
  */
 
 #ifndef __nernstian_reaction_h__
@@ -22,7 +22,7 @@ namespace echem {
  *    under Nernstian limit with a slow enough scanning rate.
  *
  *  Model parameters are
- * - `E0` (\f$E^0\f$), the standard redox potential,
+ * - `Eref` (\f$E_{ref}\f$), the standard redox potential,
  * - `Af` (\f$A_f\f$), the prefactor of forward half-reaction rate constant,
  * - `Ab` (\f$A_b\f$), the prefactor of backward half-reaction rate constant,
  * - `T`  (\f$T\f$),   the temperature,
@@ -35,13 +35,13 @@ namespace echem {
  * - Peak Potential:
  *   \f[ \epsilon_P=E^0 - \frac{k_B T}{ne}\log\frac{A_b}{A_f}\f]
  */
-class SingleMoleculeEchemNernstian : 
-	public PeakPotential,
+class NernstianReaction : 
+	public RedoxETPotential,
 	public virtual molstat::SimulateModel
 {
 public:
 	/// Container index for the reference potential.
-	static const std::size_t Index_E0;
+	static const std::size_t Index_Eref;
 
 	/// Container index for the prefactor of forward half-reaction rate constant.
 	static const std::size_t Index_Af;
@@ -50,19 +50,19 @@ public:
 
 	static const std::size_t Index_Ab;
 
-	/// Container index for the temperature.
-	static const std::size_t Index_T;
-
-	/// Container index for the number of electrons involved in the half-reaction.
-	static const std::size_t Index_n;
-
 protected:
 	virtual std::vector<std::string> get_names() const override;
 
 public:
-	virtual ~SingleMoleculeEchemNernstian() = default;
+	/// Destructor.
+	virtual ~NernstianReaction() = default;
 
-	virtual double PeakV(const std::valarray<double> &params) const override;
+	/**
+	 * \brief The redox potential for Nernstian reaction.
+	 * \param[in] params The set of model parameters.
+	 * \return The redox potential.
+	 */
+	virtual double RedoxETP(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::echem

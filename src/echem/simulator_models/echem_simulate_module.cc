@@ -15,6 +15,7 @@
 #include "observables.h"
 
 #include "non-nernstian.h"
+#include "nernstian.h"
 
 namespace molstat {
 namespace echem {
@@ -28,6 +29,11 @@ void load_models(
 	models.emplace(
 		to_lower("NonNernstianReaction"),
 		GetSimulateModelFactory<NonNernstianReaction>() );
+
+	models.emplace(
+		to_lower("NernstianReaction"),
+		GetSimulateModelFactory<NernstianReaction>() );
+
 #endif
 }
 
@@ -42,6 +48,11 @@ void load_observables(
 	observables.emplace(
 		to_lower("BackwardETPotential"),
 		GetObservableIndex<BackwardETPotential>() );
+
+	observables.emplace(
+		to_lower("RedoxETPotential"),
+		GetObservableIndex<RedoxETPotential>() );
+
 }
 
 } // namespace molstat::echem
