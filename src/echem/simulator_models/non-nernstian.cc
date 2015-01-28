@@ -20,7 +20,7 @@ nential =  - pow(E_applied(t, params) - eref + lambda, 2.0) / (4.0 * lambda * Bo
 #define RTOL 1.e-8
 #define ATOL 1.e-6
 #define MAXSTEPS 2000
-#define Boltzmann_Constant 8.6173324e-5
+#define Boltzmann_Constant 8.6173324e-5 //Boltzman constant with unit eV is defined here.
 
 namespace molstat {
 namespace echem {
@@ -55,6 +55,7 @@ double NonNernstianReaction::kf(double t, const std::valarray<double> &params)
 	const double &lambda = params[Index_lambda];
 	const double &af = params[Index_Af];
 	
+	//room temperature 300.0K is used here. 
 	double exponential =  E_applied(t, params) - eref + lambda;
 	exponential *= -0.25 * exponential / (lambda * Boltzmann_Constant * 300.0);
 
@@ -72,6 +73,7 @@ double NonNernstianReaction::kb(double t, const std::valarray<double> &params)
 	const double &lambda = params[Index_lambda];
 	const double &ab = params[Index_Ab];
 	
+	//room temperature 300.0K is used here.
 	double exponential = E_applied(t, params) - eref - lambda;
 	exponential *= -0.25 * exponential / (lambda * Boltzmann_Constant * 300.0);
 
