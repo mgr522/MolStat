@@ -68,30 +68,6 @@ public:
     virtual double BackwardETP(const std::valarray<double> &params) const = 0;
 };
 
-/**
- * \brief Observable class for the redox potential where electron transfer occurs in
- *    the Nernstian reaction.
- */
-class RedoxETPotential : public Observable<RedoxETPotential>
-{
-public:
-    RedoxETPotential()
-    	: Observable<RedoxETPotential>(&RedoxETPotential::RedoxETP)
-    {}
-
-    virtual ~RedoxETPotential() = default;
-
-    /**
-     * \brief Returns the redox potential for Nernstian reaction.
-     *
-     * \param[in] params A set of model parameters.
-     * \return The redox potentiali in a Nernstian reaction.
-     */
-    virtual double RedoxETP(const std::valarray<double> &params) const = 0;
-};
-
-
-
 } // namespace molstat::echem
 } // namespace molstat
 

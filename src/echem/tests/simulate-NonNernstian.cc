@@ -3,13 +3,13 @@
    MolStat (c) 2014, Northwestern University. */
 /**
  * \file tests/simulate-NonNernstian.cc
- * \brief Test suite for non-Nernstian model of single molecule redox  
- *     potential.
+ * \brief Test suite for non-Nernstian model of single molecule
+ *    electrochemistry.
  *
- * \test Test suite for non-Nernstian model of single molecule redox  
- *     potential.
+ * \test Test suite for non-Nernstian model of single molecule
+ *    electrochemistry.
  *
- * \author Bo Fu, Matthew G.\ Reuter
+ * \author Bo Fu
  * \date January 2015
  */
 
@@ -20,26 +20,19 @@
 
 using namespace std;
 
-/**
- * \internal
- * \brief Shortcut for the type of channel used in this test.
- * \endinternal
- */
+/// Shortcut for the type of channel used in this test.
 using ModelType = molstat::echem::NonNernstianReaction;
 
 /**
- * \internal
- * \brief Main function for testing the asymmetric-coupling, two-site model.
+ * \brief Main function for testing the non-Nernstian reaction model.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
- * \endinternal
  */
 int main(int argc, char **argv)
 {
 	const double thresh = 1.0e-5;
-
 
 	// use the factory to create a junction
 	shared_ptr<ModelType> nonnernstian = dynamic_pointer_cast<ModelType>(

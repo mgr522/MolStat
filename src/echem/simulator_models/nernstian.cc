@@ -5,17 +5,12 @@
  * \file nernstian.cc
  * \brief Simulator model for electron transfer with a Nernstian reaction.
  *
- * \author Bo Fu
- * \date December 2014
+ * \author Bo Fu, Matthew G.\ Reuter
+ * \date January 2015
  */
 
 #include "nernstian.h"
 #include <cmath>
-
-#define kB 1.38066e-23 // Unit J/K
-#define e_charge 1.602189e-19 
-#define T 300.0 //Temperature
-#define n 1.0 // The number of electrons involved in the Nernstian reaction.
 
 namespace molstat {
 namespace echem {
@@ -35,17 +30,20 @@ std::vector<std::string> NernstianReaction::get_names() const
 	return ret;
 }
 
-
-double NernstianReaction::RedoxETP(const std::valarray<double> &params) const
+double NernstianReaction::ForwardETP(const std::valarray<double> &params) const
 {
 	// unpack the parameters
 	const double &eref = params[Index_Eref];
 	const double &af = params[Index_Af];
 	const double &ab = params[Index_Ab];
 	
-	return eref - (kB * T / (n * e_charge )) * std::log(ab / af); 
+	return eref - std::log(ab / af); 
 }
 
+double NernstianReaction::BackwardETP(const std::valarray<double> &params) const
+{
+	return ForwardETP(params);
+}
 
 } // namespace molstat::echem
 } // namespace molstat

@@ -48,12 +48,12 @@ namespace transport {
  */
 class SymTwoSiteChannel : public Channel,
 	public ElectricCurrent,
+	public ZeroBiasConductance,
 	public DifferentialConductance,
 	public StaticConductance
 {
 private:
 	/**
-	 * \internal
 	 * \brief Calculates the antiderivative needed for the electric current
 	 *    (fixed values of the model parameters).
 	 *
@@ -62,7 +62,6 @@ private:
 	 * \param[in] gamma The channel-lead coupling, gamma.
 	 * \param[in] beta The site-site coupling, beta.
 	 * \return The antiderivative needed for the static conductance.
-	 * \endinternal
 	 */
 	static double current_integral(const double z, const double eps,
 		const double gamma, const double beta);
@@ -103,6 +102,8 @@ public:
 		const double gamma, const double beta);
 
 	virtual double ECurrent(const std::valarray<double> &params) const override;
+	virtual double ZeroBiasG(const std::valarray<double> &params) const
+		override;
 	virtual double DiffG(const std::valarray<double> &params) const override;
 	virtual double StaticG(const std::valarray<double> &params) const override;
 };

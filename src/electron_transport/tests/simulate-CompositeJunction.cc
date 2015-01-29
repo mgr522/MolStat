@@ -19,28 +19,18 @@
 
 using namespace std;
 
-/**
- * \internal
- * \brief Shortcut for one type of channel used in this test.
- * \endinternal
- */
+/// Shortcut for one type of channel used in this test.
 using ChannelType1 = molstat::transport::SymOneSiteChannel;
 
-/**
- * \internal
- * \brief Shortcut for the other type of channel used in this test.
- * \endinternal
- */
+/// Shortcut for the other type of channel used in this test.
 using ChannelType2 = molstat::transport::AsymOneSiteChannel;
 
 /**
- * \internal
  * \brief Main function for testing the asymmetric-coupling, one-site model.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status: 0 if the code passes the test, non-zero otherwise.
- * \endinternal
  */
 int main(int argc, char **argv)
 {
@@ -83,6 +73,8 @@ int main(int argc, char **argv)
 		type_index{ typeid(molstat::transport::AppliedBias) } );
 	auto ECurrent = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::ElectricCurrent) } );
+	auto ZeroBiasG = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::ZeroBiasConductance) } );
 	auto StaticG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::StaticConductance) } );
 	auto DiffG = junction->getObservableFunction(
@@ -106,6 +98,8 @@ int main(int argc, char **argv)
 	params[ChannelType2::Index_a + channel1->get_num_parameters()] = 0.;
 	assert(abs(channel1->ECurrent(params[index1]) +
 		channel2->ECurrent(params[index2]) - ECurrent(params)) < thresh);
+	assert(abs(channel1->ZeroBiasG(params[index1]) +
+		channel2->ZeroBiasG(params[index2]) - ZeroBiasG(params)) < thresh);
 	assert(abs(channel1->StaticG(params[index1]) +
 		channel2->StaticG(params[index2]) - StaticG(params)) < thresh);
 	assert(abs(channel1->DiffG(params[index1]) + channel2->DiffG(params[index2])
@@ -123,6 +117,8 @@ int main(int argc, char **argv)
 	params[ChannelType2::Index_a + channel1->get_num_parameters()] = 0.;
 	assert(abs(channel1->ECurrent(params[index1]) +
 		channel2->ECurrent(params[index2]) - ECurrent(params)) < thresh);
+	assert(abs(channel1->ZeroBiasG(params[index1]) +
+		channel2->ZeroBiasG(params[index2]) - ZeroBiasG(params)) < thresh);
 	assert(abs(channel1->StaticG(params[index1]) +
 		channel2->StaticG(params[index2]) - StaticG(params)) < thresh);
 	assert(abs(channel1->DiffG(params[index1]) + channel2->DiffG(params[index2])
@@ -140,6 +136,8 @@ int main(int argc, char **argv)
 	params[ChannelType2::Index_a + channel1->get_num_parameters()] = 0.;
 	assert(abs(channel1->ECurrent(params[index1]) +
 		channel2->ECurrent(params[index2]) - ECurrent(params)) < thresh);
+	assert(abs(channel1->ZeroBiasG(params[index1]) +
+		channel2->ZeroBiasG(params[index2]) - ZeroBiasG(params)) < thresh);
 	assert(abs(channel1->StaticG(params[index1]) +
 		channel2->StaticG(params[index2]) - StaticG(params)) < thresh);
 	assert(abs(channel1->DiffG(params[index1]) + channel2->DiffG(params[index2])
@@ -157,6 +155,8 @@ int main(int argc, char **argv)
 	params[ChannelType2::Index_a + channel1->get_num_parameters()] = 0.1;
 	assert(abs(channel1->ECurrent(params[index1]) +
 		channel2->ECurrent(params[index2]) - ECurrent(params)) < thresh);
+	assert(abs(channel1->ZeroBiasG(params[index1]) +
+		channel2->ZeroBiasG(params[index2]) - ZeroBiasG(params)) < thresh);
 	assert(abs(channel1->StaticG(params[index1]) +
 		channel2->StaticG(params[index2]) - StaticG(params)) < thresh);
 	assert(abs(channel1->DiffG(params[index1]) + channel2->DiffG(params[index2])

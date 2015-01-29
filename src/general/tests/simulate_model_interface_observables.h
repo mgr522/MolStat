@@ -22,11 +22,7 @@
 
 using namespace std;
 
-/**
- * \internal
- * \brief Dummy observable class.
- * \endinternal
- */
+/// Dummy observable class.
 class BasicObs1 : public molstat::Observable<BasicObs1>
 {
 public:
@@ -46,11 +42,7 @@ public:
 	virtual double Obs1(const valarray<double> &vals) const = 0;
 };
 
-/**
- * \internal
- * \brief Dummy observable class.
- * \endinternal
- */
+/// Dummy observable class.
 class BasicObs2 : public molstat::Observable<BasicObs2> {
 public:
 	BasicObs2() :
@@ -69,11 +61,7 @@ public:
 	virtual double Obs2(const valarray<double> &vals) const = 0;
 };
 
-/**
- * \internal
- * \brief Dummy observable class.
- * \endinternal
- */
+/// Dummy observable class.
 class BasicObs3 : public molstat::Observable<BasicObs3> {
 public:
 	BasicObs3() :
@@ -92,11 +80,7 @@ public:
 	virtual double Obs3(const valarray<double> &vals) const = 0;
 };
 
-/**
- * \internal
- * \brief Dummy observable class.
- * \endinternal
- */
+/// Dummy observable class.
 class BasicObs4 : public molstat::Observable<BasicObs4> {
 public:
 	BasicObs4() :

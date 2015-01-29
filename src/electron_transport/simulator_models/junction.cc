@@ -24,11 +24,6 @@ namespace transport {
 const std::size_t TransportJunction::Index_EF = 0;
 const std::size_t TransportJunction::Index_V = 1;
 
-SimulateModelType TransportJunction::getSubmodelType() const
-{
-	return std::type_index{ typeid(Channel) };
-}
-
 std::vector<std::string> TransportJunction::get_names() const
 {
 	std::vector<std::string> ret(2);
@@ -45,6 +40,9 @@ TransportJunction::TransportJunction() :
 		[] (double i1, double i2) -> double { return i1 + i2; }
 	),
 	CompositeObservable<StaticConductance>(
+		[] (double g1, double g2) -> double { return g1 + g2; }
+	),
+	CompositeObservable<ZeroBiasConductance>(
 		[] (double g1, double g2) -> double { return g1 + g2; }
 	),
 	CompositeObservable<DifferentialConductance>(

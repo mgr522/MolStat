@@ -22,15 +22,10 @@
  */
 namespace molstat {
 
-/**
- * \internal
- * \brief Alias for a container of tokens.
- * \endinternal
- */
+/// Alias for a container of tokens.
 using TokenContainer = std::queue<std::string>;
 
 /**
- * \internal
  * \brief Tokenizes a string.
  *
  * Tokens are delimited by whitespace. Quotes (\"\") can be used to include
@@ -38,12 +33,10 @@ using TokenContainer = std::queue<std::string>;
  *
  * \param[in] str The string to be tokenized.
  * \return The tokens.
- * \endinternal
  */
 TokenContainer tokenize(const std::string &str);
 
 /**
- * \internal
  * \brief Returns a copy of the string, in lower case.
  *
  * \param[in] str The string.
@@ -52,7 +45,6 @@ TokenContainer tokenize(const std::string &str);
 std::string to_lower(const std::string &str);
 
 /**
- * \internal
  * \brief Finds and replaces a substring within another string.
  *
  * \param[in] str String modified by the search and replace.
@@ -64,7 +56,6 @@ std::string find_replace(const std::string &str, const std::string &find,
 	const std::string &replace);
 
 /**
- * \internal
  * \brief Template for casting a string to the desired type.
  *
  * The entire string must be used in the conversion.
@@ -75,7 +66,6 @@ std::string find_replace(const std::string &str, const std::string &find,
  * \tparam T The type to which we aim to cast.
  * \param[in] str The string to be cast.
  * \return The string, as cast to the specified type.
- * \endinternal
  */
 template<typename T>
 T cast_string(const std::string &str) {
@@ -83,7 +73,6 @@ T cast_string(const std::string &str) {
 }
 
 /**
- * \internal
  * \brief Specialization for casting a string to a double.
  *
  * The entire string must be used in the conversion.
@@ -93,13 +82,11 @@ T cast_string(const std::string &str) {
  *
  * \param[in] str The string to be cast.
  * \return The string, as a double.
- * \endinternal
  */
 template<>
 double cast_string(const std::string &str);
 
 /**
- * \internal
  * \brief Specialization for casting a string to a size_t.
  *
  * The entire string must be used in the conversion.
@@ -109,7 +96,6 @@ double cast_string(const std::string &str);
  *
  * \param[in] str The string to be cast.
  * \return The string, as a double.
- * \endinternal
  */
 template<>
 std::size_t cast_string(const std::string &str);

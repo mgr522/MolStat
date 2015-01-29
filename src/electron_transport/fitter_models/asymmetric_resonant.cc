@@ -2,14 +2,12 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \internal
  * \file asymmetric_resonant.cc
  * \brief Implementation of the fitting model for resonant tunneling
  *        (asymmetric coupling).
  *
  * \author Matthew G.\ Reuter
  * \date May 2014
- * \endinternal
  */
 
 #include "asymmetric_resonant.h"

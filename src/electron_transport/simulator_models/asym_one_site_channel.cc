@@ -67,6 +67,18 @@ double AsymOneSiteChannel::StaticG(const std::valarray<double> &params) const
 	return ECurrent(params) / V;
 }
 
+double AsymOneSiteChannel::ZeroBiasG(const std::valarray<double> &params) const
+{
+	// unpack the model parameters
+	const double &ef = params[Index_EF];
+	const double &eps = params[Index_epsilon];
+	const double &gammal = params[Index_gammaL];
+	const double &gammar = params[Index_gammaR];
+	const double &a = params[Index_a];
+
+	return transmission(ef, 0., eps, gammal, gammar, a);
+}
+
 double AsymOneSiteChannel::DiffG(const std::valarray<double> &params) const
 {
 	// unpack the model parameters

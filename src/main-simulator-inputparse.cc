@@ -99,6 +99,7 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator(
 	unique_ptr<molstat::Simulator> sim{ new molstat::Simulator(model) };
 
 	// set the observables
+	bool bad_obs { false };
 	auto obs_iter = obs_bins.begin();
 	while(obs_iter != obs_bins.end())
 	{
@@ -118,7 +119,7 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator(
 			catch(const exception &e) // problem setting the observable
 			{
 				output << "Error setting observable " << obs_iter->first <<
-					".\n   " << e.what() << endl;
+					" (" << obs_iter->second.first << "):\n   " << e.what() << endl;
 			}
 		}
 		catch(const out_of_range &e) // index not found
@@ -135,7 +136,17 @@ std::unique_ptr<molstat::Simulator> SimulatorInputParse::createSimulator(
 			auto obs_here = obs_iter;
 			++obs_iter;
 			obs_bins.erase(obs_here);
+
+			// we have a bad observable
+			bad_obs = true;
 		}
+	}
+
+	// throw an exception if there is at least one bad observable
+	if(bad_obs)
+	{
+		throw logic_error("At least one observable is unknown, invalid, or " \
+			"incompatible");
 	}
 
 	return sim;
@@ -473,11 +484,16 @@ void SimulatorInputParse::printState(std::ostream &output) const
 
 	output << "Observables:\n";
 	{
-		for(auto obs_bin : obs_bins)
+		if(obs_bins.size() > 0)
 		{
-			output << obs_bin.first << " -> " << obs_bin.second.first <<
-				" (" << obs_bin.second.second->info() << ")\n";
+			for(auto obs_bin : obs_bins)
+			{
+				output << obs_bin.first << " -> " << obs_bin.second.first <<
+					" (" << obs_bin.second.second->info() << ")\n";
+			}
 		}
+		else
+			output << "No valid observables.\n";
 	}
 	output << '\n';
 

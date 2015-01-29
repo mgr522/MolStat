@@ -51,12 +51,10 @@ class FitModel
 {
 private:
 	/**
-	 * \internal
 	 * \brief The data we fit against.
 	 *
 	 * This is a list of pairs; each pair contains the independent variables
 	 * (the array) and the observed value of the fit function.
-	 * \endinternal
 	 *
 	 * \todo Rework this class and main-fitter.cc so that the data is moved
 	 *    into this class.
@@ -98,7 +96,6 @@ public:
 		const std::list<std::pair<std::array<double, N>, double>> &data_);
 
 	/**
-	 * \internal
 	 * \brief Calculates the residuals of the fit for each set of model
 	 *    parameters and for a given set of fitting parameters.
 	 *
@@ -108,12 +105,10 @@ public:
 	 * \param[in] model The FitModel<N> model object.
 	 * \param[out] f Vector of residuals for each data point.
 	 * \return GSL_SUCCESS for success, otherwise a GSL error code.
-	 * \endinternal
 	 */
 	static int f(const gsl_vector *x, void *model, gsl_vector *f);
 
 	/**
-	 * \internal
 	 * \brief Calculates the Jacobian of the fit function for a given set of
 	 *    fitting parameters.
 	 *
@@ -123,12 +118,10 @@ public:
 	 * \param[in] model The FitModel<N> model object.
 	 * \param[out] J Jacobian matrix.
 	 * \return 0 for success, otherwise a GSL error code.
-	 * \endinternal
 	 */
 	static int df(const gsl_vector *x, void *model, gsl_matrix *J);
 
 	/**
-	 * \internal
 	 * \brief Calculates both the residuals and Jacobian of the fit for a given
 	 *    set of fitting parameters.
 	 *
@@ -139,7 +132,6 @@ public:
 	 * \param[out] f Vector of residuals for each data point.
 	 * \param[out] J Jacobian matrix.
 	 * \return GSL_SUCCESS for success, otherwise a GSL error code.
-	 * \endinternal
 	 */
 	static int fdf(const gsl_vector *x, void *model, gsl_vector *f,
 		gsl_matrix *J);
@@ -190,11 +182,9 @@ public:
 		const double f) const;
 
 	/**
-	 * \internal
 	 * \brief Gets a GSL handle for fitting data to this model.
 	 *
 	 * \return The GSL nonlinear fitting handle.
-	 * \endinternal
 	 */
 	gsl_multifit_function_fdf gsl_handle() const;
 
@@ -284,12 +274,10 @@ inline FitModelFactory<N> GetFitModelFactory()
 }
 
 /**
- * \internal
  * \brief Converts a gsl_vector to a std::vector<double>.
  *
  * \param[in] gslv The gsl_vector.
  * \return The std::vector<double>.
- * \endinternal
  */
 std::vector<double> gsl_to_std(const gsl_vector *gslv);
 

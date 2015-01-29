@@ -1,5 +1,4 @@
-/* This fil eis a part of MolStat, which is distributed under the Creative
-nential =  - pow(E_applied(t, params) - eref + lambda, 2.0) / (4.0 * lambda * Boltzmann_Constant * 300.0);
+/* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
@@ -20,7 +19,6 @@ nential =  - pow(E_applied(t, params) - eref + lambda, 2.0) / (4.0 * lambda * Bo
 #define RTOL 1.e-8
 #define ATOL 1.e-6
 #define MAXSTEPS 2000
-#define Boltzmann_Constant 8.6173324e-5 //Boltzman constant with unit eV is defined here.
 
 namespace molstat {
 namespace echem {
@@ -55,9 +53,8 @@ double NonNernstianReaction::kf(double t, const std::valarray<double> &params)
 	const double &lambda = params[Index_lambda];
 	const double &af = params[Index_Af];
 	
-	//room temperature 300.0K is used here. 
-	double exponential =  E_applied(t, params) - eref + lambda;
-	exponential *= -0.25 * exponential / (lambda * Boltzmann_Constant * 300.0);
+	double exponential = E_applied(t, params) - eref + lambda;
+	exponential *= -0.25 * exponential / lambda;
 
 	double log_kf = exponential + log(af);
 	if(log_kf < -650.)
@@ -73,9 +70,8 @@ double NonNernstianReaction::kb(double t, const std::valarray<double> &params)
 	const double &lambda = params[Index_lambda];
 	const double &ab = params[Index_Ab];
 	
-	//room temperature 300.0K is used here.
 	double exponential = E_applied(t, params) - eref - lambda;
-	exponential *= -0.25 * exponential / (lambda * Boltzmann_Constant * 300.0);
+	exponential *= -0.25 * exponential / lambda;
 
 	double log_kb = exponential + log(ab);
 	if(log_kb < -650.)
@@ -154,8 +150,6 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 
 	// set the maximum step size
 	CVodeSetMaxStep(cvode_mem, 4. * tlim / MAXSTEPS);
-
-	//printf("kf at t=1.0s is %14.6e \n", kf(1.0, params));
 
 	// pass model parameters to the CVODE functions
 	std::valarray<double> params_copy { params };

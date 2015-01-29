@@ -32,7 +32,6 @@
 using namespace std;
 
 /**
- * \internal
  * \brief Main function for simulating a histogram.
  *
  * Parses the input parameters and outputs randomly generated data
@@ -41,7 +40,6 @@ using namespace std;
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
  * \return Exit status; 0 for normal.
- * \endinternal
  */
 int main(int argc, char **argv)
 {
@@ -78,7 +76,7 @@ int main(int argc, char **argv)
 
 	// create the simulator
 	// this will make sure model names are good, all distributions are
-	// specified, etc.
+	// specified, all observables are valid, etc.
 	unique_ptr<molstat::Simulator> sim{ nullptr };
 	try
 	{

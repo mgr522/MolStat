@@ -29,12 +29,12 @@ void load_models(
 	models.emplace(
 		to_lower("NonNernstianReaction"),
 		GetSimulateModelFactory<NonNernstianReaction>() );
+#endif
 
+	// models that don't require CVODE
 	models.emplace(
 		to_lower("NernstianReaction"),
 		GetSimulateModelFactory<NernstianReaction>() );
-
-#endif
 }
 
 void load_observables(
@@ -48,11 +48,6 @@ void load_observables(
 	observables.emplace(
 		to_lower("BackwardETPotential"),
 		GetObservableIndex<BackwardETPotential>() );
-
-	observables.emplace(
-		to_lower("RedoxETPotential"),
-		GetObservableIndex<RedoxETPotential>() );
-
 }
 
 } // namespace molstat::echem
