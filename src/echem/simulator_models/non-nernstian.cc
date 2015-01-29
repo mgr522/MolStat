@@ -107,7 +107,7 @@ NonNernstianReaction::NonNernstianReaction()
 	po = N_VNew_Serial(1);
 
 	// initialize po (initial condition)
-	Ith(po, 1) = 1.;
+	Ith(po, 1) = 0.;
 
 	// create the solver memory and specify the Backward Differentiation Formula
 	// and the use of a Newton iteration.
@@ -157,7 +157,7 @@ double NonNernstianReaction::ForwardETP(const std::valarray<double> &params)
 
 	// forward sweep
 	// reinitialize the integrator
-	Ith(po, 1) = 1.;
+	Ith(po, 1) = 0.;
 	CVodeReInit(cvode_mem, 0., po);
 
 	// set the maximum time for propagation
@@ -212,7 +212,7 @@ double NonNernstianReaction::BackwardETP(const std::valarray<double> &params)
 
 	// forward sweep
 	// reinitialize the integrator
-	Ith(po, 1) = 1.;
+	Ith(po, 1) = 0.;
 	CVodeReInit(cvode_mem, 0., po);
 
 	// set the maximum time for propagation

@@ -5,8 +5,8 @@
  * \file nernstian.h
  * \brief Simulator model for electron transfer with a Nernstian reaction.
  *
- * \author Bo Fu
- * \date December 2014
+ * \author Bo Fu, Matthew G.\ Reuter
+ * \date January 2015
  */
 
 #ifndef __nernstian_reaction_h__
@@ -18,51 +18,72 @@ namespace molstat {
 namespace echem {
 
 /**
- * \brief Simulator model for single molecule electrochemistry
- *    under Nernstian limit with a slow enough scanning rate.
+ * \brief Simulator model for single molecule electron transfer using a
+ *    Nernstian reacation with \f$n\f$ electrons transferred.
  *
- *  Model parameters are
- * - `E0` (\f$E^0\f$), the standard redox potential,
- * - `Af` (\f$A_f\f$), the prefactor of forward half-reaction rate constant,
- * - `Ab` (\f$A_b\f$), the prefactor of backward half-reaction rate constant,
- * - `T`  (\f$T\f$),   the temperature,
- * - `n`  {\f$n\f$),   the number of electrons involved in the half-reaction.  
+ * Physical parameters include
+ * - \f$T\f$, the temperature,
+ * - \f$n\f$, the number of electrons transferred in the reaction.
+ * .
+ * Note that these physical parameters are not directly used by the model
+ * (i.e., they do not need to be specified in the input file), but they are
+ * used in the following reduced unit system employed by the model and model
+ * parameters.
+ * - Electric potential is measured in \f$ k_\mathrm{B} T / (ne)\f$.
  *
- * The probability \f$P_{mathrm{O}}\f$ for Nernstian reaction is
- * \f[ P_\mathrm{O}(E)_{\mathrm{Nernstian}} = \frac{k_b(E)}{k_f(E)+k_b(E)}\f]
- * Then the peak potential can be solved from \f$ P_\mathrm{O}(\epsilon_P)_{\mathrm{Nernstian}}=0.5\f$. 
- * \f[ \epsilon_P=E^0 - \frac{k_B T}{ne}\log\frac{A_b}{A_f}\f]
- * - Peak Potential:
- *   \f[ \epsilon_P=E^0 - \frac{k_B T}{ne}\log\frac{A_b}{A_f}\f]
+ * Model parameters are
+ * - `Eref` (\f$E_\mathrm{ref}\f$), the reference potential,
+ * - `Af` (\f$A_\mathrm{f}\f$), the prefactor of forward half-reaction rate
+ *   constant,
+ * - `Ab` (\f$A_\mathrm{b}\f$), the prefactor of backward half-reaction rate
+ *   constant.
+ *
+ * The redox potential is determined for the half-reaction
+ * \f[ O +ne^-\rightleftharpoons R. \f]
+ * Because we are interested in single-molecule properties, the probability
+ * that the molecule is in the oxidized (reduced) state is used instead of
+ * the concentration used in conventional theories. This model is similar to
+ * that used by the non-Nernstian reaction
+ * \if fullref 
+ * (molstat::echem::NonNernstianReaction)
+ * \endif
+ * -- this model is simply the limit where the potential changes very slowly.
+ *
+ * Ultimately, the probability \f$ P_\mathrm{O} \f$ is
+ * \f[ P_\mathrm{O}(E) = \frac{k_b(E)}{k_f(E)+k_b(E)}, \f]
+ * where \f$E\f$ is the potential. Then the redox potential is then obtained
+ * from \f$ P_\mathrm{O}(E) = 1/2 \f$:
+ * \f[ E = E_\mathrm{ref} - \frac{k_\mathrm{B} T}{ne} \ln\left(\frac{A_\mathrm{b}}{A_\mathrm{f}}\right). \f]
+ * In the reduced unit system this becomes
+ * \f[ E = E_\mathrm{ref} - \ln\left( \frac{A_\mathrm{b}}{A_\mathrm{f}} \right). \f]
+ *
+ * Note that the forward and backward electron transfer potentials are identical
+ * in this model.
  */
-class SingleMoleculeEchemNernstian : 
-	public PeakPotential,
-	public virtual molstat::SimulateModel
+class NernstianReaction : 
+	public ForwardETPotential,
+	public BackwardETPotential
 {
 public:
 	/// Container index for the reference potential.
-	static const std::size_t Index_E0;
+	static const std::size_t Index_Eref;
 
 	/// Container index for the prefactor of forward half-reaction rate constant.
 	static const std::size_t Index_Af;
 
 	/// Container index for the prefactor of backward half-reaction rate constant.
-
 	static const std::size_t Index_Ab;
-
-	/// Container index for the temperature.
-	static const std::size_t Index_T;
-
-	/// Container index for the number of electrons involved in the half-reaction.
-	static const std::size_t Index_n;
 
 protected:
 	virtual std::vector<std::string> get_names() const override;
 
 public:
-	virtual ~SingleMoleculeEchemNernstian() = default;
+	virtual ~NernstianReaction() = default;
 
-	virtual double PeakV(const std::valarray<double> &params) const override;
+	virtual double ForwardETP(const std::valarray<double> &params) const
+		override;
+	virtual double BackwardETP(const std::valarray<double> &params) const
+		override;
 };
 
 } // namespace molstat::echem

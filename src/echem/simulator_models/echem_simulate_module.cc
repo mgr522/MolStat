@@ -15,6 +15,7 @@
 #include "observables.h"
 
 #include "non-nernstian.h"
+#include "nernstian.h"
 
 namespace molstat {
 namespace echem {
@@ -29,6 +30,11 @@ void load_models(
 		to_lower("NonNernstianReaction"),
 		GetSimulateModelFactory<NonNernstianReaction>() );
 #endif
+
+	// models that don't require CVODE
+	models.emplace(
+		to_lower("NernstianReaction"),
+		GetSimulateModelFactory<NernstianReaction>() );
 }
 
 void load_observables(

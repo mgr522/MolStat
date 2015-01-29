@@ -5,51 +5,45 @@
  * \file nernstian.cc
  * \brief Simulator model for electron transfer with a Nernstian reaction.
  *
- * \author Bo Fu
- * \date December 2014
+ * \author Bo Fu, Matthew G.\ Reuter
+ * \date January 2015
  */
 
 #include "nernstian.h"
 #include <cmath>
 
-#define kB 1.38066e-23
-#define e_charge 1.602189e-19 
-
 namespace molstat {
 namespace echem {
 
-const std::size_t SingleMoleculeEchemNernstian::Index_E0 = 0;
-const std::size_t SingleMoleculeEchemNernstian::Index_Af = 1;
-const std::size_t SingleMoleculeEchemNernstian::Index_Ab = 2;
-const std::size_t SingleMoleculeEchemNernstian::Index_T = 3;
-const std::size_t SingleMoleculeEchemNernstian::Index_n = 4;
+const std::size_t NernstianReaction::Index_Eref = 0;
+const std::size_t NernstianReaction::Index_Af = 1;
+const std::size_t NernstianReaction::Index_Ab = 2;
 
-std::vector<std::string> SingleMoleculeEchemNernstian::get_names() const
+std::vector<std::string> NernstianReaction::get_names() const
 {
-	std::vector<std::string> ret(5);
+	std::vector<std::string> ret(3);
 
-	ret[Index_E0] = "e0";
+	ret[Index_Eref] = "eref";
 	ret[Index_Af] = "af";
 	ret[Index_Ab] = "ab";
-	ret[Index_T] = "temp";
-	ret[Index_n] = "n";
 
 	return ret;
 }
 
-
-double SingleMoleculeEchemNernstian::PeakV(const std::valarray<double> &params) const
+double NernstianReaction::ForwardETP(const std::valarray<double> &params) const
 {
 	// unpack the parameters
-	const double &e0 = params[Index_E0];
+	const double &eref = params[Index_Eref];
 	const double &af = params[Index_Af];
 	const double &ab = params[Index_Ab];
-	const double &T = params[Index_T];
-	const double &n = params[Index_n];
 	
-	return e0 - (kB * T / (n * e_charge )) * std::log(ab / af); 
+	return eref - std::log(ab / af); 
 }
 
+double NernstianReaction::BackwardETP(const std::valarray<double> &params) const
+{
+	return ForwardETP(params);
+}
 
 } // namespace molstat::echem
 } // namespace molstat

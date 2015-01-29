@@ -1,1 +1,7 @@
 test-suite.log
+simulate-Nernstian
+simulate-Nernstian.log
+simulate-Nernstian.trs
+simulate-NonNernstian
+simulate-NonNernstian.log
+simulate-NonNernstian.trs
