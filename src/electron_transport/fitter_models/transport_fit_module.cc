@@ -33,7 +33,7 @@ void load_models(
 	models["asymmetricresonant"] =
 		GetFitModelFactory<AsymmetricResonantFitModel, 1>();
 
-	models["symetricnonresonantplusvacuum"] =
+	models["symmetricnonresonantplusvacuum"] =
 		GetFitModelFactory<SymmetricNonresonantPlusVacuumFitModel, 1>();
 }
 
