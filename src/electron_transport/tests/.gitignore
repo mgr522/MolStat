@@ -32,6 +32,9 @@ simulate-CompositeJunction.trs
 simulate-RectBarrier
 simulate-RectBarrier.log
 simulate-RectBarrier.trs
+simulate-SymInterference
+simulate-SymInterference.log
+simulate-SymInterference.trs
 simulate-SymOneSite
 simulate-SymOneSite.log
 simulate-SymOneSite.trs

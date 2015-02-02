@@ -11,6 +11,7 @@ TESTS += \
 	simulate-SymTwoSite \
 	simulate-AsymTwoSite \
 	simulate-CompositeJunction \
+	simulate-SymInterference \
 	simulate-RectBarrier
 
 check_PROGRAMS += \
@@ -19,6 +20,7 @@ check_PROGRAMS += \
 	simulate-SymTwoSite \
 	simulate-AsymTwoSite \
 	simulate-CompositeJunction \
+	simulate-SymInterference \
 	simulate-RectBarrier
 
 simulate_SymOneSite_SOURCES = simulate-SymOneSite.cc
@@ -43,6 +45,11 @@ simulate_AsymTwoSite_LDADD = ../simulator_models/libtransport_simulate.a \
 
 simulate_CompositeJunction_SOURCES = simulate-CompositeJunction.cc
 simulate_CompositeJunction_LDADD = ../simulator_models/libtransport_simulate.a \
+	../../general/libmolstat_simulator.a \
+	../../general/libmolstat_general.a 
+
+simulate_SymInterference_SOURCES = simulate-SymInterference.cc
+simulate_SymInterference_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_simulator.a \
 	../../general/libmolstat_general.a 
 
