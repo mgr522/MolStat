@@ -260,7 +260,7 @@ double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p(double gp,
 {
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
-	const double g = fitparams[4];
+	const double g = fitparams[6];
 	const double c = fitparams[C];
 	const double d = fitparams[D];
 
@@ -277,7 +277,7 @@ double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc(
 {
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
-	const double g = fitparams[4];
+	const double g = fitparams[6];
 	const double c = fitparams[C];
 	const double d = fitparams[D];
 
@@ -294,7 +294,7 @@ double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd(
 {
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
-	const double g = fitparams[4];
+	const double g = fitparams[6];
 	const double c = fitparams[C];
 	const double d = fitparams[D];
 

@@ -2,15 +2,15 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file tests/fit-CompositeSymNonresonantVacuum.cc
+ * \file tests/fit-CompositeSymNonresonantVacuumPlusVacuum.cc
  * \brief Test suite for the composite model (symmetric-coupling,
- *    nonresonant-tunneling and vacuum background) fit model.
+ *    nonresonant-tunneling and vacuum background) plus vacuum fit model.
  *
  * \test Test suite for the composite model (symmetric-coupling,
- *    nonresonant-tunneling and vacuum background) fit model.
+ *    nonresonant-tunneling and vacuum background) plus vacuum fit model.
  *
  * \author Matthew G.\ Reuter
- * \date January 2015
+ * \date February 2015
  */
 
 #include <cassert>
@@ -19,18 +19,18 @@
 #include <utility>
 #include <cmath>
 
-#include <electron_transport/fitter_models/composite_symmetric_nonresonant_vacuum.h>
+#include <electron_transport/fitter_models/composite_symmetric_nonresonant_vacuum_plus_vacuum.h>
 
 using namespace std;
 
 /// Shortcut for the model type in this test.
-using ModelType = molstat::transport::CompositeSymmetricNonresonantVacuumFitModel;
+using ModelType = molstat::transport::CompositeSymmetricNonresonantVacuumPlusVacuumFitModel;
 
 /// Alias for the type of data values.
 using DataType = std::array<double, 1>;
 
 /**
- * \brief Main function for testing the symmetric-coupling, one-site model.
+ * \brief Main function for testing the specified model.
  *
  * \param[in] argc The number of command-line arguments.
  * \param[in] argv The command-line arguments.
@@ -62,38 +62,50 @@ int main(int argc, char **argv)
 	fitparam[ModelType::C] = 100.;
 	fitparam[ModelType::D] = 5.;
 	fitparam[ModelType::GMINUS] = 1.e-4;
-	fitparam[ModelType::NORM] = 1.;
+	fitparam[ModelType::NT] = 1.;
+	fitparam[ModelType::NV] = 1.;
+	fitparam[ModelType::NC] = 0.;
 	returnval = model.resid_j(fitparam, data1, data1obs);
-	assert(abs(16.0327 - returnval.first) / 16.0327 < thresh);
+	assert(abs(516.033 - returnval.first) / 516.033 < thresh);
 	assert(abs(1.35887 - returnval.second[ModelType::C]) / 1.35887 < thresh);
 	assert(abs(-34.9341 - returnval.second[ModelType::D]) / 34.9341 < thresh);
 	assert(abs(-187829. - returnval.second[ModelType::GMINUS]) / 187829. < thresh);
-	assert(abs(36.0327 - returnval.second[ModelType::NORM]) / 36.0327 < thresh);
+	assert(abs(36.0327 - returnval.second[ModelType::NT]) / 36.0327 < thresh);
+	assert(abs(500. - returnval.second[ModelType::NV]) / 500. < thresh);
+	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 
 	returnval = model.resid_j(fitparam, data2, data2obs);
-	assert(abs(1.96077 - returnval.first) / 1.96077 < thresh);
+	assert(abs(911.052 - returnval.first) / 911.052 < thresh);
 	assert(abs(0.417719 - returnval.second[ModelType::C]) / 0.417719 < thresh);
 	assert(abs(-14.4508 - returnval.second[ModelType::D]) / 14.4508 < thresh);
 	assert(abs(-58689.4 - returnval.second[ModelType::GMINUS]) / 58689.4 < thresh);
-	assert(abs(6.96077 - returnval.second[ModelType::NORM]) / 6.96077 < thresh);
+	assert(abs(6.96077 - returnval.second[ModelType::NT]) / 6.96077 < thresh);
+	assert(abs(909.091 - returnval.second[ModelType::NV]) / 909.091 < thresh);
+	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 
 	returnval = model.resid_j(fitparam, data3, data3obs);
-	assert(abs(-3.60538 - returnval.first) / 3.60538 < thresh);
+	assert(abs(1996.39 - returnval.first) / 1996.39 < thresh);
 	assert(abs(2.25534e-2 - returnval.second[ModelType::C]) / 2.25534e-2 < thresh);
 	assert(abs(-1.26284 - returnval.second[ModelType::D]) / 1.26284 < thresh);
 	assert(abs(-5564.51 - returnval.second[ModelType::GMINUS]) / 5564.51 < thresh);
-	assert(abs(0.394624 - returnval.second[ModelType::NORM]) / 0.394624 < thresh);
+	assert(abs(0.394624 - returnval.second[ModelType::NT]) / 0.394624 < thresh);
+	assert(abs(2.e3 - returnval.second[ModelType::NV]) / 2.e3 < thresh);
+	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 
 	fitparam[ModelType::C] = 200.;
 	fitparam[ModelType::D] = 4.;
 	fitparam[ModelType::GMINUS] = 5.e-5;
-	fitparam[ModelType::NORM] = 2.;
+	fitparam[ModelType::NT] = 3.;
+	fitparam[ModelType::NV] = 0.25;
+	fitparam[ModelType::NC] = 3.;
 	returnval = model.resid_j(fitparam, data1, data1obs);
-	assert(abs(12.4545 - returnval.first) / 12.4545 < thresh);
-	assert(abs(-0.268207 - returnval.second[ModelType::C]) / 0.268207 < thresh);
-	assert(abs(4.63536 - returnval.second[ModelType::D]) / 4.63536 < thresh);
-	assert(abs(-7.42509 - returnval.second[ModelType::GMINUS]) / 7.42509 < thresh);
-	assert(abs(16.2273 - returnval.second[ModelType::NORM]) / 16.2273 < thresh);
+	assert(abs(156.682 - returnval.first) / 156.682 < thresh);
+	assert(abs(-0.402311 - returnval.second[ModelType::C]) / 0.402311 < thresh);
+	assert(abs(6.95304 - returnval.second[ModelType::D]) / 6.95304 < thresh);
+	assert(abs(-11.1376 - returnval.second[ModelType::GMINUS]) / 11.1376 < thresh);
+	assert(abs(16.2273 - returnval.second[ModelType::NT]) / 16.2273 < thresh);
+	assert(abs(500. - returnval.second[ModelType::NV]) / 500. < thresh);
+	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 
 	return 0;
 }
