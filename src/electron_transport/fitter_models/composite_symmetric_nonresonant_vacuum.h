@@ -2,7 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file symmetric_nonresonant_w_vacuum.h
+ * \file composite_symmetric_nonresonant_vacuum.h
  * \brief Fitting model for nonresonant tunneling (symmetric coupling) combined
  *    with background \"vacuum\" tunneling.
  *
@@ -10,8 +10,8 @@
  * \date January 2015
  */
 
-#ifndef __symmetric_nonresonant_w_vacuum_h__
-#define __symmetric_nonresonant_w_vacuum_h__
+#ifndef __composite_symmetric_nonresonant_vacuum_h__
+#define __composite_symmetric_nonresonant_vacuum_h__
 
 #include <general/fitter_tools/fit_model_interface.h>
 #include <gsl/gsl_integration.h>
@@ -24,6 +24,10 @@ namespace transport {
  *    a single site, along with direct, electrode-electrode tunneling. This
  *    model was designed with molecules, combined with the background
  *    \"vacuum\" signal, in mind.
+ *
+ * \note This model only considers the the nonresonant tunneling line shape
+ *    convolved with the vacuum line shape. A bare vacuum component is not
+ *    included.
  *
  * The line shape for nonresonant tunneling through a single site with symmetric
  * coupling to the leads is \cite williams-5937
@@ -50,10 +54,12 @@ namespace transport {
  * to the standard deviation in the coupling; \f$g_-\f$, the threshold
  * conductance for vacuum tunneling; and \f$N\f$, the normalization constant.
  *
+ * \if fullref
  * Additional details on the nonresonant tunneling model can be found at
  * molstat::transport::SymmetricNonresonantFitModel.
+ * \endif
  */
-class SymmetricNonresonantPlusVacuumFitModel : public FitModel<1>
+class CompositeSymmetricNonresonantVacuumFitModel : public FitModel<1>
 {
 protected:
 	/// Maximum number of quadrature points for the adaptive GSL routines.
@@ -136,8 +142,8 @@ public:
 	/// Index for the norm fitting parameter.
 	const static int NORM = 3;
 
-	SymmetricNonresonantPlusVacuumFitModel() = delete;
-	virtual ~SymmetricNonresonantPlusVacuumFitModel() = default;
+	CompositeSymmetricNonresonantVacuumFitModel() = delete;
+	virtual ~CompositeSymmetricNonresonantVacuumFitModel() = default;
 
 	/**
 	 * \brief Constructor requiring the data that we will be fitting against.
@@ -145,7 +151,7 @@ public:
 	 * \param[in] data The data, organized in pairs of array<double, 1>,
 	 *    double objects.
 	 */
-	SymmetricNonresonantPlusVacuumFitModel(
+	CompositeSymmetricNonresonantVacuumFitModel(
 		const std::list<std::pair<std::array<double, 1>, double>> &data);
 
 	/**
@@ -173,9 +179,9 @@ public:
 	 * \frac{\partial \hat{P}(g)}{\partial g_-} & = & \frac{-N}{g_- \sqrt{(g-g_-)(1-g+g_-)^3}} \exp\left[ -\frac{\left( c\sqrt{g-g_-} - d\sqrt{1-g+g_-} \right)^2}{2(1-g+g_-)} \right], \\
 	 * \frac{\partial \hat{P}(g)}{\partial N} & = & \mathrm{int\_p}(g).
 	 * \f}
-	 * where int_p is evaluated with SymmetricNonresonantPlusVacuumFitModel::int_p,
-	 * and likewise for SymmetricNonresonantPlusVacuumFitModel::int_dp_dc and
-	 * SymmetricNonresonantPlusVacuumFitModel::int_dp_dd.
+	 * where int_p is evaluated with CompositeSymmetricNonresonantVacuumFitModel::int_p,
+	 * and likewise for CompositeSymmetricNonresonantVacuumFitModel::int_dp_dc and
+	 * CompositeSymmetricNonresonantVacuumFitModel::int_dp_dd.
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.
@@ -191,7 +197,7 @@ public:
 	 *    set of fitting parameters.
 	 *
 	 * The residual and the derivative with respect to \f$N\f$ both require
-	 * the integral in SymmetricNonresonantPlusVacuumFitModel::int_p.
+	 * the integral in CompositeSymmetricNonresonantVacuumFitModel::int_p.
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.

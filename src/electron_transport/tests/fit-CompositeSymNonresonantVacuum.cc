@@ -19,12 +19,12 @@
 #include <utility>
 #include <cmath>
 
-#include <electron_transport/fitter_models/symmetric_nonresonant_w_vacuum.h>
+#include <electron_transport/fitter_models/composite_symmetric_nonresonant_vacuum.h>
 
 using namespace std;
 
 /// Shortcut for the model type in this test.
-using ModelType = molstat::transport::SymmetricNonresonantPlusVacuumFitModel;
+using ModelType = molstat::transport::CompositeSymmetricNonresonantVacuumFitModel;
 
 /// Alias for the type of data values.
 using DataType = std::array<double, 1>;

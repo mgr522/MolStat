@@ -3,6 +3,9 @@ fit-asymmetric-resonant.trs
 fit-AsymResonant
 fit-AsymResonant.log
 fit-AsymResonant.trs
+fit-CompositeSymNonresonantVacuum
+fit-CompositeSymNonresonantVacuum.log
+fit-CompositeSymNonresonantVacuum.trs
 fit-options.log
 fit-options.trs
 fit-symmetric-nonresonant.log
@@ -14,9 +17,6 @@ fit-symmetric-resonant.trs
 fit-SymNonresonant
 fit-SymNonresonant.log
 fit-SymNonresonant.trs
-fit-SymNonresonantPlusVacuum
-fit-SymNonresonantPlusVacuum.log
-fit-SymNonresonantPlusVacuum.trs
 fit-SymResonant
 fit-SymResonant.log
 fit-SymResonant.trs
