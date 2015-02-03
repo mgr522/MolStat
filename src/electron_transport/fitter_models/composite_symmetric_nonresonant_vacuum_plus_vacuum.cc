@@ -2,15 +2,15 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file composite_symmetric_nonresonant_vacuum.cc
+ * \file composite_symmetric_nonresonant_vacuum_plus_vacuum.cc
  * \brief Implementation of the fitting model for nonresonant tunneling
  *        (symmetric coupling) combined with background \"vacuum\" tunneling.
  *
  * \author Matthew G.\ Reuter
- * \date January 2015
+ * \date February 2015
  */
 
-#include "composite_symmetric_nonresonant_vacuum.h"
+#include "composite_symmetric_nonresonant_vacuum_plus_vacuum.h"
 #include <iomanip>
 
 using namespace std;
@@ -18,7 +18,7 @@ using namespace std;
 namespace molstat {
 namespace transport {
 
-std::vector<double> CompositeSymmetricNonresonantVacuumFitModel
+std::vector<double> CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
 	::create_initial_guess(const std::map<std::string, double> &values) const
 {
 	vector<double> ret(4);
@@ -28,42 +28,35 @@ std::vector<double> CompositeSymmetricNonresonantVacuumFitModel
 		ret[C] = values.at("c");
 		ret[D] = values.at("d");
 		ret[GMINUS] = values.at("gminus");
+		ret[NT] = values.at("nt");
+		ret[NV] = values.at("nv");
+		ret[NC] = values.at("nc");
 	}
 	catch(const out_of_range &e)
 	{
 		throw invalid_argument("Initial guesses for the CompositeSymmetric" \
-			"NonresonantVacuumFitModel must specify \"c\", \"d\", and " \
-			"\"gminus\" parameters.");
-	}
-
-	try
-	{
-		ret[NORM] = values.at("norm");
-	}
-	catch(const out_of_range &e)
-	{
-		// norm not specified
-		ret[NORM] = 1.;
+			"NonresonantVacuumPlusVacuumFitModel must specify \"c\", \"d\", " \
+			"\"gminus\", \"nt\", \"nv\", and \"nc\" parameters.");
 	}
 
 	return ret;
 }
 
-CompositeSymmetricNonresonantVacuumFitModel
-	::CompositeSymmetricNonresonantVacuumFitModel(
+CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
+	::CompositeSymmetricNonresonantVacuumPlusVacuumFitModel(
 	const std::list<std::pair<std::array<double, 1>, double>> &data)
-	: FitModel<1>(4, data), w(gsl_integration_workspace_alloc(nquad),
+	: FitModel<1>(6, data), w(gsl_integration_workspace_alloc(nquad),
 		&gsl_integration_workspace_free) 
 {}
 
-double CompositeSymmetricNonresonantVacuumFitModel::resid(
+double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::resid(
 	const std::vector<double> &fitparam, const std::array<double, 1> &x,
 	const double f) const
 {
 	vector<double> params(nfit+1);
 	double error, integral;
 	gsl_function func;
-	func.function = &CompositeSymmetricNonresonantVacuumFitModel::int_p;
+	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p;
 	func.params = &params;
 
 	const double g = x[0];
@@ -71,19 +64,21 @@ double CompositeSymmetricNonresonantVacuumFitModel::resid(
 	params[C] = fitparam[C];
 	params[D] = fitparam[D];
 	params[GMINUS] = fitparam[GMINUS];
-	params[NORM] = fitparam[NORM];
+	params[NT] = fitparam[NT];
+	params[NV] = fitparam[NV];
+	params[NC] = fitparam[NC];
 	params[nfit] = g; // need to pass in the conductance value
 
 	// calculate the integral
 	gsl_integration_qags(&func, fitparam[GMINUS], g, 0.0, 1.0e-7, nquad,
 		w.get(), &integral, &error);
 
-	return integral * fitparam[NORM] - f;
+	return integral * fitparam[NT] + fitparam[NV] / g + fitparam[NC] - f;
 }
 
-std::vector<double> CompositeSymmetricNonresonantVacuumFitModel::jacobian(
-	const std::vector<double> &fitparam, const std::array<double, 1> &x,
-	const double f) const
+std::vector<double> CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
+	::jacobian(const std::vector<double> &fitparam,
+	const std::array<double, 1> &x, const double f) const
 {
 	vector<double> params(nfit+1), ret(nfit);
 	double error, integral, intc, intd;
@@ -94,43 +89,51 @@ std::vector<double> CompositeSymmetricNonresonantVacuumFitModel::jacobian(
 	const double c = fitparam[C];
 	const double d = fitparam[D];
 	const double gminus = fitparam[GMINUS];
-	const double norm = fitparam[NORM];
+	const double nt = fitparam[NT];
+	const double nv = fitparam[NV];
+	const double nc = fitparam[NC];
 
 	params[C] = c;
 	params[D] = d;
 	params[GMINUS] = gminus;
-	params[NORM] = norm;
+	params[NT] = nt;
+	params[NV] = nv;
+	params[NC] = nc;
 	params[nfit] = g; // need to pass in the conductance value
 
 	// evaluate the three integrals
-	func.function = &CompositeSymmetricNonresonantVacuumFitModel::int_p;
+	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p;
 	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
 		&integral, &error);
 
-	func.function = &CompositeSymmetricNonresonantVacuumFitModel::int_dp_dc;
+	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc;
 	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
 		&intc, &error);
 
-	func.function = &CompositeSymmetricNonresonantVacuumFitModel::int_dp_dd;
+	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd;
 	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
 		&intd, &error);
 
 	// set the derivatives
-	ret[C] = norm * intc;
+	ret[C] = nt * intc;
 
-	ret[D] = norm * intd;
+	ret[D] = nt * intd;
 
 	error = c * sqrt(g-gminus) - d * sqrt(1.-g+gminus);
-	ret[GMINUS] = -norm / (gminus * sqrt((g-gminus) * (1.-g+gminus)))
+	ret[GMINUS] = -nt / (gminus * sqrt((g-gminus) * (1.-g+gminus)))
 		* exp(-0.5*error*error / (1.-g+gminus));
 
-	ret[NORM] = integral;
+	ret[NT] = integral;
+
+	ret[NV] = 1. / g;
+
+	ret[NC] = 1.;
 
 	return ret;
 }
 
 std::pair<double, std::vector<double>>
-	CompositeSymmetricNonresonantVacuumFitModel::resid_j(
+	CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::resid_j(
 	const std::vector<double> &fitparam, const std::array<double, 1> &x,
 	const double f) const
 {
@@ -146,46 +149,54 @@ std::pair<double, std::vector<double>>
 	const double c = fitparam[C];
 	const double d = fitparam[D];
 	const double gminus = fitparam[GMINUS];
-	const double norm = fitparam[NORM];
+	const double nt = fitparam[NT];
+	const double nv = fitparam[NV];
+	const double nc = fitparam[NC];
 
 	params[C] = c;
 	params[D] = d;
 	params[GMINUS] = gminus;
-	params[NORM] = norm;
+	params[NT] = nt;
+	params[NV] = nv;
+	params[NC] = nc;
 	params[nfit] = g; // need to pass in the conductance value
 
 	// evaluate the three integrals
-	func.function = &CompositeSymmetricNonresonantVacuumFitModel::int_p;
+	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p;
 	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
 		&integral, &error);
 
-	func.function = &CompositeSymmetricNonresonantVacuumFitModel::int_dp_dc;
+	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc;
 	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
 		&intc, &error);
 
-	func.function = &CompositeSymmetricNonresonantVacuumFitModel::int_dp_dd;
+	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd;
 	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
 		&intd, &error);
 
 	// set the residual and derivatives
-	ret.first = norm * integral - f;
+	ret.first = nt * integral + nv / g + nc - f;
 
-	ret.second[C] = norm * intc;
+	ret.second[C] = nt * intc;
 
-	ret.second[D] = norm * intd;
+	ret.second[D] = nt * intd;
 
 	error = c * sqrt(g-gminus) - d * sqrt(1.-g+gminus);
-	ret.second[GMINUS] = -norm
+	ret.second[GMINUS] = -nt
 		/ (gminus * sqrt((g-gminus) * (1.-g+gminus)*(1.-g+gminus)*(1.-g+gminus)))
 		* exp(-0.5*error*error / (1.-g+gminus));
 
-	ret.second[NORM] = integral;
+	ret.second[NT] = integral;
+
+	ret.second[NV] = 1. / g;
+
+	ret.second[NC] = 1.;
 
 	return ret;
 }
 
-void CompositeSymmetricNonresonantVacuumFitModel::append_default_guesses(
-	std::list<std::vector<double>> &guess) const
+void CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
+	::append_default_guesses(std::list<std::vector<double>> &guess) const
 {
 	const list<double> list_c{40., 50., 75., 100., 150.},
 		list_d{4., 5., 6.},
@@ -205,23 +216,26 @@ void CompositeSymmetricNonresonantVacuumFitModel::append_default_guesses(
 		init[C] = *c;
 		init[D] = *d;
 		init[GMINUS] = *gminus;
-		init[NORM] = 1.;
+		init[NT] = init[NV] = 1.;
+		init[NC] = 0.;
 
 		guess.emplace_back(init);
 	}}}
 }
 
-void CompositeSymmetricNonresonantVacuumFitModel::print_fit(std::ostream &out,
-	const std::vector<double> &fitparam) const
+void CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
+	::print_fit(std::ostream &out, const std::vector<double> &fitparam) const
 {
 	out << "c=" << scientific << setprecision(4) << fitparam[C] <<
 		", d=" << scientific << setprecision(4) << fitparam[D] <<
 		", gminus=" << scientific << setprecision(4) << fitparam[GMINUS] <<
-		", norm=" << scientific << setprecision(4) << fitparam[NORM];
+		", nt=" << scientific << setprecision(4) << fitparam[NT] <<
+		", nv=" << scientific << setprecision(4) << fitparam[NV] <<
+		", nc=" << scientific << setprecision(4) << fitparam[NC];
 }
 
-void CompositeSymmetricNonresonantVacuumFitModel::process_fit_parameters(
-	std::vector<double> &fitparams) const
+void CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
+	::process_fit_parameters(std::vector<double> &fitparams) const
 {
 #if 0
 	// sometimes both gammas go negative...
@@ -241,7 +255,7 @@ void CompositeSymmetricNonresonantVacuumFitModel::process_fit_parameters(
 #endif
 }
 
-double CompositeSymmetricNonresonantVacuumFitModel::int_p(double gp,
+double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p(double gp,
 	void *params)
 {
 	const vector<double> &fitparams = *(const vector<double>*)params;
@@ -258,8 +272,8 @@ double CompositeSymmetricNonresonantVacuumFitModel::int_p(double gp,
 		(gp * sqrt(temp1 * temp2 * temp2 * temp2));
 }
 
-double CompositeSymmetricNonresonantVacuumFitModel::int_dp_dc(double gp,
-	void *params)
+double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc(
+	double gp, void *params)
 {
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
@@ -275,8 +289,8 @@ double CompositeSymmetricNonresonantVacuumFitModel::int_dp_dc(double gp,
 		(gp * sqrt(temp2) * temp2 * temp2);
 }
 
-double CompositeSymmetricNonresonantVacuumFitModel::int_dp_dd(double gp,
-	void *params)
+double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd(
+	double gp, void *params)
 {
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
