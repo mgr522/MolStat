@@ -124,5 +124,16 @@ void SymmetricNonresonantFitModel::print_fit(std::ostream &out,
 		<< setprecision(4) << fitparam[NORM];
 }
 
+void SymmetricNonresonantFitModel::process_fit_parameters(
+	std::vector<double> &fitparams) const
+{
+	// sometimes both c and d go negative
+	if(fitparams[C] < 0. && fitparams[D] < 0.)
+	{
+		fitparams[C] = -fitparams[C];
+		fitparams[D] = -fitparams[D];
+	}
+}
+
 } // namespace molstat::transport
 } // namespace molstat
