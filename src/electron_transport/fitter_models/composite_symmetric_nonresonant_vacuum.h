@@ -218,8 +218,6 @@ public:
 	/**
 	 * \brief Perform post-processing on a set of fit parameters.
 	 *
-	 * \todo Delete this function if it is not needed (after testing).
-	 *
 	 * \param[in,out] fitparams The fitting parameters.
 	 */
 	virtual void process_fit_parameters(std::vector<double> &fitparams) const

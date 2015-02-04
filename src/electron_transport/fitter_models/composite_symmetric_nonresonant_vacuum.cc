@@ -223,22 +223,12 @@ void CompositeSymmetricNonresonantVacuumFitModel::print_fit(std::ostream &out,
 void CompositeSymmetricNonresonantVacuumFitModel::process_fit_parameters(
 	std::vector<double> &fitparams) const
 {
-#if 0
-	// sometimes both gammas go negative...
-	if(fitparams[GAMMAL] < 0. && fitparams[GAMMAR] < 0.)
+	// sometimes both c and d go negative
+	if(fitparams[C] < 0. && fitparams[D] < 0.)
 	{
-		fitparams[GAMMAL] = -fitparams[GAMMAL];
-		fitparams[GAMMAR] = -fitparams[GAMMAR];
+		fitparams[C] = -fitparams[C];
+		fitparams[D] = -fitparams[D];
 	}
-
-	// for convenience, make sure gammaL is smaller than gammaR
-	if(fitparams[GAMMAL] > fitparams[GAMMAR])
-		swap(fitparams[GAMMAL], fitparams[GAMMAR]);
-
-	// sometimes r is negative
-	if(fitparams[R] < 0.)
-		fitparams[R] = -fitparams[R];
-#endif
 }
 
 double CompositeSymmetricNonresonantVacuumFitModel::int_p(double gp,
