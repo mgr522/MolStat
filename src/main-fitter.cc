@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 	list<vector<double>>::const_iterator initval;
 
 	// counters & auxiliary variables
-	size_t i, iter;
+	size_t i, iter, maxiter;
 	string line, modelname;
 
 	gsl_set_error_handler_off();
@@ -170,6 +170,7 @@ int main(int argc, char **argv)
 	// Remaining lines: auxiliary options
 	// default options
 	iterprint = false; // don't print details at every iteration
+	maxiter = 100; // only allow 100 iterations per initial guess
 	initvals.clear(); // no initial guesses
 	usedefaultguess = false; // user specifies to use the default guesses
 	// default is linear bins
@@ -255,6 +256,27 @@ int main(int argc, char **argv)
 						}
 					}
 				}
+				else if(line == "maxiter") // change the max number of iterations
+				{
+					if(tokens.size() == 0)
+					{
+						cerr << "Error: Number of max iterations unspecified." \
+							" Skipping line." << endl;
+					}
+					else
+					{
+						try
+						{
+							maxiter = molstat::cast_string<size_t>(tokens.front());
+							tokens.pop();
+						}
+						catch(const bad_cast &e)
+						{
+							cerr << "Error interpreting number of max iterations." \
+								" Skipping line." << endl;
+						}
+					}
+				}
 				// add other keywords/options here
 			}
 		}
@@ -325,7 +347,7 @@ int main(int argc, char **argv)
 
 			status = gsl_multifit_test_delta(solver->dx, solver->x, 1.0e-4,
 				1.0e-4);
-		} while(status == GSL_CONTINUE && iter < 1000);
+		} while(status == GSL_CONTINUE && iter < maxiter);
 
 		if(iterprint)
 		{
