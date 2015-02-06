@@ -118,8 +118,8 @@ public:
 	virtual void print_fit(std::ostream &out,
 		const std::vector<double> &fitparam) const override;
 
-	/* No post-processing issues encountered. We can just use the default
-	 * function that does nothing. */
+	virtual void process_fit_parameters(std::vector<double> &fitparams) const
+		override;
 };
 
 } // namespace molstat::transport
