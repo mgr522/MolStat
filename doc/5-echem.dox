@@ -63,11 +63,34 @@ reaction is termed as Nernstian if the system is always at quasi-equilibrium. Th
 electochemical system can be treated using Nernstian reaction model when the reaction rate 
 is large compared to the scanning rate of applied potential, in which case the system adjust 
 instantly to an external change in bias. As a result, the redox potentials on forward and 
-backward for a Nernsitan reaction will be identical, and can be solved analytically as \f[
-E_{redox}= E_{\mathrm{ref}}-\ln\frac{A_b}{A_f}
+backward for a Nernsitan reaction will be identical, and can be solved analytically as 
+\f[
+E_{redox}= E_{\mathrm{ref}}-\frac{k_B T}{ne}\ln\frac{A_b}{A_f}
 \f]
 where we found that reorganization energy and scanning rate of applied potential drop out of 
 the expression.
+
+\subsection subsec_reduced_unit Reduced Unit system.
+
+A reduced unit system system is used when the two electrochemistry models are implemented. 
+The energy in this unit system is measured in \f$k_B T/ne\f$, where \f$k_B\f$ is the 
+Boltzmann constant, \f$T\f$ the temperature, \f$n\f$ the number of electrons involved in the 
+electrochemical reaction and \f$e\f$ the charge of single electron. Rate constants and redox 
+potential of Nernstian reaction then simplify as
+\f[
+k_\mathrm{f}(t)=A_\mathrm{f}\exp\left[-\frac{[E(t)-E_\mathrm{Ref}+\lambda]^2}{4\lambda}\right],
+\f]
+\f[
+k_\mathrm{b}(t)=A_\mathrm{b}\exp\left[-\frac{[E(t)-E_\mathrm{Ref}-\lambda]^2}{4\lambda}\right].
+\f]
+\f[
+E_{redox}= E_{\mathrm{ref}}-\frac{k_B T}{ne}\ln\frac{A_b}{A_f}.
+\f]
+Hence when preparing input file, keep in mind that the following parameters are measured in reduced unit:
+   - \f$E_\mathrm{Ref}\f$, the reference potential,
+   - \f$\lambda\f$, the reorganization energy,
+   - \f$E_0\f$, the inital value of applid bias,
+   - \f$v\f$, the scan speed of applied bias.
   
 \section sec_cv_histogram Redox Potentials Histogram
 Just like what we did with conductance histograms, redox potential histogram is used to 
