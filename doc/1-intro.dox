@@ -48,10 +48,10 @@ The command `configure --help` will display options for `configure`. By default,
 - `--disable-module` -- Disable a particular module. Available modules are (replace `module` with the name listed below)
    - `transport-simulator` -- Simulating electron transport behavior, as described in \ref page_conductance_histograms.
    - `transport-fitter` -- Fitting electron transport behavior, as described in \ref page_conductance_histograms. This module requires the GSL.
-   - `echem-simulator` -- Simulating electrochemistry behavior, as described in \ref page_echem. The model of non-Nernstian reation will not be built if CVODE is not included.
+   - `echem-simulator` -- Simulating electrochemistry behavior, as described in \ref page_echem. The non-Nernstian reaction will not be built if CVODE is not included.
    - `echem-fitter` -- Fitting electrochemistry behavior, as described in \ref page_echem. This module requires the GSL.
-
 .
+
 Finally, should other packages be required (depending on the above options), they are specified with the following options to `configure`:
 - `--with-gsl=<PATH>` -- Location of GSL headers and libraries. Ignored if the GSL is not required (per the other `configure` options).
 

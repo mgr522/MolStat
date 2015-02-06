@@ -2,7 +2,7 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
- * \file echem/simulator_models/transport_observables.h
+ * \file echem/simulator_models/observables.h
  * \brief Interfaces for the various observables related to electrochemistry.
  *
  * \author Bo Fu, Matthew G.\ Reuter
