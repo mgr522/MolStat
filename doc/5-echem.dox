@@ -2,72 +2,47 @@
    Commons Attribution-NonCommercial 4.0 International Public License.
    MolStat (c) 2014, Northwestern University. */
 /**
-\page page_single_molecule_cv Single Molecule Cyclic Voltammetry
+\page page_echem Electrochemistry
 
-This chapter deals with using MolStat to simulate and fit single molecule Cyclic Voltammetry(CV)
-data; specifically the redox potential histogram. We begin with modeling the single molecule CV,
-introduce the redox potential histogram, and then detail the implemented MolStat model.
+This chapter deals with using MolStat to simulate and fit single-molecule electrochemistry data; specifically, the redox potential histogram. We begin by detailing models for understanding single-molecule electrochemistry, introducing the redox potential histogram, and then describing the various MolStat models.
 
-\section sec_cv_marcus Modeling Single Molecule CV
-We assume that the single molecule is immobilized on the electrode suface in this model. 
-Concentration used by macroscopic theory is ill-defined at single-molecule level. Instead 
-the probability that the molecule is in reduced or oxidized state takes the place of 
-concentration. In the electrochemical half-reaction
+\section sec_cv_marcus Modeling Single Molecule Electron Transfer
+We assume that the molecule is immobilized on the electrode surface in this model. Additionally, because we're considering a single molecule, the concentration used by macroscopic theories is ill-defined. Consequently, we instead consider the probability that the molecule is in its reduced or oxidized state. For the electrochemical half-reaction,
 \f[
 O+ne^-\rightleftharpoons R,
 \f]
-the evolution of the probabilities \f$P_\mathrm{O}(t)\f$ for the oxidized state \f$O\f$ and 
-\f$P_\mathrm{R}(t)\f$ for the reduced staes \f$R\f$ is described by the following master 
-equations,
-\f[
-P_\mathrm{O}'(t)=-k_\mathrm{f}(t)P_\mathrm{O}(t)+k_\mathrm{b}(t)P_\mathrm{R}(t),
-\f]
-\f[
-P_\mathrm{R}'(t)= k_\mathrm{f}(t)P_\mathrm{O}(t)-k_\mathrm{b}(t)P_\mathrm{R}(t),
-\f]
-where the rate constant of the forward (reduction) reaction \f$k_\mathrm{f}\f$ and the 
-rate constant of the backward (oxidation) reaction \f$k_\mathrm{b}\f$ are described 
-using Marcus theory as 
-\f[
-k_\mathrm{f}(t)=A_\mathrm{f}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})+\lambda]^2}{4\lambda k_\mathrm{B}T}\right],
-\f]
-\f[
-k_\mathrm{b}(t)=A_\mathrm{b}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})-\lambda]^2}{4\lambda k_\mathrm{B}T}\right].
-\f]
-The initial condition \f$\left[P_\mathrm{O}(0)=1,P_\mathrm{R}(0)=0\right]\f$ or 
-\f$\left[P_\mathrm{O}(0)=0,P_\mathrm{R}(0)=1\right]\f$ is also assumed. The physical parameters 
-involved in this model are
+the evolution of the probabilities \f$P_\mathrm{O}(t)\f$ for the oxidized state \f$O\f$ and \f$P_\mathrm{R}(t)\f$ for the reduced state \f$R\f$ is described by the master equation,
+\f{eqnarray*}{
+P_\mathrm{O}'(t) & = & -k_\mathrm{f}(t)P_\mathrm{O}(t)+k_\mathrm{b}(t)P_\mathrm{R}(t), \\
+P_\mathrm{R}'(t) & = & k_\mathrm{f}(t)P_\mathrm{O}(t)-k_\mathrm{b}(t)P_\mathrm{R}(t),
+\f}
+where \f$k_\mathrm{f(b)}\f$ is the rate constant of the forward (backward) half-reaction. These rate constants are described by Marcus theory,
+\f{eqnarray*}{
+k_\mathrm{f}(t) & = & A_\mathrm{f}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})+\lambda]^2}{4\lambda k_\mathrm{B}T}\right], \\
+k_\mathrm{b}(t) & = & A_\mathrm{b}\exp\left[-\frac{[ne(E(t)-E_\mathrm{Ref})-\lambda]^2}{4\lambda k_\mathrm{B}T}\right].
+\f}
+The initial condition is assumed to be either \f$\left\{P_\mathrm{O}(0)=1,P_\mathrm{R}(0)=0\right\}\f$ or \f$\left\{P_\mathrm{O}(0)=0,P_\mathrm{R}(0)=1\right\}\f$. The necessary physical parameters for electrochemistry are
    - \f$E_\mathrm{Ref}\f$, the reference potential,
    - \f$\lambda\f$, the reorganization energy,
-   - \f$A_\mathrm{f},A_\mathrm{b}\f$, the prefactor(s) for the forward or backward redox 
-	half-reaction,
-   - \f$E(t)\f$, the voltage waveform which is \f$E_0+vt\f$ if \f$0\leq t\leq t_\mathrm{lim}\f$ 
-	and \f$E_0+2vt_\mathrm{lim}-vt\f$ if \f$t_{lim}\leq t\leq 2t_\mathrm{lim}\f$, where 
-	\f$E_0\f$ is the initial bias and \f$v\f$ is the scan speed.
+   - \f$A_\mathrm{f}\f$, the prefactor for the forward redox half-reaction,
+   - \f$A_\mathrm{b}\f$, the prefactor for the backward redox half-reaction,
+   - \f$E(t)\f$, the voltage waveform, which we take to be
+     \f[ E(t) = \left\{ \begin{array}{ll} E_0+vt, & \mathrm{if }\;\; 0\leq t\leq t_\mathrm{lim}; \\ E_0+2vt_\mathrm{lim}-vt, & \mathrm{if }\;\; t_{lim}\leq t\leq 2t_\mathrm{lim}; \end{array} \right. \f]
+     where \f$E_0\f$ is the initial bias, \f$v\f$ is the scan speed, and \f$t_\mathrm{lim}\f$ is the turnaround time (for cyclic voltammetry).
 
-Both the reduction potential on forward scanning and the oxidation potential on backward 
-scanning can be predicted by our theory. We define the transition between oxidized state 
-\f$O\f$ and reduced state \f$R\f$ to happen at the time when the probabilities 
-\f$P_\mathrm{O}(t)=P_\mathrm{R}(t)=0.5\f$. Ideally, two such times will be found, one for 
-reduction on forward scanning and another one for oxidation on backward scanning. Although 
-the probabilities \f$P_\mathrm{O}(t)\f$ and \f$P_\mathrm{R}(t)\f$ can be solved analytically 
-from the master equations, the redox potential cannot be obtained analytically. Instead, a 
-package CVODE is used for numerically solving the master equations.   
+This theory can predict redox potentials on both the forward and backward scans of a cyclic voltammogram. We define this potential as the potential at the time where the expected redox state of the molecule changes; i.e., \f$P_\mathrm{O}(t)=P_\mathrm{R}(t)=0.5\f$. Ideally, two such times will be found, one on the forward scan and another on the backward scan.
 
-Two observables is considered in this module:
-   -# Forward Electron Transfer Potential,
-   -# Backward Electron Transfer Potential.
+Even though the probabilities \f$P_\mathrm{O}(t)\f$ and \f$P_\mathrm{R}(t)\f$ can be obtained analytically from the master equation, the redox potential cannot be obtained analytically. Consequently, we numerically solve the differential equation to obtain the redox potentials.
 
-The theory reduces to a simpler form when it comes to Nernstian reaction. An electrochemical 
-reaction is termed as Nernstian if the system is always at quasi-equilibrium. The 
-electochemical system can be treated using Nernstian reaction model when the reaction rate 
-is large compared to the scanning rate of applied potential, in which case the system adjust 
-instantly to an external change in bias. As a result, the redox potentials on forward and 
-backward for a Nernsitan reaction will be identical, and can be solved analytically as \f[
-E_{redox}= E_{\mathrm{ref}}-\ln\frac{A_b}{A_f}
+Two observables are considered defined in this electrochemistry module:
+   -# Forward electron transfer potential,
+   -# Backward electron transfer potential.
+
+The theory reduces to a simpler form when we consider the limit of a Nernstian reaction. An electrochemical reaction is termed as Nernstian if the system is always at quasi-equilibrium; that is, the voltage scan rate is sufficiently slow that the system instantly adjusts to changes in the bias. As a result, the forward and backward redox potentials will be identical, and are
+\f[
+E_\mathrm{redox}= E_{\mathrm{ref}}-\ln \left( \frac{A_b}{A_f} \right).
 \f]
-where we found that reorganization energy and scanning rate of applied potential drop out of 
-the expression.
+Interestingly, the reorganization energy does not enter into this equation.
   
 \section sec_cv_histogram Redox Potentials Histogram
 Just like what we did with conductance histograms, redox potential histogram is used to 
