@@ -44,55 +44,37 @@ E_\mathrm{redox}= E_{\mathrm{ref}}-\ln \left( \frac{A_b}{A_f} \right).
 \f]
 Interestingly, the reorganization energy does not enter into this equation.
   
-\section sec_cv_histogram Redox Potentials Histogram
-Just like what we did with conductance histograms, redox potential histogram is used to 
-investigate the electron transfer process in single-molecule electrochemsitry. The redox 
-potentials observed in each single-molecule events shows irreproducibility due to different 
-microscopic configuration. Hence the redox potentials of many single molecule redox events are
- compiled into a histogram which demonstrates the electrochemical properties of single molecule.
+\section sec_redox_histogram Redox Potential Histograms
+Similar to a conductance histograms, a redox potential histogram is used to assess electron transfer processes in single molecule electrochemsitry. Each time the electrochemistry measurement is performed, the molecule is in a slightly different microscopic configuration, leading to a distribution of measured redox potentials. A redox potential histogram is a way to analyze and visualize many experimental measurements.
 
-In MolStat, the redox potential histogram for single molecule reports the probability
-density function of the redox potential observable \cite reuter-2243. As
-described in previous sections and in Refs.\ \cite reuter-2243 and
-\cite williams-5937, MolStat then regards the physical parameters in the
-model as random variables, which determines the redox potential's probability
-density function.
+In MolStat, the redox potential histogram for single molecule reports the probability density function of the redox potential observable. As described in previous sections and in Refs.\ \cite reuter-2243 and \cite williams-5937, MolStat regards the model's physical parameters as random variables, which, in turn, determine the redox potential's probability density function.
 
 The two operations supported by MolStat are
--# Simulating single molecule redox potential histograms using simple model system. This operation 
-    is described in \ref sec_simulate_single_molecule_cv. Note that this model system does not
-   rely on first-principles electronic structure calculations; they are phenomenological. 
--# Fit a redox potential histogram for Nernstian reaction. 
+-# Simulating single molecule redox potential histograms using model systems. This operation is described in \ref sec_simulate_echem. The implemented model system do not rely on first-principles electronic structure calculations; they are phenomenological. 
+-# Fitting a redox potential histogram to a specified model. 
 
-\section sec_simulate_single_molecule_cv Simulating Single Molecule Redox Potential Histogram
-Simulating single molecule redox potential histogram is accomplished using the MolStat simulator;
-see \ref sec_molstat_simulate for details. Herein we list the observables and
-models for single molecule electrochemistry. These models facilitates calculation of
-redox potentials through various parameters.
+\section sec_simulate_echem Simulating a Redox Potential Histogram
+Simulating a single molecule redox potential histogram is accomplished using the MolStat simulator; see \ref sec_molstat_simulate for details. Herein we list the observables and models for single molecule electrochemistry.
 
-\subsection subsec_single_molecule_cv_observables Single Molecule Electrochemistry Observables
-Single-molecule electrochemistry observable is defined in echem/simulator_models/observables.h.
+\subsection subsec_echem_observables Single Molecule Electrochemistry Observables
 - Forward Electron Transfer Potential
-   - Electron transfer potential for the forward sweep. \f$ E_\mathrm{redox}=E(t_\mathrm{redox})\f$, 
-	where \f$P_\mathrm{O}(t_\mathrm{redox})=0.5\f$.
+   - Electron transfer potential for the forward sweep of a cyclic voltammogram. \f$ E_\mathrm{redox}=E(t_\mathrm{redox}) \f$, where \f$t_\mathrm{redox}\f$ is defined by \f$P_\mathrm{O}(t_\mathrm{redox})=0.5\f$.
    - Name for input files is `%ForwardETPotential`.
+   \if fullref
    - Implemented by the class molstat::echem::ForwardETPotential.
+   \endif
 
 - Backward Electron Transfer Potential
-   - Electron transfer potential for the backward sweep. \f$ E_\mathrm{redox}=E(t_\mathrm{redox})\f$, 
-where \f$P_\mathrm{O}(t_\mathrm{redox})=0.5\f$.
+   - Electron transfer potential for the backward sweep of a cyclic voltammogram. \f$ E_\mathrm{redox}=E(t_\mathrm{redox}) \f$, where \f$t_\mathrm{redox}\f$ is defined by \f$P_\mathrm{O}(t_\mathrm{redox})=0.5\f$.
    - Name for input files is `%BackwardETPotential`.
+   \if fullref
    - Implemented by the class molstat::echem::BackwardETPotential.
+   \endif
 
 
-\subsection subsec_single_molecule_cv_simulate_models Models for Simulating Single Molecule Redox Potential Histogram
-These models are referenced in echem/simulator_models/echem_simulate_module.cc.
-
+\subsection subsec_echem_simulate_models Models for Simulating a Redox Potential Histogram
 - `NonNernstianReaction`
-   - General single-moleucle electrochemistry model for redox potentials during cyclic voltammetry.
-   - Implemented by the class molstat::echem::NonNernstianReaction; full details are
-     presented there.
-   - Compatible with the `%ForwardETPotential` and `%BackwardETPotential` observables.
+   - Electrochemistry model for redox potentials observed for a non-Nernstian reaction.
    - Model parameters are
       - `e0` (\f$E_\mathrm{0}\f$), the initial applied potential at \f$t=0\f$,
       - `eref` (\f$E_\mathrm{Ref}\f$), the reference potential,
@@ -101,18 +83,28 @@ These models are referenced in echem/simulator_models/echem_simulate_module.cc.
       - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant,
       - `v` (\f$v\f$), the sweeping rate of the applied potential,
       - `tlim` (\f$t_\mathrm{lim}\f$), the potential switching time.
+   - A note and description of the reduced unit system is needed.
+   \if fullref
+   - Implemented by the class molstat::echem::NonNernstianReaction; full details are presented there.
+   - Compatible with the molstat::echem::ForwardETPotential and molstat::echem::BackwardETPotential observables.
+   \elseif userman
+   - Compatible with the ForwardETPotential and BackwardETPotential observables.
+   \endif
 
 - `NernstianReaction`
-   - Specific single-moleucle electrochemistry model for redox potentials in Nernstain reaction 
-	during cyclic voltammetry.
-   - Implemented by the class molstat::echem::NernstianReaction; full details are
-     presented there.
-   - Compatible with the `%ForwardETPotential` and `%BackwardETPotential` observables.
+   - Electrochemistry model for redox potentials observed for a Nernstian reaction.
    - Model parameters are
       - `eref` (\f$E_\mathrm{Ref}\f$), the reference potential,
       - `af` (\f$A_\mathrm{f}\f$), the prefactor for forward half-reaction rate constant,
-      - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant,
+      - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant.
+   - A note and description of the reduced unit system is needed.
+   \if fullref
+   - Implemented by the class molstat::echem::NonNernstianReaction; full details are presented there.
+   - Compatible with the molstat::echem::ForwardETPotential and molstat::echem::BackwardETPotential observables.
+   \elseif userman
+   - Compatible with the ForwardETPotential and BackwardETPotential observables.
+   \endif
 
-\section sec_fit_electron_transport Fitting Single Molecule Redox Potential Histogram
+\section sec_fit_echem Fitting a Redox Potential Histogram
 This part will completed later.
 */
