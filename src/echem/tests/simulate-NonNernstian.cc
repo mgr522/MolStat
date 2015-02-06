@@ -56,55 +56,51 @@ int main(int argc, char **argv)
 	valarray<double> params(7);
 
 	// check known values for several parameter sets
-	params[ModelType::Index_lambda] = 0.625;
+	params[ModelType::Index_lambda] = 24.176082;//0.625eV
 	params[ModelType::Index_Af] = 5.0e3;
 	params[ModelType::Index_Ab] = 5.0e3;
-	params[ModelType::Index_Eref] = 1.1; 
+	params[ModelType::Index_Eref] = 42.549904;//1.1V
 	params[ModelType::Index_E0] = 0.;
-	params[ModelType::Index_v] = 1.0;
+	params[ModelType::Index_v] = 38.681731;//1.0V/s
 	params[ModelType::Index_tlim] = 2.5;
-	assert(abs(0.121622 - nonnernstian->E_applied(0.121622, params)) < thresh);
-	assert(abs(2.32105 - nonnernstian->E_applied(2.678949, params)) < thresh);
-	assert(abs(4.951881e3 - nonnernstian->kf(0.5, params)) < thresh * 1.0e4);
-	assert(abs(4.123105e-7 - nonnernstian->kb(0.5, params)) < thresh * 1.0e-5);
+	assert(abs(4.704549 - nonnernstian->E_applied(0.121622, params)) < thresh);
+	assert(abs(89.78227 - nonnernstian->E_applied(2.678949, params)) < thresh);
 	assert(abs(4.356003e-4 - nonnernstian->kf(1.5, params)) < thresh * 1.0e-3);
 	assert(abs(2.284469e3 - nonnernstian->kb(1.5, params)) < thresh * 1.0e4);
 	assert(abs(4.356003e-4 - nonnernstian->kf(3.5, params)) < thresh * 1.0e-3);
 	assert(abs(2.284469e3 - nonnernstian->kb(3.5, params)) < thresh * 1.0e4);
-	assert(abs(1.134077 - FPotential(params)) < thresh);
-	assert(abs(1.065924 - BPotential(params)) < thresh);
+	assert(abs( (43.868061 - FPotential(params)) / 43.868061) < thresh);
+	assert(abs( (41.23170 - BPotential(params)) / 41.23170) < thresh);
 
 
-	params[ModelType::Index_lambda] = 0.725;
+	params[ModelType::Index_lambda] = 28.044255;//0.725eV
 	params[ModelType::Index_Af] = 5.0e6;
 	params[ModelType::Index_Ab] = 5.0e6;
-	params[ModelType::Index_Eref] = 1.2; 
+	params[ModelType::Index_Eref] = 46.418077; //1.2V
 	params[ModelType::Index_E0] = 0.;
-	params[ModelType::Index_v] = 1.0e+3;
+	params[ModelType::Index_v] = 38.681731e+3;//1.0e+3
 	params[ModelType::Index_tlim] = 2.5e-3;
-	assert(abs(1.266938 - FPotential(params)) < thresh);
-	assert(abs(1.133060 - BPotential(params)) < thresh);
+	assert(abs( (49.0073684 - FPotential(params)) / 49.0073684) < thresh);
+	assert(abs( (43.828604 - BPotential(params)) / 43.828604) < thresh);
 
-	params[ModelType::Index_lambda] = 0.525;
+	params[ModelType::Index_lambda] = 20.307909;//0.525
 	params[ModelType::Index_Af] = 5.0e9;
 	params[ModelType::Index_Ab] = 5.0e9;
-	params[ModelType::Index_Eref] = 0.9; 
+	params[ModelType::Index_Eref] = 34.813558; //0.9
 	params[ModelType::Index_E0] = 0.;
-	params[ModelType::Index_v] = 1.0e+6;
+	params[ModelType::Index_v] = 38.681731e+6;//1.0e+6
 	params[ModelType::Index_tlim] = 2.5e-6;
-	assert(abs(0.9150207 - FPotential(params)) < thresh);
-	assert(abs(0.8849815 - BPotential(params)) < thresh);
+	assert(abs( (35.3945937 - FPotential(params)) / 35.3945937) < thresh);
+	assert(abs( (34.2325201 - BPotential(params)) / 34.2325201) < thresh);
 
-	params[ModelType::Index_lambda] = 0.825;
+	params[ModelType::Index_lambda] = 31.912428;//0.825eV
 	params[ModelType::Index_Af] = 5.0e12;
 	params[ModelType::Index_Ab] = 5.0e12;
-	params[ModelType::Index_Eref] = 1.0; 
+	params[ModelType::Index_Eref] = 38.681731; //1.0V
 	params[ModelType::Index_E0] = 0.;
-	params[ModelType::Index_v] = 1.0e+9;
+	params[ModelType::Index_v] = 38.681731e+9;//1.0e+9
 	params[ModelType::Index_tlim] = 2.5e-9;
-	assert(abs(1.112267 - FPotential(params)) < thresh);
-	assert(abs(0.8877257 - BPotential(params)) < thresh);
+	assert(abs( (43.0244473 - FPotential(params)) / 43.0244473) < thresh);
+	assert(abs( (34.3387563 - BPotential(params))/ 34.3387563)  < thresh);
 
-
-	return 0;
 }

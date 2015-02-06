@@ -16,6 +16,7 @@
 
 #include <echem/simulator_models/nernstian.h>
 
+
 using namespace std;
 
 /// Shortcut for the type of model used in this test.
@@ -30,7 +31,7 @@ using ModelType = molstat::echem::NernstianReaction;
  */
 int main(int argc, char **argv)
 {
-	const double thresh = 1.0e-5;
+	const double thresh = 1.0e-4;
 
 	// use the factory to create a model
 	shared_ptr<ModelType> nernstian = dynamic_pointer_cast<ModelType>(
@@ -42,26 +43,32 @@ int main(int argc, char **argv)
 		);
 
 	// get the observable functions
-//	auto RPotential = nernstian->getObservableFunction(
-//		type_index{ typeid(molstat::echem::RedoxETPotential) } );
+	auto FPotential = nernstian->getObservableFunction(
+		type_index{ typeid(molstat::echem::ForwardETPotential) } );
+	auto BPotential = nernstian->getObservableFunction(
+		type_index{ typeid(molstat::echem::BackwardETPotential) } );
+
 
 	valarray<double> params(3);
 
 	// check known values for several parameter sets
 	params[ModelType::Index_Af] = 5.0e3;
 	params[ModelType::Index_Ab] = 5.0e3;
-	params[ModelType::Index_Eref] = 1.1; 
-//	assert(abs(1.1 - RPotential(params)) < thresh);
+	params[ModelType::Index_Eref] = 42.5499;//1.1V
+	assert(abs(42.5499 - FPotential(params)) < thresh);
+	assert(abs(42.5499 - BPotential(params)) < thresh);
 
 	params[ModelType::Index_Af] = 8.0e5;
 	params[ModelType::Index_Ab] = 5.0e3;
-	params[ModelType::Index_Eref] = 1.1; 
-//	assert(abs(1.2312 - RPotential(params)) < thresh);
+	params[ModelType::Index_Eref] = 42.5499;//1.1V 
+	assert(abs(47.62508 - FPotential(params)) < thresh);
+	assert(abs(47.62508 - BPotential(params)) < thresh);
 
 	params[ModelType::Index_Af] = 8.0e5;
 	params[ModelType::Index_Ab] = 9.0e8;
-	params[ModelType::Index_Eref] = 1.1; 
-//	assert(abs(0.918376 - RPotential(params)) < thresh);
+	params[ModelType::Index_Eref] = 42.5499;//1.1V 
+	assert(abs(35.52437 - FPotential(params)) < thresh);
+	assert(abs(35.52437 - BPotential(params)) < thresh);
 
 	return 0;
 }
