@@ -56,12 +56,12 @@ int main(int argc, char **argv)
 	valarray<double> params(7);
 
 	// check known values for several parameter sets
-	params[ModelType::Index_lambda] = 24.176082;
+	params[ModelType::Index_lambda] = 24.176082;//0.625eV
 	params[ModelType::Index_Af] = 5.0e3;
 	params[ModelType::Index_Ab] = 5.0e3;
-	params[ModelType::Index_Eref] = 42.549904;//reduced energy unit 
-	params[ModelType::Index_E0] = 0.;//reduced energy unit 
-	params[ModelType::Index_v] = 38.681731;//reduced energy unit
+	params[ModelType::Index_Eref] = 42.549904;//1.1V
+	params[ModelType::Index_E0] = 0.;
+	params[ModelType::Index_v] = 38.681731;//1.0V/s
 	params[ModelType::Index_tlim] = 2.5;
 	assert(abs(4.704549 - nonnernstian->E_applied(0.121622, params)) < thresh);
 	assert(abs(89.78227 - nonnernstian->E_applied(2.678949, params)) < thresh);
@@ -73,32 +73,32 @@ int main(int argc, char **argv)
 	assert(abs( (41.23170 - BPotential(params)) / 41.23170) < thresh);
 
 
-	params[ModelType::Index_lambda] = 28.044255;//reduced energy unit
+	params[ModelType::Index_lambda] = 28.044255;//0.725eV
 	params[ModelType::Index_Af] = 5.0e6;
 	params[ModelType::Index_Ab] = 5.0e6;
-	params[ModelType::Index_Eref] = 46.418077; //reduced energy unit
-	params[ModelType::Index_E0] = 0.;//reduced energy unit
-	params[ModelType::Index_v] = 38.681731e+3;//reduced energy unit
+	params[ModelType::Index_Eref] = 46.418077; //1.2V
+	params[ModelType::Index_E0] = 0.;
+	params[ModelType::Index_v] = 38.681731e+3;//1.0e+3
 	params[ModelType::Index_tlim] = 2.5e-3;
 	assert(abs( (49.0073684 - FPotential(params)) / 49.0073684) < thresh);
 	assert(abs( (43.828604 - BPotential(params)) / 43.828604) < thresh);
 
-	params[ModelType::Index_lambda] = 20.307909;//reduced energy unit
+	params[ModelType::Index_lambda] = 20.307909;//0.525
 	params[ModelType::Index_Af] = 5.0e9;
 	params[ModelType::Index_Ab] = 5.0e9;
-	params[ModelType::Index_Eref] = 34.813558; //reduced energy unit
-	params[ModelType::Index_E0] = 0.;//reduced energy unit
-	params[ModelType::Index_v] = 38.681731e+6;//reduced energy unit
+	params[ModelType::Index_Eref] = 34.813558; //0.9
+	params[ModelType::Index_E0] = 0.;
+	params[ModelType::Index_v] = 38.681731e+6;//1.0e+6
 	params[ModelType::Index_tlim] = 2.5e-6;
 	assert(abs( (35.3945937 - FPotential(params)) / 35.3945937) < thresh);
 	assert(abs( (34.2325201 - BPotential(params)) / 34.2325201) < thresh);
 
-	params[ModelType::Index_lambda] = 31.912428;//reduced energy unit
+	params[ModelType::Index_lambda] = 31.912428;//0.825eV
 	params[ModelType::Index_Af] = 5.0e12;
 	params[ModelType::Index_Ab] = 5.0e12;
-	params[ModelType::Index_Eref] = 38.681731; //reduced energy unit
-	params[ModelType::Index_E0] = 0.;//reduced energy unit
-	params[ModelType::Index_v] = 38.681731e+9;//reduced energy unit
+	params[ModelType::Index_Eref] = 38.681731; //1.0V
+	params[ModelType::Index_E0] = 0.;
+	params[ModelType::Index_v] = 38.681731e+9;//1.0e+9
 	params[ModelType::Index_tlim] = 2.5e-9;
 	assert(abs( (43.0244473 - FPotential(params)) / 43.0244473) < thresh);
 	assert(abs( (34.3387563 - BPotential(params))/ 34.3387563)  < thresh);
