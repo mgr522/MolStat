@@ -42,6 +42,7 @@ namespace echem {
  * - Time is measured in seconds.
  * - Energy is measured in \f$ k_\mathrm{B} T\f$.
  * - Electric potential is measured in \f$ k_\mathrm{B} T / (ne)\f$.
+ * - Sweep rate is measured in \f$ k_\mathrm{B} T / (ne)\f$ per second.
  *
  * Model parameters are
  * - `lambda` (\f$\lambda\f$), the reorganization energy,
@@ -52,7 +53,7 @@ namespace echem {
  * - `eref` (\f$E_\mathrm{ref}\f$), the reference potential,
  * - `e0` (\f$E_\mathrm{0}\f$), the initial potential at \f$t=0\f$,
  * - `v` (\f$v\f$), the sweep rate of the applied potential,
- * - `tinv` (\f$t_\mathrm{lim}\f$), the time where the backward sweep begins.
+ * - `tlim` (\f$t_\mathrm{lim}\f$), the time where the backward sweep begins.
  *
  * The probabilities \f$P_\mathrm{O}(t)\f$ and \f$P_\mathrm{R}(t)\f$ that the
  * molecule is in its oxidized (O) or reduced species (R), respectively, in the
@@ -67,11 +68,15 @@ namespace echem {
  * The rate constants of the forward and backward half-reactions are described
  * using Marcus theory,
  * \f[k_\mathrm{f}(t)=A_\mathrm{f} e^{-\frac{[ne(E(t)-E_\mathrm{ref})+\lambda]^2}{4\lambda k_\mathrm{B}T}}\f]
- * \f[k_\mathrm{f}(t)=A_\mathrm{f} e^{-\frac{[ne(E(t)-E_\mathrm{ref})+\lambda]^2}{4\lambda k_\mathrm{B}T}}\f]
+ * \f[k_\mathrm{b}(t)=A_\mathrm{b} e^{-\frac{[ne(E(t)-E_\mathrm{ref})-\lambda]^2}{4\lambda k_\mathrm{B}T}}\f]
  * and the potential wave form \f$E(t)\f$ is taken here as \f$E_0+vt\f$ for
  * \f$0\leq t \leq t_\mathrm{lim}\f$ and \f$E_0+2vt_\mathrm{lim}-vt\f$ for
  * \f$t_\mathrm{lim}\leq t\leq 2t_\mathrm{lim}\f$.
  *
+ * Additoinally, the expressions of rate constants simplify in the reduced unit system as:
+ * \f[k_\mathrm{f}(t)=A_\mathrm{f} e^{-\frac{[E(t)-E_\mathrm{ref}+\lambda]^2}{4\lambda}}\f]
+ * \f[k_\mathrm{b}(t)=A_\mathrm{b} e^{-\frac{[E(t)-E_\mathrm{ref}-\lambda]^2}{4\lambda}}\f]
+
  * The forward electron transfer potential is \f$E(t)\f$ for the
  * \f$ 0 \le t \le t_\mathrm{lim} \f$ satisfying \f$P_\mathrm{O}(t)=1/2\f$
  * (if such a \f$t\f$ exists). The backward potential is similarly defined for
@@ -145,8 +150,24 @@ public:
 	 */
 	static double E_applied(double t, const std::valarray<double> &params);
 
+	/**
+	 * \brief The redox potential where electron transfers during the forward 
+	 *    potential sweeping.
+	 * 
+	 * \param[in] t The time.
+	 * \param[in] params The set of model parameters.
+	 * \return The forward redox potential.
+	 */
 	virtual double ForwardETP(const std::valarray<double> &params) const
 		override;
+	/**
+	 * \brief The redox potential where electron transfers during the backward 
+	 *    potential sweeping.
+	 * 
+	 * \param[in] t The time.
+	 * \param[in] params The set of model parameters.
+	 * \return The backward redox potential.
+	 */
 	virtual double BackwardETP(const std::valarray<double> &params) const
 		override;
 
