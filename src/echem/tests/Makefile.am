@@ -15,7 +15,6 @@ simulate_Nernstian_LDADD = ../simulator_models/libechem_simulate.a \
 
 # test that requires CVODE
 if HAVE_CVODE
-
 TESTS += \
 	simulate-NonNernstian 
 
