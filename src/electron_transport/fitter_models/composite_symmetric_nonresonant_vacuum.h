@@ -25,7 +25,7 @@ namespace transport {
  *    model was designed with molecules, combined with the background
  *    \"vacuum\" signal, in mind.
  *
- * \note This model only considers the the nonresonant tunneling line shape
+ * \note This model only considers the nonresonant tunneling line shape
  *    convolved with the vacuum line shape. A bare vacuum component is not
  *    included.
  *
