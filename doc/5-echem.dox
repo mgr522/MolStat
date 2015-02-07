@@ -73,6 +73,14 @@ Simulating a single molecule redox potential histogram is accomplished using the
 
 
 \subsection subsec_echem_simulate_models Models for Simulating a Redox Potential Histogram
+
+A reduced unit system is used in the following simulator models to cut down on the number of physical parameters.
+- Energies are measured in \f$k_\mathrm{B} T\f$, where \f$k_\mathrm{B}\f$ is the Boltzmann constant and \f$T\f$ the (absolute) temperature.
+- Electric potentials are measured in \f$k_\mathrm{B} T/(ne)\f$, where \f$n\f$ the number of electrons transferred in the electrochemical reaction and \f$e\f$ the electron charge.
+- Times are measured in seconds.
+.
+This reduced unit system must be used when specifying distributions for the model parameters.
+
 - `NonNernstianReaction`
    - Electrochemistry model for redox potentials observed for a non-Nernstian reaction.
    - Model parameters are
@@ -83,7 +91,7 @@ Simulating a single molecule redox potential histogram is accomplished using the
       - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant,
       - `v` (\f$v\f$), the sweeping rate of the applied potential,
       - `tlim` (\f$t_\mathrm{lim}\f$), the potential switching time.
-   - A note and description of the reduced unit system is needed.
+   - The model parameters must be specified using the reduced unit system described above.
    \if fullref
    - Implemented by the class molstat::echem::NonNernstianReaction; full details are presented there.
    - Compatible with the molstat::echem::ForwardETPotential and molstat::echem::BackwardETPotential observables.
@@ -97,7 +105,7 @@ Simulating a single molecule redox potential histogram is accomplished using the
       - `eref` (\f$E_\mathrm{Ref}\f$), the reference potential,
       - `af` (\f$A_\mathrm{f}\f$), the prefactor for forward half-reaction rate constant,
       - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant.
-   - A note and description of the reduced unit system is needed.
+   - The model parameters must be specified using the reduced unit system described above.
    \if fullref
    - Implemented by the class molstat::echem::NonNernstianReaction; full details are presented there.
    - Compatible with the molstat::echem::ForwardETPotential and molstat::echem::BackwardETPotential observables.
