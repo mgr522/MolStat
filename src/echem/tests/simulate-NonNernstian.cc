@@ -15,7 +15,6 @@
 
 #include <cassert>
 #include <valarray>
-#include <iostream>
 
 #include <echem/simulator_models/non-nernstian.h>
 
