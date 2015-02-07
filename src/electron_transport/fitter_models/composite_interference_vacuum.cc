@@ -215,7 +215,7 @@ double CompositeInterferenceVacuumFitModel::int_dp_df(double gp,
 {
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
-	const double g = fitparams[4];
+	const double g = fitparams[3];
 	const double f = fitparams[F];
 
 	const double temp1 = g-gp;
