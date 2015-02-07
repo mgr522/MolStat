@@ -10,27 +10,28 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     21639,        589]
-NotebookOptionsPosition[     19705,        514]
-NotebookOutlinePosition[     20138,        531]
-CellTagsIndexPosition[     20095,        528]
+NotebookDataLength[     24827,        664]
+NotebookOptionsPosition[     22676,        584]
+NotebookOutlinePosition[     23109,        601]
+CellTagsIndexPosition[     23066,        598]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
 
 Cell[CellGroupData[{
-Cell["Simulator Model Test Functions", "Section",
- CellChangeTimes->{{3.603652512335588*^9, 3.603652516166339*^9}, {
-  3.6085715981586657`*^9, 3.60857160008716*^9}, {3.631284097018339*^9, 
-  3.631284099233941*^9}, {3.6322685317664747`*^9, 3.632268542250988*^9}}],
+Cell["Tests for the Simulator Models", "Section",
+ CellChangeTimes->{{3.6085591912218513`*^9, 3.6085591933715973`*^9}, {
+  3.6312841014978848`*^9, 3.6312841037057343`*^9}}],
 
 Cell[CellGroupData[{
 
-Cell["Nernstian Reaction", "Subsection",
- CellChangeTimes->{{3.613835012832053*^9, 3.613835020878746*^9}, {
-   3.619268111821021*^9, 3.61926811254663*^9}, 3.619277417960277*^9, {
-   3.63225174043683*^9, 3.6322517435250063`*^9}}],
+Cell["Nernstian Reactions", "Subsection",
+ CellChangeTimes->{{3.608559657965395*^9, 3.608559662699814*^9}, 
+   3.608571745026094*^9, {3.6322518339481783`*^9, 3.632251839324486*^9}}],
+
+Cell["Test function", "Text",
+ CellChangeTimes->{{3.63232816587529*^9, 3.632328167514461*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -57,15 +58,104 @@ Cell[BoxData[
   3.63231629674811*^9, 3.6323163216490717`*^9}, {3.632316360672305*^9, 
   3.632316379256463*^9}, {3.632316460239882*^9, 3.632316548069199*^9}, {
   3.63231864756157*^9, 3.632318678920002*^9}, {3.6323188937116537`*^9, 
-  3.632318944629426*^9}}]
+  3.632318944629426*^9}}],
+
+Cell["Tests", "Text",
+ CellChangeTimes->{{3.632328169387252*^9, 3.6323281696664457`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Eref", "=", "1.1"}], ",", 
+     RowBox[{"Af", "=", 
+      RowBox[{"5.0", " ", 
+       SuperscriptBox["10", "3"]}]}], ",", 
+     RowBox[{"Ab", "=", 
+      RowBox[{"5.0", " ", 
+       SuperscriptBox["10", "3"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"EredoxNernstian", "[", 
+    RowBox[{"Eref", ",", "Ab", ",", "Af"}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
+   3.6085597161193333`*^9, 3.6085597675553083`*^9}, 3.60856060722332*^9, {
+   3.61926579958862*^9, 3.619265805498262*^9}, {3.619265862935032*^9, 
+   3.619265869948452*^9}, {3.632252017269664*^9, 3.6322520951721196`*^9}, {
+   3.6323191109979343`*^9, 3.6323191124144993`*^9}}],
+
+Cell[BoxData["\<\"Redox Potential (Reduced Units): 1.1\"\>"], "Print",
+ CellChangeTimes->{{3.6323165403093157`*^9, 3.632316551734282*^9}, 
+   3.632318950654883*^9, 3.632318990483029*^9, 3.632319121887281*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Eref", "=", "1.1"}], ",", 
+     RowBox[{"Af", "=", 
+      RowBox[{"8.0", " ", 
+       SuperscriptBox["10", "5"]}]}], ",", 
+     RowBox[{"Ab", "=", 
+      RowBox[{"5.0", " ", 
+       SuperscriptBox["10", "3"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"EredoxNernstian", "[", 
+    RowBox[{"Eref", ",", "Ab", ",", "Af"}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
+  3.6085597161193333`*^9, 3.6085597675553083`*^9}, {3.60856060073641*^9, 
+  3.608560648126318*^9}, {3.619265844015503*^9, 3.619265881276836*^9}, {
+  3.632252109005911*^9, 3.6322521250128264`*^9}, {3.632319117664567*^9, 
+  3.6323191190550623`*^9}}],
+
+Cell[BoxData["\<\"Redox Potential (Reduced Units): 6.17517\"\>"], "Print",
+ CellChangeTimes->{3.632316596591374*^9, 3.6323189522036867`*^9, 
+  3.6323189923229027`*^9, 3.632319123180333*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Eref", "=", "0.4"}], ",", 
+     RowBox[{"Af", "=", 
+      RowBox[{"8.0", " ", 
+       SuperscriptBox["10", "5"]}]}], ",", 
+     RowBox[{"Ab", "=", 
+      RowBox[{"9.0", " ", 
+       SuperscriptBox["10", "8"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"EredoxNernstian", "[", 
+    RowBox[{"Eref", ",", "Ab", ",", "Af"}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
+  3.6085597161193333`*^9, 3.6085597675553083`*^9}, {3.60856060073641*^9, 
+  3.608560648126318*^9}, {3.608561079437639*^9, 3.60856109013211*^9}, {
+  3.6192658877907133`*^9, 3.619265900339574*^9}, {3.632252129996112*^9, 
+  3.632252159660808*^9}, {3.632316747541465*^9, 3.632316748949106*^9}, {
+  3.632319148901226*^9, 3.632319150535054*^9}}],
+
+Cell[BoxData["\<\"Redox Potential (Reduced Units): -6.62554\"\>"], "Print",
+ CellChangeTimes->{3.632316597574559*^9, 3.6323167499033337`*^9, 
+  3.63231895606319*^9, 3.632318993807535*^9, 3.632319150875683*^9}]
+}, Open  ]]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Non-Nernstian Reaction", "Subsection",
- CellChangeTimes->{{3.608571923440621*^9, 3.608571926057891*^9}, {
-  3.619268113819379*^9, 3.619268115602446*^9}, {3.619283740728209*^9, 
-  3.619283741414702*^9}, {3.632251746020149*^9, 3.6322517519654894`*^9}}],
+Cell["Non-Nernstian Reactions", "Subsection",
+ CellChangeTimes->{{3.608559657965395*^9, 3.608559662699814*^9}, {
+   3.608561292043438*^9, 3.608561292915244*^9}, 3.608571746394112*^9, {
+   3.619268095285861*^9, 3.6192680959710283`*^9}, {3.619276371789603*^9, 
+   3.619276372747563*^9}, {3.6322518427236805`*^9, 3.6322518500120974`*^9}}],
+
+Cell["Test function", "Text",
+ CellChangeTimes->{{3.632328147867489*^9, 3.632328149282827*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -225,112 +315,10 @@ Cell[BoxData[
    3.632320416753051*^9, 3.632320460303254*^9}, {3.6323205305329437`*^9, 
    3.6323205528372183`*^9}, {3.632321473053937*^9, 3.632321553034522*^9}, {
    3.632322166316016*^9, 3.632322167329529*^9}, {3.6323222138812838`*^9, 
-   3.632322219160472*^9}, {3.632322770122958*^9, 3.632322813887879*^9}}]
-}, Open  ]]
-}, Open  ]],
+   3.632322219160472*^9}, {3.632322770122958*^9, 3.632322813887879*^9}}],
 
-Cell[CellGroupData[{
-
-Cell["Tests for the Simulator Models", "Section",
- CellChangeTimes->{{3.6085591912218513`*^9, 3.6085591933715973`*^9}, {
-  3.6312841014978848`*^9, 3.6312841037057343`*^9}}],
-
-Cell[CellGroupData[{
-
-Cell["Nernstian Reactions", "Subsection",
- CellChangeTimes->{{3.608559657965395*^9, 3.608559662699814*^9}, 
-   3.608571745026094*^9, {3.6322518339481783`*^9, 3.632251839324486*^9}}],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"Eref", "=", "1.1"}], ",", 
-     RowBox[{"Af", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}], ",", 
-     RowBox[{"Ab", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
-   RowBox[{"EredoxNernstian", "[", 
-    RowBox[{"Eref", ",", "Ab", ",", "Af"}], "]"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
-   3.6085597161193333`*^9, 3.6085597675553083`*^9}, 3.60856060722332*^9, {
-   3.61926579958862*^9, 3.619265805498262*^9}, {3.619265862935032*^9, 
-   3.619265869948452*^9}, {3.632252017269664*^9, 3.6322520951721196`*^9}, {
-   3.6323191109979343`*^9, 3.6323191124144993`*^9}}],
-
-Cell[BoxData["\<\"Redox Potential (Reduced Units): 1.1\"\>"], "Print",
- CellChangeTimes->{{3.6323165403093157`*^9, 3.632316551734282*^9}, 
-   3.632318950654883*^9, 3.632318990483029*^9, 3.632319121887281*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"Eref", "=", "1.1"}], ",", 
-     RowBox[{"Af", "=", 
-      RowBox[{"8.0", " ", 
-       SuperscriptBox["10", "5"]}]}], ",", 
-     RowBox[{"Ab", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
-   RowBox[{"EredoxNernstian", "[", 
-    RowBox[{"Eref", ",", "Ab", ",", "Af"}], "]"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
-  3.6085597161193333`*^9, 3.6085597675553083`*^9}, {3.60856060073641*^9, 
-  3.608560648126318*^9}, {3.619265844015503*^9, 3.619265881276836*^9}, {
-  3.632252109005911*^9, 3.6322521250128264`*^9}, {3.632319117664567*^9, 
-  3.6323191190550623`*^9}}],
-
-Cell[BoxData["\<\"Redox Potential (Reduced Units): 6.17517\"\>"], "Print",
- CellChangeTimes->{3.632316596591374*^9, 3.6323189522036867`*^9, 
-  3.6323189923229027`*^9, 3.632319123180333*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"Eref", "=", "0.4"}], ",", 
-     RowBox[{"Af", "=", 
-      RowBox[{"8.0", " ", 
-       SuperscriptBox["10", "5"]}]}], ",", 
-     RowBox[{"Ab", "=", 
-      RowBox[{"9.0", " ", 
-       SuperscriptBox["10", "8"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
-   RowBox[{"EredoxNernstian", "[", 
-    RowBox[{"Eref", ",", "Ab", ",", "Af"}], "]"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
-  3.6085597161193333`*^9, 3.6085597675553083`*^9}, {3.60856060073641*^9, 
-  3.608560648126318*^9}, {3.608561079437639*^9, 3.60856109013211*^9}, {
-  3.6192658877907133`*^9, 3.619265900339574*^9}, {3.632252129996112*^9, 
-  3.632252159660808*^9}, {3.632316747541465*^9, 3.632316748949106*^9}, {
-  3.632319148901226*^9, 3.632319150535054*^9}}],
-
-Cell[BoxData["\<\"Redox Potential (Reduced Units): -6.62554\"\>"], "Print",
- CellChangeTimes->{3.632316597574559*^9, 3.6323167499033337`*^9, 
-  3.63231895606319*^9, 3.632318993807535*^9, 3.632319150875683*^9}]
-}, Open  ]]
-}, Closed]],
-
-Cell[CellGroupData[{
-
-Cell["Non-Nernstian Reactions", "Subsection",
- CellChangeTimes->{{3.608559657965395*^9, 3.608559662699814*^9}, {
-   3.608561292043438*^9, 3.608561292915244*^9}, 3.608571746394112*^9, {
-   3.619268095285861*^9, 3.6192680959710283`*^9}, {3.619276371789603*^9, 
-   3.619276372747563*^9}, {3.6322518427236805`*^9, 3.6322518500120974`*^9}}],
+Cell["Tests", "Text",
+ CellChangeTimes->{{3.6323281524423313`*^9, 3.632328152802726*^9}}],
 
 Cell[CellGroupData[{
 
@@ -505,6 +493,88 @@ Cell[BoxData["\<\"Forward potential (reduced units): 1.00012\"\>"], "Print",
 Cell[BoxData["\<\"Backward potential (reduced units): 0.999889\"\>"], "Print",
  CellChangeTimes->{3.632323584572342*^9}]
 }, Open  ]]
+}, Open  ]],
+
+Cell["\<\
+The following test should not yield a forward or backward potential (which is \
+what the output garbage means -- graceful failure tests are not included in \
+the above script).\
+\>", "Text",
+ CellChangeTimes->{{3.632327907400051*^9, 3.6323279460771933`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Eref", "=", "1.0"}], ",", 
+     RowBox[{"Af", "=", 
+      RowBox[{"5.0", " ", 
+       RowBox[{"10", "^", "6"}]}]}], ",", 
+     RowBox[{"Ab", "=", 
+      RowBox[{"5.0", " ", 
+       RowBox[{"10", "^", "4"}]}]}], ",", 
+     RowBox[{"lambda", "=", "0.825"}], ",", 
+     RowBox[{"v", "=", "1.0"}], " ", ",", 
+     RowBox[{"e0", "=", 
+      RowBox[{"-", "1."}]}], ",", 
+     RowBox[{"tlim", "=", "2.5"}], " ", ",", 
+     RowBox[{"accuracy", "=", "15"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"EredoxNonNernstian", "[", 
+    RowBox[{
+    "Eref", ",", "Af", ",", "Ab", ",", "lambda", ",", "v", ",", "e0", ",", 
+     "tlim", ",", "accuracy"}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
+   3.6085597161193333`*^9, 3.6085597675553083`*^9}, 3.60856060722332*^9, {
+   3.608561297164441*^9, 3.608561311075807*^9}, {3.608561496385501*^9, 
+   3.6085614965427713`*^9}, {3.618680289457239*^9, 3.6186803070075197`*^9}, {
+   3.619276436850596*^9, 3.619276441823942*^9}, {3.6322588924846334`*^9, 
+   3.6322589010645094`*^9}, {3.632259055763816*^9, 3.6322590882276506`*^9}, {
+   3.6322681905199137`*^9, 3.6322682004250593`*^9}, {3.632268366732292*^9, 
+   3.6322683862095995`*^9}, {3.632327806659235*^9, 3.632327895312304*^9}, {
+   3.632329531769809*^9, 3.632329542373972*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"FindRoot", "::", "reged"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"The point \[NoBreak]\\!\\({2.5`}\\)\[NoBreak] is at the \
+edge of the search region \[NoBreak]\\!\\({0.`, 2.5`}\\)\[NoBreak] in \
+coordinate \[NoBreak]\\!\\(1\\)\[NoBreak] and the computed search direction \
+points outside the region. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
+ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/message/FindRoot/reged\\\", ButtonNote -> \
+\\\"FindRoot::reged\\\"]\\)\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{3.632329542855176*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"FindRoot", "::", "lstol"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"The line search decreased the step size to within \
+tolerance specified by AccuracyGoal and PrecisionGoal but was unable to find \
+a sufficient decrease in the merit function. You may need more than \
+\[NoBreak]\\!\\(MachinePrecision\\)\[NoBreak] digits of working precision to \
+meet these tolerances. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
+ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/message/FindRoot/lstol\\\", ButtonNote -> \
+\\\"FindRoot::lstol\\\"]\\)\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{3.632329542867179*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Forward potential (reduced units): 1.5\"\>"], "Print",
+ CellChangeTimes->{{3.632327818718441*^9, 3.6323278962486*^9}, 
+   3.6323282036641207`*^9, 3.63232954286967*^9}],
+
+Cell[BoxData["\<\"Backward potential (reduced units): 1.49816\"\>"], "Print",
+ CellChangeTimes->{{3.632327818718441*^9, 3.6323278962486*^9}, 
+   3.6323282036641207`*^9, 3.632329542871807*^9}]
+}, Open  ]]
 }, Open  ]]
 }, Closed]]
 }, Closed]],
@@ -531,66 +601,71 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[580, 22, 262, 3, 64, "Section"],
+Cell[580, 22, 172, 2, 64, "Section"],
 Cell[CellGroupData[{
-Cell[867, 29, 228, 3, 44, "Subsection"],
-Cell[1098, 34, 1166, 25, 173, "Input"]
-}, Closed]],
+Cell[777, 28, 181, 2, 44, "Subsection"],
+Cell[961, 32, 94, 1, 30, "Text"],
+Cell[1058, 35, 1166, 25, 173, "Input"],
+Cell[2227, 62, 89, 1, 30, "Text"],
 Cell[CellGroupData[{
-Cell[2301, 64, 256, 3, 36, "Subsection"],
-Cell[2560, 69, 6833, 158, 604, "Input"]
-}, Open  ]]
+Cell[2341, 67, 792, 18, 56, "Input"],
+Cell[3136, 87, 208, 2, 21, "Print"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[9442, 233, 172, 2, 64, "Section"],
-Cell[CellGroupData[{
-Cell[9639, 239, 181, 2, 44, "Subsection"],
-Cell[CellGroupData[{
-Cell[9845, 245, 792, 18, 56, "Input"],
-Cell[10640, 265, 208, 2, 21, "Print"]
+Cell[3381, 94, 765, 18, 56, "Input"],
+Cell[4149, 114, 189, 2, 21, "Print"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10885, 272, 765, 18, 56, "Input"],
-Cell[11653, 292, 189, 2, 21, "Print"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[11879, 299, 857, 19, 56, "Input"],
-Cell[12739, 320, 209, 2, 21, "Print"]
+Cell[4375, 121, 857, 19, 56, "Input"],
+Cell[5235, 142, 209, 2, 21, "Print"]
 }, Open  ]]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[12997, 328, 335, 4, 36, "Subsection"],
+Cell[5493, 150, 335, 4, 36, "Subsection"],
+Cell[5831, 156, 95, 1, 30, "Text"],
+Cell[5929, 159, 6833, 158, 604, "Input"],
+Cell[12765, 319, 89, 1, 30, "Text"],
 Cell[CellGroupData[{
-Cell[13357, 336, 799, 21, 77, "Input"],
+Cell[12879, 324, 799, 21, 77, "Input"],
 Cell[CellGroupData[{
-Cell[14181, 361, 118, 1, 22, "Print"],
-Cell[14302, 364, 119, 1, 22, "Print"]
+Cell[13703, 349, 118, 1, 22, "Print"],
+Cell[13824, 352, 119, 1, 22, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[14470, 371, 1415, 33, 78, "Input"],
+Cell[13992, 359, 1415, 33, 78, "Input"],
 Cell[CellGroupData[{
-Cell[15910, 408, 117, 1, 22, "Print"],
-Cell[16030, 411, 119, 1, 22, "Print"]
+Cell[15432, 396, 117, 1, 22, "Print"],
+Cell[15552, 399, 119, 1, 22, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[16198, 418, 1332, 32, 78, "Input"],
+Cell[15720, 406, 1332, 32, 78, "Input"],
 Cell[CellGroupData[{
-Cell[17555, 454, 118, 1, 22, "Print"],
-Cell[17676, 457, 120, 1, 22, "Print"]
+Cell[17077, 442, 118, 1, 22, "Print"],
+Cell[17198, 445, 120, 1, 22, "Print"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[17845, 464, 1425, 33, 78, "Input"],
+Cell[17367, 452, 1425, 33, 78, "Input"],
 Cell[CellGroupData[{
-Cell[19295, 501, 120, 1, 22, "Print"],
-Cell[19418, 504, 120, 1, 22, "Print"]
+Cell[18817, 489, 120, 1, 22, "Print"],
+Cell[18940, 492, 120, 1, 22, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[19087, 497, 268, 5, 49, "Text"],
+Cell[CellGroupData[{
+Cell[19380, 506, 1411, 30, 63, "Input"],
+Cell[20794, 538, 620, 12, 60, "Message"],
+Cell[21417, 552, 688, 13, 75, "Message"],
+Cell[CellGroupData[{
+Cell[22130, 569, 185, 2, 22, "Print"],
+Cell[22318, 573, 191, 2, 22, "Print"]
 }, Open  ]]
 }, Open  ]]
 }, Closed]]
 }, Closed]],
-Cell[19589, 511, 112, 1, 50, "Section"]
+Cell[22560, 581, 112, 1, 50, "Section"]
 }
 ]
 *)

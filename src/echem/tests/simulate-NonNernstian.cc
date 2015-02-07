@@ -15,6 +15,7 @@
 
 #include <cassert>
 #include <valarray>
+#include <iostream>
 
 #include <echem/simulator_models/non-nernstian.h>
 
@@ -96,7 +97,33 @@ int main(int argc, char **argv)
 	assert(abs((1.00012 - FPotential(params)) / 1.00012) < thresh);
 	assert(abs((0.999889 - BPotential(params))/ 0.999889)  < thresh);
 
-	// NEED TO ADD A TEST THAT DOESN'T PRODUCE POTENTIALS!
+	// this test yields a system where the desired potentials are not found...
+	// make sure the exception is thrown
+	params[ModelType::Index_lambda] = 0.825;
+	params[ModelType::Index_Af] = 5.e6;
+	params[ModelType::Index_Ab] = 5.e4;
+	params[ModelType::Index_Eref] = 1.;
+	params[ModelType::Index_E0] = -1.;
+	params[ModelType::Index_v] = 1.;
+	params[ModelType::Index_tlim] = 2.5;
+	try
+	{
+		FPotential(params);
+		assert(false); // should have thrown
+	}
+	catch(const molstat::NoObservableProduced &e)
+	{
+		// should be here
+	}
+	try
+	{
+		BPotential(params);
+		assert(false); // should have thrown
+	}
+	catch(const molstat::NoObservableProduced &e)
+	{
+		// should be here
+	}
 
 	return 0;
 }
