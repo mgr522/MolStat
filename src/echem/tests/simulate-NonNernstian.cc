@@ -63,15 +63,14 @@ int main(int argc, char **argv)
 	params[ModelType::Index_E0] = 0.;
 	params[ModelType::Index_v] = 38.681731;//1.0V/s
 	params[ModelType::Index_tlim] = 2.5;
-	assert(abs(4.704549 - nonnernstian->E_applied(0.121622, params)) < thresh);
-	assert(abs(89.78227 - nonnernstian->E_applied(2.678949, params)) < thresh);
-	assert(abs(4.356003e-4 - nonnernstian->kf(1.5, params)) < thresh * 1.0e-3);
-	assert(abs(2.284469e3 - nonnernstian->kb(1.5, params)) < thresh * 1.0e4);
-	assert(abs(4.356003e-4 - nonnernstian->kf(3.5, params)) < thresh * 1.0e-3);
-	assert(abs(2.284469e3 - nonnernstian->kb(3.5, params)) < thresh * 1.0e4);
+	assert(abs( (58.02260 - nonnernstian->E_applied(1.5, params)) / 58.02260) < thresh);
+	assert(abs( (4.35592e-4 - nonnernstian->kf(1.5, params)) / 4.35592e-4) < thresh);
+	assert(abs( (2.284469e3 - nonnernstian->kb(1.5, params)) / 2.284469e3) < thresh);
+	assert(abs( (54.15442 - nonnernstian->E_applied(3.6, params)) / 54.15442) < thresh);
+	assert(abs( (8.90067e-3 - nonnernstian->kf(3.6, params)) / 8.90067e-3) < thresh);
+	assert(abs( (9.75441e2 - nonnernstian->kb(3.6, params)) / 9.75441e2) < thresh);
 	assert(abs( (43.868061 - FPotential(params)) / 43.868061) < thresh);
-	assert(abs( (41.23170 - BPotential(params)) / 41.23170) < thresh);
-
+	assert(abs( (41.23178 - BPotential(params)) / 41.23178) < thresh);
 
 	params[ModelType::Index_lambda] = 28.044255;//0.725eV
 	params[ModelType::Index_Af] = 5.0e6;
