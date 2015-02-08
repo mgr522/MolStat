@@ -32,7 +32,7 @@ using ModelType = molstat::echem::NonNernstianReaction;
  */
 int main(int argc, char **argv)
 {
-	const double thresh = 1.0e-5;
+	const double thresh = 1.0e-4;
 
 	// use the factory to create a junction
 	shared_ptr<ModelType> nonnernstian = dynamic_pointer_cast<ModelType>(
@@ -56,50 +56,73 @@ int main(int argc, char **argv)
 	valarray<double> params(7);
 
 	// check known values for several parameter sets
-	params[ModelType::Index_lambda] = 24.176082;//0.625eV
-	params[ModelType::Index_Af] = 5.0e3;
-	params[ModelType::Index_Ab] = 5.0e3;
-	params[ModelType::Index_Eref] = 42.549904;//1.1V
+	params[ModelType::Index_lambda] = 0.625;
+	params[ModelType::Index_Af] = 5.e3;
+	params[ModelType::Index_Ab] = 5.e3;
+	params[ModelType::Index_Eref] = 1.1;
 	params[ModelType::Index_E0] = 0.;
-	params[ModelType::Index_v] = 38.681731;//1.0V/s
+	params[ModelType::Index_v] = 1.;
 	params[ModelType::Index_tlim] = 2.5;
-	assert(abs( (58.02260 - nonnernstian->E_applied(1.5, params)) / 58.02260) < thresh);
-	assert(abs( (4.35592e-4 - nonnernstian->kf(1.5, params)) / 4.35592e-4) < thresh);
-	assert(abs( (2.284469e3 - nonnernstian->kb(1.5, params)) / 2.284469e3) < thresh);
-	assert(abs( (54.15442 - nonnernstian->E_applied(3.6, params)) / 54.15442) < thresh);
-	assert(abs( (8.90067e-3 - nonnernstian->kf(3.6, params)) / 8.90067e-3) < thresh);
-	assert(abs( (9.75441e2 - nonnernstian->kb(3.6, params)) / 9.75441e2) < thresh);
-	assert(abs( (43.868061 - FPotential(params)) / 43.868061) < thresh);
-	assert(abs( (41.23178 - BPotential(params)) / 41.23178) < thresh);
+	assert(abs((1.10012 - FPotential(params)) / 1.10012) < thresh);
+	assert(abs((1.09988 - BPotential(params)) / 1.09988) < thresh);
 
-	params[ModelType::Index_lambda] = 28.044255;//0.725eV
-	params[ModelType::Index_Af] = 5.0e6;
-	params[ModelType::Index_Ab] = 5.0e6;
-	params[ModelType::Index_Eref] = 46.418077; //1.2V
+	params[ModelType::Index_lambda] = 0.725;
+	params[ModelType::Index_Af] = 5.e6;
+	params[ModelType::Index_Ab] = 5.e6;
+	params[ModelType::Index_Eref] = 1.2;
 	params[ModelType::Index_E0] = 0.;
-	params[ModelType::Index_v] = 38.681731e+3;//1.0e+3
+	params[ModelType::Index_v] = 1.e3;
 	params[ModelType::Index_tlim] = 2.5e-3;
-	assert(abs( (49.0073684 - FPotential(params)) / 49.0073684) < thresh);
-	assert(abs( (43.828604 - BPotential(params)) / 43.828604) < thresh);
+	assert(abs((1.20010 - FPotential(params)) / 1.20010) < thresh);
+	assert(abs((1.19987 - BPotential(params)) / 1.19987) < thresh);
 
-	params[ModelType::Index_lambda] = 20.307909;//0.525
-	params[ModelType::Index_Af] = 5.0e9;
-	params[ModelType::Index_Ab] = 5.0e9;
-	params[ModelType::Index_Eref] = 34.813558; //0.9
+	params[ModelType::Index_lambda] = 0.525;
+	params[ModelType::Index_Af] = 5.e9;
+	params[ModelType::Index_Ab] = 5.e9;
+	params[ModelType::Index_Eref] = 0.9;
 	params[ModelType::Index_E0] = 0.;
-	params[ModelType::Index_v] = 38.681731e+6;//1.0e+6
+	params[ModelType::Index_v] = 1.e6;
 	params[ModelType::Index_tlim] = 2.5e-6;
-	assert(abs( (35.3945937 - FPotential(params)) / 35.3945937) < thresh);
-	assert(abs( (34.2325201 - BPotential(params)) / 34.2325201) < thresh);
+	assert(abs((0.900104 - FPotential(params)) / 0.900104) < thresh);
+	assert(abs((0.899887 - BPotential(params)) / 0.899887) < thresh);
 
-	params[ModelType::Index_lambda] = 31.912428;//0.825eV
-	params[ModelType::Index_Af] = 5.0e12;
-	params[ModelType::Index_Ab] = 5.0e12;
-	params[ModelType::Index_Eref] = 38.681731; //1.0V
+	params[ModelType::Index_lambda] = 0.825;
+	params[ModelType::Index_Af] = 5.e12;
+	params[ModelType::Index_Ab] = 5.e12;
+	params[ModelType::Index_Eref] = 1.;
 	params[ModelType::Index_E0] = 0.;
-	params[ModelType::Index_v] = 38.681731e+9;//1.0e+9
+	params[ModelType::Index_v] = 1.e9;
 	params[ModelType::Index_tlim] = 2.5e-9;
-	assert(abs( (43.0244473 - FPotential(params)) / 43.0244473) < thresh);
-	assert(abs( (34.3387563 - BPotential(params))/ 34.3387563)  < thresh);
+	assert(abs((1.00012 - FPotential(params)) / 1.00012) < thresh);
+	assert(abs((0.999889 - BPotential(params))/ 0.999889)  < thresh);
 
+	// this test yields a system where the desired potentials are not found...
+	// make sure the exception is thrown
+	params[ModelType::Index_lambda] = 0.825;
+	params[ModelType::Index_Af] = 5.e6;
+	params[ModelType::Index_Ab] = 5.e4;
+	params[ModelType::Index_Eref] = 1.;
+	params[ModelType::Index_E0] = -1.;
+	params[ModelType::Index_v] = 1.;
+	params[ModelType::Index_tlim] = 2.5;
+	try
+	{
+		FPotential(params);
+		assert(false); // should have thrown
+	}
+	catch(const molstat::NoObservableProduced &e)
+	{
+		// should be here
+	}
+	try
+	{
+		BPotential(params);
+		assert(false); // should have thrown
+	}
+	catch(const molstat::NoObservableProduced &e)
+	{
+		// should be here
+	}
+
+	return 0;
 }

@@ -80,25 +80,8 @@ protected:
 public:
 	virtual ~NernstianReaction() = default;
 
-	/**
-	 * \brief The redox potential where electron transfers during the forward 
-	 *    potential sweeping.
-	 * 
-	 * \param[in] t The time.
-	 * \param[in] params The set of model parameters.
-	 * \return The forward redox potential.
-	 */
 	virtual double ForwardETP(const std::valarray<double> &params) const
 		override;
-
-	/**
-	 * \brief The redox potential where electron transfers during the backward 
-	 *    potential sweeping.
-	 * 
-	 * \param[in] t The time.
-	 * \param[in] params The set of model parameters.
-	 * \return The backward redox potential.
-	 */
 	virtual double BackwardETP(const std::valarray<double> &params) const
 		override;
 };

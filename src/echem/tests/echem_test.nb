@@ -10,46 +10,28 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     54346,       1491]
-NotebookOptionsPosition[     52238,       1415]
-NotebookOutlinePosition[     52662,       1431]
-CellTagsIndexPosition[     52619,       1428]
+NotebookDataLength[     24827,        664]
+NotebookOptionsPosition[     22676,        584]
+NotebookOutlinePosition[     23109,        601]
+CellTagsIndexPosition[     23066,        598]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
 
 Cell[CellGroupData[{
-Cell["Simulator Model Test Functions", "Section",
- CellChangeTimes->{{3.603652512335588*^9, 3.603652516166339*^9}, {
-  3.6085715981586657`*^9, 3.60857160008716*^9}, {3.631284097018339*^9, 
-  3.631284099233941*^9}, {3.6322685317664747`*^9, 3.632268542250988*^9}}],
+Cell["Tests for the Simulator Models", "Section",
+ CellChangeTimes->{{3.6085591912218513`*^9, 3.6085591933715973`*^9}, {
+  3.6312841014978848`*^9, 3.6312841037057343`*^9}}],
 
 Cell[CellGroupData[{
 
-Cell["Set up parameters", "Subsection",
- CellChangeTimes->{{3.604007318370078*^9, 3.604007323035749*^9}, {
-  3.608571639174135*^9, 3.6085716501494007`*^9}, {3.608571724484041*^9, 
-  3.608571728850903*^9}, {3.613819949944832*^9, 3.6138199510314083`*^9}, {
-  3.619265519044169*^9, 3.6192655217700157`*^9}, {3.632251659798218*^9, 
-  3.6322516652135277`*^9}}],
+Cell["Nernstian Reactions", "Subsection",
+ CellChangeTimes->{{3.608559657965395*^9, 3.608559662699814*^9}, 
+   3.608571745026094*^9, {3.6322518339481783`*^9, 3.632251839324486*^9}}],
 
-Cell[BoxData[{
- RowBox[{
-  RowBox[{"temperature", "=", "300.0"}], ";"}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"n", "=", "1.0"}], ";"}]}], "Input",
- CellChangeTimes->{{3.613820505607638*^9, 3.6138206130999823`*^9}, {
-  3.61382064693325*^9, 3.6138206666827803`*^9}, {3.632251678557291*^9, 
-  3.6322517136783*^9}, {3.632258583326393*^9, 3.63225858447293*^9}}]
-}, Closed]],
-
-Cell[CellGroupData[{
-
-Cell["Nernstian Reaction", "Subsection",
- CellChangeTimes->{{3.613835012832053*^9, 3.613835020878746*^9}, {
-   3.619268111821021*^9, 3.61926811254663*^9}, 3.619277417960277*^9, {
-   3.63225174043683*^9, 3.6322517435250063`*^9}}],
+Cell["Test function", "Text",
+ CellChangeTimes->{{3.63232816587529*^9, 3.632328167514461*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -59,76 +41,121 @@ Cell[BoxData[
    "\[IndentingNewLine]", 
    RowBox[{"Module", "[", 
     RowBox[{
-     RowBox[{"{", 
-      RowBox[{"reducedEnergyUnit", ",", 
-       RowBox[{"Boltzmann", "=", 
-        RowBox[{"8.6173324", " ", 
-         SuperscriptBox["10", 
-          RowBox[{"-", "5"}]]}]}], ",", 
-       RowBox[{"temperature", "=", "300.0"}], ",", "reducedEredox", ",", 
-       "reducedEref", ",", "standardEredox"}], "}"}], ",", 
-     "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{"{", "reducedEredox", "}"}], ",", "\[IndentingNewLine]", 
      RowBox[{
-      RowBox[{"reducedEnergyUnit", " ", "=", " ", 
-       RowBox[{"Boltzmann", " ", "temperature"}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"reducedEref", "=", 
-       RowBox[{"Eref", "/", "reducedEnergyUnit"}]}], ";", 
-      "\[IndentingNewLine]", 
       RowBox[{"reducedEredox", "=", 
-       RowBox[{
-        FractionBox["Eref", "reducedEnergyUnit"], "-", 
+       RowBox[{"Eref", "-", 
         RowBox[{"Log", "[", 
          FractionBox["Ab", "Af"], "]"}]}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"standardEredox", "=", 
-       RowBox[{"reducedEredox", " ", "reducedEnergyUnit"}]}], ";", 
       "\[IndentingNewLine]", 
-      RowBox[{"Grid", "[", 
-       RowBox[{
-        RowBox[{"{", 
-         RowBox[{
-          RowBox[{"{", 
-           RowBox[{"\"\<Reduced parameters are:\>\"", ",", "\"\< \>\""}], 
-           "}"}], ",", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Reference Potential(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedEref", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", 
-          RowBox[{"{", 
-           RowBox[{"\"\<The results are:\>\"", ",", "\"\< \>\""}], "}"}], ",", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Redox Potential(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedEredox", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Redox Potential(Standard)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"standardEredox", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}]}], 
-         "}"}], ",", 
-        RowBox[{"Alignment", "\[Rule]", "Left"}], ",", 
-        RowBox[{"Spacings", "\[Rule]", 
-         RowBox[{"{", 
-          RowBox[{"2", ",", "2"}], "}"}]}]}], "]"}]}]}], 
+      RowBox[{"Print", "[", 
+       RowBox[{"\"\<Redox Potential (Reduced Units): \>\"", "<>", 
+        RowBox[{"ToString", "[", "reducedEredox", "]"}]}], "]"}], ";"}]}], 
     "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
  CellChangeTimes->{{3.613820505607638*^9, 3.6138206130999823`*^9}, {
   3.61382064693325*^9, 3.6138206666827803`*^9}, {3.613835030713237*^9, 
-  3.613835055558404*^9}, {3.6322517797690797`*^9, 3.632251781258165*^9}}]
+  3.613835055558404*^9}, {3.6322517797690797`*^9, 3.632251781258165*^9}, {
+  3.63231629674811*^9, 3.6323163216490717`*^9}, {3.632316360672305*^9, 
+  3.632316379256463*^9}, {3.632316460239882*^9, 3.632316548069199*^9}, {
+  3.63231864756157*^9, 3.632318678920002*^9}, {3.6323188937116537`*^9, 
+  3.632318944629426*^9}}],
+
+Cell["Tests", "Text",
+ CellChangeTimes->{{3.632328169387252*^9, 3.6323281696664457`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Eref", "=", "1.1"}], ",", 
+     RowBox[{"Af", "=", 
+      RowBox[{"5.0", " ", 
+       SuperscriptBox["10", "3"]}]}], ",", 
+     RowBox[{"Ab", "=", 
+      RowBox[{"5.0", " ", 
+       SuperscriptBox["10", "3"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"EredoxNernstian", "[", 
+    RowBox[{"Eref", ",", "Ab", ",", "Af"}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
+   3.6085597161193333`*^9, 3.6085597675553083`*^9}, 3.60856060722332*^9, {
+   3.61926579958862*^9, 3.619265805498262*^9}, {3.619265862935032*^9, 
+   3.619265869948452*^9}, {3.632252017269664*^9, 3.6322520951721196`*^9}, {
+   3.6323191109979343`*^9, 3.6323191124144993`*^9}}],
+
+Cell[BoxData["\<\"Redox Potential (Reduced Units): 1.1\"\>"], "Print",
+ CellChangeTimes->{{3.6323165403093157`*^9, 3.632316551734282*^9}, 
+   3.632318950654883*^9, 3.632318990483029*^9, 3.632319121887281*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Eref", "=", "1.1"}], ",", 
+     RowBox[{"Af", "=", 
+      RowBox[{"8.0", " ", 
+       SuperscriptBox["10", "5"]}]}], ",", 
+     RowBox[{"Ab", "=", 
+      RowBox[{"5.0", " ", 
+       SuperscriptBox["10", "3"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"EredoxNernstian", "[", 
+    RowBox[{"Eref", ",", "Ab", ",", "Af"}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
+  3.6085597161193333`*^9, 3.6085597675553083`*^9}, {3.60856060073641*^9, 
+  3.608560648126318*^9}, {3.619265844015503*^9, 3.619265881276836*^9}, {
+  3.632252109005911*^9, 3.6322521250128264`*^9}, {3.632319117664567*^9, 
+  3.6323191190550623`*^9}}],
+
+Cell[BoxData["\<\"Redox Potential (Reduced Units): 6.17517\"\>"], "Print",
+ CellChangeTimes->{3.632316596591374*^9, 3.6323189522036867`*^9, 
+  3.6323189923229027`*^9, 3.632319123180333*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Eref", "=", "0.4"}], ",", 
+     RowBox[{"Af", "=", 
+      RowBox[{"8.0", " ", 
+       SuperscriptBox["10", "5"]}]}], ",", 
+     RowBox[{"Ab", "=", 
+      RowBox[{"9.0", " ", 
+       SuperscriptBox["10", "8"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"EredoxNernstian", "[", 
+    RowBox[{"Eref", ",", "Ab", ",", "Af"}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
+  3.6085597161193333`*^9, 3.6085597675553083`*^9}, {3.60856060073641*^9, 
+  3.608560648126318*^9}, {3.608561079437639*^9, 3.60856109013211*^9}, {
+  3.6192658877907133`*^9, 3.619265900339574*^9}, {3.632252129996112*^9, 
+  3.632252159660808*^9}, {3.632316747541465*^9, 3.632316748949106*^9}, {
+  3.632319148901226*^9, 3.632319150535054*^9}}],
+
+Cell[BoxData["\<\"Redox Potential (Reduced Units): -6.62554\"\>"], "Print",
+ CellChangeTimes->{3.632316597574559*^9, 3.6323167499033337`*^9, 
+  3.63231895606319*^9, 3.632318993807535*^9, 3.632319150875683*^9}]
+}, Open  ]]
 }, Closed]],
 
 Cell[CellGroupData[{
 
-Cell["Non-Nernstian Reaction", "Subsection",
- CellChangeTimes->{{3.608571923440621*^9, 3.608571926057891*^9}, {
-  3.619268113819379*^9, 3.619268115602446*^9}, {3.619283740728209*^9, 
-  3.619283741414702*^9}, {3.632251746020149*^9, 3.6322517519654894`*^9}}],
+Cell["Non-Nernstian Reactions", "Subsection",
+ CellChangeTimes->{{3.608559657965395*^9, 3.608559662699814*^9}, {
+   3.608561292043438*^9, 3.608561292915244*^9}, 3.608571746394112*^9, {
+   3.619268095285861*^9, 3.6192680959710283`*^9}, {3.619276371789603*^9, 
+   3.619276372747563*^9}, {3.6322518427236805`*^9, 3.6322518500120974`*^9}}],
+
+Cell["Test function", "Text",
+ CellChangeTimes->{{3.632328147867489*^9, 3.632328149282827*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -140,35 +167,14 @@ Cell[BoxData[
    RowBox[{"Module", "[", "\[IndentingNewLine]", 
     RowBox[{
      RowBox[{"{", 
-      RowBox[{"reducedEnergyUnit", ",", 
-       RowBox[{"Boltzmann", "=", 
-        RowBox[{"8.6173324", " ", 
-         SuperscriptBox["10", 
-          RowBox[{"-", "5"}]]}]}], ",", 
-       RowBox[{"temperature", "=", "300.0"}], " ", ",", 
-       RowBox[{"n", "=", "1.0"}], ",", "reducedEref", ",", "reducedlambda", 
-       ",", "reducedv", ",", "reducede0", ",", "kf", ",", "kb", ",", "PO", 
-       ",", "Eapplied", ",", "solODE", ",", "initialguess", ",", 
-       "tguessForward", ",", "tguessBackward", ",", "solForwardETtime", ",", 
-       "solBackwardETtime", ",", "t", ",", "ForwardETPotential", ",", 
-       "BackwardETPotential", ",", "reducedForwardETPotential", ",", 
-       "reducedBackwardETPotential"}], "}"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+      "kf", ",", "kb", ",", "PO", ",", "Eapplied", ",", "solODE", ",", 
+       "initialguess", ",", "tguessForward", ",", "tguessBackward", ",", 
+       "solForwardETtime", ",", "solBackwardETtime", ",", "t", ",", 
+       "ForwardETPotential", ",", "BackwardETPotential", ",", 
+       "reducedForwardETPotential", ",", "reducedBackwardETPotential"}], 
+      "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
      RowBox[{
-      RowBox[{"reducedEnergyUnit", " ", "=", " ", 
-       RowBox[{"Boltzmann", " ", 
-        RowBox[{"temperature", "/", "n"}]}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"reducedEref", "=", 
-       RowBox[{"Eref", "/", "reducedEnergyUnit"}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"reducedlambda", "=", 
-       RowBox[{"lambda", "/", "reducedEnergyUnit"}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"reducedv", "=", 
-       RowBox[{"v", "/", "reducedEnergyUnit"}]}], ";", "\[IndentingNewLine]", 
-      
-      RowBox[{"reducede0", "=", 
-       RowBox[{"lambda", "/", "reducedEnergyUnit"}]}], ";", 
-      "\[IndentingNewLine]", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{"Eapplied", "[", "t_", "]"}], ":=", 
        RowBox[{"Piecewise", "[", 
@@ -177,14 +183,14 @@ Cell[BoxData[
           RowBox[{
            RowBox[{"{", 
             RowBox[{
-             RowBox[{"reducede0", "+", 
-              RowBox[{"reducedv", " ", "t"}]}], ",", 
+             RowBox[{"e0", "+", 
+              RowBox[{"v", " ", "t"}]}], ",", 
              RowBox[{"t", "<", "tlim"}]}], "}"}], ",", 
            RowBox[{"{", 
             RowBox[{
-             RowBox[{"reducede0", "+", 
-              RowBox[{"2.0", "reducedv", " ", "tlim"}], "-", 
-              RowBox[{"reducedv", " ", "t"}]}], ",", 
+             RowBox[{"e0", "+", 
+              RowBox[{"2.0", "v", " ", "tlim"}], "-", 
+              RowBox[{"v", " ", "t"}]}], ",", 
              RowBox[{"t", "\[GreaterEqual]", " ", "tlim"}]}], "}"}]}], "}"}], 
          ",", "t"}], "]"}]}], ";", "\[IndentingNewLine]", 
       RowBox[{
@@ -194,13 +200,12 @@ Cell[BoxData[
          RowBox[{
           RowBox[{"-", " ", 
            FractionBox["1.0", 
-            RowBox[{"4.0", " ", "reducedlambda", " "}]]}], 
+            RowBox[{"4.0", " ", "lambda", " "}]]}], 
           SuperscriptBox[
            RowBox[{"(", 
             RowBox[{
-             RowBox[{"Eapplied", "[", "t", "]"}], "-", "reducedEref", "  ", 
-             "+", "reducedlambda"}], ")"}], "2"]}], "]"}]}]}], ";", 
-      "\[IndentingNewLine]", 
+             RowBox[{"Eapplied", "[", "t", "]"}], "-", "Eref", "+", 
+             "lambda"}], ")"}], "2"]}], "]"}]}]}], ";", "\[IndentingNewLine]", 
       RowBox[{
        RowBox[{"kb", "[", "t_", "]"}], ":=", 
        RowBox[{"Ab", " ", 
@@ -208,13 +213,13 @@ Cell[BoxData[
          RowBox[{
           RowBox[{"-", " ", 
            FractionBox["1.0", 
-            RowBox[{"4.0", " ", "reducedlambda", " "}]]}], 
+            RowBox[{"4.0", " ", "lambda", " "}]]}], 
           SuperscriptBox[
            RowBox[{"(", 
             RowBox[{
-             RowBox[{"Eapplied", "[", "t", "]"}], "-", "reducedEref", "  ", 
-             "-", "reducedlambda"}], ")"}], "2"]}], "]"}]}]}], ";", 
-      "\[IndentingNewLine]", 
+             RowBox[{"Eapplied", "[", "t", "]"}], "-", "Eref", "-", 
+             "lambda"}], ")"}], "2"]}], "]"}]}]}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]", 
       RowBox[{"solODE", "=", 
        RowBox[{"NDSolveValue", "[", 
         RowBox[{
@@ -240,17 +245,14 @@ Cell[BoxData[
            RowBox[{"2.0", "tlim"}]}], "}"}], ",", 
          RowBox[{"Method", "\[Rule]", "\"\<StiffnessSwitching\>\""}], ",", 
          RowBox[{"MaxSteps", "\[Rule]", "\[Infinity]"}], ",", 
-         RowBox[{"PrecisionGoal", "\[Rule]", "accuracy"}]}], 
-        RowBox[{"(*", 
-         RowBox[{",", 
-          RowBox[{"AccuracyGoal", "\[Rule]", "Infinity"}]}], "*)"}], "]"}]}], 
-      ";", "\[IndentingNewLine]", 
+         RowBox[{"PrecisionGoal", "\[Rule]", "accuracy"}]}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
       RowBox[{"initialguess", "=", 
        RowBox[{"Solve", "[", 
         RowBox[{
          RowBox[{
-          RowBox[{"Eapplied", "[", "t", "]"}], "\[Equal]", "reducedEref"}], 
-         ",", "t"}], "]"}]}], ";", "\[IndentingNewLine]", 
+          RowBox[{"Eapplied", "[", "t", "]"}], "\[Equal]", "Eref"}], ",", 
+         "t"}], "]"}]}], ";", "\[IndentingNewLine]", 
       RowBox[{"tguessForward", "=", 
        RowBox[{
         RowBox[{"Evaluate", "[", "t", "]"}], "/.", 
@@ -292,98 +294,14 @@ Cell[BoxData[
          RowBox[{"Eapplied", "[", "t", "]"}], "]"}], "/.", 
         "solBackwardETtime"}]}], ";", "\[IndentingNewLine]", 
       "\[IndentingNewLine]", 
-      RowBox[{"reducedForwardETPotential", "=", 
-       RowBox[{
-        RowBox[{"Evaluate", "[", 
-         RowBox[{"Eapplied", "[", "t", "]"}], "]"}], "/.", 
-        "solForwardETtime"}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"reducedBackwardETPotential", "=", 
-       RowBox[{
-        RowBox[{"Evaluate", "[", 
-         RowBox[{"Eapplied", "[", "t", "]"}], "]"}], "/.", 
-        "solBackwardETtime"}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"ForwardETPotential", "=", 
-       RowBox[{"reducedForwardETPotential", " ", "reducedEnergyUnit"}]}], ";",
-       "\[IndentingNewLine]", 
-      RowBox[{"BackwardETPotential", "=", 
-       RowBox[{"reducedBackwardETPotential", " ", "reducedEnergyUnit"}]}], 
-      ";", "\[IndentingNewLine]", 
-      RowBox[{"Grid", "[", 
-       RowBox[{
-        RowBox[{"{", 
-         RowBox[{
-          RowBox[{"{", 
-           RowBox[{"\"\<Reduced parameters are:\>\"", ",", "\"\< \>\""}], 
-           "}"}], ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Reference Potential(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedEref", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Reorganization Energy(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedlambda", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Inital Bias(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducede0", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Scan Speed(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedv", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{
-           "\"\<The results in reduced unit are:\>\"", ",", "\"\< \>\""}], 
-           "}"}], ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Forward ET Potential(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedForwardETPotential", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Backward ET Potential(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedBackwardETPotential", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{
-           "\"\<The results in standard unit are:\>\"", ",", "\"\< \>\""}], 
-           "}"}], ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Forward ET Potential(Standard)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"ForwardETPotential", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Backward ET Potential(Standard)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"BackwardETPotential", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}]}], 
-         "}"}], ",", "\[IndentingNewLine]", 
-        RowBox[{"Alignment", "\[Rule]", "Left"}], ",", 
-        RowBox[{"Spacings", "\[Rule]", 
-         RowBox[{"{", 
-          RowBox[{"2", ",", "2"}], "}"}]}]}], "]"}]}]}], 
-    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+      RowBox[{"Print", "[", 
+       RowBox[{"\"\<Forward potential (reduced units): \>\"", "<>", 
+        RowBox[{"ToString", "[", "ForwardETPotential", "]"}]}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Print", "[", 
+       RowBox[{"\"\<Backward potential (reduced units): \>\"", "<>", 
+        RowBox[{"ToString", "[", "BackwardETPotential", "]"}]}], "]"}], 
+      ";"}]}], "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
  CellChangeTimes->{{3.60857192803577*^9, 3.608571929290156*^9}, {
    3.608571993687063*^9, 3.6085720525019417`*^9}, 3.6322518081527033`*^9, {
    3.6322594721246862`*^9, 3.6322594788801584`*^9}, {3.6322600731869197`*^9, 
@@ -393,594 +311,14 @@ Cell[BoxData[
    3.6322666259685764`*^9}, {3.6322667193687973`*^9, 3.632266744067758*^9}, {
    3.6322671470011044`*^9, 3.6322671481895447`*^9}, {3.632267180378824*^9, 
    3.632267192691311*^9}, 3.6322673474143057`*^9, {3.632267705725461*^9, 
-   3.6322677204936113`*^9}, 3.632268136412646*^9}],
+   3.6322677204936113`*^9}, 3.632268136412646*^9, 3.632320378577786*^9, {
+   3.632320416753051*^9, 3.632320460303254*^9}, {3.6323205305329437`*^9, 
+   3.6323205528372183`*^9}, {3.632321473053937*^9, 3.632321553034522*^9}, {
+   3.632322166316016*^9, 3.632322167329529*^9}, {3.6323222138812838`*^9, 
+   3.632322219160472*^9}, {3.632322770122958*^9, 3.632322813887879*^9}}],
 
-Cell[BoxData[
- RowBox[{
-  RowBox[{
-   RowBox[{"FunctionTestNonNernstian", "[", 
-    RowBox[{
-    "Eref_", ",", "Af_", ",", "Ab_", ",", "lambda_", ",", "v_", ",", "e0_", 
-     ",", "tlim_", ",", "timetest_"}], "]"}], ":=", "\[IndentingNewLine]", 
-   RowBox[{"Module", "[", "\[IndentingNewLine]", 
-    RowBox[{
-     RowBox[{"{", 
-      RowBox[{"reducedEnergyUnit", ",", 
-       RowBox[{"Boltzmann", "=", 
-        RowBox[{"8.6173324", " ", 
-         SuperscriptBox["10", 
-          RowBox[{"-", "5"}]]}]}], ",", 
-       RowBox[{"temperature", "=", "300.0"}], " ", ",", 
-       RowBox[{"n", "=", "1.0"}], ",", "reducedEref", ",", "reducedlambda", 
-       ",", "reducedv", ",", "reducede0", ",", "kf", ",", "kb", ",", "PO", 
-       ",", "Eapplied", ",", "kbtest", ",", "kftest", ",", 
-       "reducedEappliedtest", ",", "Eappliedtest"}], "}"}], ",", 
-     "\[IndentingNewLine]", 
-     RowBox[{
-      RowBox[{"reducedEnergyUnit", " ", "=", " ", 
-       RowBox[{"Boltzmann", " ", 
-        RowBox[{"temperature", "/", "n"}]}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"reducedEref", "=", 
-       RowBox[{"Eref", "/", "reducedEnergyUnit"}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"reducedlambda", "=", 
-       RowBox[{"lambda", "/", "reducedEnergyUnit"}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"reducedv", "=", 
-       RowBox[{"v", "/", "reducedEnergyUnit"}]}], ";", "\[IndentingNewLine]", 
-      
-      RowBox[{"reducede0", "=", 
-       RowBox[{"e0", "/", "reducedEnergyUnit"}]}], ";", "\[IndentingNewLine]",
-       "\[IndentingNewLine]", 
-      RowBox[{
-       RowBox[{"Eapplied", "[", "t_", "]"}], ":=", 
-       RowBox[{"Piecewise", "[", 
-        RowBox[{
-         RowBox[{"{", 
-          RowBox[{
-           RowBox[{"{", 
-            RowBox[{
-             RowBox[{"reducede0", "+", 
-              RowBox[{"reducedv", " ", "t"}]}], ",", 
-             RowBox[{"t", "<", "tlim"}]}], "}"}], ",", 
-           RowBox[{"{", 
-            RowBox[{
-             RowBox[{"reducede0", "+", 
-              RowBox[{"2.0", "reducedv", " ", "tlim"}], "-", 
-              RowBox[{"reducedv", " ", "t"}]}], ",", 
-             RowBox[{"t", "\[GreaterEqual]", " ", "tlim"}]}], "}"}]}], "}"}], 
-         ",", "t"}], "]"}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{
-       RowBox[{"kf", "[", "t_", "]"}], ":=", 
-       RowBox[{"Af", " ", 
-        RowBox[{"Exp", "[", 
-         RowBox[{
-          RowBox[{"-", " ", 
-           FractionBox["1.0", 
-            RowBox[{"4.0", " ", "reducedlambda", " "}]]}], 
-          SuperscriptBox[
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"Eapplied", "[", "t", "]"}], "-", "reducedEref", "  ", 
-             "+", "reducedlambda"}], ")"}], "2"]}], "]"}]}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{
-       RowBox[{"kb", "[", "t_", "]"}], ":=", 
-       RowBox[{"Ab", " ", 
-        RowBox[{"Exp", "[", 
-         RowBox[{
-          RowBox[{"-", " ", 
-           FractionBox["1.0", 
-            RowBox[{"4.0", " ", "reducedlambda", " "}]]}], 
-          SuperscriptBox[
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"Eapplied", "[", "t", "]"}], "-", "reducedEref", "  ", 
-             "-", "reducedlambda"}], ")"}], "2"]}], "]"}]}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"kbtest", "=", 
-       RowBox[{"kb", "[", "timetest", "]"}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"kftest", "=", 
-       RowBox[{"kf", "[", "timetest", "]"}]}], ";", "\[IndentingNewLine]", 
-      RowBox[{"reducedEappliedtest", "=", 
-       RowBox[{"Eapplied", "[", "timetest", "]"}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"Eappliedtest", "=", 
-       RowBox[{"reducedEappliedtest", " ", "reducedEnergyUnit"}]}], ";", 
-      "\[IndentingNewLine]", 
-      RowBox[{"Grid", "[", 
-       RowBox[{
-        RowBox[{"{", 
-         RowBox[{
-          RowBox[{"{", 
-           RowBox[{"\"\<Reduced parameters are:\>\"", ",", "\"\< \>\""}], 
-           "}"}], ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Reference Potential(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedEref", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Reorganization Energy(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedlambda", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Inital Bias(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducede0", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Scan Speed(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedv", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{
-           "\"\<The values of related funtions are:\>\"", ",", "\"\< \>\""}], 
-           "}"}], ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Forward Rate Constant\>\"", ",", 
-            RowBox[{"ScientificForm", "[", 
-             RowBox[{"kftest", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Backward Rate Constant\>\"", ",", 
-            RowBox[{"ScientificForm", "[", 
-             RowBox[{"kbtest", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Applied Bias(Reduced)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"reducedEappliedtest", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}], 
-          ",", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"\"\<Applied Bias(Standard)\>\"", ",", 
-            RowBox[{"NumberForm", "[", 
-             RowBox[{"Eappliedtest", ",", 
-              RowBox[{"{", 
-               RowBox[{"\[Infinity]", ",", "5"}], "}"}]}], "]"}]}], "}"}]}], 
-         "}"}], ",", "\[IndentingNewLine]", 
-        RowBox[{"Alignment", "\[Rule]", "Left"}], ",", 
-        RowBox[{"Spacings", "\[Rule]", 
-         RowBox[{"{", 
-          RowBox[{"2", ",", "2"}], "}"}]}]}], "]"}]}]}], 
-    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
- CellChangeTimes->{{3.632259526667735*^9, 3.632259582581291*^9}, 
-   3.632259962376263*^9, {3.63226013965007*^9, 3.6322601534922295`*^9}, {
-   3.6322602438364515`*^9, 3.6322602905302987`*^9}, {3.632260327232808*^9, 
-   3.63226056035966*^9}, {3.632260600427536*^9, 3.632260605307081*^9}, 
-   3.632261158220255*^9, {3.6322614325470333`*^9, 3.6322614326564093`*^9}, {
-   3.6322616128711147`*^9, 3.632261620549034*^9}}]
-}, Closed]]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell["Tests for the Simulator Models", "Section",
- CellChangeTimes->{{3.6085591912218513`*^9, 3.6085591933715973`*^9}, {
-  3.6312841014978848`*^9, 3.6312841037057343`*^9}}],
-
-Cell["\<\
-Parameters:
-\[OpenCurlyDoubleQuote]lambda\[CloseCurlyDoubleQuote]\treorganization energy \
-(eV)
-\[OpenCurlyDoubleQuote]Eref\[CloseCurlyDoubleQuote]\t\treference potential \
-(V)
-\[OpenCurlyDoubleQuote]e0\[CloseCurlyDoubleQuote]\t\tinitial bias (V)
-\[OpenCurlyDoubleQuote]v\[CloseCurlyDoubleQuote]\t\tscan speed (V/s)
-\[OpenCurlyDoubleQuote]Af\[CloseCurlyDoubleQuote]\t\tforward reaction rate \
-constant
-\[OpenCurlyDoubleQuote]Ab\[CloseCurlyDoubleQuote]\t\tbackward reaction rate \
-constant
-\[OpenCurlyDoubleQuote]tlim\[CloseCurlyDoubleQuote]\t\ttime when backward \
-scanning starts\
-\>", "Text",
- CellChangeTimes->{{3.608560278862884*^9, 3.6085602877564373`*^9}, {
-  3.6322591732416553`*^9, 3.6322592624966216`*^9}, {3.6322684218664055`*^9, 
-  3.6322684909916573`*^9}}],
-
-Cell[CellGroupData[{
-
-Cell["Nernstian Reactions", "Subsection",
- CellChangeTimes->{{3.608559657965395*^9, 3.608559662699814*^9}, 
-   3.608571745026094*^9, {3.6322518339481783`*^9, 3.632251839324486*^9}}],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"Eref", "=", "1.1"}], ",", 
-     RowBox[{"Af", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}], ",", 
-     RowBox[{"Ab", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
-   RowBox[{"EredoxNernstian", "[", 
-    RowBox[{"Eref", ",", "Af", ",", "Ab"}], "]"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
-   3.6085597161193333`*^9, 3.6085597675553083`*^9}, 3.60856060722332*^9, {
-   3.61926579958862*^9, 3.619265805498262*^9}, {3.619265862935032*^9, 
-   3.619265869948452*^9}, {3.632252017269664*^9, 3.6322520951721196`*^9}}],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {"\<\"Reduced parameters are:\"\>", "\<\" \"\>"},
-    {"\<\"Reference Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"42.54990\"\>",
-       42.54990403604097,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results are:\"\>", "\<\" \"\>"},
-    {"\<\"Redox Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"42.54990\"\>",
-       42.54990403604097,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Redox Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"1.10000\"\>",
-       1.1,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]}
-   },
-   AutoDelete->False,
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{3.6322521813180466`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"Eref", "=", "1.1"}], ",", 
-     RowBox[{"Af", "=", 
-      RowBox[{"8.0", " ", 
-       SuperscriptBox["10", "5"]}]}], ",", 
-     RowBox[{"Ab", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
-   RowBox[{"EredoxNernstian", "[", 
-    RowBox[{"Eref", ",", "Af", ",", "Ab"}], "]"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
-  3.6085597161193333`*^9, 3.6085597675553083`*^9}, {3.60856060073641*^9, 
-  3.608560648126318*^9}, {3.619265844015503*^9, 3.619265881276836*^9}, {
-  3.632252109005911*^9, 3.6322521250128264`*^9}}],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {"\<\"Reduced parameters are:\"\>", "\<\" \"\>"},
-    {"\<\"Reference Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"42.54990\"\>",
-       42.54990403604097,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results are:\"\>", "\<\" \"\>"},
-    {"\<\"Redox Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"37.47473\"\>",
-       37.474730220807146`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Redox Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"0.96880\"\>",
-       0.9687966207390619,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]}
-   },
-   AutoDelete->False,
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{3.6322521804559975`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"Eref", "=", "1.1"}], ",", 
-     RowBox[{"Af", "=", 
-      RowBox[{"8.0", " ", 
-       SuperscriptBox["10", "5"]}]}], ",", 
-     RowBox[{"Ab", "=", 
-      RowBox[{"9.0", " ", 
-       SuperscriptBox["10", "8"]}]}]}], "}"}], ",", "\[IndentingNewLine]", 
-   RowBox[{"EredoxNernstian", "[", 
-    RowBox[{"Eref", ",", "Af", ",", "Ab"}], "]"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
-  3.6085597161193333`*^9, 3.6085597675553083`*^9}, {3.60856060073641*^9, 
-  3.608560648126318*^9}, {3.608561079437639*^9, 3.60856109013211*^9}, {
-  3.6192658877907133`*^9, 3.619265900339574*^9}, {3.632252129996112*^9, 
-  3.632252159660808*^9}}],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {"\<\"Reduced parameters are:\"\>", "\<\" \"\>"},
-    {"\<\"Reference Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"42.54990\"\>",
-       42.54990403604097,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results are:\"\>", "\<\" \"\>"},
-    {"\<\"Redox Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"49.57544\"\>",
-       49.575442350679495`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Redox Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"1.28162\"\>",
-       1.281624196838528,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]}
-   },
-   AutoDelete->False,
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{3.632252178622893*^9}]
-}, Open  ]]
-}, Closed]],
-
-Cell[CellGroupData[{
-
-Cell["Non-Nernstian Reactions", "Subsection",
- CellChangeTimes->{{3.608559657965395*^9, 3.608559662699814*^9}, {
-   3.608561292043438*^9, 3.608561292915244*^9}, 3.608571746394112*^9, {
-   3.619268095285861*^9, 3.6192680959710283`*^9}, {3.619276371789603*^9, 
-   3.619276372747563*^9}, {3.6322518427236805`*^9, 3.6322518500120974`*^9}}],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"Eref", "=", "1.1"}], ",", 
-     RowBox[{"Af", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}], ",", 
-     RowBox[{"Ab", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}], ",", 
-     RowBox[{"lambda", "=", "0.625"}], ",", 
-     RowBox[{"v", "=", "1.0"}], ",", 
-     RowBox[{"e0", "=", "0."}], ",", 
-     RowBox[{"tlim", "=", "2.5"}], ",", 
-     RowBox[{"timetest", "=", "1.5"}]}], "}"}], ",", "\[IndentingNewLine]", 
-   RowBox[{"FunctionTestNonNernstian", "[", 
-    RowBox[{
-    "Eref", ",", "Af", ",", "Ab", ",", "lambda", ",", "v", ",", "e0", ",", 
-     "tlim", ",", "timetest"}], "]"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
-   3.6085597161193333`*^9, 3.6085597675553083`*^9}, 3.60856060722332*^9, {
-   3.608561297164441*^9, 3.608561311075807*^9}, {3.608561496385501*^9, 
-   3.6085614965427713`*^9}, {3.619276380972413*^9, 3.61927639667623*^9}, {
-   3.6322582351128635`*^9, 3.632258303844217*^9}, {3.632258504049658*^9, 
-   3.632258554870696*^9}, {3.6322586285914764`*^9, 3.6322586565075827`*^9}, {
-   3.632260677893571*^9, 3.6322607348067336`*^9}, {3.6322607804695115`*^9, 
-   3.63226078076639*^9}}],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {"\<\"Reduced parameters are:\"\>", "\<\" \"\>"},
-    {"\<\"Reference Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"42.54990\"\>",
-       42.54990403604097,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Reorganization Energy(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"24.17608\"\>",
-       24.17608183865964,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Inital Bias(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"0.00000\"\>",
-       0.,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Scan Speed(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"38.68173\"\>",
-       38.68173094185543,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The values of related funtions are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward Rate Constant\"\>", 
-     TagBox[
-      InterpretationBox[
-       RowBox[{"\<\"4.35592\"\>", "\[Times]", 
-        SuperscriptBox["10", "\<\"-4\"\>"]}],
-       0.00043559212878215,
-       AutoDelete->True],
-      ScientificForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward Rate Constant\"\>", 
-     TagBox[
-      InterpretationBox[
-       RowBox[{"\<\"2.28447\"\>", "\[Times]", 
-        SuperscriptBox["10", "\<\"3\"\>"]}],
-       2284.4672835450247`,
-       AutoDelete->True],
-      ScientificForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Applied Bias(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"58.02260\"\>",
-       58.022596412783145`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Applied Bias(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"1.50000\"\>",
-       1.5000000000000002`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]}
-   },
-   AutoDelete->False,
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{
-  3.6322586075194654`*^9, {3.6322586419542303`*^9, 3.6322586575844526`*^9}, 
-   3.6322601980246515`*^9, 3.6322607479008937`*^9, 3.6322607815632563`*^9, 
-   3.632261320770969*^9, 3.632261440530238*^9, 3.632261630789235*^9}]
-}, Closed]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"With", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-     RowBox[{"Eref", "=", "1.1"}], ",", 
-     RowBox[{"Af", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}], ",", 
-     RowBox[{"Ab", "=", 
-      RowBox[{"5.0", " ", 
-       SuperscriptBox["10", "3"]}]}], ",", 
-     RowBox[{"lambda", "=", "0.625"}], ",", 
-     RowBox[{"v", "=", "1.0"}], ",", 
-     RowBox[{"e0", "=", "0."}], ",", 
-     RowBox[{"tlim", "=", "2.5"}], ",", 
-     RowBox[{"timetest", "=", "3.6"}]}], "}"}], ",", "\[IndentingNewLine]", 
-   RowBox[{"FunctionTestNonNernstian", "[", 
-    RowBox[{
-    "Eref", ",", "Af", ",", "Ab", ",", "lambda", ",", "v", ",", "e0", ",", 
-     "tlim", ",", "timetest"}], "]"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.6322611967277803`*^9, 3.632261197055908*^9}, 
-   3.6322656337239313`*^9}],
-
-Cell[BoxData[
- TagBox[GridBox[{
-    {"\<\"Reduced parameters are:\"\>", "\<\" \"\>"},
-    {"\<\"Reference Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"42.54990\"\>",
-       42.54990403604097,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Reorganization Energy(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"24.17608\"\>",
-       24.17608183865964,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Inital Bias(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"0.00000\"\>",
-       0.,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Scan Speed(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"38.68173\"\>",
-       38.68173094185543,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The values of related funtions are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward Rate Constant\"\>", 
-     TagBox[
-      InterpretationBox[
-       RowBox[{"\<\"8.90067\"\>", "\[Times]", 
-        SuperscriptBox["10", "\<\"-3\"\>"]}],
-       0.008900665556295793,
-       AutoDelete->True],
-      ScientificForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward Rate Constant\"\>", 
-     TagBox[
-      InterpretationBox[
-       RowBox[{"\<\"9.75441\"\>", "\[Times]", 
-        SuperscriptBox["10", "\<\"2\"\>"]}],
-       975.4413732944942,
-       AutoDelete->True],
-      ScientificForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Applied Bias(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"54.15442\"\>",
-       54.154423318597594`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Applied Bias(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"1.40000\"\>",
-       1.4,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]}
-   },
-   AutoDelete->False,
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{3.6322619985763235`*^9, 3.6322656345989203`*^9}]
-}, Closed]],
+Cell["Tests", "Text",
+ CellChangeTimes->{{3.6323281524423313`*^9, 3.632328152802726*^9}}],
 
 Cell[CellGroupData[{
 
@@ -1007,75 +345,15 @@ Cell[BoxData[
      "tlim", ",", "accuracy"}], "]"}]}], "]"}]], "Input",
  CellChangeTimes->{{3.63226675917352*^9, 3.632266771728006*^9}}],
 
-Cell[BoxData[
- TagBox[GridBox[{
-    {"\<\"Reduced parameters are:\"\>", "\<\" \"\>"},
-    {"\<\"Reference Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"42.54990\"\>",
-       42.54990403604097,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Reorganization Energy(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"24.17608\"\>",
-       24.17608183865964,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Inital Bias(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"24.17608\"\>",
-       24.17608183865964,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Scan Speed(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"38.68173\"\>",
-       38.68173094185543,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results in reduced unit are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward ET Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"43.86806\"\>",
-       43.86806028153826,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward ET Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"41.23178\"\>",
-       41.23177569375258,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results in standard unit are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward ET Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"1.13408\"\>",
-       1.1340769715677586`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward ET Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"1.06592\"\>",
-       1.06592374978592,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]}
-   },
-   AutoDelete->False,
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{3.632260663295131*^9}]
-}, Closed]],
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Forward potential (reduced units): 1.10012\"\>"], "Print",
+ CellChangeTimes->{3.632323135649263*^9}],
+
+Cell[BoxData["\<\"Backward potential (reduced units): 1.09988\"\>"], "Print",
+ CellChangeTimes->{3.632323135652124*^9}]
+}, Open  ]]
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1114,80 +392,15 @@ Cell[BoxData[
    3.6322673628145795`*^9, 3.6322674251925373`*^9}, {3.63226768362691*^9, 
    3.632267684095665*^9}}],
 
-Cell[BoxData[
- TagBox[GridBox[{
-    {"\<\"Reduced parameters are:\"\>", "\<\" \"\>"},
-    {"\<\"Reference Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"46.41808\"\>",
-       46.418077130226514`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Reorganization Energy(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"28.04425\"\>",
-       28.044254932845185`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Inital Bias(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"28.04425\"\>",
-       28.044254932845185`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Scan Speed(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"38681.73094\"\>",
-       38681.73094185543,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results in reduced unit are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward ET Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"49.00744\"\>",
-       49.007437661830224`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward ET Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"43.82873\"\>",
-       43.828726098570684`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results in standard unit are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward ET Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"1.26694\"\>",
-       1.2669401412128096`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward ET Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"1.13306\"\>",
-       1.1330601043798165`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]}
-   },
-   AutoDelete->False,
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{
-  3.6322587693010144`*^9, 3.6322664469776955`*^9, 3.6322665396564217`*^9, 
-   3.632266591588005*^9, 3.632266665095004*^9, 3.6322668543827543`*^9, 
-   3.632267214470704*^9, 3.632267290913175*^9, {3.6322673568956394`*^9, 
-   3.632267426048545*^9}, 3.632267685432368*^9, 3.6322677344638147`*^9, 
-   3.6322681510626907`*^9, 3.632268208893908*^9}]
-}, Closed]],
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Forward potential (reduced units): 1.2001\"\>"], "Print",
+ CellChangeTimes->{3.632323447028122*^9}],
+
+Cell[BoxData["\<\"Backward potential (reduced units): 1.19987\"\>"], "Print",
+ CellChangeTimes->{3.632323447030375*^9}]
+}, Open  ]]
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1225,77 +438,15 @@ Cell[BoxData[
   3.6322588355137105`*^9, 3.63225885710786*^9}, {3.6322681692457843`*^9, 
   3.632268187871235*^9}}],
 
-Cell[BoxData[
- TagBox[GridBox[{
-    {"\<\"Reduced parameters are:\"\>", "\<\" \"\>"},
-    {"\<\"Reference Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"34.81356\"\>",
-       34.813557847669884`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Reorganization Energy(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"20.30791\"\>",
-       20.3079087444741,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Inital Bias(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"20.30791\"\>",
-       20.3079087444741,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Scan Speed(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox[
-       RowBox[{"\<\"3.86817\"\>", "\[Times]", 
-        SuperscriptBox["10", "\<\"7\"\>"]}],
-       3.868173094185543*^7,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results in reduced unit are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward ET Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"35.38986\"\>",
-       35.38986262058729,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward ET Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"34.24312\"\>",
-       34.24312412650224,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results in standard unit are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward ET Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"0.91490\"\>",
-       0.9148986293758073,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward ET Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"0.88525\"\>",
-       0.8852531490375884,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]}
-   },
-   AutoDelete->False,
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{3.6322588813107467`*^9, 3.632268213262035*^9}]
-}, Closed]],
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Forward potential (reduced units): 0.900104\"\>"], "Print",
+ CellChangeTimes->{3.63232352509754*^9}],
+
+Cell[BoxData["\<\"Backward potential (reduced units): 0.899887\"\>"], "Print",
+ CellChangeTimes->{3.632323525100298*^9}]
+}, Open  ]]
+}, Open  ]],
 
 Cell[CellGroupData[{
 
@@ -1334,89 +485,108 @@ Cell[BoxData[
    3.6322681905199137`*^9, 3.6322682004250593`*^9}, {3.632268366732292*^9, 
    3.6322683862095995`*^9}}],
 
-Cell[BoxData[
- TagBox[GridBox[{
-    {"\<\"Reduced parameters are:\"\>", "\<\" \"\>"},
-    {"\<\"Reference Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"38.68173\"\>",
-       38.68173094185543,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Reorganization Energy(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"31.91243\"\>",
-       31.912428027030725`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Inital Bias(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"31.91243\"\>",
-       31.912428027030725`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Scan Speed(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox[
-       RowBox[{"\<\"3.86817\"\>", "\[Times]", 
-        SuperscriptBox["10", "\<\"10\"\>"]}],
-       3.868173094185543*^10,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results in reduced unit are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward ET Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"43.01739\"\>",
-       43.01738520878701,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward ET Potential(Reduced)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"34.34392\"\>",
-       34.34391581012784,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"The results in standard unit are:\"\>", "\<\" \"\>"},
-    {"\<\"Forward ET Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"1.11209\"\>",
-       1.1120853219688833`,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]},
-    {"\<\"Backward ET Potential(Standard)\"\>", 
-     TagBox[
-      InterpretationBox["\<\"0.88786\"\>",
-       0.8878588153604607,
-       AutoDelete->True],
-      NumberForm[#, {
-        DirectedInfinity[1], 5}]& ]}
-   },
-   AutoDelete->False,
-   GridBoxAlignment->{"Columns" -> {{Left}}},
-   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
-   GridBoxSpacings->{"Columns" -> {{2}}, "Rows" -> {{2}}}],
-  "Grid"]], "Output",
- CellChangeTimes->{
-  3.632259090196443*^9, 3.6322682290645056`*^9, {3.632268368435438*^9, 
-   3.632268387006467*^9}}]
-}, Closed]]
-}, Closed]]
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Forward potential (reduced units): 1.00012\"\>"], "Print",
+ CellChangeTimes->{3.6323235845700293`*^9}],
+
+Cell[BoxData["\<\"Backward potential (reduced units): 0.999889\"\>"], "Print",
+ CellChangeTimes->{3.632323584572342*^9}]
+}, Open  ]]
 }, Open  ]],
+
+Cell["\<\
+The following test should not yield a forward or backward potential (which is \
+what the output garbage means -- graceful failure tests are not included in \
+the above script).\
+\>", "Text",
+ CellChangeTimes->{{3.632327907400051*^9, 3.6323279460771933`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"With", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Eref", "=", "1.0"}], ",", 
+     RowBox[{"Af", "=", 
+      RowBox[{"5.0", " ", 
+       RowBox[{"10", "^", "6"}]}]}], ",", 
+     RowBox[{"Ab", "=", 
+      RowBox[{"5.0", " ", 
+       RowBox[{"10", "^", "4"}]}]}], ",", 
+     RowBox[{"lambda", "=", "0.825"}], ",", 
+     RowBox[{"v", "=", "1.0"}], " ", ",", 
+     RowBox[{"e0", "=", 
+      RowBox[{"-", "1."}]}], ",", 
+     RowBox[{"tlim", "=", "2.5"}], " ", ",", 
+     RowBox[{"accuracy", "=", "15"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"EredoxNonNernstian", "[", 
+    RowBox[{
+    "Eref", ",", "Af", ",", "Ab", ",", "lambda", ",", "v", ",", "e0", ",", 
+     "tlim", ",", "accuracy"}], "]"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.608559675225573*^9, 3.6085596803105087`*^9}, {
+   3.6085597161193333`*^9, 3.6085597675553083`*^9}, 3.60856060722332*^9, {
+   3.608561297164441*^9, 3.608561311075807*^9}, {3.608561496385501*^9, 
+   3.6085614965427713`*^9}, {3.618680289457239*^9, 3.6186803070075197`*^9}, {
+   3.619276436850596*^9, 3.619276441823942*^9}, {3.6322588924846334`*^9, 
+   3.6322589010645094`*^9}, {3.632259055763816*^9, 3.6322590882276506`*^9}, {
+   3.6322681905199137`*^9, 3.6322682004250593`*^9}, {3.632268366732292*^9, 
+   3.6322683862095995`*^9}, {3.632327806659235*^9, 3.632327895312304*^9}, {
+   3.632329531769809*^9, 3.632329542373972*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"FindRoot", "::", "reged"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"The point \[NoBreak]\\!\\({2.5`}\\)\[NoBreak] is at the \
+edge of the search region \[NoBreak]\\!\\({0.`, 2.5`}\\)\[NoBreak] in \
+coordinate \[NoBreak]\\!\\(1\\)\[NoBreak] and the computed search direction \
+points outside the region. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
+ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/message/FindRoot/reged\\\", ButtonNote -> \
+\\\"FindRoot::reged\\\"]\\)\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{3.632329542855176*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"FindRoot", "::", "lstol"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"The line search decreased the step size to within \
+tolerance specified by AccuracyGoal and PrecisionGoal but was unable to find \
+a sufficient decrease in the merit function. You may need more than \
+\[NoBreak]\\!\\(MachinePrecision\\)\[NoBreak] digits of working precision to \
+meet these tolerances. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
+ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/message/FindRoot/lstol\\\", ButtonNote -> \
+\\\"FindRoot::lstol\\\"]\\)\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{3.632329542867179*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["\<\"Forward potential (reduced units): 1.5\"\>"], "Print",
+ CellChangeTimes->{{3.632327818718441*^9, 3.6323278962486*^9}, 
+   3.6323282036641207`*^9, 3.63232954286967*^9}],
+
+Cell[BoxData["\<\"Backward potential (reduced units): 1.49816\"\>"], "Print",
+ CellChangeTimes->{{3.632327818718441*^9, 3.6323278962486*^9}, 
+   3.6323282036641207`*^9, 3.632329542871807*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Closed]]
+}, Closed]],
 
 Cell["Tests for the Fitter Models", "Section",
  CellChangeTimes->{{3.631284108433666*^9, 3.631284112826126*^9}}]
 },
 WindowSize->{685, 679},
-WindowMargins->{{Automatic, 287}, {Automatic, -36}},
+WindowMargins->{{Automatic, 9}, {Automatic, 8}},
 PrivateNotebookOptions->{"VersionedStylesheet"->{"Default.nb"[8.] -> False}},
-FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (January 25, 2013)",
+FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (December 4, \
+2014)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -1431,68 +601,71 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[580, 22, 262, 3, 86, "Section"],
+Cell[580, 22, 172, 2, 64, "Section"],
 Cell[CellGroupData[{
-Cell[867, 29, 355, 5, 49, "Subsection"],
-Cell[1225, 36, 363, 7, 52, "Input"]
-}, Closed]],
+Cell[777, 28, 181, 2, 44, "Subsection"],
+Cell[961, 32, 94, 1, 30, "Text"],
+Cell[1058, 35, 1166, 25, 173, "Input"],
+Cell[2227, 62, 89, 1, 30, "Text"],
 Cell[CellGroupData[{
-Cell[1625, 48, 228, 3, 41, "Subsection"],
-Cell[1856, 53, 2845, 69, 265, "Input"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[4738, 127, 256, 3, 41, "Subsection"],
-Cell[4997, 132, 11363, 263, 1402, "Input"],
-Cell[16363, 397, 7277, 170, 942, "Input"]
-}, Closed]]
+Cell[2341, 67, 792, 18, 56, "Input"],
+Cell[3136, 87, 208, 2, 21, "Print"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[23689, 573, 172, 2, 86, "Section"],
-Cell[23864, 577, 778, 17, 163, "Text"],
-Cell[CellGroupData[{
-Cell[24667, 598, 181, 2, 49, "Subsection"],
-Cell[CellGroupData[{
-Cell[24873, 604, 738, 17, 55, "Input"],
-Cell[25614, 623, 1029, 31, 203, "Output"]
+Cell[3381, 94, 765, 18, 56, "Input"],
+Cell[4149, 114, 189, 2, 21, "Print"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[26680, 659, 714, 17, 55, "Input"],
-Cell[27397, 678, 1046, 31, 171, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[28480, 714, 762, 18, 55, "Input"],
-Cell[29245, 734, 1043, 31, 171, "Output"]
+Cell[4375, 121, 857, 19, 56, "Input"],
+Cell[5235, 142, 209, 2, 21, "Print"]
 }, Open  ]]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[30337, 771, 335, 4, 41, "Subsection"],
+Cell[5493, 150, 335, 4, 36, "Subsection"],
+Cell[5831, 156, 95, 1, 30, "Text"],
+Cell[5929, 159, 6833, 158, 604, "Input"],
+Cell[12765, 319, 89, 1, 30, "Text"],
 Cell[CellGroupData[{
-Cell[30697, 779, 1286, 28, 77, "Input"],
-Cell[31986, 809, 2449, 73, 357, "Output"]
-}, Closed]],
+Cell[12879, 324, 799, 21, 77, "Input"],
 Cell[CellGroupData[{
-Cell[34472, 887, 837, 22, 71, "Input"],
-Cell[35312, 911, 2257, 70, 389, "Output"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[37606, 986, 799, 21, 71, "Input"],
-Cell[38408, 1009, 2196, 67, 387, "Output"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[40641, 1081, 1415, 33, 71, "Input"],
-Cell[42059, 1116, 2533, 72, 387, "Output"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[44629, 1193, 1332, 32, 71, "Input"],
-Cell[45964, 1227, 2297, 69, 390, "Output"]
-}, Closed]],
-Cell[CellGroupData[{
-Cell[48298, 1301, 1425, 33, 71, "Input"],
-Cell[49726, 1336, 2357, 71, 390, "Output"]
-}, Closed]]
-}, Closed]]
+Cell[13703, 349, 118, 1, 22, "Print"],
+Cell[13824, 352, 119, 1, 22, "Print"]
+}, Open  ]]
 }, Open  ]],
-Cell[52122, 1412, 112, 1, 86, "Section"]
+Cell[CellGroupData[{
+Cell[13992, 359, 1415, 33, 78, "Input"],
+Cell[CellGroupData[{
+Cell[15432, 396, 117, 1, 22, "Print"],
+Cell[15552, 399, 119, 1, 22, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15720, 406, 1332, 32, 78, "Input"],
+Cell[CellGroupData[{
+Cell[17077, 442, 118, 1, 22, "Print"],
+Cell[17198, 445, 120, 1, 22, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[17367, 452, 1425, 33, 78, "Input"],
+Cell[CellGroupData[{
+Cell[18817, 489, 120, 1, 22, "Print"],
+Cell[18940, 492, 120, 1, 22, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[19087, 497, 268, 5, 49, "Text"],
+Cell[CellGroupData[{
+Cell[19380, 506, 1411, 30, 63, "Input"],
+Cell[20794, 538, 620, 12, 60, "Message"],
+Cell[21417, 552, 688, 13, 75, "Message"],
+Cell[CellGroupData[{
+Cell[22130, 569, 185, 2, 22, "Print"],
+Cell[22318, 573, 191, 2, 22, "Print"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]]
+}, Closed]],
+Cell[22560, 581, 112, 1, 50, "Section"]
 }
 ]
 *)

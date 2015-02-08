@@ -13,12 +13,14 @@
 #include <cmath>
 #include <general/simulator_tools/simulator_exceptions.h>
 
+/// \cond
 #define Ith(v,i)    NV_Ith_S(v,i-1)
 #define IJth(A,i,j) DENSE_ELEM(A,i-1,j-1)
 
 #define RTOL 1.e-8
 #define ATOL 1.e-6
 #define MAXSTEPS 2000
+/// \endcond
 
 namespace molstat {
 namespace echem {

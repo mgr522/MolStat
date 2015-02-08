@@ -16,7 +16,6 @@
 
 #include <echem/simulator_models/nernstian.h>
 
-
 using namespace std;
 
 /// Shortcut for the type of model used in this test.
@@ -48,27 +47,26 @@ int main(int argc, char **argv)
 	auto BPotential = nernstian->getObservableFunction(
 		type_index{ typeid(molstat::echem::BackwardETPotential) } );
 
-
 	valarray<double> params(3);
 
 	// check known values for several parameter sets
 	params[ModelType::Index_Af] = 5.0e3;
 	params[ModelType::Index_Ab] = 5.0e3;
-	params[ModelType::Index_Eref] = 42.5499;//1.1V
-	assert(abs(42.5499 - FPotential(params)) < thresh);
-	assert(abs(42.5499 - BPotential(params)) < thresh);
+	params[ModelType::Index_Eref] = 1.1;
+	assert(abs(1.1 - FPotential(params)) / 1.1 < thresh);
+	assert(abs(1.1 - BPotential(params)) / 1.1 < thresh);
 
 	params[ModelType::Index_Af] = 8.0e5;
 	params[ModelType::Index_Ab] = 5.0e3;
-	params[ModelType::Index_Eref] = 42.5499;//1.1V 
-	assert(abs(47.62508 - FPotential(params)) < thresh);
-	assert(abs(47.62508 - BPotential(params)) < thresh);
+	params[ModelType::Index_Eref] = 1.1;
+	assert(abs(6.17517 - FPotential(params)) / 6.17517 < thresh);
+	assert(abs(6.17517 - BPotential(params)) / 6.17517 < thresh);
 
 	params[ModelType::Index_Af] = 8.0e5;
 	params[ModelType::Index_Ab] = 9.0e8;
-	params[ModelType::Index_Eref] = 42.5499;//1.1V 
-	assert(abs(35.52437 - FPotential(params)) < thresh);
-	assert(abs(35.52437 - BPotential(params)) < thresh);
+	params[ModelType::Index_Eref] = 0.4;
+	assert(abs(-6.62554 - FPotential(params)) / 6.62554 < thresh);
+	assert(abs(-6.62554 - BPotential(params)) / 6.62554 < thresh);
 
 	return 0;
 }
