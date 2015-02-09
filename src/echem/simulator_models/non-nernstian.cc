@@ -228,6 +228,10 @@ double NonNernstianReaction::BackwardETP(const std::valarray<double> &params)
 
 	// now do the backward sweep
 
+	//reinitialize the CVode solver before the CVOVE solver is called again.
+	CVodeReInit(cvode_mem, tlim, po);
+
+
 	// specify the root function, where we search for the time when po=0.5
 	CVodeRootInit(cvode_mem, 1, half_finder);
 
