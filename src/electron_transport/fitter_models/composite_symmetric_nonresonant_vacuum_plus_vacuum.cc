@@ -69,9 +69,14 @@ double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::resid(
 	params[NC] = fitparam[NC];
 	params[nfit] = g; // need to pass in the conductance value
 
-	// calculate the integral
-	gsl_integration_qags(&func, fitparam[GMINUS], g, 0.0, 1.0e-7, nquad,
-		w.get(), &integral, &error);
+	if(g < params[GMINUS])
+		integral = 0.;
+	else
+	{
+		// calculate the integral
+		gsl_integration_qags(&func, fitparam[GMINUS], g, 0.0, 1.0e-7, nquad,
+			w.get(), &integral, &error);
+	}
 
 	return integral * fitparam[NT] + fitparam[NV] / g + fitparam[NC] - f;
 }
@@ -102,26 +107,40 @@ std::vector<double> CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
 	params[nfit] = g; // need to pass in the conductance value
 
 	// evaluate the three integrals
-	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
-		&integral, &error);
+	if(g < gminus)
+	{
+		integral = 0.;
+		intc = 0.;
+		intd = 0.;
+	}
+	else
+	{
+		func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p;
+		gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+			&integral, &error);
 
-	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
-		&intc, &error);
+		func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc;
+		gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+			&intc, &error);
 
-	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
-		&intd, &error);
+		func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd;
+		gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+			&intd, &error);
+	}
 
 	// set the derivatives
 	ret[C] = nt * intc;
 
 	ret[D] = nt * intd;
 
-	error = c * sqrt(g-gminus) - d * sqrt(1.-g+gminus);
-	ret[GMINUS] = -nt / (gminus * sqrt((g-gminus) * (1.-g+gminus)))
-		* exp(-0.5*error*error / (1.-g+gminus));
+	if(g < gminus)
+		ret[GMINUS] = 0.;
+	else
+	{
+		error = c * sqrt(g-gminus) - d * sqrt(1.-g+gminus);
+		ret[GMINUS] = -nt / (gminus * sqrt((g-gminus) * (1.-g+gminus)))
+			* exp(-0.5*error*error / (1.-g+gminus));
+	}
 
 	ret[NT] = integral;
 
@@ -162,17 +181,26 @@ std::pair<double, std::vector<double>>
 	params[nfit] = g; // need to pass in the conductance value
 
 	// evaluate the three integrals
-	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
-		&integral, &error);
+	if(g < gminus)
+	{
+		integral = 0.;
+		intc = 0.;
+		intd = 0.;
+	}
+	else
+	{
+		func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p;
+		gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+			&integral, &error);
 
-	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
-		&intc, &error);
+		func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc;
+		gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+			&intc, &error);
 
-	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
-		&intd, &error);
+		func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd;
+		gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+			&intd, &error);
+	}
 
 	// set the residual and derivatives
 	ret.first = nt * integral + nv / g + nc - f;
@@ -181,10 +209,15 @@ std::pair<double, std::vector<double>>
 
 	ret.second[D] = nt * intd;
 
-	error = c * sqrt(g-gminus) - d * sqrt(1.-g+gminus);
-	ret.second[GMINUS] = -nt
-		/ (gminus * sqrt((g-gminus) * (1.-g+gminus)*(1.-g+gminus)*(1.-g+gminus)))
-		* exp(-0.5*error*error / (1.-g+gminus));
+	if(g < gminus)
+		ret.second[GMINUS] = 0.;
+	else
+	{
+		error = c * sqrt(g-gminus) - d * sqrt(1.-g+gminus);
+		ret.second[GMINUS] = -nt
+			/ (gminus * sqrt((g-gminus) * (1.-g+gminus)*(1.-g+gminus)*(1.-g+gminus)))
+			* exp(-0.5*error*error / (1.-g+gminus));
+	}
 
 	ret.second[NT] = integral;
 
