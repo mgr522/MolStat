@@ -107,5 +107,21 @@ int main(int argc, char **argv)
 	assert(abs(500. - returnval.second[ModelType::NV]) / 500. < thresh);
 	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 
+	// check a parameter set where g < gminus
+	fitparam[ModelType::C] = 170.;
+	fitparam[ModelType::D] = 2.6;
+	fitparam[ModelType::GMINUS] = 6.3e-5;
+	fitparam[ModelType::NT] = 89.;
+	fitparam[ModelType::NV] = 0.18;
+	fitparam[ModelType::NC] = 510.;
+	returnval = model.resid_j(fitparam, {{6.2e-5}}, 4450.);
+	assert(abs(-1036.77 - returnval.first) / 1036.77 < thresh);
+	assert(abs(0. - returnval.second[ModelType::C]) < thresh);
+	assert(abs(0. - returnval.second[ModelType::D]) < thresh);
+	assert(abs(0. - returnval.second[ModelType::GMINUS]) < thresh);
+	assert(abs(0. - returnval.second[ModelType::NT]) < thresh);
+	assert(abs(16129. - returnval.second[ModelType::NV]) / 16129. < thresh);
+	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
+
 	return 0;
 }
