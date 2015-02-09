@@ -123,6 +123,33 @@ int main(int argc, char **argv)
 	{
 		// should be here
 	}
+	//another test to make sure the exception is thrown when no potentials were found.	
+	params[ModelType::Index_lambda] = 0.725;
+	params[ModelType::Index_Af] = 5.e1;
+	params[ModelType::Index_Ab] = 5.e1;
+	params[ModelType::Index_Eref] = 1.2;
+	params[ModelType::Index_E0] = 0;
+	params[ModelType::Index_v] = 1.0e+3;
+	params[ModelType::Index_tlim] = 2.5e-3;
+	try
+	{
+		FPotential(params);
+		assert(false); // should have thrown
+	}
+	catch(const molstat::NoObservableProduced &e)
+	{
+		// should be here
+	}
+	try
+	{
+		BPotential(params);
+		assert(false); // should have thrown
+	}
+	catch(const molstat::NoObservableProduced &e)
+	{
+		// should be here
+	}
+
 
 	return 0;
 }
