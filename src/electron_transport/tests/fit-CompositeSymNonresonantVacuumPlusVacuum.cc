@@ -66,29 +66,29 @@ int main(int argc, char **argv)
 	fitparam[ModelType::NV] = 1.;
 	fitparam[ModelType::NC] = 0.;
 	returnval = model.resid_j(fitparam, data1, data1obs);
-	assert(abs(516.033 - returnval.first) / 516.033 < thresh);
-	assert(abs(1.35887 - returnval.second[ModelType::C]) / 1.35887 < thresh);
-	assert(abs(-34.9341 - returnval.second[ModelType::D]) / 34.9341 < thresh);
-	assert(abs(-187829. - returnval.second[ModelType::GMINUS]) / 187829. < thresh);
-	assert(abs(36.0327 - returnval.second[ModelType::NT]) / 36.0327 < thresh);
+	assert(abs(552.090 - returnval.first) / 552.090 < thresh);
+	assert(abs(2.71832 - returnval.second[ModelType::C]) / 2.71832 < thresh);
+	assert(abs(-69.8812 - returnval.second[ModelType::D]) / 69.8812 < thresh);
+	assert(abs(-375656. - returnval.second[ModelType::GMINUS]) / 375656. < thresh);
+	assert(abs(72.0899 - returnval.second[ModelType::NT]) / 72.0899 < thresh);
 	assert(abs(500. - returnval.second[ModelType::NV]) / 500. < thresh);
 	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 
 	returnval = model.resid_j(fitparam, data2, data2obs);
-	assert(abs(911.052 - returnval.first) / 911.052 < thresh);
-	assert(abs(0.417719 - returnval.second[ModelType::C]) / 0.417719 < thresh);
-	assert(abs(-14.4508 - returnval.second[ModelType::D]) / 14.4508 < thresh);
-	assert(abs(-58689.4 - returnval.second[ModelType::GMINUS]) / 58689.4 < thresh);
-	assert(abs(6.96077 - returnval.second[ModelType::NT]) / 6.96077 < thresh);
+	assert(abs(918.022 - returnval.first) / 918.022 < thresh);
+	assert(abs(0.835953 - returnval.second[ModelType::C]) / 0.835953 < thresh);
+	assert(abs(-28.9171 - returnval.second[ModelType::D]) / 28.9171 < thresh);
+	assert(abs(-117380. - returnval.second[ModelType::GMINUS]) / 117380. < thresh);
+	assert(abs(13.9307 - returnval.second[ModelType::NT]) / 13.9307 < thresh);
 	assert(abs(909.091 - returnval.second[ModelType::NV]) / 909.091 < thresh);
 	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 
 	returnval = model.resid_j(fitparam, data3, data3obs);
-	assert(abs(1996.39 - returnval.first) / 1996.39 < thresh);
-	assert(abs(2.25534e-2 - returnval.second[ModelType::C]) / 2.25534e-2 < thresh);
-	assert(abs(-1.26284 - returnval.second[ModelType::D]) / 1.26284 < thresh);
-	assert(abs(-5564.51 - returnval.second[ModelType::GMINUS]) / 5564.51 < thresh);
-	assert(abs(0.394624 - returnval.second[ModelType::NT]) / 0.394624 < thresh);
+	assert(abs(1996.79 - returnval.first) / 1996.79 < thresh);
+	assert(abs(4.51766e-2 - returnval.second[ModelType::C]) / 4.51766e-2 < thresh);
+	assert(abs(-2.52890 - returnval.second[ModelType::D]) / 2.52890 < thresh);
+	assert(abs(-11130.9 - returnval.second[ModelType::GMINUS]) / 11130.9 < thresh);
+	assert(abs(0.790382 - returnval.second[ModelType::NT]) / 0.790382 < thresh);
 	assert(abs(2.e3 - returnval.second[ModelType::NV]) / 2.e3 < thresh);
 	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 
@@ -99,27 +99,27 @@ int main(int argc, char **argv)
 	fitparam[ModelType::NV] = 0.25;
 	fitparam[ModelType::NC] = 3.;
 	returnval = model.resid_j(fitparam, data1, data1obs);
-	assert(abs(156.682 - returnval.first) / 156.682 < thresh);
-	assert(abs(-0.402311 - returnval.second[ModelType::C]) / 0.402311 < thresh);
-	assert(abs(6.95304 - returnval.second[ModelType::D]) / 6.95304 < thresh);
-	assert(abs(-11.1376 - returnval.second[ModelType::GMINUS]) / 11.1376 < thresh);
-	assert(abs(16.2273 - returnval.second[ModelType::NT]) / 16.2273 < thresh);
+	assert(abs(205.364 - returnval.first) / 205.364 < thresh);
+	assert(abs(-0.804622 - returnval.second[ModelType::C]) / 0.804622 < thresh);
+	assert(abs(13.9061 - returnval.second[ModelType::D]) / 13.9061 < thresh);
+	assert(abs(-22.2796 - returnval.second[ModelType::GMINUS]) / 22.2796 < thresh);
+	assert(abs(32.4545 - returnval.second[ModelType::NT]) / 32.4545 < thresh);
 	assert(abs(500. - returnval.second[ModelType::NV]) / 500. < thresh);
 	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 
 	// check a parameter set where g < gminus
-	fitparam[ModelType::C] = 170.;
+	fitparam[ModelType::C] = 150.;
 	fitparam[ModelType::D] = 2.6;
 	fitparam[ModelType::GMINUS] = 6.3e-5;
-	fitparam[ModelType::NT] = 89.;
+	fitparam[ModelType::NT] = 0.89;
 	fitparam[ModelType::NV] = 0.18;
 	fitparam[ModelType::NC] = 510.;
 	returnval = model.resid_j(fitparam, {{6.2e-5}}, 4450.);
-	assert(abs(-1036.77 - returnval.first) / 1036.77 < thresh);
-	assert(abs(0. - returnval.second[ModelType::C]) < thresh);
-	assert(abs(0. - returnval.second[ModelType::D]) < thresh);
-	assert(abs(0. - returnval.second[ModelType::GMINUS]) < thresh);
-	assert(abs(0. - returnval.second[ModelType::NT]) < thresh);
+	assert(abs(-1035.84 - returnval.first) / 1035.84 < thresh);
+	assert(abs(1.71252e-3 - returnval.second[ModelType::C]) / 1.71252e-3 < thresh);
+	assert(abs(-2.31626 - returnval.second[ModelType::D]) / 2.31626 < thresh);
+	assert(abs(-562045. - returnval.second[ModelType::GMINUS]) / 562045. < thresh);
+	assert(abs(1.04651 - returnval.second[ModelType::NT]) / 1.04651 < thresh);
 	assert(abs(16129. - returnval.second[ModelType::NV]) / 16129. < thresh);
 	assert(abs(1. - returnval.second[ModelType::NC]) < thresh);
 

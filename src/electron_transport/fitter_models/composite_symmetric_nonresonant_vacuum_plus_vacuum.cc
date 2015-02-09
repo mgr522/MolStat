@@ -171,19 +171,19 @@ std::pair<double, std::vector<double>>
 
 	// evaluate the integrals
 	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
 		&integral, &error);
 
 	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
 		&intc, &error);
 
 	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
 		&intd, &error);
 
 	func.function = &CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dgminus;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
 		&intgminus, &error);
 
 	// set the residual and derivatives
@@ -278,7 +278,7 @@ double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p(double gp,
 	const double temp2 = 1.-g+gp;
 	const double temp3 = c*sqrt(temp1) - d*sqrt(temp2);
 
-	return (1. + gsl_sf_erf(temp1 / (k * gminus)))
+	return (1. + gsl_sf_erf((gp - gminus) / (k * gminus)))
 		* exp(-0.5 * temp3 * temp3 / temp2)
 		/ (gp * sqrt(temp1 * temp2 * temp2 * temp2));
 }
@@ -297,7 +297,7 @@ double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dc(
 	const double temp2 = 1.-g+gp;
 	const double temp3 = c*sqrt(temp1) - d*sqrt(temp2);
 
-	return (1. + gsl_sf_erf(temp1 / (k * gminus))) * temp3
+	return (1. + gsl_sf_erf((gp - gminus) / (k * gminus))) * temp3
 		* exp(-0.5 * temp3 * temp3 / temp2)
 		/ (gp * sqrt(temp2) * temp2 * temp2);
 }
@@ -316,7 +316,7 @@ double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_dp_dd(
 	const double temp2 = 1.-g+gp;
 	const double temp3 = c*sqrt(temp1) - d*sqrt(temp2);
 
-	return (1. + gsl_sf_erf(temp1 / (k * gminus))) * temp3
+	return (1. + gsl_sf_erf((gp - gminus) / (k * gminus))) * temp3
 		* exp(-0.5 * temp3 * temp3 / temp2)
 		/ (gp * sqrt(temp1) * temp2 * temp2);
 }
