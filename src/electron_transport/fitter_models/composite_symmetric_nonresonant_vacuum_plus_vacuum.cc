@@ -21,7 +21,7 @@ namespace transport {
 std::vector<double> CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
 	::create_initial_guess(const std::map<std::string, double> &values) const
 {
-	vector<double> ret(4);
+	vector<double> ret(6);
 
 	try
 	{
