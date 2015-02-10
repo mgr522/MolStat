@@ -12,6 +12,8 @@
 
 #include "composite_interference_vacuum.h"
 #include <iomanip>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_sf_erf.h>
 
 using namespace std;
 
@@ -72,7 +74,7 @@ double CompositeInterferenceVacuumFitModel::resid(
 	params[nfit] = g; // need to pass in the conductance value
 
 	// calculate the integral
-	gsl_integration_qags(&func, fitparam[GMINUS], g, 0.0, 1.0e-7, nquad,
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad,
 		w.get(), &integral, &error);
 
 	const double model = integral * fitparam[NORM];
@@ -89,7 +91,7 @@ std::vector<double> CompositeInterferenceVacuumFitModel::jacobian(
 	const double f) const
 {
 	vector<double> params(nfit+1), ret(nfit);
-	double error, integral, intf;
+	double error, integral, intf, intgminus;
 	gsl_function func;
 	func.params = &params;
 
@@ -103,21 +105,24 @@ std::vector<double> CompositeInterferenceVacuumFitModel::jacobian(
 	params[NORM] = norm;
 	params[nfit] = g; // need to pass in the conductance value
 
-	// evaluate the two integrals
+	// evaluate the integrals
 	func.function = &CompositeInterferenceVacuumFitModel::int_p;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
 		&integral, &error);
 
 	func.function = &CompositeInterferenceVacuumFitModel::int_dp_df;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
 		&intf, &error);
+
+	func.function = &CompositeInterferenceVacuumFitModel::int_dp_dgminus;
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
+		&intgminus, &error);
 
 	// set the derivatives
 	ret[F] = -fparam * norm * intf;
 	ret[F] /= f; // scaling as described above
 
-	ret[GMINUS] = -norm / (gminus * sqrt(g-gminus))
-		* exp(-0.5*fparam*fparam*(g-gminus));
+	ret[GMINUS] = -2.*norm / (k * gminus * gminus * M_SQRTPI) * intgminus;
 	ret[GMINUS] /= f; // scaling, again
 
 	ret[NORM] = integral;
@@ -133,7 +138,7 @@ std::pair<double, std::vector<double>>
 {
 	pair<double, vector<double>> ret;
 	vector<double> params(nfit+1);
-	double error, integral, intf;
+	double error, integral, intf, intgminus;
 	gsl_function func;
 	func.params = &params;
 
@@ -149,14 +154,18 @@ std::pair<double, std::vector<double>>
 	params[NORM] = norm;
 	params[nfit] = g; // need to pass in the conductance value
 
-	// evaluate the two integrals
+	// evaluate the integrals
 	func.function = &CompositeInterferenceVacuumFitModel::int_p;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
 		&integral, &error);
 
 	func.function = &CompositeInterferenceVacuumFitModel::int_dp_df;
-	gsl_integration_qags(&func, gminus, g, 0.0, 1.0e-7, nquad, w.get(),
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
 		&intf, &error);
+
+	func.function = &CompositeInterferenceVacuumFitModel::int_dp_dgminus;
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad, w.get(),
+		&intgminus, &error);
 
 	// set the residual and derivatives
 	ret.first = norm * integral - f;
@@ -165,8 +174,8 @@ std::pair<double, std::vector<double>>
 	ret.second[F] = -fparam * norm * intf;
 	ret.second[F] /= f; // scaling, again
 
-	ret.second[GMINUS] = -norm / (gminus * sqrt(g-gminus))
-		* exp(-0.5*fparam*fparam*(g-gminus));
+	ret.second[GMINUS] = -2.*norm / (k * gminus * gminus * M_SQRTPI)
+		* intgminus;
 	ret.second[GMINUS] /= f; // scaling, again
 
 	ret.second[NORM] = integral;
@@ -208,6 +217,9 @@ void CompositeInterferenceVacuumFitModel::print_fit(std::ostream &out,
 void CompositeInterferenceVacuumFitModel::process_fit_parameters(
 	std::vector<double> &fitparams) const
 {
+	// make sure `f` is positive
+	if(fitparams[F] < 0.)
+		fitparams[F] = -fitparams[F];
 }
 
 double CompositeInterferenceVacuumFitModel::int_p(double gp,
@@ -217,10 +229,12 @@ double CompositeInterferenceVacuumFitModel::int_p(double gp,
 
 	const double g = fitparams[3];
 	const double f = fitparams[F];
+	const double gminus = fitparams[GMINUS];
 
 	const double temp1 = g-gp;
 
-	return exp(-0.5 * f * f * temp1) / (gp * sqrt(temp1));
+	return (1. + gsl_sf_erf((gp - gminus) / (k * gminus)))
+		* exp(-0.5 * f * f * temp1) / (gp * sqrt(temp1));
 }
 
 double CompositeInterferenceVacuumFitModel::int_dp_df(double gp,
@@ -230,10 +244,27 @@ double CompositeInterferenceVacuumFitModel::int_dp_df(double gp,
 
 	const double g = fitparams[3];
 	const double f = fitparams[F];
+	const double gminus = fitparams[GMINUS];
 
 	const double temp1 = g-gp;
 
-	return sqrt(temp1) * exp(-0.5 * f * f * temp1) / gp;
+	return (1. + gsl_sf_erf((gp - gminus) / (k * gminus))) * sqrt(temp1)
+		* exp(-0.5 * f * f * temp1) / gp;
+}
+
+double CompositeInterferenceVacuumFitModel::int_dp_dgminus(double gp,
+	void *params)
+{
+	const vector<double> &fitparams = *(const vector<double>*)params;
+
+	const double g = fitparams[3];
+	const double f = fitparams[F];
+	const double gminus = fitparams[GMINUS];
+
+	const double temp1 = g-gp;
+	const double temp2 = (gp - gminus) / (k * gminus);
+
+	return exp(-temp2*temp2 - 0.5 * f * f * temp1) / sqrt(temp1);
 }
 
 } // namespace molstat::transport
