@@ -13,6 +13,7 @@
 #include "symmetric_resonant.h"
 #include "symmetric_nonresonant.h"
 #include "asymmetric_resonant.h"
+#include "interference.h"
 #include "composite_symmetric_nonresonant_vacuum.h"
 #include "composite_symmetric_nonresonant_vacuum_plus_vacuum.h"
 #include "composite_interference_vacuum.h"
@@ -40,6 +41,9 @@ void load_models(
 
 	models["compositesymmetricnonresonantvacuumplusvacuum"] =
 		GetFitModelFactory<CompositeSymmetricNonresonantVacuumPlusVacuumFitModel, 1>();
+
+	models["interference"] =
+		GetFitModelFactory<InterferenceFitModel, 1>();
 
 	models["compositeinterferencevacuum"] =
 		GetFitModelFactory<CompositeInterferenceVacuumFitModel, 1>();
