@@ -13,6 +13,8 @@ libtransport_fit_a_SOURCES = transport_fit_module.h \
 	composite_symmetric_nonresonant_vacuum.cc \
 	composite_symmetric_nonresonant_vacuum_plus_vacuum.h \
 	composite_symmetric_nonresonant_vacuum_plus_vacuum.cc \
+	interference.h \
+	interference.cc \
 	composite_interference_vacuum.h \
 	composite_interference_vacuum.cc
 
