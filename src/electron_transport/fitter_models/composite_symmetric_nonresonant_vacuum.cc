@@ -298,7 +298,7 @@ double CompositeSymmetricNonresonantVacuumFitModel::int_dp_dgminus(
 {
 	const vector<double> &fitparams = *(const vector<double>*)params;
 
-	const double g = fitparams[6];
+	const double g = fitparams[4];
 	const double c = fitparams[C];
 	const double d = fitparams[D];
 	const double gminus = fitparams[GMINUS];

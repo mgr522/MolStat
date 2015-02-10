@@ -64,36 +64,48 @@ int main(int argc, char **argv)
 	fitparam[ModelType::GMINUS] = 1.e-4;
 	fitparam[ModelType::NORM] = 1.;
 	returnval = model.resid_j(fitparam, data1, data1obs);
-	assert(abs(16.0327 - returnval.first) / 16.0327 < thresh);
-	assert(abs(1.35887 - returnval.second[ModelType::C]) / 1.35887 < thresh);
-	assert(abs(-34.9341 - returnval.second[ModelType::D]) / 34.9341 < thresh);
-	assert(abs(-187829. - returnval.second[ModelType::GMINUS]) / 187829. < thresh);
-	assert(abs(36.0327 - returnval.second[ModelType::NORM]) / 36.0327 < thresh);
+	assert(abs(52.0899 - returnval.first) / 52.0899 < thresh);
+	assert(abs(2.71832 - returnval.second[ModelType::C]) / 2.71832 < thresh);
+	assert(abs(-69.8812 - returnval.second[ModelType::D]) / 69.8812 < thresh);
+	assert(abs(-375656. - returnval.second[ModelType::GMINUS]) / 375656. < thresh);
+	assert(abs(72.0899 - returnval.second[ModelType::NORM]) / 72.0899 < thresh);
 
 	returnval = model.resid_j(fitparam, data2, data2obs);
-	assert(abs(1.96077 - returnval.first) / 1.96077 < thresh);
-	assert(abs(0.417719 - returnval.second[ModelType::C]) / 0.417719 < thresh);
-	assert(abs(-14.4508 - returnval.second[ModelType::D]) / 14.4508 < thresh);
-	assert(abs(-58689.4 - returnval.second[ModelType::GMINUS]) / 58689.4 < thresh);
-	assert(abs(6.96077 - returnval.second[ModelType::NORM]) / 6.96077 < thresh);
+	assert(abs(8.93066 - returnval.first) / 8.93066 < thresh);
+	assert(abs(0.835953 - returnval.second[ModelType::C]) / 0.835953 < thresh);
+	assert(abs(-28.9171 - returnval.second[ModelType::D]) / 28.9171 < thresh);
+	assert(abs(-117380. - returnval.second[ModelType::GMINUS]) / 117380. < thresh);
+	assert(abs(13.9307 - returnval.second[ModelType::NORM]) / 13.9307 < thresh);
 
 	returnval = model.resid_j(fitparam, data3, data3obs);
-	assert(abs(-3.60538 - returnval.first) / 3.60538 < thresh);
-	assert(abs(2.25534e-2 - returnval.second[ModelType::C]) / 2.25534e-2 < thresh);
-	assert(abs(-1.26284 - returnval.second[ModelType::D]) / 1.26284 < thresh);
-	assert(abs(-5564.51 - returnval.second[ModelType::GMINUS]) / 5564.51 < thresh);
-	assert(abs(0.394624 - returnval.second[ModelType::NORM]) / 0.394624 < thresh);
+	assert(abs(-3.20962 - returnval.first) / 3.20962 < thresh);
+	assert(abs(4.51766e-2 - returnval.second[ModelType::C]) / 4.51766e-2 < thresh);
+	assert(abs(-2.52890 - returnval.second[ModelType::D]) / 2.52890 < thresh);
+	assert(abs(-11130.9 - returnval.second[ModelType::GMINUS]) / 11130.9 < thresh);
+	assert(abs(0.790382 - returnval.second[ModelType::NORM]) / 0.790382 < thresh);
 
 	fitparam[ModelType::C] = 200.;
 	fitparam[ModelType::D] = 4.;
 	fitparam[ModelType::GMINUS] = 5.e-5;
 	fitparam[ModelType::NORM] = 2.;
 	returnval = model.resid_j(fitparam, data1, data1obs);
-	assert(abs(12.4545 - returnval.first) / 12.4545 < thresh);
-	assert(abs(-0.268207 - returnval.second[ModelType::C]) / 0.268207 < thresh);
-	assert(abs(4.63536 - returnval.second[ModelType::D]) / 4.63536 < thresh);
-	assert(abs(-7.42509 - returnval.second[ModelType::GMINUS]) / 7.42509 < thresh);
-	assert(abs(16.2273 - returnval.second[ModelType::NORM]) / 16.2273 < thresh);
+	assert(abs(44.9091 - returnval.first) / 44.9091 < thresh);
+	assert(abs(-0.536414 - returnval.second[ModelType::C]) / 0.536414 < thresh);
+	assert(abs(9.27073 - returnval.second[ModelType::D]) / 9.27073 < thresh);
+	assert(abs(-14.8531 - returnval.second[ModelType::GMINUS]) / 14.8531 < thresh);
+	assert(abs(32.4545 - returnval.second[ModelType::NORM]) / 32.4545 < thresh);
+
+	// check a parameter set where g < gminus
+	fitparam[ModelType::C] = 150.;
+	fitparam[ModelType::D] = 2.6;
+	fitparam[ModelType::GMINUS] = 6.3e-5;
+	fitparam[ModelType::NORM] = 0.89;
+	returnval = model.resid_j(fitparam, {{6.2e-5}}, 4450.);
+	assert(abs(-4449.07 - returnval.first) / 4449.07 < thresh);
+	assert(abs(1.71252e-3 - returnval.second[ModelType::C]) / 1.71252e-3 < thresh);
+	assert(abs(-2.31626 - returnval.second[ModelType::D]) / 2.31626 < thresh);
+	assert(abs(-562045. - returnval.second[ModelType::GMINUS]) / 562045. < thresh);
+	assert(abs(1.04651 - returnval.second[ModelType::NORM]) / 1.04651 < thresh);
 
 	return 0;
 }
