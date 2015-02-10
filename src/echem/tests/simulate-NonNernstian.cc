@@ -123,7 +123,9 @@ int main(int argc, char **argv)
 	{
 		// should be here
 	}
-	//another test to make sure the exception is thrown when no potentials were found.	
+
+	// another test to make sure the exception is thrown when no potentials are
+	// found
 	params[ModelType::Index_lambda] = 0.725;
 	params[ModelType::Index_Af] = 5.e1;
 	params[ModelType::Index_Ab] = 5.e1;
@@ -149,7 +151,6 @@ int main(int argc, char **argv)
 	{
 		// should be here
 	}
-
 
 	return 0;
 }
