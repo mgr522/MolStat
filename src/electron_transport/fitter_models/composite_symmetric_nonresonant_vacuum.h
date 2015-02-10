@@ -40,7 +40,13 @@ namespace transport {
  * \hat{P}_\mathrm{vacuum}(g) = \frac{N \Theta(g-g_-)}{g},
  * \f]
  * where \f$g_-\f$ is a lower bound for the conductance (perhaps experimental
- * resolution).
+ * resolution). To make things smoother for computation, we take
+ * \f[
+ * \hat{P}_\mathrm{vacuum}(g) = \frac{N}{g} \left[ 1 + \mathrm{erf}\left( \frac{g-g_-}{kg_-} \right) \right],
+ * \f]
+ * where \f$0<k\ll 1\f$. (This essentially replaces the step function by erf
+ * with a \"standard deviation\" of \f$kg_-\f$.) \f$k\f$ is not regarded as a
+ * fitting parameter; it is taken as a constant.
  *
  * As described in Reference \cite reuter-2243, the line shape through both
  * channels simultaneously is
@@ -64,6 +70,9 @@ class CompositeSymmetricNonresonantVacuumFitModel : public FitModel<1>
 protected:
 	/// Maximum number of quadrature points for the adaptive GSL routines.
 	const std::size_t nquad = 2000;
+
+	/// The effective standard deviation of the step function smoothing.
+	constexpr static double k = 0.05;
 
 	/// Integration workspace for GSL numerical integration.
 	std::unique_ptr<gsl_integration_workspace,
@@ -89,7 +98,7 @@ protected:
 	 * \brief GSL integrand function for the fit function integral.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
-	 * \int\limits_{g_-}^{g} \mathrm{d}g' \frac{1}{g' \sqrt{(g-g')(1-g+g')^3}} \exp\left[ - \frac{\left( c\sqrt{g-g'} - d\sqrt{1-g+g'} \right)^2}{2(1-g+g')} \right].
+	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{1+\mathrm{erf}\left( \frac{g'-g_-}{kg_-} \right)}{g' \sqrt{(g-g')(1-g+g')^3}} \exp\left[ - \frac{\left( c\sqrt{g-g'} - d\sqrt{1-g+g'} \right)^2}{2(1-g+g')} \right].
 	 * \f]
 	 *
 	 * \param[in] gp The current value of \f$g'\f$.
@@ -104,7 +113,7 @@ protected:
 	 *    integral with respect to \f$c\f$.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
-	 * \int\limits_{g_-}^{g} \mathrm{d}g' \frac{d\sqrt{1-g+g'}-c\sqrt{g-g'}}{g' (1-g+g')^{5/2}} \exp\left[ - \frac{\left( c\sqrt{g-g'} - d\sqrt{1-g+g'} \right)^2}{2(1-g+g')} \right].
+	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{\left[ 1+\mathrm{erf}\left( \frac{g'-g_-}{kg_-} \right) \right] \left(d\sqrt{1-g+g'}-c\sqrt{g-g'}\right)}{g' (1-g+g')^{5/2}} \exp\left[ - \frac{\left( c\sqrt{g-g'} - d\sqrt{1-g+g'} \right)^2}{2(1-g+g')} \right].
 	 * \f]
 	 *
 	 * \param[in] gp The current value of \f$g'\f$.
@@ -119,7 +128,7 @@ protected:
 	 *    integral with respect to \f$d\f$.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
-	 * \int\limits_{g_-}^{g} \mathrm{d}g' \frac{c\sqrt{g-g'}-d\sqrt{1-g+g'}}{g' \sqrt{g-g'} (1-g+g')^2} \exp\left[ - \frac{\left( c\sqrt{g-g'} - d\sqrt{1-g+g'} \right)^2}{2(1-g+g')} \right].
+	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{\left[ 1+\mathrm{erf}\left( \frac{g'-g_-}{kg_-} \right) \right] \left( c\sqrt{g-g'}-d\sqrt{1-g+g'}\right)}{g' \sqrt{g-g'} (1-g+g')^2} \exp\left[ - \frac{\left( c\sqrt{g-g'} - d\sqrt{1-g+g'} \right)^2}{2(1-g+g')} \right].
 	 * \f]
 	 *
 	 * \param[in] gp The current value of \f$g'\f$.
@@ -128,6 +137,21 @@ protected:
 	 * \return The integrand evaluated at this value of \f$g'\f$.
 	 */
 	static double int_dp_dd(double gp, void *params);
+
+	/**
+	 * \brief GSL integrand function for the derivative of the fit function
+	 *    integral with respect to \f$g_-\f$.
+	 *
+	 * Function to be used in the GSL QAGS routine to evaluate \f[
+	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{1}{\sqrt{(g-g')(1-g+g')^3}} \exp\left[ -\left( \frac{g'-g_-}{kg_-} \right)^2 - \frac{\left( c\sqrt{g-g'} - d\sqrt{1-g+g'} \right)^2}{2(1-g+g')} \right].
+	 * \f]
+	 *
+	 * \param[in] gp The current value of \f$g'\f$.
+	 * \param[in] params The fit parameters, assumed to be in vector<double>
+	 *    form (although passed as void* to satisfy GSL requirements).
+	 * \return The integrand evaluated at this value of \f$g'\f$.
+	 */
+	static double int_dp_dgminus(double gp, void *params);
 
 public:
 	/// Index for the \f$c\f$ fitting parameter.
