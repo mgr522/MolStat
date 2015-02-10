@@ -71,14 +71,9 @@ double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::resid(
 	params[NC] = fitparam[NC];
 	params[nfit] = g; // need to pass in the conductance value
 
-	if(g < params[GMINUS])
-		integral = 0.;
-	else
-	{
-		// calculate the integral
-		gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad,
-			w.get(), &integral, &error);
-	}
+	// calculate the integral
+	gsl_integration_qags(&func, 0., g, 0.0, 1.0e-7, nquad,
+		w.get(), &integral, &error);
 
 	return integral * fitparam[NT] + fitparam[NV] / g + fitparam[NC] - f;
 }
@@ -246,22 +241,12 @@ void CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
 void CompositeSymmetricNonresonantVacuumPlusVacuumFitModel
 	::process_fit_parameters(std::vector<double> &fitparams) const
 {
-#if 0
-	// sometimes both gammas go negative...
-	if(fitparams[GAMMAL] < 0. && fitparams[GAMMAR] < 0.)
+	// sometimes both c and d go negative
+	if(fitparams[C] < 0. && fitparams[D] < 0.)
 	{
-		fitparams[GAMMAL] = -fitparams[GAMMAL];
-		fitparams[GAMMAR] = -fitparams[GAMMAR];
+		fitparams[C] = -fitparams[C];
+		fitparams[D] = -fitparams[D];
 	}
-
-	// for convenience, make sure gammaL is smaller than gammaR
-	if(fitparams[GAMMAL] > fitparams[GAMMAR])
-		swap(fitparams[GAMMAL], fitparams[GAMMAR]);
-
-	// sometimes r is negative
-	if(fitparams[R] < 0.)
-		fitparams[R] = -fitparams[R];
-#endif
 }
 
 double CompositeSymmetricNonresonantVacuumPlusVacuumFitModel::int_p(double gp,
