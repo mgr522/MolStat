@@ -75,7 +75,13 @@ double CompositeInterferenceVacuumFitModel::resid(
 	gsl_integration_qags(&func, fitparam[GMINUS], g, 0.0, 1.0e-7, nquad,
 		w.get(), &integral, &error);
 
-	return integral * fitparam[NORM] - f;
+	const double model = integral * fitparam[NORM];
+
+	// owing to the singularity in the form -- the data can span several
+	// orders of magnitude with most points much smaller than a few --
+	// scale by the size of the point to give more weight to the smaller
+	// points
+	return (model - f) / f;
 }
 
 std::vector<double> CompositeInterferenceVacuumFitModel::jacobian(
@@ -108,11 +114,14 @@ std::vector<double> CompositeInterferenceVacuumFitModel::jacobian(
 
 	// set the derivatives
 	ret[F] = -fparam * norm * intf;
+	ret[F] /= f; // scaling as described above
 
 	ret[GMINUS] = -norm / (gminus * sqrt(g-gminus))
 		* exp(-0.5*fparam*fparam*(g-gminus));
+	ret[GMINUS] /= f; // scaling, again
 
 	ret[NORM] = integral;
+	ret[NORM] /= f; // scaling, again
 
 	return ret;
 }
@@ -151,13 +160,17 @@ std::pair<double, std::vector<double>>
 
 	// set the residual and derivatives
 	ret.first = norm * integral - f;
+	ret.first /= f; // scaling as described above
 
 	ret.second[F] = -fparam * norm * intf;
+	ret.second[F] /= f; // scaling, again
 
 	ret.second[GMINUS] = -norm / (gminus * sqrt(g-gminus))
 		* exp(-0.5*fparam*fparam*(g-gminus));
+	ret.second[GMINUS] /= f; // scaling, again
 
 	ret.second[NORM] = integral;
+	ret.second[NORM] /= f; // scaling, again
 
 	return ret;
 }

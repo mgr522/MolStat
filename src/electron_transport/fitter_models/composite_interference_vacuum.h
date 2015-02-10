@@ -49,6 +49,14 @@ namespace transport {
  * Note that this formula assumes \f$g\ll 1\f$. Ultimately, the fitting
  * parameters are \f$f\f$, described above; \f$g_-\f$, the threshold
  * conductance for vacuum tunneling; and \f$N\f$, the normalization constant.
+ *
+ * Since this functional form is singular as \f$g\to0\f$, the line shape spans
+ * several orders of magnitude, possibly causing problems during the fit.
+ * Specifically, the fit essentially overweights the points close to \f$g=0\f$;
+ * their higher magnitudes leads to larger absolute residuals. To compensate,
+ * we scale the residuals by the magnitude of the observed value; this, in
+ * effect, provides a more equal weighting for all points and provides more
+ * accurate fits.
  */
 class CompositeInterferenceVacuumFitModel : public FitModel<1>
 {
