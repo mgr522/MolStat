@@ -35,23 +35,23 @@ This theory can predict redox potentials on both the forward and backward scans 
 Even though the probabilities \f$P_\mathrm{O}(t)\f$ and \f$P_\mathrm{R}(t)\f$ can be obtained analytically from the master equation, the redox potential cannot be obtained analytically. Consequently, we numerically solve the differential equation to obtain the redox potentials.
 
 Two observables are considered defined in this electrochemistry module:
-   -# Forward electron transfer potential,
-   -# Backward electron transfer potential.
+   -# The electron transfer potential during the forward scan,
+   -# The electron transfer potential during the backward scan.
 
-The theory reduces to a simpler form when we consider the limit of a Nernstian reaction. An electrochemical reaction is termed as Nernstian if the system is always at quasi-equilibrium; that is, the voltage scan rate is sufficiently slow that the system instantly adjusts to changes in the bias. As a result, the forward and backward redox potentials will be identical, and are
+The theory simplifies when we consider the limit of a Nernstian reaction. An electrochemical reaction is termed as Nernstian if the system is always at quasi-equilibrium; that is, the voltage scan rate is sufficiently slow that the system instantly adjusts to changes in the bias. As a result, the forward and backward redox potentials will be identical, and are
 \f[
 E_\mathrm{redox}= E_{\mathrm{ref}}-\ln \left( \frac{A_b}{A_f} \right).
 \f]
 Interestingly, the reorganization energy does not enter into this equation.
   
 \section sec_redox_histogram Redox Potential Histograms
-Similar to a conductance histograms, a redox potential histogram is used to assess electron transfer processes in single molecule electrochemsitry. Each time the electrochemistry measurement is performed, the molecule is in a slightly different microscopic configuration, leading to a distribution of measured redox potentials. A redox potential histogram is a way to analyze and visualize many experimental measurements.
+Similar to a conductance histogram, a redox potential histogram is used to assess electron transfer processes in single molecule electrochemsitry. Each time the electrochemistry measurement is performed, the molecule is in a slightly different microscopic configuration, leading to a distribution of measured redox potentials. A redox potential histogram is a way to analyze and visualize many experimental measurements.
 
-In MolStat, the redox potential histogram for single molecule reports the probability density function of the redox potential observable. As described in previous sections and in Refs.\ \cite reuter-2243 and \cite williams-5937, MolStat regards the model's physical parameters as random variables, which, in turn, determine the redox potential's probability density function.
+In MolStat, the redox potential histogram for single molecule reports the probability density function of the redox potential observable. As described in previous sections and in Refs.\ \cite reuter-2243 and \cite williams-5937, MolStat regards the underlying physical parameters as random variables, which, in turn, determine the redox potential's probability density function.
 
 The two operations supported by MolStat are
 -# Simulating single molecule redox potential histograms using model systems. This operation is described in \ref sec_simulate_echem. The implemented model system do not rely on first-principles electronic structure calculations; they are phenomenological. 
--# Fitting a redox potential histogram to a specified model. 
+-# Fitting a redox potential histogram to a specified model (coming soon).
 
 \section sec_simulate_echem Simulating a Redox Potential Histogram
 Simulating a single molecule redox potential histogram is accomplished using the MolStat simulator; see \ref sec_molstat_simulate for details. Herein we list the observables and models for single molecule electrochemistry.
@@ -71,7 +71,6 @@ Simulating a single molecule redox potential histogram is accomplished using the
    - Implemented by the class molstat::echem::BackwardETPotential.
    \endif
 
-
 \subsection subsec_echem_simulate_models Models for Simulating a Redox Potential Histogram
 
 A reduced unit system is used in the following simulator models to cut down on the number of physical parameters.
@@ -89,8 +88,8 @@ This reduced unit system must be used when specifying distributions for the mode
       - `lambda` (\f$\lambda\f$), the reorganization energy,
       - `af` (\f$A_\mathrm{f}\f$), the prefactor for forward half-reaction rate constant,
       - `ab` (\f$A_\mathrm{b}\f$), the prefactor for backward half-reaction rate constant,
-      - `v` (\f$v\f$), the sweeping rate of the applied potential,
-      - `tlim` (\f$t_\mathrm{lim}\f$), the potential switching time.
+      - `v` (\f$v\f$), the scan rate for the applied potential,
+      - `tlim` (\f$t_\mathrm{lim}\f$), the time when the scan switches from the forward to backward sweep.
    - The model parameters must be specified using the reduced unit system described above.
    \if fullref
    - Implemented by the class molstat::echem::NonNernstianReaction; full details are presented there.
