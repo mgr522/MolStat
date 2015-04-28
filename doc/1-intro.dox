@@ -126,11 +126,11 @@ The authors of MolStat cannot revoke these freedoms as long as you follow the li
 MolStat (c) 2014, Northwestern University.
 
 \section reference_sec Citing this software
-You can cite this software by referencing, as appropriate, \cite reuter-2243 and \cite williams-5937. Thanks!
+You can cite this software by referencing \cite zhang-6254 and, as appropriate, \cite reuter-2243 or \cite williams-5937. Thanks!
 
 \section acknowledgments Acknowledgments
 The following people have contributed to the code.
-   - Dr.\ Matthew G.\ Reuter (Northwestern University), 2012-present
+   - Prof.\ Matthew G.\ Reuter (Stony Brook University), 2012-present
    
      \email
    - Mr.\ Patrick D.\ Williams (Oak Ridge High School), 2012
