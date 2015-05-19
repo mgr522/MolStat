@@ -1,7 +1,7 @@
+AM_CPPFLAGS = -I$(top_srcdir)/src
+
 if TRANSPORT_SIMULATOR
 noinst_LIBRARIES = libtransport_simulate.a
-
-AM_CPPFLAGS = -I$(top_srcdir)/src
 
 libtransport_simulate_a_SOURCES = transport_simulate_module.h \
 	transport_simulate_module.cc \

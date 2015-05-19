@@ -1,7 +1,7 @@
+AM_CPPFLAGS = -I$(top_srcdir)/src
+
 if TRANSPORT_FITTER
 noinst_LIBRARIES = libtransport_fit.a
-
-AM_CPPFLAGS = -I$(top_srcdir)/src
 
 libtransport_fit_a_SOURCES = transport_fit_module.h \
 	transport_fit_module.cc \
