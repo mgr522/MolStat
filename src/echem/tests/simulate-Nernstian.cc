@@ -1,6 +1,8 @@
 /* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
-   MolStat (c) 2014, Northwestern University. */
+
+   (c) 2015 Northwestern University. */
+
 /**
  * \file tests/simulate-Nernstian.cc
  * \brief Test suite for Nernstian model of single molecule electrochemistry.

@@ -1,6 +1,8 @@
 /* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
-   MolStat (c) 2014, Northwestern University. */
+
+   (c) 2015 Northwestern University. */
+
 /**
  * \file nernstian.h
  * \brief Simulator model for electron transfer with a Nernstian reaction.
