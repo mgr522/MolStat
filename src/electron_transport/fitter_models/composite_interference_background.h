@@ -4,9 +4,9 @@
    (c) 2015 Stony Brook University. */
 
 /**
- * \file composite_interference_vacuum.h
+ * \file composite_interference_background.h
  * \brief Fitting model for interference transport combined with background
- *    \"vacuum\" tunneling.
+ *    tunneling.
  *
  * \author Matthew G.\ Reuter
  * \date February 2015
@@ -26,19 +26,19 @@ namespace transport {
  *    electrode-electrode tunneling.
  *
  * \note This model only considers the interference tunneling line shape
- *    convolved with the vacuum line shape. A bare vacuum component is not
- *    included.
+ *    convolved with the background line shape. A bare background component is
+ *    not included.
  *
  * The line shape for transport around an interference feature is
  * \f[
- * \hat{P}_\mathrm{interference}(g) = \frac{N}{\sqrt{g}} \exp\left[ - \frac{f^2g}{2} \right],
+ * \hat{P}_\mathrm{interference}(g) = \frac{N}{\sqrt{g}} \exp\left[ - \frac{c_\omega^2g}{2} \right],
  * \f]
- * where \f$g\f$ is the conductance in atomic units and \f$f\f$ is the fitting
- * parameter (the mean \"steepness\" of the interference feature relative to
- * the standard deviation in level alignment). Similarly, the line shape for
- * the background tunneling is
+ * where \f$g\f$ is the conductance in atomic units and \f$c_\omega\f$ is the
+ * fitting parameter (the mean \"steepness\" of the interference feature
+ * relative to the standard deviation in level alignment). Similarly, the line
+ * shape for the background tunneling is
  * \f[
- * \hat{P}_\mathrm{vacuum}(g) = \frac{N \Theta(g-g_-)}{g},
+ * \hat{P}_\mathrm{background}(g) = \frac{N \Theta(g-g_-)}{g},
  * \f]
  * where \f$g_-\f$ is a lower bound for the conductance (perhaps experimental
  * resolution). To make things smoother for computation, we take
@@ -52,10 +52,10 @@ namespace transport {
  * As described in Reference \cite reuter-2243, the line shape through both
  * channels simultaneously is
  * \f[
- * \hat{P}_\mathrm{interference+vacuum}(g) = N \int\limits_0^g \mathrm{d}g' \hat{P}_\mathrm{interference}(g-g') \hat{P}_\mathrm{vacuum}(g').
+ * \hat{P}_\mathrm{interference\ast background}(g) = N \int\limits_0^g \mathrm{d}g' \hat{P}_\mathrm{interference}(g-g') \hat{P}_\mathrm{background}(g').
  * \f]
  * Note that this formula assumes \f$g\ll 1\f$. Ultimately, the fitting
- * parameters are \f$f\f$, described above; \f$g_-\f$, the threshold
+ * parameters are \f$c_\omega\f$, described above; \f$g_-\f$, the threshold
  * conductance for vacuum tunneling; and \f$N\f$, the normalization constant.
  *
  * Since this functional form is singular as \f$g\to0\f$, the line shape spans
@@ -66,7 +66,7 @@ namespace transport {
  * effect, provides a more equal weighting for all points and provides more
  * accurate fits.
  */
-class CompositeInterferenceVacuumFitModel : public FitModel<1>
+class CompositeInterferenceBackgroundFitModel : public FitModel<1>
 {
 protected:
 	/// Maximum number of quadrature points for the adaptive GSL routines.
@@ -83,11 +83,11 @@ protected:
 	 * \brief Converts a map of names to values to an initial guess (ordered
 	 *    vector).
 	 *
-	 * `f` and `gminus` parameters are needed for this model. See
+	 * `comega` and `gminus` parameters are needed for this model. See
 	 * FitModel::create_initial_guess for more information.
 	 *
-	 * \throw invalid_argument_exception if `f` and `gminus` parameters are not
-	 *    specified.
+	 * \throw invalid_argument_exception if `comega` and `gminus` parameters are
+	 *    not specified.
 	 *
 	 * \param[in] values The map of names to values.
 	 * \return A vector containing the initial guess.
@@ -99,7 +99,7 @@ protected:
 	 * \brief GSL integrand function for the fit function integral.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
-	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{1+\mathrm{erf}\left( \frac{g'-g_-}{kg_-} \right)}{g' \sqrt{g-g'}} \exp\left[ - \frac{f^2(g-g')}{2} \right].
+	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{1+\mathrm{erf}\left( \frac{g'-g_-}{kg_-} \right)}{g' \sqrt{g-g'}} \exp\left[ - \frac{c_\omega^2(g-g')}{2} \right].
 	 * \f]
 	 *
 	 * \param[in] gp The current value of \f$g'\f$.
@@ -111,10 +111,10 @@ protected:
 
 	/**
 	 * \brief GSL integrand function for the derivative of the fit function
-	 *    integral with respect to \f$f\f$.
+	 *    integral with respect to \f$c_\omega\f$.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
-	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{\left[ 1 + \mathrm{erf}\left( \frac{g'-g_-}{kg_-} \right) \right]\sqrt{g-g'}}{g'} \exp\left[ - \frac{f^2(g-g')}{2} \right].
+	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{\left[ 1 + \mathrm{erf}\left( \frac{g'-g_-}{kg_-} \right) \right]\sqrt{g-g'}}{g'} \exp\left[ - \frac{c_\omega^2(g-g')}{2} \right].
 	 * \f]
 	 *
 	 * \param[in] gp The current value of \f$g'\f$.
@@ -122,14 +122,14 @@ protected:
 	 *    form (although passed as void* to satisfy GSL requirements).
 	 * \return The integrand evaluated at this value of \f$g'\f$.
 	 */
-	static double int_dp_df(double gp, void *params);
+	static double int_dp_dcomega(double gp, void *params);
 
 	/**
 	 * \brief GSL integrand function for the derivative of the fit function
 	 *    integral with respect to \f$g_-\f$.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
-	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{1}{\sqrt{g-g'}} \exp\left[ -\frac{f^2 (g-g')}{2} \right].
+	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{1}{\sqrt{g-g'}} \exp\left[ -\frac{c_\omega^2 (g-g')}{2} \right].
 	 * \f]
 	 *
 	 * \param[in] gp The current value of \f$g'\f$.
@@ -140,8 +140,8 @@ protected:
 	static double int_dp_dgminus(double gp, void *params);
 
 public:
-	/// Index for the \f$f\f$ fitting parameter.
-	const static int F = 0;
+	/// Index for the \f$c_\omega\f$ fitting parameter.
+	const static int COMEGA = 0;
 
 	/// Index for the \f$g_-\f$ fitting parameter.
 	const static int GMINUS = 1;
@@ -149,8 +149,8 @@ public:
 	/// Index for the norm fitting parameter.
 	const static int NORM = 2;
 
-	CompositeInterferenceVacuumFitModel() = delete;
-	virtual ~CompositeInterferenceVacuumFitModel() = default;
+	CompositeInterferenceBackgroundFitModel() = delete;
+	virtual ~CompositeInterferenceBackgroundFitModel() = default;
 
 	/**
 	 * \brief Constructor requiring the data that we will be fitting against.
@@ -158,7 +158,7 @@ public:
 	 * \param[in] data The data, organized in pairs of array<double, 1>,
 	 *    double objects.
 	 */
-	CompositeInterferenceVacuumFitModel(
+	CompositeInterferenceBackgroundFitModel(
 		const std::list<std::pair<std::array<double, 1>, double>> &data);
 
 	/**
@@ -181,12 +181,12 @@ public:
 	 * Each element of the Jacobian depends on a particular integral, as
 	 * follows.
 	 * \f{eqnarray}
-	 * \frac{\partial \hat{P}(g)}{\partial f} & = & -fN \mathrm{int\_dp\_df}(g), \\
-	 * \frac{\partial \hat{P}(g)}{\partial g_-} & = & \frac{-N}{g_- \sqrt{g-g_-}} \exp\left[ -\frac{f^2(g-g_-)}{2} \right], \\
+	 * \frac{\partial \hat{P}(g)}{\partial c_\omega} & = & -c_\omega N \mathrm{int\_dp\_dcomega}(g), \\
+	 * \frac{\partial \hat{P}(g)}{\partial g_-} & = & \frac{-N}{g_- \sqrt{g-g_-}} \exp\left[ -\frac{c_\omega^2(g-g_-)}{2} \right], \\
 	 * \frac{\partial \hat{P}(g)}{\partial N} & = & \mathrm{int\_p}(g).
 	 * \f}
-	 * where int_p is evaluated with CompositeInterferenceVacuumFitModel::int_p,
-	 * and likewise for CompositeInterferenceVacuumFitModel::int_dp_df.
+	 * where int_p is evaluated with \c CompositeInterferenceVacuumFitModel::int_p,
+	 * and likewise for \c CompositeInterferenceVacuumFitModel::int_dp_dcomega.
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.
@@ -202,7 +202,7 @@ public:
 	 *    set of fitting parameters.
 	 *
 	 * The residual and the derivative with respect to \f$N\f$ both require
-	 * the integral in CompositeInterferenceVacuumFitModel::int_p.
+	 * the integral in \c CompositeInterferenceVacuumFitModel::int_p.
 	 *
 	 * \param[in] fitparam The fitting parameters.
 	 * \param[in] x The independent variables for the function.
@@ -222,8 +222,6 @@ public:
 
 	/**
 	 * \brief Perform post-processing on a set of fit parameters.
-	 *
-	 * \todo Remove this function if deemed unnecessary.
 	 *
 	 * \param[in,out] fitparams The fitting parameters.
 	 */

@@ -18,7 +18,7 @@
 #include "interference.h"
 #include "composite_symmetric_nonresonant_background.h"
 #include "composite_symmetric_nonresonant_vacuum_plus_vacuum.h"
-#include "composite_interference_vacuum.h"
+#include "composite_interference_background.h"
 #include <exception>
 
 using namespace std;
@@ -47,8 +47,8 @@ void load_models(
 	models["interference"] =
 		GetFitModelFactory<InterferenceFitModel, 1>();
 
-	models["compositeinterferencevacuum"] =
-		GetFitModelFactory<CompositeInterferenceVacuumFitModel, 1>();
+	models["compositeinterferencebackground"] =
+		GetFitModelFactory<CompositeInterferenceBackgroundFitModel, 1>();
 }
 
 } // namespace molstat::transport
