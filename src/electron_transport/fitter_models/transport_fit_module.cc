@@ -13,6 +13,10 @@
 #include "symmetric_resonant.h"
 #include "symmetric_nonresonant.h"
 #include "asymmetric_resonant.h"
+#include "interference.h"
+#include "composite_symmetric_nonresonant_vacuum.h"
+#include "composite_symmetric_nonresonant_vacuum_plus_vacuum.h"
+#include "composite_interference_vacuum.h"
 #include <exception>
 
 using namespace std;
@@ -31,6 +35,18 @@ void load_models(
 
 	models["asymmetricresonant"] =
 		GetFitModelFactory<AsymmetricResonantFitModel, 1>();
+
+	models["compositesymmetricnonresonantvacuum"] =
+		GetFitModelFactory<CompositeSymmetricNonresonantVacuumFitModel, 1>();
+
+	models["compositesymmetricnonresonantvacuumplusvacuum"] =
+		GetFitModelFactory<CompositeSymmetricNonresonantVacuumPlusVacuumFitModel, 1>();
+
+	models["interference"] =
+		GetFitModelFactory<InterferenceFitModel, 1>();
+
+	models["compositeinterferencevacuum"] =
+		GetFitModelFactory<CompositeInterferenceVacuumFitModel, 1>();
 }
 
 } // namespace molstat::transport

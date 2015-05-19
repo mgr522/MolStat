@@ -8,7 +8,15 @@ libtransport_fit_a_SOURCES = transport_fit_module.h \
 	symmetric_nonresonant.h \
 	symmetric_nonresonant.cc \
 	asymmetric_resonant.h \
-	asymmetric_resonant.cc
+	asymmetric_resonant.cc \
+	composite_symmetric_nonresonant_vacuum.h \
+	composite_symmetric_nonresonant_vacuum.cc \
+	composite_symmetric_nonresonant_vacuum_plus_vacuum.h \
+	composite_symmetric_nonresonant_vacuum_plus_vacuum.cc \
+	interference.h \
+	interference.cc \
+	composite_interference_vacuum.h \
+	composite_interference_vacuum.cc
 
 # transport fit module requires GSL
 libtransport_fit_a_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)

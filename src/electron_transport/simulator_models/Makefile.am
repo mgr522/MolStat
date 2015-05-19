@@ -13,5 +13,9 @@ libtransport_simulate_a_SOURCES = transport_simulate_module.h \
 	sym_two_site_channel.h \
 	sym_two_site_channel.cc \
 	asym_two_site_channel.h \
-	asym_two_site_channel.cc
+	asym_two_site_channel.cc \
+	rectangular_barrier.h \
+	rectangular_barrier.cc \
+	sym_interference.h \
+	sym_interference.cc
 endif
