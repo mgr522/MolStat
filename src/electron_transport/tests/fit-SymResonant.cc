@@ -1,6 +1,8 @@
 /* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
-   MolStat (c) 2014, Northwestern University. */
+
+   (c) 2014 Northwestern University. */
+
 /**
  * \file tests/fit-SymResonant.cc
  * \brief Test suite for the symmetric-coupling, resonant-tunneling fit model.

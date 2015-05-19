@@ -1,6 +1,8 @@
 /* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
-   MolStat (c) 2014, Northwestern University. */
+
+   (c) 2014 Northwestern University. */
+
 /**
 \page page_conductance_histograms Electron Transport
 
@@ -179,6 +181,22 @@ Complete details for each of these channel models can be found in the full refer
    - Compatible with the ElectricCurrent, DifferentialConductance, StaticConductance, and ZeroBiasConductance observables.
    \endif
 
+- `RectangularBarrierChannel`
+   - Rectangular barrier model for simulating direct, electrode-electrode tunneling.
+   - Model parameters are
+      - `height` (\f$h\f$), the energy height of the barrier (in eV),
+      - `width` (\f$w\f$), the width (distance) of the barrier (in nm).
+   - Transmission function is
+   \f[
+   T(E) = \frac{1}{ 1 + \frac{1}{\sinh^2( \sqrt{2m(h-E)} w / \hbar ) h^2} {4E(h-E)} }.
+   \f]
+   \if fullref
+   - Implemented by the class molstat::transport::RectangularBarrier; full details are presented there.
+   - Compatible with the molstat::transport::ZeroBiasConductance observable.
+   \elseif userman
+   - Compatible with the ZeroBiasConductance observable.
+   \endif
+
 \section sec_fit_electron_transport Fitting Electron Transport Properties
 The following list overviews the implemented fitter models for electron transport.
 \if userman
@@ -195,6 +213,19 @@ Complete details for each of these models can be found in the full reference man
    - Detailed in \cite williams-5937.
    \if fullref
    - Implemented by the class molstat::transport::SymmetricNonresonantFitModel; full details are presented there.
+   \endif
+
+- `%SymmetricNonresonantPlusVacuum`
+   - Nonresonant tunneling through a single channel that is symmetrically connected to the two leads combined with direct tunneling between the electrodes. This model was derived with electron transport through molecules in mind.
+   - Fitting parameters (dimensionless) are
+       - \f$c\f$, the average level alignment relative to the standard deviation in channel-electrode coupling.
+       - \f$d\f$, the average channel-electrode coupling relative to its standard deviation.
+       - \f$g_-\f$, the lower bound for conductance from direct, electrode-electrode tunneling.
+       - \f$ N \f$, a scale parameter (since the histogram is probably unnormalized).
+   - Fits may be unreliable if the conductance histogram peak occurs at \f$ g \gtrsim 0.01 \f$ \f$\mathrm{G}_0\f$.
+   %- Detailed in \cite williams-5937.
+   \if fullref
+   - Implemented by the class molstat::transport::SymmetricNonresonantPlusVacuumFitModel; full details are presented there.
    \endif
 
 - `%SymmetricResonant`

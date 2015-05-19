@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -I$(top_srcdir)/src
+
 if ECHEM_SIMULATOR
 # parts of the electrochemistry simulator module require CVODE
 noinst_LIBRARIES = libechem_simulate.a

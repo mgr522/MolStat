@@ -1,6 +1,8 @@
 /* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
-   MolStat (c) 2014, Northwestern University. */
+
+   (c) 2014 Northwestern University. */
+
 /**
  * \file transport_fit_module.cc
  * \brief Function that loads transport fit models.
@@ -13,6 +15,11 @@
 #include "symmetric_resonant.h"
 #include "symmetric_nonresonant.h"
 #include "asymmetric_resonant.h"
+#include "interference.h"
+#include "composite_symmetric_nonresonant_vacuum.h"
+#include "composite_symmetric_nonresonant_vacuum_plus_vacuum.h"
+#include "composite_interference_vacuum.h"
+#include <exception>
 
 using namespace std;
 
@@ -30,6 +37,18 @@ void load_models(
 
 	models["asymmetricresonant"] =
 		GetFitModelFactory<AsymmetricResonantFitModel, 1>();
+
+	models["compositesymmetricnonresonantvacuum"] =
+		GetFitModelFactory<CompositeSymmetricNonresonantVacuumFitModel, 1>();
+
+	models["compositesymmetricnonresonantvacuumplusvacuum"] =
+		GetFitModelFactory<CompositeSymmetricNonresonantVacuumPlusVacuumFitModel, 1>();
+
+	models["interference"] =
+		GetFitModelFactory<InterferenceFitModel, 1>();
+
+	models["compositeinterferencevacuum"] =
+		GetFitModelFactory<CompositeInterferenceVacuumFitModel, 1>();
 }
 
 } // namespace molstat::transport

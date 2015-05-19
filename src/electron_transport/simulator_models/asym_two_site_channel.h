@@ -1,6 +1,8 @@
 /* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
-   MolStat (c) 2014, Northwestern University. */
+
+   (c) 2014 Northwestern University. */
+
 /**
  * \file asym_two_site_channel.h
  * \brief Tight-binding channel with a two-site chain that couples

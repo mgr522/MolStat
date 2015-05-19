@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -I$(top_srcdir)/src
+
 TESTS =
 check_PROGRAMS =
 
@@ -22,7 +24,7 @@ check_PROGRAMS += \
 	simulate-NonNernstian
 
 simulate_NonNernstian_SOURCES = simulate-NonNernstian.cc 
-simulate_NonNernstian_CPPFLAGS = $(CVODE_INCLUDE)
+simulate_NonNernstian_CPPFLAGS = $(CVODE_INCLUDE) $(AM_CPPFLAGS)
 simulate_NonNernstian_LDADD = ../simulator_models/libechem_simulate.a \
 	../../general/libmolstat_simulator.a \
 	../../general/libmolstat_general.a \

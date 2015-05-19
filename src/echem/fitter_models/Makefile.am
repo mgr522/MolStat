@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -I$(top_srcdir)/src
+
 if ECHEM_FITTER
 # electrochemistry fitter module requires GSL
 

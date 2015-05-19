@@ -1,6 +1,8 @@
 /* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
-   MolStat (c) 2014, Northwestern University. */
+
+   (c) 2014 Northwestern University. */
+
 /**
  * \file symmetric_resonant.h
  * \brief Fitting model for resonant tunneling (symmetric coupling).
@@ -35,7 +37,7 @@ namespace transport {
  * \f$\varepsilon\f$ and \f$\Gamma\f$.
  *
  * Since this functional form is singular as \f$g\to1\f$, the line shape spans
- * several orders of magnitude, and possibly causing problems during the fit.
+ * several orders of magnitude, possibly causing problems during the fit.
  * Specifically, the fit essentially overweights the points close to \f$g=1\f$;
  * their higher magnitudes leads to larger absolute residuals. To compensate,
  * we scale the residuals by the magnitude of the observed value; this, in

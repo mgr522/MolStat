@@ -154,18 +154,6 @@ AC_ARG_ENABLE([documentation],
 
 # check for configuration files, doxygen, and pdflatex, if necessary
 if test x$build_documentation = xyes; then
-	AC_CHECK_FILE([doc/Makefile.am], ,
-		[AC_MSG_WARN([Unable to build documentation: Cannot find doc/Makefile.am])
-		build_documentation=no])
-
-	AC_CHECK_FILE([doc/userman.doxygen.in], ,
-		[AC_MSG_WARN([Unable to build documentation: Cannot find doc/userman.doxygen.in])
-		build_documentation=no])
-
-	AC_CHECK_FILE([doc/fullref.doxygen.in], ,
-		[AC_MSG_WARN([Unable to build documentation: Cannot find doc/fullref.doxygen.in])
-		build_documentation=no])
-
 	AC_CHECK_PROG([have_doxygen], [doxygen], [yes], [no])
 	if test x$have_doxygen = xyes; then
 	   AC_PATH_PROG(DOXYGEN, doxygen)
@@ -206,6 +194,11 @@ AC_CONFIG_FILES([
 				src/electron_transport/fitter_models/Makefile
 				src/electron_transport/simulator_models/Makefile
 				src/electron_transport/tests/Makefile
+					src/electron_transport/tests/fit-asymmetric-resonant.py
+					src/electron_transport/tests/fit-options.py
+					src/electron_transport/tests/fit-symmetric-nonresonant.py
+					src/electron_transport/tests/fit-symmetric-nonresonant-binlog.py
+					src/electron_transport/tests/fit-symmetric-resonant.py
 			src/tests/Makefile
 ])
 

@@ -4,16 +4,16 @@ doc_DATA = userman.pdf fullref.pdf
 
 .PHONY: FORCE
 
-fullref.pdf: FORCE
-	$(DOXYGEN) fullref.doxygen
-	cd latex; make
-	mv -f latex/refman.pdf fullref.pdf
-	rm -rf latex
-
 userman.pdf: FORCE
 	$(DOXYGEN) userman.doxygen
 	cd latex; make
 	mv -f latex/refman.pdf userman.pdf
+	rm -rf latex
+
+fullref.pdf: FORCE
+	$(DOXYGEN) fullref.doxygen
+	cd latex; make
+	mv -f latex/refman.pdf fullref.pdf
 	rm -rf latex
 
 FORCE:

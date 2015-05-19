@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -I$(top_srcdir)/src
+
 TESTS = string_tools \
 	counter_index_functionality \
 	histogram1d_linear \
