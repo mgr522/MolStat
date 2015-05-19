@@ -4,9 +4,6 @@ Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache/
-build.sh
-config.log
-config.status
 config/ar-lib
 config/compile
 config/depcomp
