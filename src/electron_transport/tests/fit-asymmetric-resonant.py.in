@@ -3,7 +3,7 @@
 # MolStat (c) 2014, Northwestern University.
 
 ##
- # @file tests/fit-asymmetric-resonant.py
+ # @file tests/fit-asymmetric-resonant.py.in
  # @brief Test suite for fitting to the asymmetric, resonant-tunneling model.
  # 
  # @test Test suite for fitting to the asymmetric, resonant-tunneling model.
@@ -31,10 +31,10 @@ import math
 
 ## @cond
 
-process = subprocess.Popen('../../molstat-fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+process = subprocess.Popen('@top_builddir@/src/molstat-fitter', stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 output = process.communicate( \
 'AsymmetricResonant\n' \
-'asymmetric-resonant.dat\n' \
+'@srcdir@/asymmetric-resonant.dat\n' \
 'noprint')
 
 # make sure no errors were reported

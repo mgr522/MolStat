@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
+AM_CPPFLAGS = -I$(top_srcdir)/src
+
 noinst_LIBRARIES = \
 	libmolstat_general.a
 

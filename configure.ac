@@ -163,6 +163,11 @@ AC_CONFIG_FILES([
 				src/electron_transport/fitter_models/Makefile
 				src/electron_transport/simulator_models/Makefile
 				src/electron_transport/tests/Makefile
+					src/electron_transport/tests/fit-asymmetric-resonant.py
+					src/electron_transport/tests/fit-options.py
+					src/electron_transport/tests/fit-symmetric-nonresonant.py
+					src/electron_transport/tests/fit-symmetric-nonresonant-binlog.py
+					src/electron_transport/tests/fit-symmetric-resonant.py
 			src/tests/Makefile
 ])
 
