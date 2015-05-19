@@ -74,7 +74,7 @@ endif
 TESTS += \
 	fit-AsymResonant \
 	fit-SymNonresonant \
-	fit-CompositeSymNonresonantVacuum \
+	fit-CompositeSymNonresonantBackground \
 	fit-CompositeSymNonresonantVacuumPlusVacuum \
 	fit-SymResonant \
 	fit-Interference \
@@ -83,7 +83,7 @@ TESTS += \
 check_PROGRAMS += \
 	fit-AsymResonant \
 	fit-SymNonresonant \
-	fit-CompositeSymNonresonantVacuum \
+	fit-CompositeSymNonresonantBackground \
 	fit-CompositeSymNonresonantVacuumPlusVacuum \
 	fit-SymResonant \
 	fit-Interference \
@@ -103,9 +103,9 @@ fit_SymNonresonant_LDADD = ../fitter_models/libtransport_fit.a \
 	../../general/libmolstat_general.a \
 	$(GSL_LDFLAGS) $(AM_LDADD) $(GSL_LIBS) $(AM_LIBS)
 
-fit_CompositeSymNonresonantVacuum_SOURCES = fit-CompositeSymNonresonantVacuum.cc
-fit_CompositeSymNonresonantVacuum_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)
-fit_CompositeSymNonresonantVacuum_LDADD = ../fitter_models/libtransport_fit.a \
+fit_CompositeSymNonresonantBackground_SOURCES = fit-CompositeSymNonresonantBackground.cc
+fit_CompositeSymNonresonantBackground_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)
+fit_CompositeSymNonresonantBackground_LDADD = ../fitter_models/libtransport_fit.a \
 	../../general/libmolstat_fitter.a \
 	../../general/libmolstat_general.a \
 	$(GSL_LDFLAGS) $(AM_LDADD) $(GSL_LIBS) $(AM_LIBS)

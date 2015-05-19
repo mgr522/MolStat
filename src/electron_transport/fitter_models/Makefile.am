@@ -11,8 +11,8 @@ libtransport_fit_a_SOURCES = transport_fit_module.h \
 	symmetric_nonresonant.cc \
 	asymmetric_resonant.h \
 	asymmetric_resonant.cc \
-	composite_symmetric_nonresonant_vacuum.h \
-	composite_symmetric_nonresonant_vacuum.cc \
+	composite_symmetric_nonresonant_background.h \
+	composite_symmetric_nonresonant_background.cc \
 	composite_symmetric_nonresonant_vacuum_plus_vacuum.h \
 	composite_symmetric_nonresonant_vacuum_plus_vacuum.cc \
 	interference.h \
