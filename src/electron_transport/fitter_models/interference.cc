@@ -27,12 +27,12 @@ std::vector<double> InterferenceFitModel::create_initial_guess(
 
 	try
 	{
-		ret[F] = values.at("f");
+		ret[COMEGA] = values.at("comega");
 	}
 	catch(const out_of_range &e)
 	{
 		throw invalid_argument("Initial guesses for the Interference" \
-			"FitModel must specify the \"f\" parameter.");
+			"FitModel must specify the \"comega\" parameter.");
 	}
 
 	try
@@ -59,10 +59,10 @@ double InterferenceFitModel::resid(const std::vector<double> &fitparam,
 {
 	// get the current fit parameters and independent variable
 	const double g = x[0];
-	const double fparam = fitparam[F];
+	const double comega = fitparam[COMEGA];
 	const double norm = fitparam[NORM];
 	
-	const double model = norm / sqrt(g) * exp(-0.5*fparam*fparam * g);
+	const double model = norm / sqrt(g) * exp(-0.5*comega*comega * g);
 
 	// owing to the singularity in the form -- the data can span several
 	// orders of magnitude with most points much smaller than a few --
@@ -77,15 +77,15 @@ std::vector<double> InterferenceFitModel::jacobian(
 {
 	// get the current fit parameters and independent variable
 	const double g = x[0];
-	const double fparam = fitparam[F];
+	const double comega = fitparam[COMEGA];
 	const double norm = fitparam[NORM];
 
 	vector<double> ret(nfit);
 
-	ret[F] = -norm * fparam * sqrt(g) * exp(-0.5*fparam*fparam*g);
-	ret[F] /= f; // scaling as described above
+	ret[COMEGA] = -norm * comega * sqrt(g) * exp(-0.5*comega*comega*g);
+	ret[COMEGA] /= f; // scaling as described above
 
-	ret[NORM] = exp(-0.5*fparam*fparam*g) / sqrt(g);
+	ret[NORM] = exp(-0.5*comega*comega*g) / sqrt(g);
 	ret[NORM] /= f; // scaling, again
 
 	return ret;
@@ -94,14 +94,14 @@ std::vector<double> InterferenceFitModel::jacobian(
 void InterferenceFitModel::append_default_guesses(
 	std::list<std::vector<double>> &guess) const
 {
-	const list<double> list_f{1., 10., 100.};
+	const list<double> list_comega{1., 10., 100.};
 
-	for(list<double>::const_iterator f = list_f.cbegin();
-		f != list_f.cend(); ++f)
+	for(list<double>::const_iterator comega = list_comega.cbegin();
+		comega != list_comega.cend(); ++comega)
 	{
 
 		vector<double> init(nfit);
-		init[F] = *f;
+		init[COMEGA] = *comega;
 		init[NORM] = 1.;
 
 		guess.emplace_back(init);
@@ -111,16 +111,16 @@ void InterferenceFitModel::append_default_guesses(
 void InterferenceFitModel::print_fit(std::ostream &out,
 	const std::vector<double> &fitparam) const
 {
-	out << "f=" << scientific << setprecision(4) << fitparam[F] <<
+	out << "comega=" << scientific << setprecision(4) << fitparam[COMEGA] <<
 		", norm=" << scientific << setprecision(4) << fitparam[NORM];
 }
 
 void InterferenceFitModel::process_fit_parameters(
 	std::vector<double> &fitparams) const
 {
-	// sometimes f goes negative.
-	if(fitparams[F] < 0.)
-		fitparams[F] = -fitparams[F];
+	// sometimes comega goes negative.
+	if(fitparams[COMEGA] < 0.)
+		fitparams[COMEGA] = -fitparams[COMEGA];
 }
 
 } // namespace molstat::transport

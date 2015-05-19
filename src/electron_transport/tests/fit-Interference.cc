@@ -59,28 +59,28 @@ int main(int argc, char **argv)
 	pair<double, vector<double>> returnval;
 
 	// check known values for several parameter sets
-	fitparam[ModelType::F] = 1.;
+	fitparam[ModelType::COMEGA] = 1.;
 	fitparam[ModelType::NORM] = 1.;
 	returnval = model.resid_j(fitparam, data1, data1obs);
 	assert(abs(0.116917 - returnval.first) / 0.116917 < thresh);
-	assert(abs(-2.23383e-3 - returnval.second[ModelType::F]) / 2.23383e-3 < thresh);
+	assert(abs(-2.23383e-3 - returnval.second[ModelType::COMEGA]) / 2.23383e-3 < thresh);
 	assert(abs(1.11692 - returnval.second[ModelType::NORM]) / 1.11692 < thresh);
 
 	returnval = model.resid_j(fitparam, data2, data2obs);
 	assert(abs(5.02691 - returnval.first) / 5.02691 < thresh);
-	assert(abs(-6.62960e-3 - returnval.second[ModelType::F]) / 6.62960e-3 < thresh);
+	assert(abs(-6.62960e-3 - returnval.second[ModelType::COMEGA]) / 6.62960e-3 < thresh);
 	assert(abs(6.02691 - returnval.second[ModelType::NORM]) / 6.02691 < thresh);
 
 	returnval = model.resid_j(fitparam, data3, data3obs);
 	assert(abs(10.1775 - returnval.first) / 10.1775 < thresh);
-	assert(abs(-5.58877e-3 - returnval.second[ModelType::F]) / 5.58877e-3 < thresh);
+	assert(abs(-5.58877e-3 - returnval.second[ModelType::COMEGA]) / 5.58877e-3 < thresh);
 	assert(abs(11.1775 - returnval.second[ModelType::NORM]) / 11.1775 < thresh);
 	
-	fitparam[ModelType::F] = 50.;
+	fitparam[ModelType::COMEGA] = 50.;
 	fitparam[ModelType::NORM] = 0.1;
 	returnval = model.resid_j(fitparam, data1, data1obs);
 	assert(abs(-0.990823 - returnval.first) / 0.990823 < thresh);
-	assert(abs(-9.17738e-4 - returnval.second[ModelType::F]) / 9.17738e-4 < thresh);
+	assert(abs(-9.17738e-4 - returnval.second[ModelType::COMEGA]) / 9.17738e-4 < thresh);
 	assert(abs(9.17738e-2 - returnval.second[ModelType::NORM]) / 9.17738e-2 < thresh);
 
 	return 0;

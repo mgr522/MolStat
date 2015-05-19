@@ -24,10 +24,10 @@ namespace transport {
  *
  * The line shape for transport near an interference feature is
  * \f[
- * \hat{P}(g) = \frac{N}{\sqrt{g}} \exp\left[ - \frac{f^2g}{2} \right],
+ * \hat{P}(g) = \frac{N}{\sqrt{g}} \exp\left[ - \frac{c_\omega^2g}{2} \right],
  * \f]
  * where \f$g\f$ is the conductance in atomic units. The fitting parameters
- * are \f$f\f$, the steepness of the interference well relative to the
+ * are \f$c_\omega\f$, the steepness of the interference well relative to the
  * standard deviation in the level alignment, and \f$N\f$, the normalization
  * constant.
  *
@@ -46,10 +46,10 @@ protected:
 	 * \brief Converts a map of names to values to an initial guess (ordered
 	 *    vector).
 	 *
-	 * The `f` parameter is needed for this model. See
-	 * FitModel::create_initial_guess for more information.
+	 * The `comega` parameter is needed for this model. See
+	 * \c FitModel::create_initial_guess for more information.
 	 *
-	 * \throw invalid_argument_exception if the `f` parameter is not
+	 * \throw invalid_argument_exception if the `comega` parameter is not
 	 *    specified.
 	 *
 	 * \param[in] values The map of names to values.
@@ -59,8 +59,8 @@ protected:
 		const std::map<std::string, double> &values) const override;
 
 public:
-	/// Index for the f fitting parameter.
-	const static int F = 0;
+	/// Index for the \f$c_\omega\f$ fitting parameter.
+	const static int COMEGA = 0;
 
 	/// Index for the norm fitting parameter.
 	const static int NORM = 1;
@@ -96,8 +96,8 @@ public:
 	 *
 	 * For reference, the elements of the Jacobian are given by
 	 * \f{eqnarray}
-	 * \frac{\partial \hat{P}(g)}{\partial f} & = & -N f \sqrt{g} \exp\left[ -\frac{f^2 g}{2} \right]; \\
-	 * \frac{\partial \hat{P}(g)}{\partial N} & = & \frac{1}{\sqrt{g}} \exp\left[ -\frac{f^2 g}{2} \right].
+	 * \frac{\partial \hat{P}(g)}{\partial c_\omega} & = & -N c_\omega \sqrt{g} \exp\left[ -\frac{c_\omega^2 g}{2} \right]; \\
+	 * \frac{\partial \hat{P}(g)}{\partial N} & = & \frac{1}{\sqrt{g}} \exp\left[ -\frac{c_\omega^2 g}{2} \right].
 	 * \f}
 	 *
 	 * \param[in] fitparam The fitting parameters.
@@ -121,7 +121,7 @@ public:
 	/**
 	 * \brief Perform post-processing on a set of fit parameters.
 	 *
-	 * Makes sure `f` is positive.
+	 * Makes sure \f$c_\omega\f$ is positive.
 	 *
 	 * \param[in,out] fitparams The fitting parameters.
 	 */
