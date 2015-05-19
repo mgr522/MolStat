@@ -27,13 +27,14 @@ std::vector<double> SymmetricNonresonantFitModel::create_initial_guess(
 
 	try
 	{
-		ret[C] = values.at("c");
-		ret[D] = values.at("d");
+		ret[CEPSILON] = values.at("cepsilon");
+		ret[CGAMMA] = values.at("cgamma");
 	}
 	catch(const out_of_range &e)
 	{
 		throw invalid_argument("Initial guesses for the Symmetric" \
-			"NonresonantFitModel must specify \"c\" and \"d\" parameters.");
+			"NonresonantFitModel must specify \"cepsilon\" and \"cgamma\" " \
+			"parameters.");
 	}
 
 	try
@@ -60,11 +61,11 @@ double SymmetricNonresonantFitModel::resid(const std::vector<double> &fitparam,
 {
 	// get the current parameters and independent variable
 	const double g = x[0];
-	const double c = fitparam[C];
-	const double d = fitparam[D];
+	const double ceps = fitparam[CEPSILON];
+	const double cgamma = fitparam[CGAMMA];
 	const double norm = fitparam[NORM];
 
-	const double cd = c*sqrt(g) - d*sqrt(1. - g);
+	const double cd = ceps*sqrt(g) - cgamma*sqrt(1. - g);
 	const double expcd = exp(-0.5*cd*cd / (1. - g));
 
 	const double model = norm / sqrt(g*(1.-g)*(1.-g)*(1.-g)) * expcd;
@@ -78,18 +79,18 @@ std::vector<double> SymmetricNonresonantFitModel::jacobian(
 {
 	// get the current parameters and independent variable
 	const double g = x[0];
-	const double c = fitparam[C];
-	const double d = fitparam[D];
+	const double ceps = fitparam[CEPSILON];
+	const double cgamma = fitparam[CGAMMA];
 	const double norm = fitparam[NORM];
 
-	const double cd = c*sqrt(g) - d*sqrt(1. - g);
+	const double cd = ceps*sqrt(g) - cgamma*sqrt(1. - g);
 	const double expcd = exp(-0.5*cd*cd / (1. - g));
 
 	vector<double> ret(nfit);
 
-	ret[C] = -norm * cd * expcd / ((1.-g)*(1.-g)*sqrt(1.-g));
+	ret[CEPSILON] = -norm * cd * expcd / ((1.-g)*(1.-g)*sqrt(1.-g));
 
-	ret[D] = norm * cd * expcd / ((1.-g)*(1.-g)*sqrt(g));
+	ret[CGAMMA] = norm * cd * expcd / ((1.-g)*(1.-g)*sqrt(g));
 
 	ret[NORM] = expcd / ((1.-g)*sqrt(g*(1.-g)));
 
@@ -99,19 +100,19 @@ std::vector<double> SymmetricNonresonantFitModel::jacobian(
 void SymmetricNonresonantFitModel::append_default_guesses(
 	std::list<std::vector<double>> &guess) const
 {
-	const list<double> list_c{50., 100., 200., 300., 400., 500.},
-		list_d{5., 10., 20., 30., 40., 50.};
+	const list<double> list_ceps{50., 100., 200., 300., 400., 500.},
+		list_cgamma{5., 10., 20., 30., 40., 50.};
 
-	for(list<double>::const_iterator c = list_c.cbegin();
-		c != list_c.cend(); ++c)
+	for(list<double>::const_iterator ceps = list_ceps.cbegin();
+		ceps != list_ceps.cend(); ++ceps)
 	{
-	for(list<double>::const_iterator d = list_d.cbegin();
-		d != list_d.cend(); ++d)
+	for(list<double>::const_iterator cgamma = list_cgamma.cbegin();
+		cgamma != list_cgamma.cend(); ++cgamma)
 	{
 
 		vector<double> init(nfit);
-		init[C] = *c;
-		init[D] = *d;
+		init[CEPSILON] = *ceps;
+		init[CGAMMA] = *cgamma;
 		init[NORM] = 1.;
 
 		guess.emplace_back(init);
@@ -121,19 +122,19 @@ void SymmetricNonresonantFitModel::append_default_guesses(
 void SymmetricNonresonantFitModel::print_fit(std::ostream &out,
 	const std::vector<double> &fitparam) const
 {
-	out << "c=" << scientific << setprecision(4) << fitparam[C] << ", d=" <<
-		scientific << setprecision(4) << fitparam[D] << ", norm=" << scientific
-		<< setprecision(4) << fitparam[NORM];
+	out << "cepsilon=" << scientific << setprecision(4) << fitparam[CEPSILON] <<
+		", cgamma=" << scientific << setprecision(4) << fitparam[CGAMMA] <<
+		", norm=" << scientific << setprecision(4) << fitparam[NORM];
 }
 
 void SymmetricNonresonantFitModel::process_fit_parameters(
 	std::vector<double> &fitparams) const
 {
-	// sometimes both c and d go negative
-	if(fitparams[C] < 0. && fitparams[D] < 0.)
+	// sometimes both cepsilon and cgamma go negative
+	if(fitparams[CEPSILON] < 0. && fitparams[CGAMMA] < 0.)
 	{
-		fitparams[C] = -fitparams[C];
-		fitparams[D] = -fitparams[D];
+		fitparams[CEPSILON] = -fitparams[CEPSILON];
+		fitparams[CGAMMA] = -fitparams[CGAMMA];
 	}
 }
 

@@ -49,17 +49,17 @@ assert(tokens[1] == '=')
 # check the residual -- this is empirical
 assert(math.fabs(float(tokens[2]) - 287.) / 287. < 5.e-2)
 
-# check c -- not empirical
-cline = tokens[3].split('=')
-assert(cline[0] == 'c')
+# check cepsilon -- not empirical
+cepsline = tokens[3].split('=')
+assert(cepsline[0] == 'cepsilon')
 # need to remove the last character (a comma) from the number for the float call
-assert(math.fabs(float(cline[1][:-1]) - 60.) / 60. < 5.e-2) #5% relative error
+assert(math.fabs(float(cepsline[1][:-1]) - 60.) / 60. < 5.e-2) #5% relative error
 
-# check d -- not empirical
-dline = tokens[4].split('=')
-assert(dline[0] == 'd')
+# check cgamma -- not empirical
+cgammaline = tokens[4].split('=')
+assert(cgammaline[0] == 'cgamma')
 # need to remove the last character (a comma) from the number for the float call
-assert(math.fabs(float(dline[1][:-1]) - 10.) / 10. < 5.e-2) #5% relative error
+assert(math.fabs(float(cgammaline[1][:-1]) - 10.) / 10. < 5.e-2) #5% relative error
 
 # check norm -- this is empirical
 normline = tokens[5].split('=')

@@ -25,15 +25,16 @@ namespace transport {
  *
  * The line shape for nonresonant tunneling through a single site with
  * symmetric coupling to the leads is \f[
- * \hat{P}(g) = \frac{N}{\sqrt{g(1-g)^3}} \exp\left[ - \frac{(c \sqrt{g} - d \sqrt{1-g})^2}{2(1-g)} \right],
+ * \hat{P}(g) = \frac{N}{\sqrt{g(1-g)^3}} \exp\left[ - \frac{(c_\varepsilon \sqrt{g} - c_\Gamma \sqrt{1-g})^2}{2(1-g)} \right],
  * \f] where \f$g\f$ is the conductance in atomic units. The fitting parameters
- * are \f$c\f$, the average level alignment relative to the standard deviation
- * in the channel coupling; \f$d\f$, the average channel coupling relative to
- * its standard deviation; and \f$N\f$, the normalization constant.
+ * are \f$c_\varepsilon\f$, the average level alignment relative to the
+ * standard deviation in the channel coupling; \f$c_\Gamma\f$, the average
+ * channel coupling relative to its standard deviation; and \f$N\f$, the
+ * normalization constant.
  *
  * This form is based on a symmetric-coupling single-site model
- * (SymmetricOneSiteModel) with normal distributions (NormalDistribution) on
- * \f$\varepsilon\f$ and \f$\Gamma\f$.
+ * (\c SymmetricOneSiteModel) with normal distributions (\c NormalDistribution)
+ * on \f$\varepsilon\f$ and \f$\Gamma\f$.
  *
  * This model is detailed in Reference \cite williams-5937.
  */
@@ -44,11 +45,11 @@ protected:
 	 * \brief Converts a map of names to values to an initial guess (ordered
 	 *    vector).
 	 *
-	 * `c` and `d` parameters are needed for this model. See
+	 * `cepsilon` and `cgamma` parameters are needed for this model. See
 	 * FitModel::create_initial_guess for more information.
 	 *
-	 * \throw invalid_argument_exception if `c` and `d` parameters are not
-	 *    specified.
+	 * \throw invalid_argument_exception if `cepsilon` and `cgamma` parameters 
+	 *    are not specified.
 	 *
 	 * \param[in] values The map of names to values.
 	 * \return A vector containing the initial guess.
@@ -57,11 +58,11 @@ protected:
 		const std::map<std::string, double> &values) const override;
 
 public:
-	/// Index for the \f$c\f$ fitting parameter.
-	const static int C = 0;
+	/// Index for the \f$c_\varepsilon\f$ fitting parameter.
+	const static int CEPSILON = 0;
 
-	/// Index for the \f$d\f$ fitting parameter.
-	const static int D = 1;
+	/// Index for the \f$c_\Gamma\f$ fitting parameter.
+	const static int CGAMMA = 1;
 
 	/// Index for the norm fitting parameter.
 	const static int NORM = 2;
@@ -97,9 +98,9 @@ public:
 	 *
 	 * For reference, the elements of the Jacobian are given by
 	 * \f{eqnarray}
-	 * \frac{\partial \hat{P}(g)}{\partial c} & = & -\frac{N (c\sqrt{g} - d\sqrt{1-g})}{(1-g)^{5/2}} \exp\left[ - \frac{(c\sqrt{g} - d\sqrt{1-g})^2}{2(1-g)} \right]; \\
-	 * \frac{\partial \hat{P}(g)}{\partial d} & = & \frac{N (c\sqrt{g} - d\sqrt{1-g})}{\sqrt{g} (1-g)^2} \exp\left[ - \frac{(c\sqrt{g} - d\sqrt{1-g})^2}{2(1-g)} \right]; \\
-	 * \frac{\partial \hat{P}(g)}{\partial N} & = & \frac{1}{\sqrt{g(1-g)3}} \exp\left[ - \frac{(c\sqrt{g} - d\sqrt{1-g})^2}{2(1-g)} \right]; \\
+	 * \frac{\partial \hat{P}(g)}{\partial c_\varepsilon} & = & -\frac{N (c_\varepsilon\sqrt{g} - c_\Gamma\sqrt{1-g})}{(1-g)^{5/2}} \exp\left[ - \frac{(c_\varepsilon\sqrt{g} - c_\Gamma\sqrt{1-g})^2}{2(1-g)} \right]; \\
+	 * \frac{\partial \hat{P}(g)}{\partial c_\Gamma} & = & \frac{N (c_\varepsilon\sqrt{g} - c_\Gamma\sqrt{1-g})}{\sqrt{g} (1-g)^2} \exp\left[ - \frac{(c_\varepsilon\sqrt{g} - c_\Gamma\sqrt{1-g})^2}{2(1-g)} \right]; \\
+	 * \frac{\partial \hat{P}(g)}{\partial N} & = & \frac{1}{\sqrt{g(1-g)^3}} \exp\left[ - \frac{(c_\varepsilon\sqrt{g} - c_\Gamma\sqrt{1-g})^2}{2(1-g)} \right]; \\
 	 * \f}
 	 *
 	 * \param[in] fitparam The fitting parameters.

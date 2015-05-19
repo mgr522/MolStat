@@ -60,41 +60,41 @@ int main(int argc, char **argv)
 	pair<double, vector<double>> returnval;
 
 	// check known values for several parameter sets
-	fitparam[ModelType::C] = 100.;
-	fitparam[ModelType::D] = 5.;
+	fitparam[ModelType::CEPSILON] = 100.;
+	fitparam[ModelType::CGAMMA] = 5.;
 	fitparam[ModelType::NORM] = 1.;
 	returnval = model.resid_j(fitparam, data1, data1obs);
 	assert(abs(-0.442849 - returnval.first) / 0.442849  < thresh);
-	assert(abs(0.458223 - returnval.second[ModelType::C]) / 0.458223 < thresh);
-	assert(abs(-10.2359 - returnval.second[ModelType::D]) / 10.2359 < thresh);
+	assert(abs(0.458223 - returnval.second[ModelType::CEPSILON]) / 0.458223 < thresh);
+	assert(abs(-10.2359 - returnval.second[ModelType::CGAMMA]) / 10.2359 < thresh);
 	assert(abs(19.5572 - returnval.second[ModelType::NORM]) / 19.5572 < thresh);
 
 	returnval = model.resid_j(fitparam, data2, data2obs);
 	assert(abs(0.868936 - returnval.first) / 0.868936  < thresh);
-	assert(abs(0.340943 - returnval.second[ModelType::C]) / 0.340943 < thresh);
-	assert(abs(-10.7762 - returnval.second[ModelType::D]) / 10.7762 < thresh);
+	assert(abs(0.340943 - returnval.second[ModelType::CEPSILON]) / 0.340943 < thresh);
+	assert(abs(-10.7762 - returnval.second[ModelType::CGAMMA]) / 10.7762 < thresh);
 	assert(abs(5.86894 - returnval.second[ModelType::NORM]) / 5.86894 < thresh);
 
 	returnval = model.resid_j(fitparam, data3, data3obs);
 	assert(abs(-3.01677 - returnval.first) / 3.01677  < thresh);
-	assert(abs(0.0607698 - returnval.second[ModelType::C]) / 0.0607698 < thresh);
-	assert(abs(-2.71703 - returnval.second[ModelType::D]) / 2.71703 < thresh);
+	assert(abs(0.0607698 - returnval.second[ModelType::CEPSILON]) / 0.0607698 < thresh);
+	assert(abs(-2.71703 - returnval.second[ModelType::CGAMMA]) / 2.71703 < thresh);
 	assert(abs(0.983229 - returnval.second[ModelType::NORM]) / 0.983229 < thresh);
 	
 
-	fitparam[ModelType::C] = 85.;
-	fitparam[ModelType::D] = 8.;
+	fitparam[ModelType::CEPSILON] = 85.;
+	fitparam[ModelType::CGAMMA] = 8.;
 	fitparam[ModelType::NORM] = 6.;
 	returnval = model.resid_j(fitparam, data1, data1obs);
 	assert(abs(-19.9797 - returnval.first) / 19.9797  < thresh);
-	assert(abs(3.81479e-3 - returnval.second[ModelType::C]) / 3.81479e-3 < thresh);
-	assert(abs(-8.52159e-2 - returnval.second[ModelType::D]) / 8.52159e-2 < thresh);
+	assert(abs(3.81479e-3 - returnval.second[ModelType::CEPSILON]) / 3.81479e-3 < thresh);
+	assert(abs(-8.52159e-2 - returnval.second[ModelType::CGAMMA]) / 8.52159e-2 < thresh);
 	assert(abs(3.38571e-3 - returnval.second[ModelType::NORM]) / 3.38571e-3 < thresh);
 
 	returnval = model.resid_j(fitparam, data2, data2obs);
 	assert(abs(-4.99986 - returnval.first) / 4.99986  < thresh);
-	assert(abs(2.39778e-5 - returnval.second[ModelType::C]) / 2.39778e-5 < thresh);
-	assert(abs(-7.57867e-4 - returnval.second[ModelType::D]) / 7.57867e-4 < thresh);
+	assert(abs(2.39778e-5 - returnval.second[ModelType::CEPSILON]) / 2.39778e-5 < thresh);
+	assert(abs(-7.57867e-4 - returnval.second[ModelType::CGAMMA]) / 7.57867e-4 < thresh);
 	assert(abs(2.37842e-5 - returnval.second[ModelType::NORM]) / 2.37842e-5 < thresh);
 
 	return 0;
