@@ -1,6 +1,7 @@
 /* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
-   MolStat (c) 2014, Northwestern University. */
+
+   (c) 2014 Northwestern University. */
 /**
  * \file simulate_model_factory.cc
  * \brief Implements the molstat::SimulateModelFactory class for constructing

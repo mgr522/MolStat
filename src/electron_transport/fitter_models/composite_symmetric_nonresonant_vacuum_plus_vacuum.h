@@ -1,6 +1,8 @@
 /* This file is a part of MolStat, which is distributed under the Creative
    Commons Attribution-NonCommercial 4.0 International Public License.
-   MolStat (c) 2014, Northwestern University. */
+
+   (c) 2015 Stony Brook University. */
+
 /**
  * \file composite_symmetric_nonresonant_vacuum_plus_vacuum.h
  * \brief Fitting model for nonresonant tunneling (symmetric coupling) combined
