@@ -759,10 +759,10 @@ WARN_LOGFILE           = "warn-userman.log"
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = 1-intro.dox \
-                         2-math-background.dox \
-                         3-run-molstat.dox \
-                         4-electron-transport.dox
+INPUT                  = @abs_top_srcdir@/doc/1-intro.dox \
+                         @abs_top_srcdir@/doc/2-math-background.dox \
+                         @abs_top_srcdir@/doc/3-run-molstat.dox \
+                         @abs_top_srcdir@/doc/4-electron-transport.dox
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

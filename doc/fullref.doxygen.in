@@ -759,11 +759,11 @@ WARN_LOGFILE           = "warn-fullref.log"
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = 1-intro.dox \
-                         2-math-background.dox \
-                         3-run-molstat.dox \
-                         4-electron-transport.dox \
-                         5-extend.dox \
+INPUT                  = @abs_top_srcdir@/doc/1-intro.dox \
+                         @abs_top_srcdir@/doc/2-math-background.dox \
+                         @abs_top_srcdir@/doc/3-run-molstat.dox \
+                         @abs_top_srcdir@/doc/4-electron-transport.dox \
+                         @abs_top_srcdir@/doc/5-extend.dox \
                          @abs_top_srcdir@/src
 
 # This tag can be used to specify the character encoding of the source files
