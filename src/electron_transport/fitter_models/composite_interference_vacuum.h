@@ -31,7 +31,7 @@ namespace transport {
  * \f[
  * \hat{P}_\mathrm{interference}(g) = \frac{N}{\sqrt{g}} \exp\left[ - \frac{f^2g}{2} \right],
  * \f]
- * where \f$g\f$ is the conductance in atomic units and \f$ is the fitting
+ * where \f$g\f$ is the conductance in atomic units and \f$f\f$ is the fitting
  * parameter (the mean \"steepness\" of the interference feature relative to
  * the standard deviation in level alignment). Similarly, the line shape for
  * the background tunneling is
@@ -127,7 +127,7 @@ protected:
 	 *    integral with respect to \f$g_-\f$.
 	 *
 	 * Function to be used in the GSL QAGS routine to evaluate \f[
-	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{1}{\sqrt{g-g'}} \exp\left[ -f^2 (g-g')}{2} \right].
+	 * \int\limits_{0}^{g} \mathrm{d}g' \frac{1}{\sqrt{g-g'}} \exp\left[ -\frac{f^2 (g-g')}{2} \right].
 	 * \f]
 	 *
 	 * \param[in] gp The current value of \f$g'\f$.

@@ -115,18 +115,6 @@ AC_ARG_ENABLE([documentation],
 
 # check for configuration files, doxygen, and pdflatex, if necessary
 if test x$build_documentation = xyes; then
-	AC_CHECK_FILE([doc/Makefile.am], ,
-		[AC_MSG_WARN([Unable to build documentation: Cannot find doc/Makefile.am])
-		build_documentation=no])
-
-	AC_CHECK_FILE([doc/userman.doxygen.in], ,
-		[AC_MSG_WARN([Unable to build documentation: Cannot find doc/userman.doxygen.in])
-		build_documentation=no])
-
-	AC_CHECK_FILE([doc/fullref.doxygen.in], ,
-		[AC_MSG_WARN([Unable to build documentation: Cannot find doc/fullref.doxygen.in])
-		build_documentation=no])
-
 	AC_CHECK_PROG([have_doxygen], [doxygen], [yes], [no])
 	if test x$have_doxygen = xyes; then
 	   AC_PATH_PROG(DOXYGEN, doxygen)
