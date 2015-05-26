@@ -23,7 +23,7 @@ namespace transport {
 /**
  * \brief Simulator submodel (molstat::transport::Channel) for transport
  *    through a rectangular barrier. This submodel is designed to represent
- *    ``vacuum'' or background (direct electrode-electrode) tunneling.
+ *    background (direct electrode-electrode) tunneling.
  *
  * Inherited model parameters (from molstat::transport::TransportJunction) are
  * - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
@@ -45,7 +45,7 @@ namespace transport {
  * at the boundaries between the three regions. Finally, we assume there is no
  * incoming wave from the right and use the magnitude of the wavefunction in
  * the right as the transmission amplitude. This, in square modulus, is the
- * transmission for Landauer-B\"uttiker theory. The equation is
+ * transmission for Landauer-B&uuml;ttiker theory. The equation is
  * \f[
  * T(E) = \frac{1}{ 1 + \frac{1}{\sinh^2( \sqrt{2m(h-E)} w / \hbar ) h^2} {4E(h-E)} }.
  * \f]

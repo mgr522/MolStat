@@ -66,7 +66,7 @@ Details on how to extend MolStat can be found in the full reference manual, avai
 \endif
 
 \if fullref
-We encourage you to encourage MolStat to have new functionality and hope that you would consider contributing your work into MolStat. The full MolStat code is available at \website and uses `git` to manage the repository. There are additional files in the repository that are not included in the distribution tarball (such as scripts for building the documentation).
+We encourage you to extend MolStat to have new functionality and hope that you would consider contributing your work into MolStat. The full MolStat code is available at \website and uses `git` to manage the repository. There are additional files in the repository that are not included in the distribution tarball (such as scripts for building the documentation).
 
 Once you checkout the repository, first run autoconf to produce the `configure` script
 \verbatim

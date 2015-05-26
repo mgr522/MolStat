@@ -33,17 +33,17 @@ namespace transport {
  * The line shape for nonresonant tunneling through a single site with symmetric
  * coupling to the leads is \cite williams-5937
  * \f[
- * \hat{P}_\mathrm{NR}(g) = \frac{N}{\sqrt{g(1-g)^3}} \exp\left[ - \frac{\left( c_\varepsilon\sqrt{g} - c_\Gamma\sqrt{1-g} \right)^2}{2(1-g)} \right],
+ * \hat{P}_\mathrm{NR}(g) = \frac{N_\mathrm{NR}}{\sqrt{g(1-g)^3}} \exp\left[ - \frac{\left( c_\varepsilon\sqrt{g} - c_\Gamma\sqrt{1-g} \right)^2}{2(1-g)} \right],
  * \f]
  * where \f$g\f$ is the conductance in atomic units. Similarly, the line shape
  * for the background tunneling is
  * \f[
- * \hat{P}_\mathrm{background}(g) = \frac{N \Theta(g-g_-)}{g},
+ * \hat{P}_\mathrm{background}(g) = \frac{N_\mathrm{background} \Theta(g-g_-)}{g},
  * \f]
  * where \f$g_-\f$ is a lower bound for the conductance (perhaps experimental
  * resolution). To make things smoother for computation, we take
  * \f[
- * \hat{P}_\mathrm{background}(g) = \frac{N}{g} \left[ 1 + \mathrm{erf}\left( \frac{g-g_-}{kg_-} \right) \right],
+ * \hat{P}_\mathrm{background}(g) = \frac{N_\mathrm{background}}{g} \left[ 1 + \mathrm{erf}\left( \frac{g-g_-}{kg_-} \right) \right],
  * \f]
  * where \f$0<k\ll 1\f$. (This essentially replaces the step function by erf
  * with a \"standard deviation\" of \f$kg_-\f$.) \f$k\f$ is not regarded as a
