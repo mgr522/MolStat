@@ -78,7 +78,7 @@ TESTS += \
 	fit-ExperimentSymNonresonant \
 	fit-SymResonant \
 	fit-Interference \
-	fit-CompositeInterferenceVacuum
+	fit-CompositeInterferenceBackground
 
 check_PROGRAMS += \
 	fit-AsymResonant \
