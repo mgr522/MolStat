@@ -232,6 +232,20 @@ Complete details for each of these models can be found in the full reference man
    - Implemented by the class molstat::transport::SymmetricNonresonantFitModel; full details are presented there.
    \endif
 
+\if fullref
+- `%CompositeSymmetricNonresonantBackground`
+   - Nonresonant tunneling through a single channel that is symmetrically connected to the two leads combined with independent direct tunneling between the electrodes.
+   - Fitting parameters (dimensionless) are
+       - \f$c_\varepsilon\f$, the average level alignment relative to the standard deviation in channel-electrode coupling.
+       - \f$c_\Gamma\f$, the average channel-electrode coupling relative to its standard deviation.
+       - \f$g_-\f$, the lower bound for conductance from direct, electrode-electrode tunneling.
+       - \f$ N \f$, a scale parameter (since the histogram is probably unnormalized).
+   - Fits may be unreliable if the conductance histogram peak occurs at \f$ g \gtrsim 0.01 \f$ \f$\mathrm{G}_0\f$.
+   - This model is not intended for "production" use, but to test the validity of fitting with `%ExperimentSymmetricNonresonant` (described below).
+   \if 0 - Detailed in \cite williams-5937. \endif
+   - Implemented by the class molstat::transport::CompositeSymmetricNonresonantBackgroundFitModel; full details are presented there.
+\endif
+
 - `%ExperimentSymmetricNonresonant`
    - Nonresonant tunneling through a single channel that is symmetrically connected to the two leads combined with direct tunneling between the electrodes. This model was derived with electron transport through molecules in mind.
    - Fitting parameters (dimensionless) are
@@ -271,4 +285,27 @@ Complete details for each of these models can be found in the full reference man
    \if fullref
    - Implemented by the class molstat::transport::AsymmetricResonantFitModel; full details are presented there.
    \endif
+
+- `%Interference`
+   - Nonresonant tunneling through a single channel near a destructive interference feature.
+   - Fitting parameters (dimensionless) are
+       - \f$ c_\omega \f$, the average transmission well "steepness" relative to the standard deviation in the level alignment.
+       - \f$ N \f$, a scale parameter (since the histogram is probably unnormalized).
+   \if 0- Detailed in \cite williams-5937. \endif
+   \if fullref
+   - Implemented by the class molstat::transport::InterferenceFitModel; full details are presented there.
+   \endif
+
+\if fullref
+- `%CompositeInterferenceBackground`
+   - Nonresonant tunneling through a single channel near a destructive interference feature combined with independent direct tunneling between the electrodes.
+   - Fitting parameters (dimensionless) are
+       - \f$c_\omega\f$, the average transmission well "steepness" relative to the standard deviation in the level alignment.
+       - \f$g_-\f$, the lower bound for conductance from direct, electrode-electrode tunneling.
+       - \f$ N \f$, a scale parameter (since the histogram is probably unnormalized).
+   - Fits may be unreliable if the conductance histogram peak occurs at \f$ g \gtrsim 0.01 \f$ \f$\mathrm{G}_0\f$.
+   - This model is not intended for "production" use, but to test the validity of fitting with both interference and background components.
+   \if 0 - Detailed in \cite williams-5937. \endif
+   - Implemented by the class molstat::transport::CompositeInterferenceBackgroundFitModel; full details are presented there.
+\endif
 */
