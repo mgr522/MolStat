@@ -1,5 +1,5 @@
 # boilerplate initialization
-AC_INIT([MolStat], [1.2], [matthew.reuter@stonybrook.edu], , [https://bitbucket.org/mgreuter/molstat])
+AC_INIT([MolStat], [1.3], [matthew.reuter@stonybrook.edu], , [https://bitbucket.org/mgreuter/molstat])
 AC_CONFIG_SRCDIR([configure.ac])
 
 # this is where autoconf-generated files go
