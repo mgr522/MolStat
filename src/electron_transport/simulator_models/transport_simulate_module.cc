@@ -83,6 +83,10 @@ void load_observables(
 	observables.emplace(
 		to_lower("DifferentialConductance"),
 		GetObservableIndex<DifferentialConductance>() );
+
+	observables.emplace(
+		to_lower("SeebeckCoefficient"),
+		GetObservableIndex<SeebeckCoefficient>() );
 }
 
 } // namespace molstat::transport

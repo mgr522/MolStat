@@ -87,5 +87,16 @@ double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const
 	return ECurrent(params) / V;
 }
 
+double SymOneSiteChannel::SeebeckS(const std::valarray<double> &params) const
+{
+	// unpack the parameters
+	const double &ef = params[Index_EF];
+	const double &eps = params[Index_epsilon];
+	const double &gamma = params[Index_gamma];
+
+	return -2 * (ef - eps) / ((ef - eps)*(ef - eps) + gamma*gamma);
+
+}
+
 } // namespace molstat::transport
 } // namespace molstat
