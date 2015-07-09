@@ -17,12 +17,6 @@
 
 namespace molstat {
 
-const CompositeSimulateModel::SubmodelInformation &
-	CompositeSimulateModel::getSubmodelInfo() const
-{
-	return submodels;
-}
-
 CompositeSimulateModel::SubmodelParameters
 CompositeSimulateModel::routeSubmodelParameters(
 	const std::valarray<double> &cparams) const
