@@ -225,8 +225,36 @@ class CompositeSimulateModel
 protected:
 	CompositeSimulateModel() = default;
 
-	/// List of the underlying submodels.
-	std::list<std::shared_ptr<SimulateModel>> submodels;
+	/**
+	 * \brief List of the underlying submodels.
+	 *
+	 * Each element in the list corresponds to a submodel; this list also helps
+	 * route the correct model parameters from the composite model to each
+	 * submodel.
+	 *
+	 * The first item in the list is a pointer to the submodel. The second item
+	 * is an array storing the indices of composite model parameters that should
+	 * be passed to the corresponding submodel.
+	 */
+	std::list<std::pair<
+			std::shared_ptr<SimulateModel>,
+			const std::valarray<std::size_t>
+		>> submodels;
+
+	/**
+	 * \brief A list of submodels and the parameters that should be passed to
+	 *    them.
+	 *
+	 * Each element in the list corresponds to a submodel; the purpose of this
+	 * list is to route the correct model parameters from the composite model
+	 * to each submodel.
+	 *
+	 * The first element is a pointer to the submodel and the second element is
+	 * an array of the parameters for that submodel.
+	 */
+	using SubmodelParameters =
+		std::list<std::pair<std::shared_ptr<const SimulateModel>,
+		                    const std::valarray<double>>>;
 
 public:
 	virtual ~CompositeSimulateModel() = default;
@@ -243,7 +271,7 @@ public:
 	 *
 	 * \return The list of submodels.
 	 */
-	const std::list<std::shared_ptr<SimulateModel>> &getSubmodels() const;
+	std::list<std::shared_ptr<const SimulateModel>> getSubmodels() const;
 
 	/**
 	 * \brief Partition a set of parameters for the composite model into

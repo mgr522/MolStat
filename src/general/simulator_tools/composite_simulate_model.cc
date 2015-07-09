@@ -17,43 +17,31 @@
 
 namespace molstat {
 
-const std::list<std::shared_ptr<SimulateModel>> &
+std::list<std::shared_ptr<const SimulateModel>>
 	CompositeSimulateModel::getSubmodels() const
 {
-	return submodels;
+	std::list<std::shared_ptr<const SimulateModel>> ret;
+
+	// go through the submodels and strip out the routing information
+	for(const auto submodel : submodels)
+		ret.emplace_back(submodel.first);
+
+	return ret;
+}
+
 CompositeSimulateModel::SubmodelParameters
 CompositeSimulateModel::routeSubmodelParameters(
 	const std::valarray<double> &cparams) const
 {
 	SubmodelParameters ret;
 
-	// get the number of model parameters explicitly required by the
-	// composite model
-	const size_t cnparam{ get_num_composite_parameters() };
-	size_t tally { cnparam };
-
 	// go through all of the submodels
+	// submodel.first is the pointer to the submodel
+	// submodel.second is the list of indices
 	for(const auto submodel : submodels)
-	{
-		const size_t sub_nparam{ submodel->get_num_parameters() };
-
-		// create a list of the parameters indices that should be passed
-		// to this submodel
-		std::valarray<size_t> indices(cnparam + sub_nparam);
-		// first add in the indices required by the composite model
-		for(size_t j = 0; j < cnparam; ++j)
-			indices[j] = j;
-		// now add in the indices for the specific submodel
-		for(size_t j = tally; j < tally + sub_nparam; ++j)
-			indices[j - tally + cnparam] = j;
-
-		ret.emplace_back(make_pair(
-			submodel,
-			cparams[indices]));
-
-		// now add the submodel's parameters to the tally for the next offset
-		tally += sub_nparam;
-	}
+		ret.emplace_back(std::make_pair(
+			submodel.first,
+			cparams[submodel.second]));
 
 	return ret;
 }
@@ -70,7 +58,7 @@ std::size_t CompositeSimulateModel::get_num_parameters() const
 
 	// add in the parameters for each submodel
 	for(const auto submodel : submodels)
-		ret += submodel->get_num_parameters();
+		ret += submodel.first->get_num_parameters();
 
 	return ret;
 }
@@ -87,13 +75,13 @@ std::valarray<double> CompositeSimulateModel::generateParameters(
 		ret[j] = dists[j]->sample(engine);
 	}
 
-	// go through the submodels, having them simulate parameters
+	// go through the submodels, having them simulate their respective parameters
 	for(const auto submodel : submodels)
 	{
-		std::size_t submodel_length = submodel->get_num_parameters();
+		std::size_t submodel_length = submodel.first->get_num_parameters();
 
 		ret[std::slice(tally, submodel_length, 1)]
-			= submodel->generateParameters(engine);
+			= submodel.first->generateParameters(engine);
 
 		// move the tally index up for the next model
 		tally += submodel_length;
