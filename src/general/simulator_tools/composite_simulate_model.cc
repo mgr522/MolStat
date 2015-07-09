@@ -21,6 +21,41 @@ const std::list<std::shared_ptr<SimulateModel>> &
 	CompositeSimulateModel::getSubmodels() const
 {
 	return submodels;
+CompositeSimulateModel::SubmodelParameters
+CompositeSimulateModel::routeSubmodelParameters(
+	const std::valarray<double> &cparams) const
+{
+	SubmodelParameters ret;
+
+	// get the number of model parameters explicitly required by the
+	// composite model
+	const size_t cnparam{ get_num_composite_parameters() };
+	size_t tally { cnparam };
+
+	// go through all of the submodels
+	for(const auto submodel : submodels)
+	{
+		const size_t sub_nparam{ submodel->get_num_parameters() };
+
+		// create a list of the parameters indices that should be passed
+		// to this submodel
+		std::valarray<size_t> indices(cnparam + sub_nparam);
+		// first add in the indices required by the composite model
+		for(size_t j = 0; j < cnparam; ++j)
+			indices[j] = j;
+		// now add in the indices for the specific submodel
+		for(size_t j = tally; j < tally + sub_nparam; ++j)
+			indices[j - tally + cnparam] = j;
+
+		ret.emplace_back(make_pair(
+			submodel,
+			cparams[indices]));
+
+		// now add the submodel's parameters to the tally for the next offset
+		tally += sub_nparam;
+	}
+
+	return ret;
 }
 
 std::size_t CompositeSimulateModel::get_num_composite_parameters() const

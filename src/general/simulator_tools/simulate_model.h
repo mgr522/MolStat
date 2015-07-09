@@ -246,6 +246,17 @@ public:
 	const std::list<std::shared_ptr<SimulateModel>> &getSubmodels() const;
 
 	/**
+	 * \brief Partition a set of parameters for the composite model into
+	 *    sets of parameters for each submodel.
+	 *
+	 * \param[in] cparams The set of composite model parameters.
+	 * \return A \c SubmodelParameters list routing the parameters to the
+	 *    submodels.
+	 */
+	SubmodelParameters routeSubmodelParameters(
+		const std::valarray<double> &cparams) const;
+
+	/**
 	 * \brief Gets the number of model parameters needed directly by the
 	 *    composite model.
 	 */
