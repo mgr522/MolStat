@@ -148,7 +148,6 @@ int main(int argc, char **argv)
 	try
 	{
 		basic_factory.addSubmodel(nullptr);
-
 		assert(false);
 	}
 	catch(const molstat::NotCompositeSimulateModel &e)
@@ -167,7 +166,6 @@ int main(int argc, char **argv)
 	try
 	{
 		cfactory_add.addSubmodel(basic_model);
-
 		assert(false);
 	}
 	catch(const molstat::IncompatibleSubmodel &e)
@@ -190,7 +188,6 @@ int main(int argc, char **argv)
 	try
 	{
 		cfactory_add.getModel();
-
 		assert(false);
 	}
 	catch(const molstat::NoSubmodels &e)
@@ -215,7 +212,6 @@ int main(int argc, char **argv)
 	try
 	{
 		subfactory1.getModel();
-
 		assert(false);
 	}
 	catch(const molstat::MissingDistribution &e)
@@ -226,7 +222,6 @@ int main(int argc, char **argv)
 	try
 	{
 		subfactory2.getModel();
-
 		assert(false);
 	}
 	catch(const molstat::MissingDistribution &e)
@@ -272,7 +267,6 @@ int main(int argc, char **argv)
 	try
 	{
 		sim_add.setObservable(0, type_index{ typeid(BasicObs2) });
-
 		assert(false);
 	}
 	catch(const molstat::IncompatibleObservable &e)
@@ -307,7 +301,6 @@ int main(int argc, char **argv)
 	try
 	{
 		molstat::Simulator sim_bad{ subfactory_bad.getModel() };
-
 		assert(false);
 	}
 	catch(const molstat::FullModelRequired &e)
@@ -333,7 +326,6 @@ int main(int argc, char **argv)
 		try
 		{
 			sim.setObservable(1, type_index{ typeid(BasicObs1) });
-
 			assert(false);
 		}
 		catch(const molstat::IncompatibleObservable &e)
