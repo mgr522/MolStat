@@ -124,6 +124,19 @@ int main(int argc, char **argv)
 	assert(abs(-0.480769 - SeebeckS(params)) < thresh);
 
 
+	params[ChannelType::Index_EF] = 0.;
+	params[ChannelType::Index_V] = 1.;
+	params[ChannelType::Index_epsilon] = 4.;
+	params[ChannelType::Index_gamma] = 0.8;
+	params[ChannelType::Index_a] = -0.1;
+	assert(abs(0.0384615 - ZeroBiasG(params)) < thresh);
+	assert(abs(0.0409897 - ECurrent(params)) < thresh);
+	assert(abs(0.0409897 - StaticG(params)) < thresh);
+	assert(abs(0.0442754 - DiffG(params)) < thresh);
+	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
+	assert(abs(0.480769 - SeebeckS(params)) < thresh);
+
+
 	params[ChannelType::Index_EF] = 1.;
 	params[ChannelType::Index_V] = -0.4;
 	params[ChannelType::Index_epsilon] = -9.;
@@ -134,7 +147,7 @@ int main(int argc, char **argv)
 	assert(abs(0.00147765 - StaticG(params)) < thresh);
 	assert(abs(0.00136520 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
-	assert(abs(-0.199680 - SeebeckS(params)) < thresh);
+	assert(abs(-0.199681 - SeebeckS(params)) < thresh);
 
 	params[ChannelType::Index_EF] = 3.;
 	params[ChannelType::Index_V] = 1.4;
