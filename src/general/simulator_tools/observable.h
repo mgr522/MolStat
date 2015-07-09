@@ -151,20 +151,21 @@ public:
 	 * The factory function needs a molstat::SimulateModel to produce the
 	 * actual molstat::ObservableFunction. It should presumably be `*this`,
 	 * but shared_from_this() can't be invoked here in the constructor. The
-	 * factory defers use of `shared_from_this()` to later, and the function
-	 * it returns binds the specified model to the observable function.
+	 * factory essentially defers the use of `shared_from_this()` to later, and
+	 * the function it returns binds the specified model to the observable
+	 * function.
 	 *
 	 * The produced factory function will throw molstat::IncompatibleObservable
 	 * if any of the underlying submodels are incompatible with the observable.
-	 * The factory function will also throw molstat::NoSubmodels is the
+	 * The factory function will also throw molstat::NoSubmodels if the
 	 * composite model has no submodels. Finally, the factory function will
 	 * throw molstat::NotCompositeSimulateModel if the model is not a composite
 	 * model. If used as intended (`this` is used; see above), the latter should
 	 * not happen.
 	 *
-	 * Note also that CompositeObservable<T> and Observable<T> both refer to
-	 * the same observable (class T). A particular MolStat simulator model
-	 * should not derive from both Observable<T> and CompositeObservable<T>.
+	 * Note also that `CompositeObservable<T>` and `Observable<T>` both refer to
+	 * the same observable (class `T`). A particular MolStat simulator model
+	 * should not derive from both `Observable<T>` and `CompositeObservable<T>`.
 	 *
 	 * \param[in] oper Operation used to combine the observables from two
 	 *    submodels. This operation should probably be associative and
