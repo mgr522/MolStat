@@ -50,6 +50,10 @@ namespace molstat {
  * will need this feature.) The main MolStat simulator will report the number
  * of trials that do not result in an observable.
  *
+ * \note When dealing with composite simulator models, the
+ *    `CompositeObservable` class may be preferential to `Observable`. More
+ *    details for `CompositeObservable` are presented in its documentation.
+ *
  * \tparam T The derived class for a specific observable. This is designed to
  *    be a \"curiously recurring template pattern\".
  */
@@ -108,10 +112,23 @@ public:
 /**
  * \brief Base class for a composite observable; that is, an observable that
  *    is calculated from several submodels (used in conjunction with
- *    molstat::CompositeSimulateModel).
+ *    \c molstat::CompositeSimulateModel).
+ *
+ * This class is designed to simplify cases where the observable for the
+ * composite model is simply calculated from the observables for each
+ * submodel. Example: conductance -- conductance through the entire system
+ * is just the sum of each channel's conductance. \c CompositeObservable
+ * essentially provides the boilerplate code for such an operation; all the
+ * composite model needs to specify is the operation used to combine the
+ * observables from two submodels. (Ideally, this operation is associative
+ * and commutative).
+ *
+ * If a composite model uses the observables from the submodels in a more
+ * complicated way, it should derive from \c Observable and implement the
+ * necessary observable function.
  *
  * The default constructor is intentionally deleted; the deriving class must
- * tell molstat::CompositeObservable the name (via the template) of the
+ * tell \c molstat::CompositeObservable the name (via the template) of the
  * underlying observable for each submodel. The deriving class must also
  * specify a function that combines two values from submodels into the
  * value of the composite observable.
