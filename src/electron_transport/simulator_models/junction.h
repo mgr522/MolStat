@@ -39,7 +39,8 @@ class TransportJunction :
 	public CompositeObservable<ElectricCurrent>,
 	public CompositeObservable<StaticConductance>,
 	public CompositeObservable<ZeroBiasConductance>,
-	public CompositeObservable<DifferentialConductance>
+	public CompositeObservable<DifferentialConductance>,
+	public CompositeObservable<SeebeckCoefficient>
 {
 public:
 	/// Container index for the Fermi energy.

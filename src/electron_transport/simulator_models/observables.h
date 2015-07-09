@@ -122,6 +122,26 @@ public:
 	virtual double DiffG(const std::valarray<double> &params) const = 0;
 };
 
+/// Observable class for the seebeck coefficient.
+class SeebeckCoefficient : public Observable<SeebeckCoefficient>
+{
+public:
+	SeebeckCoefficient()
+		: Observable<SeebeckCoefficient>(&SeebeckCoefficient::SeebeckS)
+	{}
+
+	virtual ~SeebeckCoefficient() = default;
+
+	/**
+	 * \brief Returns the seebeck coefficient for a set of model parameters.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The seebeck coefficient for the model parameters.
+	 */
+	virtual double SeebeckS(const std::valarray<double> &params) const = 0;
+};
+
+
 } // namespace molstat::transport
 } // namespace molstat
 

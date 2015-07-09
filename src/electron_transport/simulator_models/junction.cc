@@ -49,6 +49,10 @@ TransportJunction::TransportJunction() :
 	),
 	CompositeObservable<DifferentialConductance>(
 		[] (double g1, double g2) -> double { return g1 + g2; }
+	),
+	/// \todo Fix composite observable seebeck coefficient
+	CompositeObservable<SeebeckCoefficient>(
+		[] (double s1, double s2) -> double { return s1 + s2; }
 	)
 {
 }
