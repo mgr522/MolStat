@@ -17,16 +17,10 @@
 
 namespace molstat {
 
-std::list<std::shared_ptr<const SimulateModel>>
-	CompositeSimulateModel::getSubmodels() const
+const CompositeSimulateModel::SubmodelInformation &
+	CompositeSimulateModel::getSubmodelInfo() const
 {
-	std::list<std::shared_ptr<const SimulateModel>> ret;
-
-	// go through the submodels and strip out the routing information
-	for(const auto submodel : submodels)
-		ret.emplace_back(submodel.first);
-
-	return ret;
+	return submodels;
 }
 
 CompositeSimulateModel::SubmodelParameters
