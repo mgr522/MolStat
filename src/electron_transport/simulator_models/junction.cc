@@ -49,10 +49,6 @@ TransportJunction::TransportJunction() :
 	),
 	CompositeObservable<DifferentialConductance>(
 		[] (double g1, double g2) -> double { return g1 + g2; }
-	),
-	/// \todo Fix composite observable seebeck coefficient
-	CompositeObservable<SeebeckCoefficient>(
-		[] (double s1, double s2) -> double { return s1 + s2; }
 	)
 {
 }
@@ -61,6 +57,39 @@ TransportJunction::TransportJunction() :
 double TransportJunction::AppBias(const std::valarray<double> &params) const
 {
 	return params[Index_V];
+}
+
+double TransportJunction::SeebeckS(const std::valarray<double> &params) const
+{
+	const ObservableIndex zbg { GetObservableIndex<ZeroBiasConductance>() };
+	const ObservableIndex s { GetObservableIndex<SeebeckCoefficient>() };
+
+	// parse the parameters into submodels
+	const SubmodelParameters subparams{ routeSubmodelParameters(params) };
+
+	// the composite Seebeck coefficient is
+	// S = sum_j (g_j S_j) / sum_k (g_k),
+	// where g_j is the zero-bias conductance and s_j is the Seebeck coefficient
+	// for the channel
+	double sumgs { 0. }, sumg{ 0. };
+
+	// go through each submodel
+	for(const auto submodel : subparams) {
+		// submodel.first is a pointer to the submodel
+		// submodel.second is the parameters to pass to it
+
+		// getObservableFunction will throw an exception if the submodel is
+		// incompatible with the specified observable
+		const double gj =
+			submodel.first->getObservableFunction(zbg)(submodel.second);
+		const double sj =
+			submodel.first->getObservableFunction(s)(submodel.second);
+
+		sumg += gj;
+		sumgs += gj * sj;
+	}
+
+	return sumgs / sumg;
 }
 
 } // namespace molstat::transport

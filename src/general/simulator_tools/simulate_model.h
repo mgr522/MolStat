@@ -225,11 +225,37 @@ class CompositeSimulateModel
 protected:
 	CompositeSimulateModel() = default;
 
-	/// List of the underlying submodels.
-	std::list<std::shared_ptr<SimulateModel>> submodels;
+	/**
+	 * \brief List of the underlying submodels.
+	 *
+	 * Each element in the list corresponds to a submodel; this list also helps
+	 * route the correct model parameters from the composite model to each
+	 * submodel.
+	 *
+	 * The first element is a pointer to the submodel and the second element is
+	 * an array of the indices of composite model parameters for that submodel.
+	 */
+	std::list<std::pair<std::shared_ptr<SimulateModel>,
+		                  const std::valarray<std::size_t>>>
+		submodels;
 
 public:
 	virtual ~CompositeSimulateModel() = default;
+
+	/**
+	 * \brief A list of submodels and the parameters that should be passed to
+	 *    them.
+	 *
+	 * Each element in the list corresponds to a submodel; the purpose of this
+	 * list is to route the correct model parameters from the composite model
+	 * to each submodel.
+	 *
+	 * The first element is a pointer to the submodel and the second element is
+	 * an array of the parameters for that submodel.
+	 */
+	using SubmodelParameters =
+		std::list<std::pair<std::shared_ptr<const SimulateModel>,
+		                    const std::valarray<double>>>;
 
 	/**
 	 * \brief Returns the type of submodels for this composite model.
@@ -239,11 +265,15 @@ public:
 	virtual SimulateModelType getSubmodelType() const = 0;
 
 	/**
-	 * \brief Get access to the submodels.
+	 * \brief Partition a set of parameters for the composite model into
+	 *    sets of parameters for each submodel.
 	 *
-	 * \return The list of submodels.
+	 * \param[in] cparams The set of composite model parameters.
+	 * \return A \c SubmodelParameters list associating each submodel with the
+	 *    parameters that should be passed to it.
 	 */
-	const std::list<std::shared_ptr<SimulateModel>> &getSubmodels() const;
+	SubmodelParameters routeSubmodelParameters(
+		const std::valarray<double> &cparams) const;
 
 	/**
 	 * \brief Gets the number of model parameters needed directly by the
@@ -277,6 +307,10 @@ public:
 
 	// the factory needs to get at the internal details
 	friend class SimulateModelFactory;
+
+	// the CompositeObservable class needs to get at the submodel information
+	template<typename T>
+	friend class CompositeObservable;
 };
 
 /**

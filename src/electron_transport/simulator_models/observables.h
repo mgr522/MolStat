@@ -122,7 +122,7 @@ public:
 	virtual double DiffG(const std::valarray<double> &params) const = 0;
 };
 
-/// Observable class for the seebeck coefficient.
+/// Observable class for the (zero-bias) Seebeck coefficient.
 class SeebeckCoefficient : public Observable<SeebeckCoefficient>
 {
 public:
@@ -133,10 +133,10 @@ public:
 	virtual ~SeebeckCoefficient() = default;
 
 	/**
-	 * \brief Returns the seebeck coefficient for a set of model parameters.
+	 * \brief Returns the Seebeck coefficient for a set of model parameters.
 	 *
 	 * \param[in] params A set of model parameters.
-	 * \return The seebeck coefficient for the model parameters.
+	 * \return The Seebeck coefficient for the model parameters.
 	 */
 	virtual double SeebeckS(const std::valarray<double> &params) const = 0;
 };

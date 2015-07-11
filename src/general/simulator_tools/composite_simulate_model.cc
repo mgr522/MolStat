@@ -17,10 +17,21 @@
 
 namespace molstat {
 
-const std::list<std::shared_ptr<SimulateModel>> &
-	CompositeSimulateModel::getSubmodels() const
+CompositeSimulateModel::SubmodelParameters
+CompositeSimulateModel::routeSubmodelParameters(
+	const std::valarray<double> &cparams) const
 {
-	return submodels;
+	SubmodelParameters ret;
+
+	// go through all of the submodels
+	// submodel.first is the pointer to the submodel
+	// submodel.second is the list of indices
+	for(const auto submodel : submodels)
+		ret.emplace_back(std::make_pair(
+			submodel.first,
+			cparams[submodel.second]));
+
+	return ret;
 }
 
 std::size_t CompositeSimulateModel::get_num_composite_parameters() const
@@ -35,7 +46,7 @@ std::size_t CompositeSimulateModel::get_num_parameters() const
 
 	// add in the parameters for each submodel
 	for(const auto submodel : submodels)
-		ret += submodel->get_num_parameters();
+		ret += submodel.first->get_num_parameters();
 
 	return ret;
 }
@@ -52,13 +63,13 @@ std::valarray<double> CompositeSimulateModel::generateParameters(
 		ret[j] = dists[j]->sample(engine);
 	}
 
-	// go through the submodels, having them simulate parameters
+	// go through the submodels, having them simulate their respective parameters
 	for(const auto submodel : submodels)
 	{
-		std::size_t submodel_length = submodel->get_num_parameters();
+		std::size_t submodel_length = submodel.first->get_num_parameters();
 
 		ret[std::slice(tally, submodel_length, 1)]
-			= submodel->generateParameters(engine);
+			= submodel.first->generateParameters(engine);
 
 		// move the tally index up for the next model
 		tally += submodel_length;

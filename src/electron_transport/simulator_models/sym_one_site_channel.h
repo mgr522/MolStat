@@ -46,8 +46,8 @@ namespace transport {
  *   \f[ G_\mathrm{d}(V) = \frac{2e^2}{h} \left[ (1/2-a) T(E_\mathrm{F} + eV/2) + (1/2+a) T(E_\mathrm{F} - eV/2) \right]. \f]
  * - Static conductance:
  *   \f[ G_\mathrm{s}(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (1/2-a) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon - (1/2+a) eV}{\Gamma} \right) \right]. \f]
- * - Seebeck Coefficient:
- *   \f[ S(E_F) = \frac{-2 (E-\varepsilon)}{(E-\varepsilon)^2 + \Gamma^2}. \f]
+ * - Seebeck coefficient (zero bias):
+ *   \f[ S = \frac{-2 (E_\mathrm{F}-\varepsilon)}{(E_\mathrm{F}-\varepsilon)^2 + \Gamma^2}. \f]
  */
 class SymOneSiteChannel : public Channel,
 	public ElectricCurrent,

@@ -58,8 +58,21 @@ SimulateModelFactory &SimulateModelFactory::addSubmodel(
 	if(submodel_add->getModelType() != comp_model->getSubmodelType())
 		throw IncompatibleSubmodel();
 
+	// determine the parameter indices needed for this submodel
+	const std::size_t cnparam{ comp_model->get_num_composite_parameters() };
+	const std::size_t snparam{ submodel_add->get_num_parameters() };
+	const std::size_t offset{ comp_model->get_num_parameters() };
+
+	std::valarray<std::size_t> sub_params( cnparam + snparam );
+	// indices from the composite model
+	for(std::size_t j = 0; j < cnparam; ++j)
+		sub_params[j] = j;
+	// indices from the submodel
+	for(std::size_t j = 0; j < snparam; ++j)
+		sub_params[j + cnparam] = offset + j;
+
 	// add the model
-	comp_model->submodels.emplace_back(submodel_add);
+	comp_model->submodels.emplace_back(submodel_add, std::move(sub_params));
 
 	return *this;
 }

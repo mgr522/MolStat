@@ -40,7 +40,7 @@ class TransportJunction :
 	public CompositeObservable<StaticConductance>,
 	public CompositeObservable<ZeroBiasConductance>,
 	public CompositeObservable<DifferentialConductance>,
-	public CompositeObservable<SeebeckCoefficient>
+	public SeebeckCoefficient
 {
 public:
 	/// Container index for the Fermi energy.
@@ -60,6 +60,7 @@ public:
 	TransportJunction();
 
 	virtual double AppBias(const std::valarray<double> &params) const override;
+	virtual double SeebeckS(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::transport
