@@ -100,9 +100,7 @@ public:
 	/// Constructor that specifies how to combine two submodels.
 	CompositeTestModelAdd() :
 		CompositeTestModel(
-			/// \cond
-			[] (double obs1, double obs2) -> double { return obs1 + obs2; }
-			/// \endcond
+			std::plus<double>()
 		) {}
 };
 
@@ -114,9 +112,7 @@ public:
 	/// Constructor that specifies how to combine two submodels.
 	CompositeTestModelMultiply() :
 		CompositeTestModel(
-			/// \cond
-			[] (double obs1, double obs2) -> double { return obs1 * obs2; }
-			/// \endcond
+			std::multiplies<double>()
 		) {}
 };
 
@@ -133,7 +129,8 @@ protected:
 
 public:
 	virtual double Obs1(const valarray<double> &params) const override
-	{
+	{	
+		// v * (eps - gamma)
 		return params[1] * (params[2] - params[3]);
 	}
 };
