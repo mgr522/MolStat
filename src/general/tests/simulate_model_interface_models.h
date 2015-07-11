@@ -66,15 +66,11 @@ class TestSubmodelType
  * operation used to combine observables from the submodels.
  */
 class CompositeTestModel :
+	public molstat::UseSubmodelType<TestSubmodelType>,
 	public BasicObs4,
 	public molstat::CompositeObservable<BasicObs1>
 {
 protected:
-	virtual molstat::SimulateModelType getSubmodelType() const override
-	{
-		return type_index{ typeid(TestSubmodelType) };
-	}
-
 	virtual vector<string> get_names() const override
 	{
 		return { "ef", "v" };
