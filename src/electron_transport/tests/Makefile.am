@@ -12,18 +12,18 @@ TESTS += \
 	simulate-AsymOneSite \
 	simulate-SymTwoSite \
 	simulate-AsymTwoSite \
-	simulate-CompositeJunction \
 	simulate-SymInterference \
-	simulate-RectBarrier
+	simulate-RectBarrier \
+	simulate-CompositeJunction
 
 check_PROGRAMS += \
 	simulate-SymOneSite \
 	simulate-AsymOneSite \
 	simulate-SymTwoSite \
 	simulate-AsymTwoSite \
-	simulate-CompositeJunction \
 	simulate-SymInterference \
-	simulate-RectBarrier
+	simulate-RectBarrier \
+	simulate-CompositeJunction
 
 simulate_SymOneSite_SOURCES = simulate-SymOneSite.cc
 simulate_SymOneSite_LDADD = ../simulator_models/libtransport_simulate.a \
