@@ -58,9 +58,8 @@ double RectangularBarrier::SeebeckS(const std::valarray<double> &params) const
 	// unpack the parameter
 	const double &ef = params[Index_EF];
 	
-	return 1.0/ef;
+	return 1. / ef;
 }
-
 
 } // namespace molstat::transport
 } // namespace molstat
