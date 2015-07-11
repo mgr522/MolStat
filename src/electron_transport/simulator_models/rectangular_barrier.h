@@ -51,7 +51,8 @@ namespace transport {
  * \f]
  */
 class RectangularBarrier : public Channel,
-	public ZeroBiasConductance
+	public ZeroBiasConductance,
+	public SeebeckCoefficient
 {
 public:
 	/// Container index for the Fermi energy.
@@ -83,6 +84,7 @@ public:
 	static double transmission(const double e, const double h, const double w);
 	
 	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
+	virtual double SeebeckS(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::transport

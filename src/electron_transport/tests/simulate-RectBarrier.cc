@@ -60,6 +60,8 @@ int main(int argc, char **argv)
 		type_index{ typeid(molstat::transport::AppliedBias) } );
 	auto ZeroBiasG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::ZeroBiasConductance) } );
+	auto SeebeckS = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::SeebeckCoefficient) } );
 	
 	valarray<double> params(junction->get_num_parameters());
 
@@ -70,6 +72,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_w] = 1.;
 	assert(abs(2.61472e-5 - ZeroBiasG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
+	assert(abs(5. - SeebeckS(params)) < thresh);
 
 	params[ChannelType::Index_EF] = 0.3;
 	params[ChannelType::Index_V] = 0.;
@@ -77,6 +80,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_w] = 0.5;
 	assert(abs(0.214993 - ZeroBiasG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
+	assert(abs(3.3333333333 - SeebeckS(params)) < thresh);
 
 	return 0;
 }
