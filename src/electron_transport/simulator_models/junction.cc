@@ -39,16 +39,16 @@ std::vector<std::string> TransportJunction::get_names() const
 /// \cond
 TransportJunction::TransportJunction() :
 	CompositeObservable<ElectricCurrent>(
-		[] (double i1, double i2) -> double { return i1 + i2; }
+		std::plus<double>()
 	),
 	CompositeObservable<StaticConductance>(
-		[] (double g1, double g2) -> double { return g1 + g2; }
+		std::plus<double>()
 	),
 	CompositeObservable<ZeroBiasConductance>(
-		[] (double g1, double g2) -> double { return g1 + g2; }
+		std::plus<double>()
 	),
 	CompositeObservable<DifferentialConductance>(
-		[] (double g1, double g2) -> double { return g1 + g2; }
+		std::plus<double>()
 	)
 {
 }

@@ -66,15 +66,11 @@ class TestSubmodelType
  * operation used to combine observables from the submodels.
  */
 class CompositeTestModel :
+	public molstat::UseSubmodelType<TestSubmodelType>,
 	public BasicObs4,
 	public molstat::CompositeObservable<BasicObs1>
 {
 protected:
-	virtual molstat::SimulateModelType getSubmodelType() const override
-	{
-		return type_index{ typeid(TestSubmodelType) };
-	}
-
 	virtual vector<string> get_names() const override
 	{
 		return { "ef", "v" };
@@ -104,9 +100,7 @@ public:
 	/// Constructor that specifies how to combine two submodels.
 	CompositeTestModelAdd() :
 		CompositeTestModel(
-			/// \cond
-			[] (double obs1, double obs2) -> double { return obs1 + obs2; }
-			/// \endcond
+			std::plus<double>()
 		) {}
 };
 
@@ -118,9 +112,7 @@ public:
 	/// Constructor that specifies how to combine two submodels.
 	CompositeTestModelMultiply() :
 		CompositeTestModel(
-			/// \cond
-			[] (double obs1, double obs2) -> double { return obs1 * obs2; }
-			/// \endcond
+			std::multiplies<double>()
 		) {}
 };
 
@@ -137,7 +129,8 @@ protected:
 
 public:
 	virtual double Obs1(const valarray<double> &params) const override
-	{
+	{	
+		// v * (eps - gamma)
 		return params[1] * (params[2] - params[3]);
 	}
 };
