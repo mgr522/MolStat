@@ -52,7 +52,8 @@ class SymTwoSiteChannel : public Channel,
 	public ElectricCurrent,
 	public ZeroBiasConductance,
 	public DifferentialConductance,
-	public StaticConductance
+	public StaticConductance,
+	public SeebeckCoefficient
 {
 private:
 	/**
@@ -108,6 +109,7 @@ public:
 		override;
 	virtual double DiffG(const std::valarray<double> &params) const override;
 	virtual double StaticG(const std::valarray<double> &params) const override;
+	virtual double SeebeckS(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::transport

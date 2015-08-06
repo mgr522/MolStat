@@ -99,5 +99,19 @@ double SymTwoSiteChannel::DiffG(const std::valarray<double> &params) const
 		0.5*transmission(ef - 0.5*V, V, eps, gamma, beta);
 }
 
+double SymTwoSiteChannel::SeebeckS(const std::valarray<double> &params) const
+{
+	// unpack the parameters
+	const double &ef = params[Index_EF];
+	const double &eps = params[Index_epsilon];
+	const double &gamma = params[Index_gamma];
+	const double &beta = params[Index_beta];
+	const double z = ef - eps;
+
+	return 16.*z*(4.*beta*beta - 4.*z*z - gamma*gamma) / 
+		(16.*(z*z - beta*beta)*(z*z - beta*beta) + 
+			gamma*gamma*(gamma*gamma + 8.*(z*z + beta*beta)));
+}
+
 } // namespace molstat::transport
 } // namespace molstat

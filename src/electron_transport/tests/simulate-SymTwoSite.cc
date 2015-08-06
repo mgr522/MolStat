@@ -68,6 +68,8 @@ int main(int argc, char **argv)
 		type_index{ typeid(molstat::transport::StaticConductance) } );
 	auto DiffG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::DifferentialConductance) } );
+	auto SeebeckS = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::SeebeckCoefficient) } );
 
 	valarray<double> params(junction->get_num_parameters());
 
@@ -82,6 +84,7 @@ int main(int argc, char **argv)
 	assert(abs(0.127042 - StaticG(params)) < thresh);
 	assert(abs(0.186815 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
+	assert(abs(-2.0089223 - SeebeckS(params)) < thresh);
 
 	params[ChannelType::Index_EF] = 1.;
 	params[ChannelType::Index_V] = -0.4;
@@ -93,6 +96,7 @@ int main(int argc, char **argv)
 	assert(abs(0.000435520 - StaticG(params)) < thresh);
 	assert(abs(0.000443426 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
+	assert(abs(-1.0385126 - SeebeckS(params)) < thresh);
 
 	params[ChannelType::Index_EF] = 3.;
 	params[ChannelType::Index_V] = 1.4;
@@ -104,6 +108,7 @@ int main(int argc, char **argv)
 	assert(abs(0.480791 - StaticG(params)) < thresh);
 	assert(abs(0.294527 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
+	assert(abs(-3.5332333 - SeebeckS(params)) < thresh);
 
 	return 0;
 }
