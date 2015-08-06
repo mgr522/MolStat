@@ -47,6 +47,8 @@ namespace transport {
  * - Static conductance:
  *   \f{eqnarray*}{ G_\mathrm{s}(V) & = & \frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+\Gamma^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon + eV/2)}{2\beta + i\Gamma} \right) \right] \\
  *   && -\frac{2e^2}{h} \frac{2\beta\Gamma}{eV(4\beta^2+\Gamma^2)} \mathrm{Re} \left[ (\Gamma + i2\beta) \mathrm{arctanh}\left( \frac{2(E_\mathrm{F} - \varepsilon - eV/2)}{2\beta + i\Gamma} \right) \right]. \f}
+ * - Seebeck coefficient (zero bias, "atomic" units):
+ *   \f[ S = \frac{16(E_\mathrm{F} - \varepsilon) (4\beta^2 - 4(E_\mathrm{F}-\varepsilon)^2 - \Gamma^2)}{16[(E_\mathrm{F}-\varepsilon)^2 - \beta^2]^2 + \Gamma^2[\Gamma^2 + 8((E_\mathrm{F}-\varepsilon)^2 + \beta^2)]} \f]
  */
 class SymTwoSiteChannel : public Channel,
 	public ElectricCurrent,
