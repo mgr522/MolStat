@@ -30,6 +30,8 @@ Several types of transport observables can be considered:
       \f[ \frac{\partial}{\partial V} I(V) = \frac{2e^2}{h} \frac{1}{2} \left[ T(E_\mathrm{F} + eV/2) + T(E_\mathrm{F} - eV/2) \right] + \frac{2e}{h} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E \frac{\partial}{\partial V}T(E). \f]
 	-# Static conductance
       \f[ \frac{I(V)}{V} = \frac{2e}{hV} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E T(E). \f]
+   -# Seebeck coefficient (zero bias)
+      \f[ S = \frac{\pi^2 k_\mathrm{B}^2 \bar{\mathcal{T}}}{3e} \left. \frac{\mathrm{d}}{\mathrm{d}E} \left[ \ln\left( T(E) \right) \right] \right|_{E=E_\mathrm{F}}. \f]
    .
 Various models (described below) can be used to calculate \f$T(E)\f$; from this transmission, all of the above conductances can be calculated.
 
@@ -132,7 +134,7 @@ Complete details for each of these channel models can be found in the full refer
    - Implemented by the class molstat::transport::SymOneSiteChannel; full details are presented there.
    - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, molstat::transport::SeebeckCoefficient, molstat::transport::StaticConductance, and molstat::transport::ZeroBiasConductance observables.
    \elseif userman
-   - Compatible with the ElectricCurrent, DifferentialConductance, StaticConductance, and ZeroBiasConductance observables.
+   - Compatible with the ElectricCurrent, DifferentialConductance, SeebeckCoefficient, StaticConductance, and ZeroBiasConductance observables.
    \endif
 
 - `AsymmetricOneSiteChannel`
@@ -165,7 +167,7 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::SymTwoSiteChannel; full details are presented there.
-   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, molstat::transport::StaticConductance, and molstat::transport::ZeroBiasConductance observables.
+   - Compatible with the molstat::transport::ElectricCurrent, molstat::transport::DifferentialConductance, molstat::transport::SeebeckCoefficient, molstat::transport::StaticConductance, and molstat::transport::ZeroBiasConductance observables.
    \elseif userman
    - Compatible with the ElectricCurrent, DifferentialConductance, SeebeckCoefficient, StaticConductance, and ZeroBiasConductance observables.
    \endif
