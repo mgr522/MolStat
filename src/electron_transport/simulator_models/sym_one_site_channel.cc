@@ -95,7 +95,7 @@ double SymOneSiteChannel::SeebeckS(const std::valarray<double> &params) const
 	const double &gamma = params[Index_gamma];
 	const double z = ef - eps;
 
-	return -2.*z / (z*z + gamma*gamma);
+	return 2.*z / (z*z + gamma*gamma);
 }
 
 } // namespace molstat::transport

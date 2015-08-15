@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_w] = 1.;
 	assert(abs(2.61472e-5 - ZeroBiasG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
-	assert(abs(5.000000 - SeebeckS(params)) < thresh);
+	assert(abs(-5.000000 - SeebeckS(params)) < thresh);
 
 	params[ChannelType::Index_EF] = 0.3;
 	params[ChannelType::Index_V] = 0.;
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_w] = 0.5;
 	assert(abs(0.214993 - ZeroBiasG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
-	assert(abs(3.333333 - SeebeckS(params)) < thresh);
+	assert(abs(-3.333333 - SeebeckS(params)) < thresh);
 
 	return 0;
 }

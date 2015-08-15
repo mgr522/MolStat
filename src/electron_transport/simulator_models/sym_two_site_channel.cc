@@ -108,7 +108,7 @@ double SymTwoSiteChannel::SeebeckS(const std::valarray<double> &params) const
 	const double &beta = params[Index_beta];
 	const double z = ef - eps;
 
-	return 16.*z*(4.*beta*beta - 4.*z*z - gamma*gamma) / 
+	return -16.*z*(4.*beta*beta - 4.*z*z - gamma*gamma) / 
 		(16.*(z*z - beta*beta)*(z*z - beta*beta) + 
 			gamma*gamma*(gamma*gamma + 8.*(z*z + beta*beta)));
 }
