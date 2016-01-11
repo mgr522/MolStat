@@ -122,6 +122,25 @@ public:
 	virtual double DiffG(const std::valarray<double> &params) const = 0;
 };
 
+/// Observable class for distance
+class Distance : public Observable<Distance>
+{
+public:
+	Distance()
+		: Observable<Distance>(&Distance::DistD)
+	{}
+
+	virtual ~Distance() = default;
+
+	/**
+	 * \brief Returns the distance for a set of model parameters.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The distance for the model parameters.
+	 */
+	virtual double DistD(const std::valarray<double> &params) const = 0;
+};
+
 } // namespace molstat::transport
 } // namespace molstat
 
