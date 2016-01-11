@@ -16,6 +16,7 @@
 
 #include "observables.h"
 #include "junction.h"
+#include <gsl/gsl_integration.h>
 
 namespace molstat {
 namespace transport {
@@ -51,7 +52,9 @@ namespace transport {
  * \f]
  */
 class RectangularBarrier : public Channel,
-	public ZeroBiasConductance
+	public ZeroBiasConductance,
+	public StaticConductance,
+	public Distance
 {
 public:
 	/// Container index for the Fermi energy.
@@ -83,6 +86,11 @@ public:
 	static double transmission(const double e, const double h, const double w);
 	
 	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
+
+	virtual double StaticG(const std::valarray<double> &params) const override;
+
+	virtual double DistD(const std::valarray<double> &params) const override;
+
 };
 
 } // namespace molstat::transport
