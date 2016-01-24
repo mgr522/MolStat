@@ -13,7 +13,10 @@
 
 #include "rectangular_barrier.h"
 #include <cmath>
+
+#if HAVE_GSL
 #include <gsl/gsl_integration.h>
+#endif
 
 namespace molstat {
 namespace transport {
@@ -23,7 +26,7 @@ const std::size_t RectangularBarrier::Index_V = TransportJunction::Index_V;
 const std::size_t RectangularBarrier::Index_h = 2;
 const std::size_t RectangularBarrier::Index_w = 3;
 
-struct my_f_params { double h; double w;};
+struct my_f_params { double h; double w; };
 
 std::vector<std::string> RectangularBarrier::get_names() const
 {
@@ -36,8 +39,7 @@ std::vector<std::string> RectangularBarrier::get_names() const
 	return ret;
 }
 
-
-double transmissionf (double E, void * p) 
+static double transmissionf(double E, void * p) 
 {
 	struct my_f_params * params 
     		= (struct my_f_params *)p;
@@ -68,6 +70,7 @@ double RectangularBarrier::ZeroBiasG(const std::valarray<double> &params) const
 	return transmission(ef, h, w);
 }
 
+#if HAVE_GSL
 double RectangularBarrier::StaticG(const std::valarray<double> &params) const
 {
 	// unpack the parameters
@@ -89,13 +92,15 @@ double RectangularBarrier::StaticG(const std::valarray<double> &params) const
 
 	intmin = (ef-V)/2;
 	intmax = (ef+V)/2;
-  	gsl_integration_cquad (&F, intmin, intmax, 1e-9, 1e-9,
+  gsl_integration_cquad (&F, intmin, intmax, 1e-9, 1e-9,
                         ws, &result, &abserr , &neval); 
 	gsl_integration_cquad_workspace_free (ws);
-	// conductance represented as a fraction of G_o
+
+	// conductance (in units of G0)
 	// the integral of the transmission function returns units of eV
 	return 2*2.41798926E14/V*result /7.748091723E-5 ;
 }
+#endif
 
 double RectangularBarrier::DistD(const std::valarray<double> &params) const
 {
