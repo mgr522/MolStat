@@ -24,6 +24,8 @@ libtransport_simulate_a_SOURCES = transport_simulate_module.h \
 if HAVE_GSL
 # options in the transport simulator module require GSL
 libtransport_simulate_a_CPPFLAGS = $(GSL_INCLUDE) $(AM_CPPFLAGS)
+else
+libtransport_simulate_a_CPPFLAGS = $(AM_CPPFLAGS)
 endif
 
 endif
