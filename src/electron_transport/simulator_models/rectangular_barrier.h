@@ -16,7 +16,6 @@
 
 #include "observables.h"
 #include "junction.h"
-#include <gsl/gsl_integration.h>
 
 namespace molstat {
 namespace transport {

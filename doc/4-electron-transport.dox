@@ -227,6 +227,7 @@ Complete details for each of these channel models can be found in the full refer
    \elseif userman
    - Compatible with the ZeroBiasConductance, StaticConductance, and Displacement observables.
    \endif
+   Note that the static conductance observable requires the GSL to be specified during configuration.
 
 \section sec_fit_electron_transport Fitting Electron Transport Properties
 The following list overviews the implemented fitter models for electron transport.

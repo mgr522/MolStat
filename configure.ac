@@ -56,8 +56,13 @@ if test x$build_fitter = xyes; then
 fi
 
 
-# transport simulator module requires nothing
-
+# transport simulator module requires nothing, but nonessential
+# parts of it need GSL
+if test x$with_transport_sim = xyes; then
+	if test x$need_gsl != xyes; then
+		need_gsl=maybe
+	fi
+fi
 
 # transport fitter module requires GSL
 if test x$with_transport_fit = xyes; then
