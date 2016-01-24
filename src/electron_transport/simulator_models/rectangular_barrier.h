@@ -55,8 +55,8 @@ class RectangularBarrier : public Channel,
 	public ZeroBiasConductance,
 	#if HAVE_GSL
 	public StaticConductance,
-	public Distance
 	#endif
+	public Displacement
 {
 public:
 	/// Container index for the Fermi energy.
@@ -68,7 +68,7 @@ public:
 	/// Container index for the height (energy) of the barrier.
 	static const std::size_t Index_h;
 
-	/// Container index for the width (distance) of the barrier.
+	/// Container index for the width (distance, displacement) of the barrier.
 	static const std::size_t Index_w;
 
 protected:
@@ -93,7 +93,7 @@ public:
 	virtual double StaticG(const std::valarray<double> &params) const override;
 	#endif
 
-	virtual double DistD(const std::valarray<double> &params) const override;
+	virtual double DispW(const std::valarray<double> &params) const override;
 
 };
 

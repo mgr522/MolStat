@@ -102,7 +102,7 @@ double RectangularBarrier::StaticG(const std::valarray<double> &params) const
 }
 #endif
 
-double RectangularBarrier::DistD(const std::valarray<double> &params) const
+double RectangularBarrier::DispW(const std::valarray<double> &params) const
 {
 	// unpack the width
 	const double &w = params[Index_w];
