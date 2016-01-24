@@ -63,6 +63,20 @@ Transport observables are defined in electron_transport/simulator_models/observa
    - Implemented by the class molstat::transport::DifferentialConductance.
    \endif
 
+- Displacement
+   - The distance between the electrodes.
+     \if fullref
+     Must be used with the molstat::transport::RectangularBarrierChannel submodel.
+     \elseif userman
+     Must be used with the RectangularBarrierChannel submodel.
+     \endif
+     .
+   - W
+   - Name (for use in input) is `%Displacement`.
+   \if fullref
+   - Implemented by the class molstat::transport::Displacement.
+   \endif 
+
 - Electric current
    - \f$ I(V). \f$
    - Name (for use in input) is `%ElectricCurrent`.
@@ -82,14 +96,7 @@ Transport observables are defined in electron_transport/simulator_models/observa
    - Name (for use in input) is `%ZeroBiasConductance`.
    \if fullref
    - Implemented by the class molstat::transport::ZeroBiasConductance.
-   \endif
-   
-- Width (Distance)
-   - W
-   - Name (for use in input) is `%Distance`.
-   \if fullref
-   - Implemented by the class molstat::transport::Distance.
-   \endif   
+   \endif  
 
 \subsection subsec_transport_simulate_models Models for Simulating Electron Transport
 \if fullref
@@ -106,10 +113,10 @@ There is only one top-level model for electron transport applications.
    \if fullref
    - Submodels are required, of type molstat::transport::Channel. Each submodel represents an independent channel through the junction and has its own set of physical/model parameters.
    - Implemented by the class molstat::transport::TransportJunction; full details are presented there.
-   - Compatible with the molstat::transport::AppliedBias observable. If all submodels are compatible with the molstat::transport::ElectricCurrent, molstat::transport::StaticConductance, molstat::transport::DifferentialConductance, or molstat::transport::ZeroBiasConductance observables, the transport junction will also be compatible with them.
+   - Compatible with the molstat::transport::AppliedBias observable. If all submodels are compatible with the molstat::transport::ElectricCurrent, molstat::transport::StaticConductance, molstat::transport::DifferentialConductance, or molstat::transport::ZeroBiasConductance observables, the transport junction will also be compatible with them. Compatible with the molstat::transport::Displacement observable, but only if a molstat::transport::RectangularBarrierChannel is present as a submodel.
    \elseif userman
    - Submodels are required, of type channel. Each submodel represents an independent channel through the junction and has its own set of physical/model parameters. Multiple submodels (channels) can be specified.
-   - Compatible with the AppliedBias observable. If all submodels are compatible with the ElectricCurrent, StaticConductance, DifferentialConductance, or ZeroBiasConductance observables, the transport junction will also be compatible with them.
+   - Compatible with the AppliedBias observable. If all submodels are compatible with the ElectricCurrent, StaticConductance, DifferentialConductance, or ZeroBiasConductance observables, the transport junction will also be compatible with them.  Compatible with the Displacement observable, but only if a RectangularBarrierChannel is present as a submodel.
    \endif
 .
 
@@ -216,9 +223,9 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::RectangularBarrier; full details are presented there.
-   - Compatible with the molstat::transport::ZeroBiasConductance, molstat::transport::StaticConductance, and molstat::transport::ZeroBiasConductance observables.
+   - Compatible with the molstat::transport::ZeroBiasConductance, molstat::transport::StaticConductance, and molstat::transport::Displacement observables.
    \elseif userman
-   - Compatible with the ZeroBiasConductance, StaticConductance, and Distance observables.
+   - Compatible with the ZeroBiasConductance, StaticConductance, and Displacement observables.
    \endif
 
 \section sec_fit_electron_transport Fitting Electron Transport Properties
