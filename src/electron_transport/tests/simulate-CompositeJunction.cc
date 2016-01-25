@@ -81,6 +81,8 @@ int main(int argc, char **argv)
 		type_index{ typeid(molstat::transport::StaticConductance) } );
 	auto DiffG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::DifferentialConductance) } );
+	auto DispW = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::Displacement) } );
 
 	valarray<double> params(junction->get_num_parameters());
 
@@ -107,6 +109,16 @@ int main(int argc, char **argv)
 	assert(abs(channel1->DiffG(params[index1]) + channel2->DiffG(params[index2])
 		- DiffG(params)) < thresh);
 	assert(abs(params[ChannelType1::Index_V] - AppBias(params)) < thresh);
+	try {
+		// we didn't use a rectangular barrier channel, so displacement is
+		// not defined
+		DispW(params);
+		assert(false);
+	}
+	catch(const molstat::IncompatibleObservable &e)
+	{
+		// should be here
+	}
 
 	params[ChannelType1::Index_EF] = 0.;
 	params[ChannelType1::Index_V] = 1.;

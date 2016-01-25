@@ -36,6 +36,7 @@ class Channel
 class TransportJunction :
 	public UseSubmodelType<Channel>,
 	public AppliedBias,
+	public Displacement,
 	public CompositeObservable<ElectricCurrent>,
 	public CompositeObservable<StaticConductance>,
 	public CompositeObservable<ZeroBiasConductance>,
@@ -59,6 +60,8 @@ public:
 	TransportJunction();
 
 	virtual double AppBias(const std::valarray<double> &params) const override;
+
+	virtual double DispW(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::transport

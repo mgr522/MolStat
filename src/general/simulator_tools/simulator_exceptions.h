@@ -52,6 +52,11 @@ public:
 		std::logic_error("Incompatible observable.")
 	{
 	}
+
+	IncompatibleObservable(const std::string &message)
+		: std::logic_error(message)
+	{
+	}
 };
 
 /// Exception thrown when no observables have been requested.
