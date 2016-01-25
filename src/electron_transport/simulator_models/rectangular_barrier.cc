@@ -26,8 +26,6 @@ const std::size_t RectangularBarrier::Index_V = TransportJunction::Index_V;
 const std::size_t RectangularBarrier::Index_h = 2;
 const std::size_t RectangularBarrier::Index_w = 3;
 
-struct my_f_params { double h; double w; };
-
 std::vector<std::string> RectangularBarrier::get_names() const
 {
 	std::vector<std::string> ret(2);
@@ -38,17 +36,6 @@ std::vector<std::string> RectangularBarrier::get_names() const
 
 	return ret;
 }
-
-static double transmissionf(double E, void * p) 
-{
-	struct my_f_params * params 
-    		= (struct my_f_params *)p;
-	double h = (params -> h);
-	double w = (params -> w);
-
-	return (4. * E * (h - E)) / ((4. * E * (h - E)) + h*h*(sinh(sqrt(h - E) * 5.12317 * w) * sinh(sqrt(h - E) * 5.12317 * w)));
-}
-
 
 double RectangularBarrier::transmission(const double e, const double h,
 	const double w)
@@ -70,7 +57,33 @@ double RectangularBarrier::ZeroBiasG(const std::valarray<double> &params) const
 	return transmission(ef, h, w);
 }
 
+double RectangularBarrier::DispW(const std::valarray<double> &params) const
+{
+	// unpack the width
+	const double &w = params[Index_w];
+	
+	return w;
+}
+
 #if HAVE_GSL
+struct my_f_params { double h; double w; };
+
+/**
+ * \brief GSL integrator binding for the tranmission function.
+ *
+ * \param[in] E The energy (integration variable).
+ * \param[in] p The parameters (height and width of the barrier).
+ * \return The transmission probability through the barrier.
+ */
+static double rb_trans_gsl(double E, void *p) 
+{
+	const struct my_f_params * params = (struct my_f_params*)p;
+	const double h = params->h;
+	const double w = params->w;
+
+	return RectangularBarrier::transmission(E, h, w);
+}
+
 double RectangularBarrier::StaticG(const std::valarray<double> &params) const
 {
 	// unpack the parameters
@@ -82,18 +95,22 @@ double RectangularBarrier::StaticG(const std::valarray<double> &params) const
 	double res, abserr;
 	size_t neval;
 
-
-	gsl_integration_cquad_workspace *ws = 		gsl_integration_cquad_workspace_alloc (1000);
+	// set up the GSL workspace
+	gsl_integration_cquad_workspace *ws = 
+		gsl_integration_cquad_workspace_alloc(1000);
 	 
 	gsl_function F;
-	struct my_f_params p = {h, w};
-  	F.function = transmissionf;
-  	F.params = &p;
+	struct my_f_params p {h, w};
+  F.function = &rb_trans_gsl;
+  F.params = &p;
 
+  // perform the integration
 	intmin = (ef-V)/2;
 	intmax = (ef+V)/2;
-  gsl_integration_cquad (&F, intmin, intmax, 1e-9, 1e-9,
+  gsl_integration_cquad(&F, intmin, intmax, 1e-9, 1e-9,
                         ws, &result, &abserr , &neval); 
+
+  // free resources
 	gsl_integration_cquad_workspace_free (ws);
 
 	// conductance (in units of G0)
@@ -101,14 +118,6 @@ double RectangularBarrier::StaticG(const std::valarray<double> &params) const
 	return 2*2.41798926E14/V*result /7.748091723E-5 ;
 }
 #endif
-
-double RectangularBarrier::DispW(const std::valarray<double> &params) const
-{
-	// unpack the width
-	const double &w = params[Index_w];
-	
-	return w;
-}
 
 } // namespace molstat::transport
 } // namespace molstat
