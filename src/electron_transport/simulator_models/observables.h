@@ -122,7 +122,11 @@ public:
 	virtual double DiffG(const std::valarray<double> &params) const = 0;
 };
 
-/// Observable class for displacement (the distance between electrodes).
+/**
+ * \brief Observable class for displacement (the distance between electrodes).
+ *
+ * Returns the displacement in nanometers.
+ */
 class Displacement : public Observable<Displacement>
 {
 public:
