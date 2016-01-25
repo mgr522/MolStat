@@ -91,8 +91,8 @@ double RectangularBarrier::StaticG(const std::valarray<double> &params) const
 	const double &V = params[Index_V];
 	const double &h = params[Index_h];
 	const double &w = params[Index_w];
-	double result, intmin, intmax, error;
-	double res, abserr;
+	double result, intmin, intmax;
+	double abserr;
 	size_t neval;
 
 	// set up the GSL workspace
@@ -105,17 +105,15 @@ double RectangularBarrier::StaticG(const std::valarray<double> &params) const
   F.params = &p;
 
   // perform the integration
-	intmin = (ef-V)/2;
-	intmax = (ef+V)/2;
+	intmin = ef - 0.5*V;
+	intmax = ef + 0.5*V;
   gsl_integration_cquad(&F, intmin, intmax, 1e-9, 1e-9,
-                        ws, &result, &abserr , &neval); 
+                        ws, &result, &abserr, &neval); 
 
   // free resources
-	gsl_integration_cquad_workspace_free (ws);
+	gsl_integration_cquad_workspace_free(ws);
 
-	// conductance (in units of G0)
-	// the integral of the transmission function returns units of eV
-	return 2*2.41798926E14/V*result /7.748091723E-5 ;
+	return result / V;
 }
 #endif
 
