@@ -16,6 +16,7 @@
 #include <cassert>
 #include <valarray>
 #include <iostream>
+#include <config.h>
 
 #include <electron_transport/simulator_models/rectangular_barrier.h>
 
@@ -62,6 +63,10 @@ int main(int argc, char **argv)
 		type_index{ typeid(molstat::transport::ZeroBiasConductance) } );
 	auto DispW = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::Displacement) } );
+	#if HAVE_GSL
+	auto StaticG = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::StaticConductance) } );
+	#endif
 	
 	valarray<double> params(junction->get_num_parameters());
 
@@ -73,6 +78,16 @@ int main(int argc, char **argv)
 	assert(abs(2.61472e-5 - ZeroBiasG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
 	assert(abs(params[ChannelType::Index_w] - DispW(params)) < thresh);
+	
+	params[ChannelType::Index_EF] = 0.2;
+	params[ChannelType::Index_V] = 1.;
+	params[ChannelType::Index_h] = 1.4;
+	params[ChannelType::Index_w] = 1.;
+	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
+	assert(abs(params[ChannelType::Index_w] - DispW(params)) < thresh);
+	#if HAVE_GSL
+	assert(abs(1.16572e-4 - StaticG(params)) < thresh);
+	#endif
 
 	params[ChannelType::Index_EF] = 0.3;
 	params[ChannelType::Index_V] = 0.;
@@ -81,6 +96,16 @@ int main(int argc, char **argv)
 	assert(abs(0.214993 - ZeroBiasG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
 	assert(abs(params[ChannelType::Index_w] - DispW(params)) < thresh);
+
+	params[ChannelType::Index_EF] = 0.3;
+	params[ChannelType::Index_V] = -0.2;
+	params[ChannelType::Index_h] = 0.6;
+	params[ChannelType::Index_w] = 0.5;
+	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
+	assert(abs(params[ChannelType::Index_w] - DispW(params)) < thresh);
+	#if HAVE_GSL
+	assert(abs(2.16515e-1 - StaticG(params)) < thresh);
+	#endif
 
 	return 0;
 }
