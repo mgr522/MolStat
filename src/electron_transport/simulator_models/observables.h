@@ -39,7 +39,12 @@ public:
 	virtual double AppBias(const std::valarray<double> &params) const = 0;
 };
 
-/// Observable class for the electric current.
+/**
+ * \brief Observable class for the electric current.
+ *
+ * Returns the current in units of energy (so that multiplication by
+ * 2e/h provides an electric current).
+ */
 class ElectricCurrent : public Observable<ElectricCurrent>
 {
 public:
@@ -58,7 +63,12 @@ public:
 	virtual double ECurrent(const std::valarray<double> &params) const = 0;
 };
 
-/// Observable class for the static conductance.
+/**
+ * \brief Observable class for the static conductance.
+ *
+ * Returns the conductance in units of energy/bias (so that
+ * multiplication by 2e/h provides an electric conductance).
+ */
 class StaticConductance : public Observable<StaticConductance>
 {
 public:
@@ -77,7 +87,12 @@ public:
 	virtual double StaticG(const std::valarray<double> &params) const = 0;
 };
 
-/// Observable class for the zero-bias conductance.
+/**
+ * \brief Observable class for the zero-bias conductance.
+ *
+ * Returns the conductance in dimensionless units (so that
+ * multiplication by 2e^2/h provides an electric conductance).
+ */
 class ZeroBiasConductance : public Observable<ZeroBiasConductance>
 {
 public:
@@ -98,6 +113,9 @@ public:
 
 /**
  * \brief Observable class for the differential conductance.
+ *
+ * Returns the conductance in dimensionless units (so that
+ * multiplication by 2e^2/h provides an electric conductance).
  *
  * This observable supercedes the molstat::transport::ZeroBiasConductance by
  * also providing a bias-dependent conductance. The differential conductance,
