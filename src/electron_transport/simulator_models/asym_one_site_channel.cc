@@ -56,7 +56,7 @@ double AsymOneSiteChannel::ECurrent(const std::valarray<double> &params) const
 	const double &gammar = params[Index_gammaR];
 	const double &a = params[Index_a];
 
-	return 2.*gammal*gammar / (gammal + gammar) *
+	return 2. * TransportJunction::qc * gammal*gammar / (gammal + gammar) *
 		(atan(2. * (ef-eps+(0.5-a)*V) / (gammal + gammar))
 		- atan(2. * (ef-eps-(0.5+a)*V) / (gammal + gammar)));
 }
@@ -66,7 +66,7 @@ double AsymOneSiteChannel::StaticG(const std::valarray<double> &params) const
 	// unpack the model parameters
 	const double &V = params[Index_V];
 
-	return ECurrent(params) / V;
+	return ECurrent(params) / (TransportJunction::qc * V);
 }
 
 double AsymOneSiteChannel::ZeroBiasG(const std::valarray<double> &params) const
