@@ -189,9 +189,9 @@ Complete details for each of these channel models can be found in the full refer
 - `InterferenceChannel`
    - Two-site model where both electrodes couple to the same site. This results in an interference feature at \f$\varepsilon\f$.
    - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy of the two degenerate sites,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling for both electrodes (assumed to be symmetric coupling).
-      - `beta` (\f$\beta\f$), the inter-site coupling.
+      - `epsilon` (\f$\varepsilon\f$), the site-energy of the two degenerate sites (in eV),
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling for both electrodes (in eV, assumed to be symmetric coupling).
+      - `beta` (\f$\beta\f$), the inter-site coupling (in eV).
    - Transmission function is
    \f[
    T(E) = \frac{\Gamma^2(E-\varepsilon)^2}{[(E-\varepsilon)^2 - \beta^2] + (E-\varepsilon)^2 \Gamma^2}.
