@@ -154,9 +154,9 @@ Complete details for each of these channel models can be found in the full refer
 - `SymmetricTwoSiteChannel`
    - Two-site model with symmetric site/lead couplings.
    - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
-      - `beta` (\f$\beta\f$), the inter-site coupling.
+      - `epsilon` (\f$\varepsilon\f$), the site-energy (in eV),
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling (in eV),
+      - `beta` (\f$\beta\f$), the inter-site coupling (in eV).
    - Transmission function is
    \f[
    T(E) = \frac{16 \Gamma^2 \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma^2\right]^2 + 16 \Gamma^2(E-\varepsilon)^2}.
