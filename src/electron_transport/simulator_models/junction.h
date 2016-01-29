@@ -48,6 +48,9 @@ public:
 	/// Container index for the applied bias.
 	static const std::size_t Index_V;
 
+	/// Quantum of current (2 e / h * (electron volt)) = 77.5 microamp
+	static constexpr double qc = 77.4809173;
+
 protected:
 	virtual std::vector<std::string> get_names() const override;
 

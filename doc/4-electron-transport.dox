@@ -39,7 +39,7 @@ Conductance histograms are a common way for tabulating and analyzing experimenta
 In MolStat, we assume that the conductance histogram reports the probability density function of the conductance observable \cite reuter-2243. As described in previous sections and in Refs.\ \cite reuter-2243 and \cite williams-5937, MolStat then regards the physical parameters in the transmission as random variables that determine the conductance's probability density function.
 
 The two operations supported by MolStat are
--# Simulating conductance histograms using simple model systems (see \cite reuter-2243). This operation is described in \ref sec_simulate_electron_transport. Note that these model systems do not rely on first-principles electronic structure calculations; they are phenomenological. Other studies that construct histogram from such *ab initio* calculations have been reported in, for instance, \cite french-887.
+-# Simulating conductance histograms using simple model systems (see \cite reuter-2243, \cite zhang-6254). This operation is described in \ref sec_simulate_electron_transport. Note that these model systems do not rely on first-principles electronic structure calculations; they are phenomenological. Other studies that construct histogram from such *ab initio* calculations have been reported in, for instance, \cite french-887.
 -# Fit a conductance histogram (or, more accurately, a peak from a conductance histogram) to a specified functional form. This process is discussed in \ref sec_fit_electron_transport.
 
 \section sec_simulate_electron_transport Simulating Electron Transport Properties
@@ -52,6 +52,7 @@ Transport observables are defined in electron_transport/simulator_models/observa
 - Applied bias
    - \f$ V. \f$
    - Name (for use in input) is `%AppliedBias`.
+   - Unit: Volt.
    \if fullref
    - Implemented by the class molstat::transport::AppliedBias.
    \endif
@@ -59,6 +60,7 @@ Transport observables are defined in electron_transport/simulator_models/observa
 - Differential conductance
    - \f$ G_\mathrm{d}(V) = \frac{\partial}{\partial V} I(V). \f$
    - Name (for use in input) is `%DifferentialConductance`.
+   - Unit: \f$ 2e^2/h \f$ (atomic unit).
    \if fullref
    - Implemented by the class molstat::transport::DifferentialConductance.
    \endif
@@ -66,6 +68,7 @@ Transport observables are defined in electron_transport/simulator_models/observa
 - Electric current
    - \f$ I(V). \f$
    - Name (for use in input) is `%ElectricCurrent`.
+   - Unit: microamp.
    \if fullref
    - Implemented by the class molstat::transport::ElectricCurrent.
    \endif
@@ -73,6 +76,7 @@ Transport observables are defined in electron_transport/simulator_models/observa
 - Static conductance
    - \f$ G_\mathrm{s}(V) = \frac{I(V)}{V}. \f$
    - Name (for use in input) is `%StaticConductance`.
+   - Unit: \f$ 2e^2/h \f$ (atomic unit).
    \if fullref
    - Implemented by the class molstat::transport::StaticConductance.
    \endif
@@ -80,6 +84,7 @@ Transport observables are defined in electron_transport/simulator_models/observa
 - Zero-bias conductance
    - \f$ G_\mathrm{d}(0). \f$
    - Name (for use in input) is `%ZeroBiasConductance`.
+   - Unit: \f$ 2e^2/h \f$ (atomic unit).
    \if fullref
    - Implemented by the class molstat::transport::ZeroBiasConductance.
    \endif
@@ -94,8 +99,8 @@ There is only one top-level model for electron transport applications.
 - `TransportJunction`
    - Top-level model for a system that transports electrons via conduction channels.
    - Model parameters are
-      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
-      - `v` (\f$V\f$), the applied bias.
+      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy (in eV),
+      - `v` (\f$V\f$), the applied bias (in V).
    \if fullref
    - Submodels are required, of type molstat::transport::Channel. Each submodel represents an independent channel through the junction and has its own set of physical/model parameters.
    - Implemented by the class molstat::transport::TransportJunction; full details are presented there.
