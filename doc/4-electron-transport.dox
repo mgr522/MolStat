@@ -64,7 +64,7 @@ Transport observables are defined in electron_transport/simulator_models/observa
    \endif
 
 - Displacement
-   - The distance between the electrodes.
+   - The distance between the electrodes (in nm).
      \if fullref
      Must be used with the molstat::transport::RectangularBarrierChannel submodel.
      \elseif userman
