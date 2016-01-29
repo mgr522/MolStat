@@ -171,10 +171,10 @@ Complete details for each of these channel models can be found in the full refer
 - `AsymmetricTwoSiteChannel`
    - Two-site model with asymmetric site/lead couplings.
    - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
-      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
-      - `beta` (\f$\beta\f$), the inter-site coupling.
+      - `epsilon` (\f$\varepsilon\f$), the site-energy (in eV),
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode (in eV),
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode (in eV),
+      - `beta` (\f$\beta\f$), the inter-site coupling (in eV).
    - Transmission function is
    \f[
    T(E) = \frac{16 \Gamma_\mathrm{L} \Gamma_\mathrm{R} \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma_\mathrm{L} \Gamma_\mathrm{R} \right]^2 + 4 (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})^2(E-\varepsilon)^2}.
