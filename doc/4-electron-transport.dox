@@ -119,9 +119,9 @@ Complete details for each of these channel models can be found in the full refer
 - `SymmetricOneSiteChannel`
    - Single-site model with symmetric site/lead couplings.
    - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
-      - `a` (\f$a\f$), voltage drop through the channel.
+      - `epsilon` (\f$\varepsilon\f$), the site-energy (in eV),
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling (in eV),
+      - `a` (\f$a\f$), voltage drop through the channel (dimensionless).
    - Transmission function is
    \f[
    T(E) = \frac{\Gamma^2}{(E-\varepsilon-aeV)^2 + \Gamma^2}.
