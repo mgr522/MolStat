@@ -15,6 +15,7 @@
 #include <cmath>
 
 #if HAVE_GSL
+#include <memory>
 #include <gsl/gsl_integration.h>
 #endif
 
@@ -66,18 +67,9 @@ double RectangularBarrier::DispW(const std::valarray<double> &params) const
 }
 
 #if HAVE_GSL
-struct my_f_params { double h; double w; };
-
-/**
- * \brief GSL integrator binding for the tranmission function.
- *
- * \param[in] E The energy (integration variable).
- * \param[in] p The parameters (height and width of the barrier).
- * \return The transmission probability through the barrier.
- */
-static double rb_trans_gsl(double E, void *p) 
+double RectangularBarrier::gsl_StaticG_integrand(double E, void *p) 
 {
-	const struct my_f_params * params = (struct my_f_params*)p;
+	const StaticG_data *params = (const StaticG_data*)p;
 	const double h = params->h;
 	const double w = params->w;
 
@@ -96,22 +88,21 @@ double RectangularBarrier::StaticG(const std::valarray<double> &params) const
 	size_t neval;
 
 	// set up the GSL workspace
-	gsl_integration_cquad_workspace *ws = 
-		gsl_integration_cquad_workspace_alloc(1000);
+	std::unique_ptr<gsl_integration_cquad_workspace,
+			decltype(&gsl_integration_cquad_workspace_free)>
+		ws { gsl_integration_cquad_workspace_alloc(1000),
+		     &gsl_integration_cquad_workspace_free };
 	 
 	gsl_function F;
-	struct my_f_params p {h, w};
-  F.function = &rb_trans_gsl;
+	struct StaticG_data p {h, w};
+  F.function = &gsl_StaticG_integrand;
   F.params = &p;
 
   // perform the integration
 	intmin = ef - 0.5*V;
 	intmax = ef + 0.5*V;
   gsl_integration_cquad(&F, intmin, intmax, 1e-9, 1e-9,
-                        ws, &result, &abserr, &neval); 
-
-  // free resources
-	gsl_integration_cquad_workspace_free(ws);
+                        ws.get(), &result, &abserr, &neval); 
 
 	return result / V;
 }

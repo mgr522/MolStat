@@ -90,6 +90,24 @@ public:
 	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
 
 	#if HAVE_GSL
+protected:
+	/// Struct for using GSL to evaluate the static conductance integral.
+	struct StaticG_data
+	{
+		double h; ///< Barrier height.
+	  double w; ///< Barrier width.
+	};
+
+	/**
+	 * \brief GSL-style integrand for calculating the static conductance.
+	 *
+	 * \param[in] E Energy (integration variable).
+	 * \param[in] p The parameters (height and width of the barrier).
+	 * \return The transmission probability through the barrier. 
+	 */
+	static double gsl_StaticG_integrand(double E, void *p);
+
+public:
 	virtual double StaticG(const std::valarray<double> &params) const override;
 	#endif
 
