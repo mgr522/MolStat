@@ -58,6 +58,14 @@ double RectangularBarrier::ZeroBiasG(const std::valarray<double> &params) const
 	return transmission(ef, h, w);
 }
 
+double RectangularBarrier::ZeroBiasS(const std::valarray<double> &params) const
+{
+	// unpack the parameter
+	const double &ef = params[Index_EF];
+	
+	return -1. / ef;
+}
+
 double RectangularBarrier::DispW(const std::valarray<double> &params) const
 {
 	// unpack the width

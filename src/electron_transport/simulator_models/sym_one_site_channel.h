@@ -46,12 +46,15 @@ namespace transport {
  *   \f[ G_\mathrm{d}(V) = \frac{2e^2}{h} \left[ (1/2-a) T(E_\mathrm{F} + eV/2) + (1/2+a) T(E_\mathrm{F} - eV/2) \right]. \f]
  * - Static conductance:
  *   \f[ G_\mathrm{s}(V) = \frac{2e^2}{h} \frac{\Gamma}{eV} \left[ \arctan\left( \frac{E_\mathrm{F} - \varepsilon + (1/2-a) eV}{\Gamma} \right) - \arctan\left( \frac{E_\mathrm{F} - \varepsilon - (1/2+a) eV}{\Gamma} \right) \right]. \f]
+ * - Seebeck coefficient (zero bias, "atomic" units):
+ *   \f[ S = \frac{2 (E_\mathrm{F}-\varepsilon)}{(E_\mathrm{F}-\varepsilon)^2 + \Gamma^2}. \f]
  */
 class SymOneSiteChannel : public Channel,
 	public ElectricCurrent,
 	public ZeroBiasConductance,
 	public DifferentialConductance,
-	public StaticConductance
+	public StaticConductance,
+	public ZeroBiasThermopower
 {
 public:
 	/// Container index for the Fermi energy.
@@ -92,6 +95,7 @@ public:
 	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
 	virtual double DiffG(const std::valarray<double> &params) const override;
 	virtual double StaticG(const std::valarray<double> &params) const override;
+	virtual double ZeroBiasS(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::transport

@@ -87,5 +87,16 @@ double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const
 	return ECurrent(params) / (TransportJunction::qc * V);
 }
 
+double SymOneSiteChannel::ZeroBiasS(const std::valarray<double> &params) const
+{
+	// unpack the parameters
+	const double &ef = params[Index_EF];
+	const double &eps = params[Index_epsilon];
+	const double &gamma = params[Index_gamma];
+	const double z = ef - eps;
+
+	return 2.*z / (z*z + gamma*gamma);
+}
+
 } // namespace molstat::transport
 } // namespace molstat

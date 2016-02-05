@@ -40,7 +40,8 @@ class TransportJunction :
 	public CompositeObservable<ElectricCurrent>,
 	public CompositeObservable<StaticConductance>,
 	public CompositeObservable<ZeroBiasConductance>,
-	public CompositeObservable<DifferentialConductance>
+	public CompositeObservable<DifferentialConductance>,
+	public ZeroBiasThermopower
 {
 public:
 	/// Container index for the Fermi energy.
@@ -63,7 +64,7 @@ public:
 	TransportJunction();
 
 	virtual double AppBias(const std::valarray<double> &params) const override;
-
+	virtual double ZeroBiasS(const std::valarray<double> &params) const override;
 	virtual double DispW(const std::valarray<double> &params) const override;
 };
 

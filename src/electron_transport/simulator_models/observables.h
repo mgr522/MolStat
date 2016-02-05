@@ -140,6 +140,25 @@ public:
 	virtual double DiffG(const std::valarray<double> &params) const = 0;
 };
 
+/// Observable class for the (zero-bias) thermopower.
+class ZeroBiasThermopower : public Observable<ZeroBiasThermopower>
+{
+public:
+	ZeroBiasThermopower()
+		: Observable<ZeroBiasThermopower>(&ZeroBiasThermopower::ZeroBiasS)
+	{}
+
+	virtual ~ZeroBiasThermopower() = default;
+
+	/**
+	 * \brief Returns the (zero-bias) thermopower for a set of model parameters.
+	 *
+	 * \param[in] params A set of model parameters.
+	 * \return The (zero-bias) thermopower for the model parameters.
+	 */
+	virtual double ZeroBiasS(const std::valarray<double> &params) const = 0;
+};
+
 /**
  * \brief Observable class for displacement (the distance between electrodes).
  *

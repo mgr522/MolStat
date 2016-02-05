@@ -60,6 +60,39 @@ double TransportJunction::AppBias(const std::valarray<double> &params) const
 	return params[Index_V];
 }
 
+double TransportJunction::ZeroBiasS(const std::valarray<double> &params) const
+{
+	const ObservableIndex zbg { GetObservableIndex<ZeroBiasConductance>() };
+	const ObservableIndex s { GetObservableIndex<ZeroBiasThermopower>() };
+
+	// parse the parameters into submodels
+	const SubmodelParameters subparams{ routeSubmodelParameters(params) };
+
+	// the composite thermopower is
+	// S = sum_j (g_j S_j) / sum_k (g_k),
+	// where g_j is the zero-bias conductance and s_j is the Seebeck coefficient
+	// for the channel
+	double sumgs { 0. }, sumg{ 0. };
+
+	// go through each submodel
+	for(const auto submodel : subparams) {
+		// submodel.first is a pointer to the submodel
+		// submodel.second is the parameters to pass to it
+
+		// getObservableFunction will throw an exception if the submodel is
+		// incompatible with the specified observable
+		const double gj =
+			submodel.first->getObservableFunction(zbg)(submodel.second);
+		const double sj =
+			submodel.first->getObservableFunction(s)(submodel.second);
+
+		sumg += gj;
+		sumgs += gj * sj;
+	}
+
+	return sumgs / sumg;
+}
+
 double TransportJunction::DispW(const std::valarray<double> &params) const
 {
 	// the displacement observable requires one channel to be a

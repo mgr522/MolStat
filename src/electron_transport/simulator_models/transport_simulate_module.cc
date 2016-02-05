@@ -87,6 +87,10 @@ void load_observables(
 	observables.emplace(
 		to_lower("DifferentialConductance"),
 		GetObservableIndex<DifferentialConductance>() );
+
+	observables.emplace(
+		to_lower("ZeroBiasThermopower"),
+		GetObservableIndex<ZeroBiasThermopower>() );
 }
 
 } // namespace molstat::transport

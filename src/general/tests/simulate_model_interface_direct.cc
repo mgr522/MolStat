@@ -50,7 +50,6 @@ int main(int argc, char **argv)
 	try
 	{
 		basic_factory.getModel();
-
 		assert(false);
 	}
 	catch(const molstat::MissingDistribution &e)
@@ -73,7 +72,6 @@ int main(int argc, char **argv)
 	try
 	{
 		basic_sim.simulate(engine);
-
 		assert(false);
 	}
 	catch(const molstat::NoObservables &e)
@@ -86,7 +84,6 @@ int main(int argc, char **argv)
 	{
 		// only 0 is available right now...
 		basic_sim.setObservable(1, type_index{ typeid(BasicObs1) });
-
 		assert(false);
 	}
 	catch(const out_of_range &e)
@@ -99,7 +96,6 @@ int main(int argc, char **argv)
 	try
 	{
 		basic_sim.setObservable(0, type_index{ typeid(BasicObs4) });
-
 		assert(false);
 	}
 	catch(const molstat::IncompatibleObservable &e)

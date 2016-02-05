@@ -53,6 +53,7 @@ namespace transport {
  */
 class RectangularBarrier : public Channel,
 	public ZeroBiasConductance,
+	public ZeroBiasThermopower,
 	#if HAVE_GSL
 	public StaticConductance,
 	#endif
@@ -88,6 +89,8 @@ public:
 	static double transmission(const double e, const double h, const double w);
 	
 	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
+	virtual double ZeroBiasS(const std::valarray<double> &params) const override;
+	virtual double DispW(const std::valarray<double> &params) const override;
 
 	#if HAVE_GSL
 protected:
@@ -95,7 +98,7 @@ protected:
 	struct StaticG_data
 	{
 		double h; ///< Barrier height.
-	  double w; ///< Barrier width.
+		double w; ///< Barrier width.
 	};
 
 	/**
@@ -110,9 +113,6 @@ protected:
 public:
 	virtual double StaticG(const std::valarray<double> &params) const override;
 	#endif
-
-	virtual double DispW(const std::valarray<double> &params) const override;
-
 };
 
 } // namespace molstat::transport
