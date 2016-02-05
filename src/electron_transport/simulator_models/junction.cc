@@ -60,15 +60,15 @@ double TransportJunction::AppBias(const std::valarray<double> &params) const
 	return params[Index_V];
 }
 
-double TransportJunction::SeebeckS(const std::valarray<double> &params) const
+double TransportJunction::ZeroBiasS(const std::valarray<double> &params) const
 {
 	const ObservableIndex zbg { GetObservableIndex<ZeroBiasConductance>() };
-	const ObservableIndex s { GetObservableIndex<SeebeckCoefficient>() };
+	const ObservableIndex s { GetObservableIndex<ZeroBiasThermopower>() };
 
 	// parse the parameters into submodels
 	const SubmodelParameters subparams{ routeSubmodelParameters(params) };
 
-	// the composite Seebeck coefficient is
+	// the composite thermopower is
 	// S = sum_j (g_j S_j) / sum_k (g_k),
 	// where g_j is the zero-bias conductance and s_j is the Seebeck coefficient
 	// for the channel

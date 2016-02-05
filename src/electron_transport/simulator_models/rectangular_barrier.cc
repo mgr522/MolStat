@@ -58,7 +58,7 @@ double RectangularBarrier::ZeroBiasG(const std::valarray<double> &params) const
 	return transmission(ef, h, w);
 }
 
-double RectangularBarrier::SeebeckS(const std::valarray<double> &params) const
+double RectangularBarrier::ZeroBiasS(const std::valarray<double> &params) const
 {
 	// unpack the parameter
 	const double &ef = params[Index_EF];

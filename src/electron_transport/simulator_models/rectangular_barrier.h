@@ -53,7 +53,7 @@ namespace transport {
  */
 class RectangularBarrier : public Channel,
 	public ZeroBiasConductance,
-	public SeebeckCoefficient,
+	public ZeroBiasThermopower,
 	#if HAVE_GSL
 	public StaticConductance,
 	#endif
@@ -89,7 +89,7 @@ public:
 	static double transmission(const double e, const double h, const double w);
 	
 	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
-	virtual double SeebeckS(const std::valarray<double> &params) const override;
+	virtual double ZeroBiasS(const std::valarray<double> &params) const override;
 	virtual double DispW(const std::valarray<double> &params) const override;
 
 	#if HAVE_GSL

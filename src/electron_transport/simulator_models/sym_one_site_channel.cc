@@ -87,7 +87,7 @@ double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const
 	return ECurrent(params) / (TransportJunction::qc * V);
 }
 
-double SymOneSiteChannel::SeebeckS(const std::valarray<double> &params) const
+double SymOneSiteChannel::ZeroBiasS(const std::valarray<double> &params) const
 {
 	// unpack the parameters
 	const double &ef = params[Index_EF];

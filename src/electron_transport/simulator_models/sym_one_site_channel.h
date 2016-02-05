@@ -54,7 +54,7 @@ class SymOneSiteChannel : public Channel,
 	public ZeroBiasConductance,
 	public DifferentialConductance,
 	public StaticConductance,
-	public SeebeckCoefficient
+	public ZeroBiasThermopower
 {
 public:
 	/// Container index for the Fermi energy.
@@ -95,7 +95,7 @@ public:
 	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
 	virtual double DiffG(const std::valarray<double> &params) const override;
 	virtual double StaticG(const std::valarray<double> &params) const override;
-	virtual double SeebeckS(const std::valarray<double> &params) const override;
+	virtual double ZeroBiasS(const std::valarray<double> &params) const override;
 };
 
 } // namespace molstat::transport

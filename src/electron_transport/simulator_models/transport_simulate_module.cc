@@ -89,8 +89,8 @@ void load_observables(
 		GetObservableIndex<DifferentialConductance>() );
 
 	observables.emplace(
-		to_lower("SeebeckCoefficient"),
-		GetObservableIndex<SeebeckCoefficient>() );
+		to_lower("ZeroBiasThermopower"),
+		GetObservableIndex<ZeroBiasThermopower>() );
 }
 
 } // namespace molstat::transport

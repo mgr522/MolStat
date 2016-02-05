@@ -61,8 +61,8 @@ int main(int argc, char **argv)
 		type_index{ typeid(molstat::transport::AppliedBias) } );
 	auto ZeroBiasG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::ZeroBiasConductance) } );
-	auto SeebeckS = junction->getObservableFunction(
-		type_index{ typeid(molstat::transport::SeebeckCoefficient) } );
+	auto ZeroBiasS = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::ZeroBiasThermopower) } );
 	auto DispW = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::Displacement) } );
 	#if HAVE_GSL
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_w] = 1.;
 	assert(abs(2.61472e-5 - ZeroBiasG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
-	assert(abs(-5.000000 - SeebeckS(params)) < thresh);
+	assert(abs(-5.000000 - ZeroBiasS(params)) < thresh);
 	assert(abs(params[ChannelType::Index_w] - DispW(params)) < thresh);
 	
 	params[ChannelType::Index_EF] = 0.2;
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_w] = 0.5;
 	assert(abs(0.214993 - ZeroBiasG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
-	assert(abs(-3.333333 - SeebeckS(params)) < thresh);
+	assert(abs(-3.333333 - ZeroBiasS(params)) < thresh);
 	assert(abs(params[ChannelType::Index_w] - DispW(params)) < thresh);
 
 	params[ChannelType::Index_EF] = 0.3;

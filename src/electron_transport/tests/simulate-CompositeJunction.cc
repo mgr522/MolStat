@@ -76,8 +76,8 @@ static void test_sym_asym(const double thresh) {
 		type_index{ typeid(molstat::transport::StaticConductance) } );
 	auto DiffG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::DifferentialConductance) } );
-	auto SeebeckS = junction->getObservableFunction(
-		type_index{ typeid(molstat::transport::SeebeckCoefficient) } );
+	auto ZeroBiasS = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::ZeroBiasThermopower) } );
 	auto DispW = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::Displacement) } );
 
@@ -177,7 +177,7 @@ static void test_sym_asym(const double thresh) {
 	// call to the Seebeck coefficient routines should throw because the
 	// asymmetric model does not presently support the Seebeck coefficient.
 	try {
-		SeebeckS(params);
+		ZeroBiasS(params);
 		assert(false);
 	}
 	catch(const molstat::IncompatibleObservable &e) {
@@ -242,8 +242,8 @@ static void test_sym_sym(const double thresh) {
 		type_index{ typeid(molstat::transport::StaticConductance) } );
 	auto DiffG = junction->getObservableFunction(
 		type_index{ typeid(molstat::transport::DifferentialConductance) } );
-	auto SeebeckS = junction->getObservableFunction(
-		type_index{ typeid(molstat::transport::SeebeckCoefficient) } );
+	auto ZeroBiasS = junction->getObservableFunction(
+		type_index{ typeid(molstat::transport::ZeroBiasThermopower) } );
 
 	valarray<double> params(junction->get_num_parameters());
 
@@ -270,9 +270,9 @@ static void test_sym_sym(const double thresh) {
 		- DiffG(params)) < thresh);
 	assert(abs(params[ChannelType1::Index_V] - AppBias(params)) < thresh);
 	assert(abs(
-		(channel1->SeebeckS(params[index1])*channel1->ZeroBiasG(params[index1])
-			+channel2->SeebeckS(params[index2])*channel2->ZeroBiasG(params[index2]))
-			/ ZeroBiasG(params) - SeebeckS(params)
+		(channel1->ZeroBiasS(params[index1])*channel1->ZeroBiasG(params[index1])
+			+channel2->ZeroBiasS(params[index2])*channel2->ZeroBiasG(params[index2]))
+			/ ZeroBiasG(params) - ZeroBiasS(params)
 		) < thresh);
 }
 

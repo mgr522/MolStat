@@ -140,23 +140,23 @@ public:
 	virtual double DiffG(const std::valarray<double> &params) const = 0;
 };
 
-/// Observable class for the (zero-bias) Seebeck coefficient.
-class SeebeckCoefficient : public Observable<SeebeckCoefficient>
+/// Observable class for the (zero-bias) thermopower.
+class ZeroBiasThermopower : public Observable<ZeroBiasThermopower>
 {
 public:
-	SeebeckCoefficient()
-		: Observable<SeebeckCoefficient>(&SeebeckCoefficient::SeebeckS)
+	ZeroBiasThermopower()
+		: Observable<ZeroBiasThermopower>(&ZeroBiasThermopower::ZeroBiasS)
 	{}
 
-	virtual ~SeebeckCoefficient() = default;
+	virtual ~ZeroBiasThermopower() = default;
 
 	/**
-	 * \brief Returns the Seebeck coefficient for a set of model parameters.
+	 * \brief Returns the (zero-bias) thermopower for a set of model parameters.
 	 *
 	 * \param[in] params A set of model parameters.
-	 * \return The Seebeck coefficient for the model parameters.
+	 * \return The (zero-bias) thermopower for the model parameters.
 	 */
-	virtual double SeebeckS(const std::valarray<double> &params) const = 0;
+	virtual double ZeroBiasS(const std::valarray<double> &params) const = 0;
 };
 
 /**

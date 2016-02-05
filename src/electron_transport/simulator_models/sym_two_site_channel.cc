@@ -100,7 +100,7 @@ double SymTwoSiteChannel::DiffG(const std::valarray<double> &params) const
 		0.5*transmission(ef - 0.5*V, V, eps, gamma, beta);
 }
 
-double SymTwoSiteChannel::SeebeckS(const std::valarray<double> &params) const
+double SymTwoSiteChannel::ZeroBiasS(const std::valarray<double> &params) const
 {
 	// unpack the parameters
 	const double &ef = params[Index_EF];
