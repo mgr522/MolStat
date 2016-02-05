@@ -30,7 +30,7 @@ Several types of transport observables can be considered:
       \f[ \frac{\partial}{\partial V} I(V) = \frac{2e^2}{h} \frac{1}{2} \left[ T(E_\mathrm{F} + eV/2) + T(E_\mathrm{F} - eV/2) \right] + \frac{2e}{h} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E \frac{\partial}{\partial V}T(E). \f]
 	-# Static conductance
       \f[ \frac{I(V)}{V} = \frac{2e}{hV} \int\limits_{E_\mathrm{F} - eV/2}^{E_\mathrm{F} + eV/2} \mathrm{d}E T(E). \f]
-   -# Seebeck coefficient (zero bias)
+   -# Zero-bias thermopower
       \f[ S = -\frac{\pi^2 k_\mathrm{B}^2 \bar{\mathcal{T}}}{3|e|} \left. \frac{\mathrm{d}}{\mathrm{d}E} \left[ \ln\left( T(E) \right) \right] \right|_{E=E_\mathrm{F}}. \f]
    .
 Various models (described below) can be used to calculate \f$T(E)\f$; from this transmission, all of the above conductances can be calculated.
@@ -89,13 +89,6 @@ Transport observables are defined in electron_transport/simulator_models/observa
    - Implemented by the class molstat::transport::ElectricCurrent.
    \endif
 
-- Seebeck coefficient (zero-bias)
-   - \f$ S \f$
-   - Name (for use in input) is `%SeebeckCoefficient`.
-   \if fullref
-   - Implemented by the class molstat::transport::SeebeckCoefficient.
-   \endif
-
 - Static conductance
    - \f$ G_\mathrm{s}(V) = \frac{I(V)}{V}. \f$
    - Name (for use in input) is `%StaticConductance`.
@@ -110,6 +103,14 @@ Transport observables are defined in electron_transport/simulator_models/observa
    - Unit: \f$ 2e^2/h \f$ (atomic unit).
    \if fullref
    - Implemented by the class molstat::transport::ZeroBiasConductance.
+   \endif
+
+- Zero-bias thermopower
+   - \f$ S \f$
+   - Name (for use in input) is `%ZeroBiasThermopower`.
+   - Unit: \f$ \pi^2 k_\mathrm{B}^2 \bar{\mathcal{T}} / (3|e| (\mathrm{eV})) \f$ (nuanced atomic unit). Note that \f$ \bar{\mathcal{T}} \f$ is the average absolute temperature of the electrodes and \f$ (\mathrm{eV}) \f$ is an electron-volt.
+   \if fullref
+   - Implemented by the class molstat::transport::ZeroBiasThermopower.
    \endif  
 
 \subsection subsec_transport_simulate_models Models for Simulating Electron Transport
