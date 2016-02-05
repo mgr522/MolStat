@@ -69,6 +69,10 @@ void load_observables(
 		GetObservableIndex<AppliedBias>() );
 
 	observables.emplace(
+		to_lower("Displacement"),
+		GetObservableIndex<Displacement>() );
+
+	observables.emplace(
 		to_lower("ElectricCurrent"),
 		GetObservableIndex<ElectricCurrent>() );
 

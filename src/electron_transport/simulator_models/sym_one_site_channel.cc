@@ -75,7 +75,7 @@ double SymOneSiteChannel::ECurrent(const std::valarray<double> & params) const
 	const double &gamma = params[Index_gamma];
 	const double &a = params[Index_a];
 
-	return gamma *
+	return TransportJunction::qc * gamma *
 		(atan((ef-eps+(0.5-a)*V) / gamma) - atan((ef-eps-(0.5+a)*V) / gamma));
 }
 
@@ -84,7 +84,7 @@ double SymOneSiteChannel::StaticG(const std::valarray<double> &params) const
 	// unpack the parameters
 	const double &V = params[Index_V];
 	
-	return ECurrent(params) / V;
+	return ECurrent(params) / (TransportJunction::qc * V);
 }
 
 double SymOneSiteChannel::SeebeckS(const std::valarray<double> &params) const

@@ -41,7 +41,7 @@ Conductance histograms are a common way for tabulating and analyzing experimenta
 In MolStat, we assume that the conductance histogram reports the probability density function of the conductance observable \cite reuter-2243. As described in previous sections and in Refs.\ \cite reuter-2243 and \cite williams-5937, MolStat then regards the physical parameters in the transmission as random variables that determine the conductance's probability density function.
 
 The two operations supported by MolStat are
--# Simulating conductance histograms using simple model systems (see \cite reuter-2243). This operation is described in \ref sec_simulate_electron_transport. Note that these model systems do not rely on first-principles electronic structure calculations; they are phenomenological. Other studies that construct histogram from such *ab initio* calculations have been reported in, for instance, \cite french-887.
+-# Simulating conductance histograms using simple model systems (see \cite reuter-2243, \cite zhang-6254). This operation is described in \ref sec_simulate_electron_transport. Note that these model systems do not rely on first-principles electronic structure calculations; they are phenomenological. Other studies that construct histogram from such *ab initio* calculations have been reported in, for instance, \cite french-887.
 -# Fit a conductance histogram (or, more accurately, a peak from a conductance histogram) to a specified functional form. This process is discussed in \ref sec_fit_electron_transport.
 
 \section sec_simulate_electron_transport Simulating Electron Transport Properties
@@ -54,6 +54,7 @@ Transport observables are defined in electron_transport/simulator_models/observa
 - Applied bias
    - \f$ V. \f$
    - Name (for use in input) is `%AppliedBias`.
+   - Unit: Volt.
    \if fullref
    - Implemented by the class molstat::transport::AppliedBias.
    \endif
@@ -61,13 +62,29 @@ Transport observables are defined in electron_transport/simulator_models/observa
 - Differential conductance
    - \f$ G_\mathrm{d}(V) = \frac{\partial}{\partial V} I(V). \f$
    - Name (for use in input) is `%DifferentialConductance`.
+   - Unit: \f$ 2e^2/h \f$ (atomic unit).
    \if fullref
    - Implemented by the class molstat::transport::DifferentialConductance.
    \endif
 
+- Displacement
+   - The distance between the electrodes (in nm).
+     \if fullref
+     Must be used with the molstat::transport::RectangularBarrierChannel submodel.
+     \elseif userman
+     Must be used with the RectangularBarrierChannel submodel.
+     \endif
+     .
+   - W
+   - Name (for use in input) is `%Displacement`.
+   \if fullref
+   - Implemented by the class molstat::transport::Displacement.
+   \endif 
+
 - Electric current
    - \f$ I(V). \f$
    - Name (for use in input) is `%ElectricCurrent`.
+   - Unit: microamp.
    \if fullref
    - Implemented by the class molstat::transport::ElectricCurrent.
    \endif
@@ -82,6 +99,7 @@ Transport observables are defined in electron_transport/simulator_models/observa
 - Static conductance
    - \f$ G_\mathrm{s}(V) = \frac{I(V)}{V}. \f$
    - Name (for use in input) is `%StaticConductance`.
+   - Unit: \f$ 2e^2/h \f$ (atomic unit).
    \if fullref
    - Implemented by the class molstat::transport::StaticConductance.
    \endif
@@ -89,9 +107,10 @@ Transport observables are defined in electron_transport/simulator_models/observa
 - Zero-bias conductance
    - \f$ G_\mathrm{d}(0). \f$
    - Name (for use in input) is `%ZeroBiasConductance`.
+   - Unit: \f$ 2e^2/h \f$ (atomic unit).
    \if fullref
    - Implemented by the class molstat::transport::ZeroBiasConductance.
-   \endif
+   \endif  
 
 \subsection subsec_transport_simulate_models Models for Simulating Electron Transport
 \if fullref
@@ -103,15 +122,15 @@ There is only one top-level model for electron transport applications.
 - `TransportJunction`
    - Top-level model for a system that transports electrons via conduction channels.
    - Model parameters are
-      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy,
-      - `v` (\f$V\f$), the applied bias.
+      - `ef` (\f$E_\mathrm{F}\f$), the Fermi energy (in eV),
+      - `v` (\f$V\f$), the applied bias (in V).
    \if fullref
    - Submodels are required, of type molstat::transport::Channel. Each submodel represents an independent channel through the junction and has its own set of physical/model parameters.
    - Implemented by the class molstat::transport::TransportJunction; full details are presented there.
-   - Compatible with the molstat::transport::AppliedBias and molstat::transport::SeebeckCoefficient observables. The SeebeckCoefficient observable requires that all submodels are compatible with the ZeroBiasConductance and SeebeckCoefficient observables. If all submodels are compatible with the molstat::transport::ElectricCurrent, molstat::transport::StaticConductance, molstat::transport::DifferentialConductance, or molstat::transport::ZeroBiasConductance observables, the transport junction will also be compatible with them.
+   - Compatible with the molstat::transport::AppliedBias and molstat::transport::SeebeckCoefficient observables. The SeebeckCoefficient observable requires that all submodels are compatible with the ZeroBiasConductance and SeebeckCoefficient observables. If all submodels are compatible with the molstat::transport::ElectricCurrent, molstat::transport::StaticConductance, molstat::transport::DifferentialConductance, or molstat::transport::ZeroBiasConductance observables, the transport junction will also be compatible with them. Compatible with the molstat::transport::Displacement observable, but only if a molstat::transport::RectangularBarrierChannel is present as a submodel.
    \elseif userman
    - Submodels are required, of type channel. Each submodel represents an independent channel through the junction and has its own set of physical/model parameters. Multiple submodels (channels) can be specified.
-   - Compatible with the AppliedBias and SeebeckCoefficient observables. The SeebeckCoefficient observable requires that all submodels are compatible with the ZeroBiasConductance and SeebeckCoefficient observables. If all submodels are compatible with the ElectricCurrent, StaticConductance, DifferentialConductance, or ZeroBiasConductance observables, the transport junction will also be compatible with them.
+   - Compatible with the AppliedBias and SeebeckCoefficient observables. The SeebeckCoefficient observable requires that all submodels are compatible with the ZeroBiasConductance and SeebeckCoefficient observables. If all submodels are compatible with the ElectricCurrent, StaticConductance, DifferentialConductance, or ZeroBiasConductance observables, the transport junction will also be compatible with them. Compatible with the Displacement observable, but only if a RectangularBarrierChannel is present as a submodel.
    \endif
 .
 
@@ -123,9 +142,9 @@ Complete details for each of these channel models can be found in the full refer
 - `SymmetricOneSiteChannel`
    - Single-site model with symmetric site/lead couplings.
    - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
-      - `a` (\f$a\f$), voltage drop through the channel.
+      - `epsilon` (\f$\varepsilon\f$), the site-energy (in eV),
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling (in eV),
+      - `a` (\f$a\f$), voltage drop through the channel (dimensionless).
    - Transmission function is
    \f[
    T(E) = \frac{\Gamma^2}{(E-\varepsilon-aeV)^2 + \Gamma^2}.
@@ -140,10 +159,10 @@ Complete details for each of these channel models can be found in the full refer
 - `AsymmetricOneSiteChannel`
    - Single-site model with asymmetric site/lead couplings.
    - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
-      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
-      - `a` (\f$a\f$), voltage drop through the channel.
+      - `epsilon` (\f$\varepsilon\f$), the site-energy (in eV),
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode (in eV),
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode (in eV),
+      - `a` (\f$a\f$), voltage drop through the channel (dimensionless).
    - Transmission function is
    \f[
    T(E) = \frac{4\Gamma_\mathrm{L} \Gamma_\mathrm{R}}{4(E-\varepsilon-aeV)^2 + (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})^2}.
@@ -158,9 +177,9 @@ Complete details for each of these channel models can be found in the full refer
 - `SymmetricTwoSiteChannel`
    - Two-site model with symmetric site/lead couplings.
    - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling,
-      - `beta` (\f$\beta\f$), the inter-site coupling.
+      - `epsilon` (\f$\varepsilon\f$), the site-energy (in eV),
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling (in eV),
+      - `beta` (\f$\beta\f$), the inter-site coupling (in eV).
    - Transmission function is
    \f[
    T(E) = \frac{16 \Gamma^2 \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma^2\right]^2 + 16 \Gamma^2(E-\varepsilon)^2}.
@@ -175,10 +194,10 @@ Complete details for each of these channel models can be found in the full refer
 - `AsymmetricTwoSiteChannel`
    - Two-site model with asymmetric site/lead couplings.
    - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy,
-      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode,
-      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode,
-      - `beta` (\f$\beta\f$), the inter-site coupling.
+      - `epsilon` (\f$\varepsilon\f$), the site-energy (in eV),
+      - `gammaL` (\f$\Gamma_\mathrm{L}\f$), the site/lead coupling for one electrode (in eV),
+      - `gammaR` (\f$\Gamma_\mathrm{R}\f$), the site/lead coupling for the other electrode (in eV),
+      - `beta` (\f$\beta\f$), the inter-site coupling (in eV).
    - Transmission function is
    \f[
    T(E) = \frac{16 \Gamma_\mathrm{L} \Gamma_\mathrm{R} \beta^2}{\left[ 4(E-\varepsilon)^2-4\beta^2-\Gamma_\mathrm{L} \Gamma_\mathrm{R} \right]^2 + 4 (\Gamma_\mathrm{L} + \Gamma_\mathrm{R})^2(E-\varepsilon)^2}.
@@ -193,9 +212,9 @@ Complete details for each of these channel models can be found in the full refer
 - `InterferenceChannel`
    - Two-site model where both electrodes couple to the same site. This results in an interference feature at \f$\varepsilon\f$.
    - Model parameters are
-      - `epsilon` (\f$\varepsilon\f$), the site-energy of the two degenerate sites,
-      - `gamma` (\f$\Gamma\f$), the site/lead coupling for both electrodes (assumed to be symmetric coupling).
-      - `beta` (\f$\beta\f$), the inter-site coupling.
+      - `epsilon` (\f$\varepsilon\f$), the site-energy of the two degenerate sites (in eV),
+      - `gamma` (\f$\Gamma\f$), the site/lead coupling for both electrodes (in eV, assumed to be symmetric coupling).
+      - `beta` (\f$\beta\f$), the inter-site coupling (in eV).
    - Transmission function is
    \f[
    T(E) = \frac{\Gamma^2(E-\varepsilon)^2}{[(E-\varepsilon)^2 - \beta^2] + (E-\varepsilon)^2 \Gamma^2}.
@@ -218,10 +237,11 @@ Complete details for each of these channel models can be found in the full refer
    \f]
    \if fullref
    - Implemented by the class molstat::transport::RectangularBarrier; full details are presented there.
-   - Compatible with the molstat::transport::SeebeckCoefficient and molstat::transport::ZeroBiasConductance observables.
+   - Compatible with the molstat::transport::Displacement, molstat::transport::SeebeckCoefficient, molstat::transport::StaticConductance, and molstat::transport::ZeroBiasConductance observables.
    \elseif userman
-   - Compatible with the SeebeckCoefficient and ZeroBiasConductance observables.
+   - Compatible with the Displacement, SeebeckCoefficient, StaticConductance, and ZeroBiasConductance observables.
    \endif
+   Note that the static conductance observable requires the GSL to be specified during configuration.
 
 \section sec_fit_electron_transport Fitting Electron Transport Properties
 The following list overviews the implemented fitter models for electron transport.

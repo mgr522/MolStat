@@ -16,6 +16,7 @@
 
 #include "observables.h"
 #include "junction.h"
+#include <config.h>
 
 namespace molstat {
 namespace transport {
@@ -52,7 +53,11 @@ namespace transport {
  */
 class RectangularBarrier : public Channel,
 	public ZeroBiasConductance,
-	public SeebeckCoefficient
+	public SeebeckCoefficient,
+	#if HAVE_GSL
+	public StaticConductance,
+	#endif
+	public Displacement
 {
 public:
 	/// Container index for the Fermi energy.
@@ -64,7 +69,7 @@ public:
 	/// Container index for the height (energy) of the barrier.
 	static const std::size_t Index_h;
 
-	/// Container index for the width (distance) of the barrier.
+	/// Container index for the width (distance, displacement) of the barrier.
 	static const std::size_t Index_w;
 
 protected:
@@ -85,6 +90,29 @@ public:
 	
 	virtual double ZeroBiasG(const std::valarray<double> &params) const override;
 	virtual double SeebeckS(const std::valarray<double> &params) const override;
+	virtual double DispW(const std::valarray<double> &params) const override;
+
+	#if HAVE_GSL
+protected:
+	/// Struct for using GSL to evaluate the static conductance integral.
+	struct StaticG_data
+	{
+		double h; ///< Barrier height.
+		double w; ///< Barrier width.
+	};
+
+	/**
+	 * \brief GSL-style integrand for calculating the static conductance.
+	 *
+	 * \param[in] E Energy (integration variable).
+	 * \param[in] p The parameters (height and width of the barrier).
+	 * \return The transmission probability through the barrier. 
+	 */
+	static double gsl_StaticG_integrand(double E, void *p);
+
+public:
+	virtual double StaticG(const std::valarray<double> &params) const override;
+	#endif
 };
 
 } // namespace molstat::transport

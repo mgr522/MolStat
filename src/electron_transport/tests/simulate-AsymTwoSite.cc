@@ -34,7 +34,7 @@ using ChannelType = molstat::transport::AsymTwoSiteChannel;
  */
 int main(int argc, char **argv)
 {
-	const double thresh = 1.0e-6;
+	const double thresh = 1.0e-5;
 
 	// use the factory to create a channel
 	shared_ptr<ChannelType> channel = dynamic_pointer_cast<ChannelType>(
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gammaR] = 1.;
 	params[ChannelType::Index_beta] = -3.;
 	assert(abs(0.121622 - ZeroBiasG(params)) < thresh);
-	assert(abs(0.149936 - ECurrent(params)) < thresh);
+	assert(abs(11.6171 - ECurrent(params)) / 11.6171 < thresh);
 	assert(abs(0.149936 - StaticG(params)) < thresh);
 	assert(abs(0.213248 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gammaR] = 0.2;
 	params[ChannelType::Index_beta] = -0.8;
 	assert(abs(0.000216257 - ZeroBiasG(params)) < thresh);
-	assert(abs(-0.0000872925 - ECurrent(params)) < thresh);
+	assert(abs(-0.0067635 - ECurrent(params)) < thresh);
 	assert(abs(0.000218231 - StaticG(params)) < thresh);
 	assert(abs(0.000222203 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gammaR] = 1.98;
 	params[ChannelType::Index_beta] = -1.6;
 	assert(abs(0.00292927 - ZeroBiasG(params)) < thresh);
-	assert(abs(0.00431719 - ECurrent(params)) < thresh);
+	assert(abs(0.3345 - ECurrent(params)) < thresh);
 	assert(abs(0.00308371 - StaticG(params)) < thresh);
 	assert(abs(0.00340305 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);

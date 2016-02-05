@@ -34,7 +34,7 @@ using ChannelType = molstat::transport::SymOneSiteChannel;
  */
 int main(int argc, char **argv)
 {
-	const double thresh{ 1.e-6 };
+	const double thresh{ 1.e-5 };
 
 	// use the factory to create a channel
 	shared_ptr<ChannelType> channel = dynamic_pointer_cast<ChannelType>(
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gamma] = 0.8;
 	params[ChannelType::Index_a] = 0.;
 	assert(abs(0.0384615 - ZeroBiasG(params)) < thresh);
-	assert(abs(0.0390172 - ECurrent(params)) < thresh);
+	assert(abs(3.02309 - ECurrent(params)) < thresh);
 	assert(abs(0.0390172 - StaticG(params)) < thresh);
 	assert(abs(0.0401438 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gamma] = 0.4;
 	params[ChannelType::Index_a] = 0.;
 	assert(abs(0.00159744 - ZeroBiasG(params)) < thresh);
-	assert(abs(-0.000639232 - ECurrent(params)) < thresh);
+	assert(abs(-0.0495283 - ECurrent(params)) < thresh);
 	assert(abs(0.00159808 - StaticG(params)) < thresh);
 	assert(abs(0.00159936 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gamma] = 0.67;
 	params[ChannelType::Index_a] = 0.;
 	assert(abs(0.00112099 - ZeroBiasG(params)) < thresh);
-	assert(abs(0.00157131 - ECurrent(params)) < thresh);
+	assert(abs(0.121746 - ECurrent(params)) < thresh);
 	assert(abs(0.00112236 - StaticG(params)) < thresh);
 	assert(abs(0.00112511 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gamma] = 0.8;
 	params[ChannelType::Index_a] = -0.1;
 	assert(abs(0.0384615 - ZeroBiasG(params)) < thresh);
-	assert(abs(0.0371825 - ECurrent(params)) < thresh);
+	assert(abs(2.88093 - ECurrent(params)) < thresh);
 	assert(abs(0.0371825 - StaticG(params)) < thresh);
 	assert(abs(0.0364382 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -130,7 +130,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gamma] = 0.8;
 	params[ChannelType::Index_a] = -0.1;
 	assert(abs(0.0384615 - ZeroBiasG(params)) < thresh);
-	assert(abs(0.0409897 - ECurrent(params)) < thresh);
+	assert(abs(3.17592 - ECurrent(params)) < thresh);
 	assert(abs(0.0409897 - StaticG(params)) < thresh);
 	assert(abs(0.0442754 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gamma] = 0.4;
 	params[ChannelType::Index_a] = 1.;
 	assert(abs(0.00159744 - ZeroBiasG(params)) < thresh);
-	assert(abs(-0.000591060 - ECurrent(params)) < thresh);
+	assert(abs(-0.0457959 - ECurrent(params)) < thresh);
 	assert(abs(0.00147765 - StaticG(params)) < thresh);
 	assert(abs(0.00136520 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gamma] = 0.67;
 	params[ChannelType::Index_a] = 0.24;
 	assert(abs(0.00112099 - ZeroBiasG(params)) < thresh);
-	assert(abs(0.00162547 - ECurrent(params)) < thresh);
+	assert(abs(0.125943 - ECurrent(params)) < thresh);
 	assert(abs(0.00116105 - StaticG(params)) < thresh);
 	assert(abs(0.00120367 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);
@@ -167,7 +167,7 @@ int main(int argc, char **argv)
 	params[ChannelType::Index_gamma] = 0.67;
 	params[ChannelType::Index_a] = -0.05;
 	assert(abs(0.00112099 - ZeroBiasG(params)) < thresh);
-	assert(abs(0.00156037 - ECurrent(params)) < thresh);
+	assert(abs(0.120899 - ECurrent(params)) < thresh);
 	assert(abs(0.00111445 - StaticG(params)) < thresh);
 	assert(abs(0.00110948 - DiffG(params)) < thresh);
 	assert(abs(params[ChannelType::Index_V] - AppBias(params)) < thresh);

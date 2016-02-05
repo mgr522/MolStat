@@ -29,37 +29,65 @@ simulate_SymOneSite_SOURCES = simulate-SymOneSite.cc
 simulate_SymOneSite_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_simulator.a \
 	../../general/libmolstat_general.a 
+if HAVE_GSL
+simulate_SymOneSite_LDADD += \
+	$(GSL_LDFLAGS) $(GSL_LIBS)
+endif # HAVE_GSL
 
 simulate_AsymOneSite_SOURCES = simulate-AsymOneSite.cc
 simulate_AsymOneSite_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_simulator.a \
  	../../general/libmolstat_general.a 
+if HAVE_GSL
+simulate_AsymOneSite_LDADD += \
+	$(GSL_LDFLAGS) $(GSL_LIBS)
+endif # HAVE_GSL
 
 simulate_SymTwoSite_SOURCES = simulate-SymTwoSite.cc
 simulate_SymTwoSite_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_simulator.a \
-	../../general/libmolstat_general.a 
+	../../general/libmolstat_general.a
+if HAVE_GSL
+simulate_SymTwoSite_LDADD += \
+	$(GSL_LDFLAGS) $(GSL_LIBS)
+endif # HAVE_GSL
 
 simulate_AsymTwoSite_SOURCES = simulate-AsymTwoSite.cc
 simulate_AsymTwoSite_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_simulator.a \
-	../../general/libmolstat_general.a 
+	../../general/libmolstat_general.a
+if HAVE_GSL
+simulate_AsymTwoSite_LDADD += \
+	$(GSL_LDFLAGS) $(GSL_LIBS)
+endif # HAVE_GSL
 
 simulate_CompositeJunction_SOURCES = simulate-CompositeJunction.cc
 simulate_CompositeJunction_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_simulator.a \
 	../../general/libmolstat_general.a 
+if HAVE_GSL
+simulate_CompositeJunction_LDADD += \
+	$(GSL_LDFLAGS) $(GSL_LIBS)
+endif # HAVE_GSL
 
 simulate_SymInterference_SOURCES = simulate-SymInterference.cc
 simulate_SymInterference_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_simulator.a \
 	../../general/libmolstat_general.a 
+if HAVE_GSL
+simulate_SymInterference_LDADD += \
+	$(GSL_LDFLAGS) $(GSL_LIBS)
+endif # HAVE_GSL
 
 simulate_RectBarrier_SOURCES = simulate-RectBarrier.cc
 simulate_RectBarrier_LDADD = ../simulator_models/libtransport_simulate.a \
 	../../general/libmolstat_simulator.a \
-	../../general/libmolstat_general.a 
-endif
+	../../general/libmolstat_general.a
+if HAVE_GSL
+simulate_RectBarrier_LDADD += \
+	$(GSL_LDFLAGS) $(GSL_LIBS)
+endif # HAVE_GSL
+endif # TRANSPORT_SIMULATOR
 
 if TRANSPORT_FITTER
 if HAVE_PYTHON

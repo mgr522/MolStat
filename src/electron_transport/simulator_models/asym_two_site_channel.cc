@@ -78,8 +78,9 @@ double AsymTwoSiteChannel::ECurrent(const std::valarray<double> &params) const
 	const double &gammar = params[Index_gammaR];
 	const double &beta = params[Index_beta];
 
-	return current_integral(ef + 0.5*V, eps, gammal, gammar, beta) -
-		current_integral(ef - 0.5*V, eps, gammal, gammar, beta);
+	return TransportJunction::qc *
+		(current_integral(ef + 0.5*V, eps, gammal, gammar, beta) -
+		 current_integral(ef - 0.5*V, eps, gammal, gammar, beta));
 }
 
 double AsymTwoSiteChannel::StaticG(const std::valarray<double> &params) const
@@ -87,7 +88,7 @@ double AsymTwoSiteChannel::StaticG(const std::valarray<double> &params) const
 	// unpack the parameters
 	const double &V = params[Index_V];
 
-	return ECurrent(params) / V;
+	return ECurrent(params) / (TransportJunction::qc * V);
 }
 
 double AsymTwoSiteChannel::ZeroBiasG(const std::valarray<double> &params) const

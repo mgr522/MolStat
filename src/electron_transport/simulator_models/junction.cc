@@ -19,6 +19,7 @@
  */
 
 #include "junction.h"
+#include "rectangular_barrier.h"
 
 namespace molstat {
 namespace transport {
@@ -90,6 +91,24 @@ double TransportJunction::SeebeckS(const std::valarray<double> &params) const
 	}
 
 	return sumgs / sumg;
+}
+
+double TransportJunction::DispW(const std::valarray<double> &params) const
+{
+	// the displacement observable requires one channel to be a
+	// rectangular barrier. search through the submodels for it.
+	// if not found, throw an exception.
+
+	for(const auto model : submodels)
+	{
+		const std::shared_ptr<RectangularBarrier> rbp =
+			std::dynamic_pointer_cast<RectangularBarrier>(model.first);
+		if(rbp != nullptr)
+			return rbp->DispW(params);
+	}
+
+	throw IncompatibleObservable(
+		"The displacement observable requires a rectangular barrier channel.");
 }
 
 } // namespace molstat::transport

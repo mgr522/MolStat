@@ -14,6 +14,11 @@
 #include "rectangular_barrier.h"
 #include <cmath>
 
+#if HAVE_GSL
+#include <memory>
+#include <gsl/gsl_integration.h>
+#endif
+
 namespace molstat {
 namespace transport {
 
@@ -60,6 +65,56 @@ double RectangularBarrier::SeebeckS(const std::valarray<double> &params) const
 	
 	return -1. / ef;
 }
+
+double RectangularBarrier::DispW(const std::valarray<double> &params) const
+{
+	// unpack the width
+	const double &w = params[Index_w];
+	
+	return w;
+}
+
+#if HAVE_GSL
+double RectangularBarrier::gsl_StaticG_integrand(double E, void *p) 
+{
+	const StaticG_data *params = (const StaticG_data*)p;
+	const double h = params->h;
+	const double w = params->w;
+
+	return RectangularBarrier::transmission(E, h, w);
+}
+
+double RectangularBarrier::StaticG(const std::valarray<double> &params) const
+{
+	// unpack the parameters
+	const double &ef = params[Index_EF];
+	const double &V = params[Index_V];
+	const double &h = params[Index_h];
+	const double &w = params[Index_w];
+	double result, intmin, intmax;
+	double abserr;
+	size_t neval;
+
+	// set up the GSL workspace
+	std::unique_ptr<gsl_integration_cquad_workspace,
+			decltype(&gsl_integration_cquad_workspace_free)>
+		ws { gsl_integration_cquad_workspace_alloc(1000),
+		     &gsl_integration_cquad_workspace_free };
+	 
+	gsl_function F;
+	struct StaticG_data p {h, w};
+  F.function = &gsl_StaticG_integrand;
+  F.params = &p;
+
+  // perform the integration
+	intmin = ef - 0.5*V;
+	intmax = ef + 0.5*V;
+  gsl_integration_cquad(&F, intmin, intmax, 1e-9, 1e-9,
+                        ws.get(), &result, &abserr, &neval); 
+
+	return result / V;
+}
+#endif
 
 } // namespace molstat::transport
 } // namespace molstat

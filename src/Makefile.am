@@ -20,9 +20,17 @@ endif
 
 molstat_simulator_LDADD += \
 	general/libmolstat_simulator.a \
-	general/libmolstat_general.a \
-	$(AM_LDADD)
-endif
+	general/libmolstat_general.a
+
+if HAVE_GSL
+molstat_simulator_LDADD += \
+	$(GSL_LDFLAGS) $(AM_LDADD) $(GSL_LIBS) $(AM_LIBS)
+else
+molstat_simulator_LDADD += \
+	$(AM_LDADD) $(AM_LIBS)
+endif # HAVE_GSL
+
+endif # TRANSPORT_SIMULATOR
 
 if BUILD_FITTER
 bin_PROGRAMS += molstat-fitter
