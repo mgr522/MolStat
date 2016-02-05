@@ -48,7 +48,7 @@ namespace transport {
  * the right as the transmission amplitude. This, in square modulus, is the
  * transmission for Landauer-B&uuml;ttiker theory. The equation is
  * \f[
- * T(E) = \frac{1}{ 1 + \frac{1}{\sinh^2( \sqrt{2m(h-E)} w / \hbar ) h^2} {4E(h-E)} }.
+ * T(E) = \left[ 1 + \frac{\sinh^2( \sqrt{2m(h-E)} w / \hbar ) h^2}{4E(h-E)} \right]^{-1}.
  * \f]
  */
 class RectangularBarrier : public Channel,

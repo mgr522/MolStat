@@ -234,7 +234,7 @@ Complete details for each of these channel models can be found in the full refer
       - `width` (\f$w\f$), the width (distance) of the barrier (in nm).
    - Transmission function is
    \f[
-   T(E) = \frac{1}{ 1 + \frac{1}{\sinh^2( \sqrt{2m(h-E)} w / \hbar ) h^2} {4E(h-E)} }.
+   T(E) = \left[ 1 + \frac{\sinh^2( \sqrt{2m(h-E)} w / \hbar ) h^2}{4E(h-E)} \right]^{-1}.
    \f]
    \if fullref
    - Implemented by the class molstat::transport::RectangularBarrier; full details are presented there.
