@@ -99,7 +99,7 @@ make check
 - Some tests use python. They have been tested with version 2.7 and may not run in python 3. The configure script only checks for python 2.* and should omit the tests if only python 3.* is found.
 
 \section changelog Version Changes
-\subsection v_1_3_1 v.1.3.1 (January 2016)
+\subsection v_1_3_1 v.1.3.1 (February 2016)
 - Added support for simulating thermopower and conductance-thermopower histograms.
 - Provided better specification of units/dimensions for simulated observables.
 - Bug fixes.
