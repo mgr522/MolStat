@@ -1,0 +1,17 @@
+observable StaticConductance 100 log 10.
+trials 1
+output MolecularContribution.dat
+model TransportJunction
+   distribution ef constant 0.
+   distribution v constant .01
+model SymmetricOneSiteChannel
+   distribution gamma normal 0.055 0.015
+   distribution epsilon normal -1 0.05
+   distribution a constant .01
+   distribution nm constant 1
+   endmodel
+model RectangularBarrierChannel
+   distribution height normal 4 .25
+   distribution width constant 1
+   endmodel
+endmodel

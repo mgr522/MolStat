@@ -1,0 +1,11 @@
+observable StaticConductance 100 log 10.
+trials 1
+output TunnelingContribution.dat
+model TransportJunction
+   distribution ef constant 0.
+   distribution v constant .01
+model RectangularBarrierChannel
+   distribution height normal 4 .25
+   distribution width constant .5
+   endmodel
+endmodel
