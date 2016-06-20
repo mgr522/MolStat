@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 	}
 
 	// open the output file
-	ofstream histout(parser.outputFileName());
+	ofstream histout(parser.outputFileName(), std::ios_base::app);
 	if(!histout)
 	{
 		cout << "FATAL ERROR: Unable to open \"" << parser.outputFileName() <<
