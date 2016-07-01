@@ -155,6 +155,7 @@ AC_CONFIG_FILES([
 			src/electron_transport/Makefile
 				src/electron_transport/fitter_models/Makefile
 				src/electron_transport/simulator_models/Makefile
+				src/electron_transport/examples/Conductance-Displacement.py
 				src/electron_transport/tests/Makefile
 					src/electron_transport/tests/fit-asymmetric-resonant.py
 					src/electron_transport/tests/fit-options.py
