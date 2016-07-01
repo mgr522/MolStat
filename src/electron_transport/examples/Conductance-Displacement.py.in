@@ -40,8 +40,8 @@ molstatsim = '@top_builddir@/src/molstat-simulator'
 # Define parts of the MolStat input file. The molecule part is only
 # needed in certain cases, which is why this is split into three
 # segments.
-inputhead = """
-observable ZeroBiasConductance 100 log 10.
+inputhead = \
+"""observable ZeroBiasConductance 100 log 10.
 trials 1
 output MolecularContribution.dat
 model TransportJunction
@@ -49,16 +49,16 @@ model TransportJunction
    distribution v constant 0.
 """
 
-inputmol = """
-   model SymmetricOneSiteChannel
+inputmol = \
+"""   model SymmetricOneSiteChannel
       distribution gamma normal 0.055 0.015
       distribution epsilon normal -1 0.05
       distribution a constant .01
    endmodel
 """
 
-inputtail = """
-   model RectangularBarrierChannel
+inputtail = \
+"""   model RectangularBarrierChannel
       distribution height normal 4 .25
       distribution width constant 1
    endmodel
