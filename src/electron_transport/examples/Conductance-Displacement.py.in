@@ -1,0 +1,129 @@
+# This file is a part of MolStat, which is distributed under the Creative
+# Commons Attribution-NonCommercial 4.0 International Public License.
+#
+# (c) 2016 University of Arizona.
+
+##
+ # @file examples/Conductance-Displacement.py.in
+ # @brief Script demonstrating how to simulate a conductance-displacement histogram with MolStat.
+ #
+ # This script simulates a 2D conductance-displacement histogram using
+ # image charge effects and the symmetric, one-site channel model.
+ # This simulation process works by simulating single traces, which
+ # are then compiled into a histogram.
+ #
+ # To simulate a single trace, a file for the trace number is created.
+ # Then, a single trial input is run in MolStat for each displacement.
+ # The output from MolStat will be a single conductance value
+ # attributed to each displacement. The outputs are appended to the
+ # end of the single trace file.
+ #
+ # We are assuming that the electrodes are modeled as infinite flat
+ # planes of gold atoms. All interelectrode distances measured with
+ # respect to the electrode surface (nuclei).
+ #
+ # @author Ben Wu
+ # @date June 2016
+
+import subprocess
+import os
+import math
+import numpy as np
+
+## @cond
+
+# Define various parameters
+
+# The MolStat simulator
+molstatsim = '@top_builddir@/src/molstat-simulator'
+
+# Define parts of the MolStat input file. The molecule part is only
+# needed in certain cases, which is why this is split into three
+# segments.
+inputhead = """
+observable ZeroBiasConductance 100 log 10.
+trials 1
+output MolecularContribution.dat
+model TransportJunction
+   distribution ef constant 0.
+   distribution v constant 0.
+"""
+
+inputmol = """
+   model SymmetricOneSiteChannel
+      distribution gamma normal 0.055 0.015
+      distribution epsilon normal -1 0.05
+      distribution a constant .01
+   endmodel
+"""
+
+inputtail = """
+   model RectangularBarrierChannel
+      distribution height normal 4 .25
+      distribution width constant 1
+   endmodel
+endmodel
+"""
+
+z_e = .3 # interelectrode distance immediately after junction rupture
+z_m = .5 # interelectrode distance when the molecule bridges the junction
+z2 = z_m + 1 # interelectrode distance at the end of the trace
+z_ip = .1 # distance from gold surface to image plane (THIS IS NOT INTERELECTRODE DISTANCE)
+n = 300 # number of distance points
+nt = 300 # number of traces
+ke = 8.98e9 * 1.602e-19*1e9 # Coulomb's constant in units of nm*ev/e^2, where e is the charge of an electron
+epsilon = [0 for i in range(n)] # initializing new site energy array
+
+z = np.linspace(z_m, z2, num = n) # initialize distance vector with n points
+
+# Computing image charge effects
+IC = ke * (1/(4*np.fabs(z/2-z_ip)) + 1/(4*np.fabs(z/2-z_ip)))
+#print IC
+
+# Computing image charge renormalization relative to molecule in junction
+epsilon_renorm = IC - IC[0]
+z_eff = z - z[0] # distance 0 is set to the point where the molecule first attaches
+
+
+for j in xrange(nt): # each j is a trace
+	l = np.random.normal(.3,.075) # accounts for individual trace length variations
+
+	for i in xrange(n): # each i is a particular displacement within the trace
+		# make the input file
+		inputtemplate = inputhead
+		if z_eff[i] <= l: # molecular regime
+			inputtemplate += inputmol
+			fname = 'MolecularContribution'
+		else: # tunneling regime
+			# nothing to add to the input
+			fname = 'TunnelingContribution'
+		inputtemplate += inputtail
+
+		# go through the template and replace the pertinent parameters
+		inputfile = ''
+    
+		for line in inputtemplate.splitlines():
+			# updates inputfile
+			if "output" in line: # searchs input file for word "output"
+				data = line.split() # parses up line on which "output" is found
+				inputfile += line.replace(data[1], fname + str(j) + '.dat') + '\n' #replaces "output" with updated file output 
+			elif "epsilon" in line: 
+				data = line.split() 
+				epsilon[i] = float(data[3])
+				inputfile += line.replace(data[3],str(epsilon[0] + epsilon_renorm[i])) + '\n'
+			elif "width" in line: 
+				data = line.split() 
+				inputfile += line.replace(data[3],str(z[i]-z_e)) + '\n'
+			else:
+				inputfile += line + '\n' # rewrites the rest of input file line into output file
+
+			# runs molstat simulator with the constructed input file
+			process = subprocess.Popen(molstatsim, \
+				stdout=subprocess.PIPE, \
+				stdin=subprocess.PIPE, \
+				stderr=subprocess.PIPE)
+			#print(inputfile)
+			output = process.communicate(inputfile)
+			#print(output)
+    
+## @endcond
