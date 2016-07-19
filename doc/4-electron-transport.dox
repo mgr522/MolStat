@@ -6,7 +6,7 @@
 /**
 \page page_conductance_histograms Electron Transport
 
-This chapter deals with using MolStat to simulate and fit electron transport data; in most cases, conductance histograms. We begin with the theory behind electron transport, introduce conductance histograms, and then detail the implemented MolStat models.
+This chapter deals with using MolStat to simulate and fit electron transport data; in most cases, conductance histograms. We begin with the theory behind electron transport, introduce conductance histograms, and then detail the implemented MolStat models. The end of the chapter discusses how to simulate two-dimensional conductance-displacement histograms with MolStat.
 
 \section sec_landauer Landauer Theory
 All of the tools are based on the Landauer-B&uuml;ttiker-Imry theory of conductance through quantum systems \cite buttiker-6207, \cite imry-s306. Within this theory, the zero-temperature current is given as
@@ -338,4 +338,25 @@ Complete details for each of these models can be found in the full reference man
    \if 0 - Detailed in \cite williams-5937. \endif
    - Implemented by the class molstat::transport::CompositeInterferenceBackgroundFitModel; full details are presented there.
 \endif
+
+\section sec_conductance_displacement Simulating Two-Dimensional Conductance-Displacement Histograms
+
+(Contributed by Mr. Ben Wu)
+
+The procedure for simulating 2D conductance-displacement histograms first involves simulating a number of break junction traces using a python script (`src/electron_transport/examples/Conductance_Displacement.py`) and the MolStat simulator. Key parameters in the python script specify
+-# The number of break junction traces to be simulated,
+-# The number of distance points per trace,
+-# The trace length (distance at which molecular junction is broken).
+.
+
+One of two simulations is required for each distance point on a trace. Both types run a single trial using the zero-bias conductance observable. The first type simulates the molecular regime, where a model for the molecular conductance is specified along with "background" tunneling. In the example script, the molecule is described by a symmetric, one-site channel. The second type simulates transport with only "background" tunneling, using a rectangular barrier model. At a particular distance along the trace, the first model is used for small distances whereas the second is used for larger distances.
+
+The python script then simulates a single trace as follows. The script steps over the distance points along each trace and
+-# Calculates the distance-dependent image charge renormalization of the site energy, relative to the relaxed configuration.
+-# Constructs the appropriate MolStat input file for the distance.
+-# Runs the MolStat simulator with the appropriate input file, generating a conductance-distance pair.
+-# Saves all conductance-distance pairs to a single file for the particular trace.
+.
+
+The output of the python script is data on molecular and background traces, which can be imported into auxiliary tools (such as MATLAB) to construct 2D conductance-displacement histograms.
 */
