@@ -85,6 +85,13 @@ The implemented random distributions are
          - `b` is \f$b\f$, the scale factor.
       - Implemented by the class GammaDistribution.
 
+	- Weibull distribution: \f$ P(x) = \frac{a}{b} \left( \frac{x}{b} \right)^{a-1} \exp\left[ -\left( \frac{x}{b} \right)^a \right] \f$.
+      - `distribution-name` is `Weibull`
+      - `[distribution-parameters]` are `shape scale`
+         - `shape` is \f$ a \f$, the shape factor.
+         - `scale` is \f$b\f$, the scale factor.
+      - Implemented by the class WeibullDistribution.
+
 \if fullref
 Details on adding random distributions are found in \ref subsec_add_rnd.
 \endif

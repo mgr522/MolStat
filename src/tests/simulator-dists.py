@@ -1,7 +1,7 @@
 # This file is a part of MolStat, which is distributed under the Creative
 # Commons Attribution-NonCommercial 4.0 International Public License.
 #
-# (c) 2014 Northwestern University.
+# (c) 2014 Northwestern University, 2016 Stony Brook University
 
 ##
  # @file tests/simulator-dists.py
@@ -11,7 +11,7 @@
  # @test Test suite for the simulator program.
  #
  # @author Matthew G.\ Reuter
- # @date October 2014
+ # @date October 2014, October 2016
 
 import subprocess
 import os
@@ -200,5 +200,52 @@ for j in range(len(x)):
 
 # test 5 -- gamma distribution
 # cannot calculate the cumulative distribution function without scipy. no test
+
+
+
+# test 6 -- Weibull distribution
+print "\nWeibull distribution"
+shape = 2.
+scale = 0.25
+bins = 17
+process = subprocess.Popen('../molstat-simulator', \
+	stdout=subprocess.PIPE, \
+	stdin=subprocess.PIPE, \
+	stderr=subprocess.PIPE)
+output = process.communicate( \
+'observable Identity ' + str(bins) + ' linear\n' \
+'model IdentityModel\n' \
+'	distribution parameter weibull ' + str(shape) + ' ' + str(scale) + '\n' \
+'endmodel\n' \
+'trials ' + str(trials) + '\n' \
+'output ' + datfile)
+
+# read in the histogram
+hist = open(datfile, 'r')
+x = []
+pdf = []
+for bin in hist:
+	# make sure that the output is correct. first, tokenize the string
+	tokens = str.split(bin)
+	assert(len(tokens) == 2)
+	
+	x.append( float(tokens[0]) )
+	pdf.append( float(tokens[1]) )
+
+hist.close()
+# delete the output histogram file
+os.remove(datfile)
+assert(len(x) == bins)
+
+# make sure the distribution is correct
+dx = 0.5 * (x[1] - x[0])
+for j in range(len(x)):
+	expected = trials * ( \
+		(1. - math.exp(-math.pow((x[j] + dx) / scale, shape))) \
+		- (1. - math.exp(-math.pow((x[j] - dx) / scale, shape)))
+	)
+
+	print "Expected: " + str(expected) + ", Actual: " + str(pdf[j])
+	assert(math.fabs(pdf[j] - expected) < 1.e-2 * float(trials))
 
 ## @endcond

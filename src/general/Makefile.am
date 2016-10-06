@@ -41,6 +41,8 @@ libmolstat_simulator_a_SOURCES = \
 	random_distributions/lognormal.cc \
 	random_distributions/gamma.h \
 	random_distributions/gamma.cc \
+	random_distributions/weibull.h \
+	random_distributions/weibull.cc \
 	simulator_tools/simulator_exceptions.h \
 	simulator_tools/simulator.h \
 	simulator_tools/simulator.cc \

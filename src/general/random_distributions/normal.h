@@ -26,7 +26,7 @@ namespace molstat {
 class NormalDistribution : public RandomDistribution
 {
 protected:
-	/// The C++11 normal distribution
+	/// The C++11 normal distribution.
 	mutable std::normal_distribution<double> dist;
 
 public:

@@ -18,6 +18,7 @@
 #include "normal.h"
 #include "lognormal.h"
 #include "gamma.h"
+#include "weibull.h"
 
 using namespace std;
 
@@ -188,6 +189,38 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 		ret = unique_ptr<RandomDistribution>(
 			new GammaDistribution(shape, scale));
 	}
+	else if(type == "weibull")
+	{
+		// tokens[0] and tokens[1] are the shape and scale factors, respectively
+		if(tokens.size() < 2)
+			throw invalid_argument("Invalid Weibull distribution. Use\n" \
+				"   Weibull shape scale");
+
+		double shape, scale;
+		try
+		{
+			shape = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"shape\" to a numeric value.");
+		}
+		tokens.pop();
+
+		try
+		{
+			scale = cast_string<double>(tokens.front());
+		}
+		catch(const bad_cast &e)
+		{
+			throw invalid_argument(
+				"Unable to convert \"scale\" to a numeric value.");
+		}
+
+		ret = unique_ptr<RandomDistribution>(
+			new WeibullDistribution(shape, scale));
+	}
 	else
 		throw invalid_argument(
 			string("Unrecognized probability distribution: \"") + type + "\".\n" \
@@ -197,7 +230,8 @@ std::unique_ptr<RandomDistribution> RandomDistributionFactory(
 			"   Normal - Normal (Gaussian) distribution.\n" \
 			"   Gaussian - Normal (Gaussian) distribution.\n" \
 			"   Lognormal - Lognormal distribution.\n" \
-			"   Gamma - Gamma distribution.\n");
+			"   Gamma - Gamma distribution.\n" \
+			"   Weibull - Weibull distribution.\n");
 
 	return ret;
 }
