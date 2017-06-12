@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 	list<pair<array<double, 1>, double>> data;
 
 	// various parameters for determining the best fit
-	vector<double> bestfit;
+	vector<double> bestfit, afit;
 	list<vector<double>> initvals;
 	list<vector<double>>::const_iterator initval;
 
@@ -164,6 +164,7 @@ int main(int argc, char **argv)
 	}
 	// set the vector size for the number of fitting parameters
 	bestfit.resize(model->nfit);
+	afit.resize(model->nfit);
 
 	// set up GSL details
 	fdf = model->gsl_handle();
@@ -371,12 +372,19 @@ int main(int argc, char **argv)
 			cout << "Residual = " << scientific << setprecision(6) << resid <<
 				'\n' << endl;
 
-		if(!hasfit || resid < bestresid)
+		// do some processing on the parameters, to check that the fit is reasonable
+		// copy over the parameters
+		for(i = 0; i < model->nfit; ++i)
+			afit[i] = gsl_vector_get(solver->x, i);
+		model->process_fit_parameters(afit); // sometimes they can be cleaned up
+
+		// if this is a good fit (meaning it has reasonable parameters), is it the
+		// best fit we've seen so far? if so, save it
+		if(model->is_good_fit(afit) && (!hasfit || resid < bestresid))
 		{
-			// copy over the parameters
+			// copy (via swap) over the parameters
 			bestresid = resid;
-			for(i = 0; i < model->nfit; ++i)
-				bestfit[i] = gsl_vector_get(solver->x, i);
+			bestfit.swap(afit);
 
 			hasfit = true;
 		}
@@ -389,10 +397,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		// make sure the fit parameters are good
-		model->process_fit_parameters(bestfit);
-
-		// print ou the fit
+		// print out the fit
 		cout << "Resid = " << scientific << setprecision(6) << bestresid << '\n';
 		model->print_fit(cout, bestfit);
 		cout << endl;

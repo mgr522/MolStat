@@ -238,6 +238,22 @@ public:
 	 * \param[in,out] fitparams The fitting parameters.
 	 */
 	virtual void process_fit_parameters(std::vector<double> &fitparams) const;
+
+	/**
+	 * \brief Validate the physicality of a fit.
+	 *
+	 * Sometimes the fit parameters are not successfully "cleaned" by the
+	 * `process_fit_parameters` function, and the resulting parameters correspond
+	 * to unphysical properties. This function tells the fitter if a given set
+	 * of parameters are acceptable or not.
+	 *
+	 * This basic implementation says all fits are fine.
+	 *
+	 * \param[in,out] fitparams The fitting parameters to be validated.
+	 * \return True if they are good (physical) fitting parameters, false
+	 *         otherwise.
+	 */
+	 virtual bool is_good_fit(const std::vector<double> &fitparams) const;
 };
 
 // Other function prototypes
@@ -434,6 +450,12 @@ template<std::size_t N>
 void FitModel<N>::process_fit_parameters(std::vector<double> &fitparams)
 	const
 {
+}
+
+template<std::size_t N>
+bool FitModel<N>::is_good_fit(const std::vector<double> &fitparams) const
+{
+	return true;
 }
 
 } // namespace molstat
