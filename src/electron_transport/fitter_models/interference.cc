@@ -123,5 +123,11 @@ void InterferenceFitModel::process_fit_parameters(
 		fitparams[COMEGA] = -fitparams[COMEGA];
 }
 
+bool InterferenceFitModel::is_good_fit(const std::vector<double> &fitparams)
+	const
+{
+	return (fitparams[COMEGA] > 0.);
+}
+
 } // namespace molstat::transport
 } // namespace molstat

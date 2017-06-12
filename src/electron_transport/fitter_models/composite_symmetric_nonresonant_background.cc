@@ -238,6 +238,13 @@ void CompositeSymmetricNonresonantBackgroundFitModel::process_fit_parameters(
 	}
 }
 
+bool CompositeSymmetricNonresonantBackgroundFitModel::is_good_fit(
+	const std::vector<double> &fitparams) const
+{
+	return (fitparams[CEPSILON] > 0. && fitparams[CGAMMA] > 0. &&
+		fitparams[GMINUS] > 0.);
+}
+
 double CompositeSymmetricNonresonantBackgroundFitModel::int_p(double gp,
 	void *params)
 {

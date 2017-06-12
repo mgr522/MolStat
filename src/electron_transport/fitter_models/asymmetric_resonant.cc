@@ -251,6 +251,13 @@ void AsymmetricResonantFitModel::process_fit_parameters(
 		fitparams[R] = -fitparams[R];
 }
 
+bool AsymmetricResonantFitModel::is_good_fit(
+	const std::vector<double> &fitparams) const
+{
+	return (fitparams[GAMMAL] > 0. && fitparams[GAMMAR] > 0.
+		&& fitparams[R] > 0.);
+}
+
 double AsymmetricResonantFitModel::int_p(double x, void *params)
 {
 	const vector<double> &fitparams = *(const vector<double>*)params;

@@ -224,6 +224,12 @@ void CompositeInterferenceBackgroundFitModel::process_fit_parameters(
 		fitparams[COMEGA] = -fitparams[COMEGA];
 }
 
+bool CompositeInterferenceBackgroundFitModel::is_good_fit(
+	const std::vector<double> &fitparams) const
+{
+	return (fitparams[COMEGA] > 0. && fitparams[GMINUS] > 0.);
+}
+
 double CompositeInterferenceBackgroundFitModel::int_p(double gp,
 	void *params)
 {

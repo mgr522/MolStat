@@ -126,5 +126,11 @@ void SymmetricResonantFitModel::process_fit_parameters(
 		fitparams[GAMMA] = -fitparams[GAMMA];
 }
 
+bool SymmetricResonantFitModel::is_good_fit(
+	const std::vector<double> &fitparams) const
+{
+	return (fitparams[GAMMA] > 0.);
+}
+
 } // namespace molstat::transport
 } // namespace molstat

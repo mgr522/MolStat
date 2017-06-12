@@ -134,6 +134,8 @@ public:
 	 */
 	virtual void process_fit_parameters(std::vector<double> &fitparams) const
 		override;
+
+	virtual bool is_good_fit(const std::vector<double> &fitparams) const override;
 };
 
 } // namespace transport

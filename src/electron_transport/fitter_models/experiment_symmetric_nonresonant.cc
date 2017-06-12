@@ -253,6 +253,13 @@ void ExperimentSymmetricNonresonantFitModel
 	}
 }
 
+bool ExperimentSymmetricNonresonantFitModel::is_good_fit(
+	const std::vector<double> &fitparams) const
+{
+	return (fitparams[CEPSILON] > 0. && fitparams[CGAMMA] > 0.
+		&& fitparams[GMINUS] > 0.);
+}
+
 double ExperimentSymmetricNonresonantFitModel::int_p(double gp,
 	void *params)
 {

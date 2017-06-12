@@ -138,5 +138,11 @@ void SymmetricNonresonantFitModel::process_fit_parameters(
 	}
 }
 
+bool SymmetricNonresonantFitModel::is_good_fit(
+	const std::vector<double> &fitparams) const
+{
+	return (fitparams[CEPSILON] > 0 && fitparams[CGAMMA] > 0.);
+}
+
 } // namespace molstat::transport
 } // namespace molstat
